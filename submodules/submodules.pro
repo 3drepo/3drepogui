@@ -13,11 +13,13 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
-
 TEMPLATE = subdirs
 
-CONFIG += ordered
+!contains(QT_CONFIG, opengl) {
+    error(GLC_lib requires OpenGL!)
+}
 
-SUBDIRS += src \
-    submodules
+SUBDIRS += GLC_lib/src
+
+RESOURCES += fonts.qrc
+

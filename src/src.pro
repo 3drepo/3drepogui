@@ -13,11 +13,19 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
+QT       += core gui opengl
 
-TEMPLATE = subdirs
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += ordered
+TARGET = 3drepogui
+TEMPLATE = app
+VERSION = 0.0.1
 
-SUBDIRS += src \
-    submodules
+SOURCES += main.cpp\
+        repogui.cpp
+
+HEADERS  += repogui.h
+
+FORMS    += ui/repogui.ui
+
+
