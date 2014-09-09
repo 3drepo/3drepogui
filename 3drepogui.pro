@@ -30,3 +30,5 @@ HEADERS  += src/repogui.h
 FORMS    += src/ui/repogui.ui
 
 DESTDIR += bin
+
+RESOURCES += submodules/fonts.qrc
