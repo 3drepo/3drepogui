@@ -13,11 +13,33 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
+QT       += core gui opengl
 
-TEMPLATE = subdirs
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += ordered
+TARGET = 3drepogui
+TEMPLATE = app
+VERSION = 0.0.1
 
-SUBDIRS += src \
-    submodules
+SOURCES += src/main.cpp\
+        src/repogui.cpp
+
+HEADERS  += src/repogui.h
+
+FORMS    += src/ui/repogui.ui
+
+# 3D Repo Core
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/debug/ -l3drepocore
+else:unix: LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore
+
+INCLUDEPATH += $$PWD/submodules/3drepocore
+DEPENDPATH += $$PWD/submodules/3drepocore
+
+# GLC Lib
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/release/ -lGLC_lib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/debug/ -lGLC_lib
+else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
+
+INCLUDEPATH += $$PWD/submodules/GLC_lib/src
+DEPENDPATH += $$PWD/submodules/GLC_lib/src

@@ -13,12 +13,12 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
+# http://qt-project.org/doc/qt-5/qmake-variable-reference.html#subdirs
+
 TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS += 3drepocore \
-           GLC_lib
-
-RESOURCES += fonts.qrc
-
+SUBDIRS += submodules \
+           3drepogui.pro
