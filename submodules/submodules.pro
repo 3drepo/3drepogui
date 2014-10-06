@@ -20,5 +20,5 @@ CONFIG += ordered
 SUBDIRS += 3drepocore \
            GLC_lib
 
-RESOURCES += fonts.qrc
+
 

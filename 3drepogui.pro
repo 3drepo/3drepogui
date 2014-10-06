@@ -21,13 +21,6 @@ TARGET = 3drepogui
 TEMPLATE = app
 VERSION = 0.0.1
 
-SOURCES += src/main.cpp\
-        src/repogui.cpp
-
-HEADERS  += src/repogui.h
-
-FORMS    += src/ui/repogui.ui
-
 #-------------------------------------------------------------------------------
 # 3D Repo Core
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
@@ -45,3 +38,19 @@ else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
 
 INCLUDEPATH += $$PWD/submodules/GLC_lib/src
 DEPENDPATH += $$PWD/submodules/GLC_lib/src
+
+//------------------------------------------------------------------------------
+
+
+HEADERS  += src/repogui.h \
+            src/primitives/repo_fontawesome.h
+
+
+SOURCES += src/main.cpp\
+        src/primitives/repo_fontawesome.cpp \
+        src/repogui.cpp
+
+
+FORMS    += forms/repogui.ui
+
+RESOURCES += submodules/fonts.qrc

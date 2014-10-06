@@ -16,16 +16,41 @@
  */
 
 #include "repogui.h"
-#include "ui_repogui.h"
 
-RepoGUI::RepoGUI(QWidget *parent) :
+repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::RepoGUI)
 {
     ui->setupUi(this);
+
+    this->setWindowIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                            RepoFontAwesome::fa_database,
+                            QColor(246, 101, 60)));
+
+    //--------------------------------------------------------------------------
+    // For docks and windows not to update as they are slow to repaint.
+    this->setAnimated(false);
+
+    //--------------------------------------------------------------------------
+    // Force opengl format settings by default.
+    QGLFormat format(QGL::SampleBuffers);
+    format.setSwapInterval(1); // vsync
+    format.setSamples(16); // Antialiasing (multisample)
+    QGLFormat::setDefaultFormat(format);
+
+
+
+    //--------------------------------------------------------------------------
+    // Exit
+    QObject::connect(ui->actionExit, SIGNAL(triggered()),
+                     QApplication::instance(), SLOT(quit()));
+    ui->actionExit->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_sign_out, QColor(Qt::darkRed)));
 }
 
-RepoGUI::~RepoGUI()
+repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
 }

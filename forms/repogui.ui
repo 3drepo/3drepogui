@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RepoGUI</class>
+ <widget class="QMainWindow" name="RepoGUI">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>649</width>
+    <height>398</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>3D Repo GUI</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>649</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="separator"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionClose_All"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionSave_All"/>
+    <addaction name="actionSave_Screenshot"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuRepository">
+    <property name="title">
+     <string>Repository</string>
+    </property>
+    <addaction name="actionConnect"/>
+    <addaction name="actionRefresh"/>
+    <addaction name="separator"/>
+    <addaction name="actionHead"/>
+    <addaction name="actionHistory"/>
+    <addaction name="actionSwitch"/>
+    <addaction name="separator"/>
+    <addaction name="actionCommit"/>
+    <addaction name="action3D_Diff"/>
+    <addaction name="separator"/>
+    <addaction name="actionDrop"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionFull_Screen"/>
+    <addaction name="actionMaximize"/>
+    <addaction name="actionPanels"/>
+    <addaction name="separator"/>
+    <addaction name="actionScene_Graph"/>
+    <addaction name="separator"/>
+    <addaction name="actionHighlights"/>
+    <addaction name="actionTextures"/>
+    <addaction name="separator"/>
+    <addaction name="actionAuto_Camera"/>
+    <addaction name="actionLink"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionTechnical_Support"/>
+    <addaction name="actionReport_Bug"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout_3D_Repo_GUI"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuRepository"/>
+   <addaction name="menuView"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetRepositories">
+   <property name="windowTitle">
+    <string>Repositories</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetRepositoriesContents"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetLog">
+   <property name="windowTitle">
+    <string>Log</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetLogContents">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetNoConstraint</enum>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QTextBrowser" name="textBrowser"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="actionAbout_3D_Repo_GUI">
+   <property name="text">
+    <string>About 3D Repo GUI</string>
+   </property>
+  </action>
+  <action name="actionReport_Bug">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Report Issues...</string>
+   </property>
+  </action>
+  <action name="actionTechnical_Support">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Email Technical Support</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionClose_All">
+   <property name="text">
+    <string>Close All</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_All">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save All</string>
+   </property>
+  </action>
+  <action name="actionSave_Screenshot">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save Screenshot...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F4</string>
+   </property>
+  </action>
+  <action name="actionConnect">
+   <property name="text">
+    <string>Connect...</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionHead">
+   <property name="text">
+    <string>Head</string>
+   </property>
+  </action>
+  <action name="actionHistory">
+   <property name="text">
+    <string>History...</string>
+   </property>
+  </action>
+  <action name="actionSwitch">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Switch...</string>
+   </property>
+  </action>
+  <action name="actionCommit">
+   <property name="text">
+    <string>Commit...</string>
+   </property>
+  </action>
+  <action name="action3D_Diff">
+   <property name="text">
+    <string>3D Diff</string>
+   </property>
+  </action>
+  <action name="actionDrop">
+   <property name="text">
+    <string>Drop</string>
+   </property>
+  </action>
+  <action name="actionFull_Screen">
+   <property name="text">
+    <string>Full Screen</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="actionMaximize">
+   <property name="text">
+    <string>Maximize</string>
+   </property>
+  </action>
+  <action name="actionPanels">
+   <property name="text">
+    <string>Panels</string>
+   </property>
+  </action>
+  <action name="actionScene_Graph">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Scene Graph</string>
+   </property>
+  </action>
+  <action name="actionHighlights">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Highlights</string>
+   </property>
+  </action>
+  <action name="actionTextures">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Textures</string>
+   </property>
+  </action>
+  <action name="actionAuto_Camera">
+   <property name="text">
+    <string>Auto Camera</string>
+   </property>
+  </action>
+  <action name="actionLink">
+   <property name="text">
+    <string>Link</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

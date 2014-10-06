@@ -19,21 +19,39 @@
 #define REPOGUI_H
 
 #include <QMainWindow>
+#include <QGLFormat>
+//------------------------------------------------------------------------------
+#include "ui_repogui.h"
+#include "primitives/repo_fontawesome.h"
 
 namespace Ui {
 class RepoGUI;
 }
 
+namespace repo {
+namespace gui {
+
+
+//! Main application window.
 class RepoGUI : public QMainWindow
 {
     Q_OBJECT
 
 public:
+
+    //! Explicit default constructor
     explicit RepoGUI(QWidget *parent = 0);
+
+    //! Destructor
     ~RepoGUI();
 
 private:
     Ui::RepoGUI *ui;
-};
+
+}; // end class
+
+} // end namespace core
+} // end namespace repo
+
 
 #endif // REPOGUI_H
