@@ -28,6 +28,7 @@ HEADERS  += src/repogui.h
 
 FORMS    += src/ui/repogui.ui
 
+#-------------------------------------------------------------------------------
 # 3D Repo Core
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/debug/ -l3drepocore
@@ -36,9 +37,10 @@ else:unix: LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore
 INCLUDEPATH += $$PWD/submodules/3drepocore
 DEPENDPATH += $$PWD/submodules/3drepocore
 
+#-------------------------------------------------------------------------------
 # GLC Lib
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/release/ -lGLC_lib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/debug/ -lGLC_lib
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
 else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
 
 INCLUDEPATH += $$PWD/submodules/GLC_lib/src
