@@ -40,6 +40,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QGLFormat::setDefaultFormat(format);
 
 
+    //--------------------------------------------------------------------------
+    // Connect
+    QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
+    ui->actionConnect->setIcon(RepoDialogConnect::getIcon());
+
 
     //--------------------------------------------------------------------------
     // Exit
@@ -53,4 +58,41 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
+}
+
+
+void repo::gui::RepoGUI::connect()
+{
+
+    RepoDialogConnect connectionDialog(this);
+    if(connectionDialog.exec()) // if clicked "Connect"
+    {}
+//    {
+//        //---------------------------------------------------------------------
+//        // if successfully connected
+//        if (mongo->connect(connectionDialog.getHost().toStdString(), connectionDialog.getPort()))
+//        {
+//            if (!connectionDialog.getUsername().isEmpty())
+//            {
+//                mongo->authenticate(
+//                    connectionDialog.getUsername().toStdString(),
+//                    connectionDialog.getPassword().toStdString());
+//            }
+//            repo::gui::RepoLogger::getInstance().log(repo::REPO_INFO, mongo->getUsernameAtHostAndPort());
+//            refreshSlot();
+
+//            //-----------------------------------------------------------------
+//            // enable buttons
+//            actionRefresh->setEnabled(true);
+//            actionHead->setEnabled(true);
+//            actionHistory->setEnabled(true);
+//            actionCommit->setEnabled(true);
+//            actionDrop->setEnabled(true);
+//            actionConnect->setEnabled(false);
+//        }
+//        else
+//            repo::gui::RepoLogger::getInstance().log(repo::REPO_ERROR, "Connection error");
+//    }
+//    else
+//        repo::gui::RepoLogger::getInstance().log(repo::REPO_INFO, "Connection dialog cancelled by user");
 }

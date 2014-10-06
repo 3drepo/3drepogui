@@ -23,6 +23,7 @@
 //------------------------------------------------------------------------------
 #include "ui_repogui.h"
 #include "primitives/repo_fontawesome.h"
+#include "dialogs/repo_dialogconnect.h"
 
 namespace Ui {
 class RepoGUI;
@@ -44,6 +45,13 @@ public:
 
     //! Destructor
     ~RepoGUI();
+
+
+public slots:
+
+    void connect();
+
+
 
 private:
     Ui::RepoGUI *ui;

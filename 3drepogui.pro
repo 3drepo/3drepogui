@@ -43,14 +43,16 @@ DEPENDPATH += $$PWD/submodules/GLC_lib/src
 
 
 HEADERS  += src/repogui.h \
-            src/primitives/repo_fontawesome.h
+            src/primitives/repo_fontawesome.h \
+            src/dialogs/repo_dialogconnect.h
 
 
 SOURCES += src/main.cpp\
-        src/primitives/repo_fontawesome.cpp \
-        src/repogui.cpp
+           src/repogui.cpp \
+           src/primitives/repo_fontawesome.cpp \
+           src/dialogs/repo_dialogconnect.cpp
 
-
-FORMS    += forms/repogui.ui
+FORMS    += forms/repogui.ui \
+            forms/repo_dialogconnect.ui
 
 RESOURCES += submodules/fonts.qrc
