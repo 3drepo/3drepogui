@@ -21,9 +21,15 @@
 #include <QMainWindow>
 #include <QGLFormat>
 //------------------------------------------------------------------------------
+// Core
+#include "mongoclientwrapper.h"
+//------------------------------------------------------------------------------
+// GUI
 #include "ui_repogui.h"
 #include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
+//------------------------------------------------------------------------------
+
 
 namespace Ui {
 class RepoGUI;
@@ -49,12 +55,20 @@ public:
 
 public slots:
 
+    //! Shows connection dialog and connects to the specified database
     void connect();
 
+    //! Refreshes currently connected database
+    void refresh();
 
 
 private:
+
+    // UI var
     Ui::RepoGUI *ui;
+
+    // Mongo adapter. TODO: make multiple connections possible (in CORE)
+    repo::core::MongoClientWrapper *mongo;
 
 }; // end class
 

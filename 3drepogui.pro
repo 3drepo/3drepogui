@@ -22,13 +22,33 @@ TEMPLATE = app
 VERSION = 0.0.1
 
 #-------------------------------------------------------------------------------
+# Boost
+
+win32:LIBS += -LC:/local/boost_1_56_0/lib64-msvc-12.0/
+win32:INCLUDEPATH += C:/local/boost_1_56_0/
+win32:DEPENDPATH += C:/local/boost_1_56_0/
+
+#-------------------------------------------------------------------------------
+# Mongo C++ Driver
+
+win32:LIBS += -lws2_32
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/submodules/3drepocore/lib/ -lmongoclient
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/submodules/3drepocore/lib/ -lmongoclientd
+else:unix: LIBS += -L$$PWD/submodules/3drepocore/lib/ -lmongoclient
+
+INCLUDEPATH += $$PWD/submodules/3drepocore/submodules/mongo-cxx-driver/src
+DEPENDPATH += $$PWD/submodules/3drepocore/submodules/mongo-cxx-driver/src
+
+
+#-------------------------------------------------------------------------------
 # 3D Repo Core
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/debug/ -l3drepocore
 else:unix: LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore
 
-INCLUDEPATH += $$PWD/submodules/3drepocore
-DEPENDPATH += $$PWD/submodules/3drepocore
+INCLUDEPATH += $$PWD/submodules/3drepocore/src
+DEPENDPATH += $$PWD/submodules/3drepocore/src
 
 #-------------------------------------------------------------------------------
 # GLC Lib
@@ -39,8 +59,7 @@ else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
 INCLUDEPATH += $$PWD/submodules/GLC_lib/src
 DEPENDPATH += $$PWD/submodules/GLC_lib/src
 
-//------------------------------------------------------------------------------
-
+#-------------------------------------------------------------------------------
 
 HEADERS  += src/repogui.h \
             src/primitives/repo_fontawesome.h \
@@ -56,3 +75,4 @@ FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui
 
 RESOURCES += submodules/fonts.qrc
+

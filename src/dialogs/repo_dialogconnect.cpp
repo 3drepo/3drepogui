@@ -43,7 +43,8 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME,
                                "anonymous").toString());
 
-	// TODO: save encrypted binary version of the password, see http://qt-project.org/wiki/Simple_encryption
+    // TODO: save encrypted binary version of the password,
+    // see http://qt-project.org/wiki/Simple_encryption
     ui->lineEditPassword->setText(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
                                "").toString());
@@ -67,7 +68,7 @@ repo::gui::RepoDialogConnect::~RepoDialogConnect()
 //------------------------------------------------------------------------------
 QString repo::gui::RepoDialogConnect::getHost()
 {
-	return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_HOST).toString();
+    return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_HOST).toString();
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +101,8 @@ int repo::gui::RepoDialogConnect::exec()
 {
 	int result;
     //--------------------------------------------------------------------------
-	// If the user confirms the selection and does not click "Cancel", save values.
+    // If the user confirms the selection and does not click "Cancel", save
+    // values.
 	if (result = QDialog::exec())
 	{
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_HOST,

@@ -23,4 +23,7 @@ CONFIG += ordered
 SUBDIRS += submodules \
            3drepogui.pro
 
+3drepogui.depends = submodules
+
+
 
