@@ -13,17 +13,19 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html#subdirs
+include(submodules/3drepocore/header.pri)
+include(submodules/3drepocore/boost.pri)
+include(submodules/3drepocore/assimp.pri)
+include(submodules/3drepocore/mongo.pri)
 
-TEMPLATE = subdirs
+#-------------------------------------------------------------------------------
+# 3D Repo Core
 
-CONFIG += ordered warn_off
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/debug/ -l3drepocore
+else:unix: LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore
 
-SUBDIRS += submodules \
-           3drepogui.pro
-
-3drepogui.depends = submodules
-
+INCLUDEPATH += $$PWD/submodules/3drepocore/src
+DEPENDPATH += $$PWD/submodules/3drepocore/src
 
 

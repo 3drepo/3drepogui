@@ -76,14 +76,15 @@ void repo::gui::RepoGUI::connect()
     if(connectionDialog.exec()) // if clicked "Connect"
     {
 
-        QString username = connectionDialog.getHost();
-        std::cout<< "Username" << username.toStdString() << std::endl;
+        QString host = connectionDialog.getHost();
+        std::cout<< "host: " << host.toStdString() << std::endl;
 
 
         //----------------------------------------------------------------------
         // if successfully connected
         if (mongo->connect(connectionDialog.getHost().toStdString(), connectionDialog.getPort()))
         {
+
             if (!connectionDialog.getUsername().isEmpty())
             {
                 mongo->authenticate(
@@ -96,12 +97,12 @@ void repo::gui::RepoGUI::connect()
 
             //-----------------------------------------------------------------
             // enable buttons
-            ui->actionRefresh->setEnabled(true);
-            ui->actionHead->setEnabled(true);
-            ui->actionHistory->setEnabled(true);
-            ui->actionCommit->setEnabled(true);
-            ui->actionDrop->setEnabled(true);
-            ui->actionConnect->setEnabled(false);
+//            ui->actionRefresh->setEnabled(true);
+//            ui->actionHead->setEnabled(true);
+//            ui->actionHistory->setEnabled(true);
+//            ui->actionCommit->setEnabled(true);
+//            ui->actionDrop->setEnabled(true);
+//            ui->actionConnect->setEnabled(false);
         }
         else
         {
@@ -115,7 +116,5 @@ void repo::gui::RepoGUI::connect()
 
 void repo::gui::RepoGUI::refresh()
 {
-    //resetCollectionTree();
-    //resetDbTree();
-    //repositoriesWidget->fetchDatabases(*mongo);
+   // repositoriesWidget->fetchDatabases(*mongo);
 }

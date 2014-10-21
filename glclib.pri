@@ -13,17 +13,11 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html
-# http://qt-project.org/doc/qt-5/qmake-variable-reference.html#subdirs
+#-------------------------------------------------------------------------------
+# GLC Lib
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
+else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
 
-TEMPLATE = subdirs
-
-CONFIG += ordered warn_off
-
-SUBDIRS += submodules \
-           3drepogui.pro
-
-3drepogui.depends = submodules
-
-
-
+INCLUDEPATH += $$PWD/submodules/GLC_lib/src
+DEPENDPATH += $$PWD/submodules/GLC_lib/src
