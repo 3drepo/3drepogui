@@ -25,7 +25,6 @@
 #include "mongoclientwrapper.h"
 //------------------------------------------------------------------------------
 // GUI
-
 #include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
 //------------------------------------------------------------------------------
@@ -52,7 +51,6 @@ public:
     //! Destructor
     ~RepoGUI();
 
-
 public slots:
 
     //! Shows connection dialog and connects to the specified database
@@ -61,10 +59,13 @@ public slots:
     //! Refreshes currently connected database
     void refresh();
 
+    //! Shows a dialog confirmation and drops a selected database if agreed.
+    void dropDatabase();
+
 
 private:
 
-    // UI var
+    //! UI var
     Ui::RepoGUI *ui;
 
 }; // end class

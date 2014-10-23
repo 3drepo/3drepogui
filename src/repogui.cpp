@@ -15,9 +15,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//-----------------------------------------------------------------------------
+// Qt
+#include <QMessageBox>
+//------------------------------------------------------------------------------
+// Repo
 #include "repogui.h"
 #include "ui_repogui.h"
 #include "widgets/repo_widgetrepository.h"
+//------------------------------------------------------------------------------
 
 repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
@@ -52,6 +58,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionRefresh->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_refresh));
 
     //--------------------------------------------------------------------------
+    // Drop
+    QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(dropDatabase()));
+    ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
+
+    //--------------------------------------------------------------------------
     // Exit
     QObject::connect(ui->actionExit, SIGNAL(triggered()),
                      QApplication::instance(), SLOT(quit()));
@@ -64,7 +75,6 @@ repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
 }
-
 
 void repo::gui::RepoGUI::connect()
 {
@@ -112,4 +122,38 @@ void repo::gui::RepoGUI::connect()
 void repo::gui::RepoGUI::refresh()
 {
     ui->widgetRepository->refresh();
+}
+
+void repo::gui::RepoGUI::dropDatabase()
+{
+    QString dbName = ui->widgetRepository->getSelectedDatabase();
+    if (!dbName.isNull() &&
+        !dbName.isEmpty() &&
+        dbName != "local" &&
+        dbName != "admin")
+    {
+        switch (QMessageBox::warning(this,
+            "Drop Database?",
+            "Are you sure you want to drop '" + dbName + "' repository?",
+            "&Yes",
+            "&No",
+            QString::null, 1, 1))
+        {
+            case 0:
+                // yes
+                if (ui->widgetRepository->getSelectedConnection().deleteDatabase(dbName.toStdString()))
+                {
+                    std::cout << dbName.toStdString() << " deleted successfully."
+                                 << std::endl;
+                }
+                else
+                   std::cout << "Delete unsuccessful" << std::endl;
+                refresh();
+                break;
+            }
+    }
+    else
+    {
+        std::cout << "You are not allowed to delete 'local' and 'admin' databases." << std::endl;
+    }
 }
