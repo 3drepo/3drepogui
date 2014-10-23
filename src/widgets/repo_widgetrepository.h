@@ -37,6 +37,12 @@
 #include "../workers/repo_workerdatabases.h"
 #include "../workers/repo_workercollection.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
+#include "repo_lineedit.h"
+
+namespace Ui {
+    class RepoWidgetRepository;
+}
+
 
 namespace repo {
 namespace gui {
@@ -67,6 +73,9 @@ signals :
 	void cancel();
 
 public slots :
+
+    //! Refreshes all connected databases. Only one at the moment.
+    void refresh();
 		
 	//! Removes all threads from the thread pool and returns true if successful.
 	bool cancelAllThreads();
@@ -172,6 +181,17 @@ private :
 		empty icon otherwise.
 	*/
 	QIcon getIcon(const QString& collection) const;
+
+    //! Returns a human readable string of kilobytes, megabytes etc.
+    static QString toFileSize(unsigned long long int bytes);
+
+    //! Returns the current locale string representation.
+    template <class T>
+    static QString toLocaleString(const T & value)
+    {
+        QLocale locale;
+        return locale.toString(value);
+    }
 
 
     //--------------------------------------------------------------------------

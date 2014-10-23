@@ -39,9 +39,7 @@ void repo::gui::RepoWorkerCollection::run()
 	emit progressValueChanged(0);
 
 	if (!mongo.reconnect())
-		RepoLogger::getInstance().log(
-			repo::REPO_ERROR, 
-			QObject::tr("Connection failed").toStdString());
+        std::cerr << "Connection failed" << std::endl;
 	else
 	{
 		// Authentication can return false especially if it is not required by 
@@ -112,7 +110,9 @@ void repo::gui::RepoWorkerCollection::decodeRecords(const mongo::BSONObj& bson, 
 			case mongo::BinData : // binary data 					
 				if (mongo::bdtUUID == element.binDataType()) 
 				{
-					value = QUuid(repo::toString(repo::core::MongoClientWrapper::retrieveUUID(element)).c_str());
+                    value = QUuid(QString::fromStdString(
+                                core::MongoClientWrapper::uuidToString(
+                                core::MongoClientWrapper::retrieveUUID(element))));
 					type = QString("BSONUuid");
 				}
 				else if (REPO_NODE_LABEL_VERTICES == key)

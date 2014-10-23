@@ -32,6 +32,7 @@ HEADERS  += src/repogui.h \
             src/primitives/repo_fontawesome.h \
             src/dialogs/repo_dialogconnect.h \
             src/widgets/repo_widgetrepository.h \
+            src/widgets/repo_lineedit.h \
             src/workers/repo_workerdatabases.h \
             src/workers/repo_worker_abstract.h \
             src/workers/repo_workercollection.h \
@@ -42,10 +43,12 @@ SOURCES += src/main.cpp\
            src/primitives/repo_fontawesome.cpp \
            src/dialogs/repo_dialogconnect.cpp \
            src/widgets/repo_widgetrepository.cpp \
+           src/widgets/repo_lineedit.cpp \
            src/workers/repo_workerdatabases.cpp \
            src/workers/repo_worker_abstract.cpp \
            src/workers/repo_workercollection.cpp \
            src/primitives/repo_sortfilterproxymodel.cpp \
+
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

@@ -25,14 +25,14 @@
 #include "mongoclientwrapper.h"
 //------------------------------------------------------------------------------
 // GUI
-#include "ui_repogui.h"
+
 #include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
 //------------------------------------------------------------------------------
 
 
 namespace Ui {
-class RepoGUI;
+    class RepoGUI;
 }
 
 namespace repo {
@@ -66,9 +66,6 @@ private:
 
     // UI var
     Ui::RepoGUI *ui;
-
-    // Mongo adapter. TODO: make multiple connections possible (in CORE)
-    repo::core::MongoClientWrapper *mongo;
 
 }; // end class
 

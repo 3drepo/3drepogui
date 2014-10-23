@@ -123,7 +123,28 @@
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
-   <widget class="QWidget" name="dockWidgetRepositoriesContents"/>
+   <widget class="QWidget" name="dockWidgetRepositoriesContents">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="repo::gui::RepoWidgetRepository" name="widgetRepository" native="true"/>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QDockWidget" name="dockWidgetLog">
    <property name="windowTitle">
@@ -238,16 +259,25 @@
    </property>
   </action>
   <action name="actionRefresh">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Refresh</string>
    </property>
   </action>
   <action name="actionHead">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Head</string>
    </property>
   </action>
   <action name="actionHistory">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>History...</string>
    </property>
@@ -261,6 +291,9 @@
    </property>
   </action>
   <action name="actionCommit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Commit...</string>
    </property>
@@ -271,6 +304,9 @@
    </property>
   </action>
   <action name="actionDrop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Drop</string>
    </property>
@@ -329,6 +365,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>repo::gui::RepoWidgetRepository</class>
+   <extends>QWidget</extends>
+   <header>widgets/repo_widgetrepository.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

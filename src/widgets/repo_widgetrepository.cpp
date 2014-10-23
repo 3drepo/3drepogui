@@ -19,9 +19,10 @@
 
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
-	: QWidget(parent)
+    : QWidget(parent),
+      ui(new Ui::RepoWidgetRepository)
 {
-	setupUi(this);
+    ui->setupUi(this);
     //--------------------------------------------------------------------------
 	// Set database model and create headers
 	databasesModel = new QStandardItemModel(this); 
@@ -32,11 +33,11 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
 	databasesProxyModel = new RepoSortFilterProxyModel(this, false);
 	enableFiltering(
-		databasesTreeView, 
+        ui->databasesTreeView,
 		databasesModel, 
 		databasesProxyModel, 
-		databasesFilterLineEdit);
-	databasesTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
+        ui->databasesFilterLineEdit);
+    ui->databasesTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
 
     //--------------------------------------------------------------------------
 	// Set collection model and create headers
@@ -48,19 +49,19 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
 	collectionProxyModel = new RepoSortFilterProxyModel(this, true);
 	enableFiltering(
-		collectionTreeView, 
+        ui->collectionTreeView,
 		collectionModel, 
 		collectionProxyModel, 
-		collectionFilterLineEdit);
+        ui->collectionFilterLineEdit);
 	
-	collectionTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
+    ui->collectionTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
     //--------------------------------------------------------------------------
 	QObject::connect(
-		tabWidget, &QTabWidget::currentChanged,
+        ui->tabWidget, &QTabWidget::currentChanged,
 		this, &RepoWidgetRepository::changeTab);
 
-	databasesProgressBar->hide();
-	collectionProgressBar->hide();
+    ui->databasesProgressBar->hide();
+    ui->collectionProgressBar->hide();
 }
 
 //------------------------------------------------------------------------------
@@ -73,6 +74,15 @@ repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
 	delete databasesModel;
 	delete collectionProxyModel;
 	delete collectionModel;
+
+    delete ui;
+}
+
+void repo::gui::RepoWidgetRepository::refresh()
+{
+    // TODO: make sure if multiple mongo databases are connected,
+    // all get refreshes
+    fetchDatabases(getSelectedConnection());
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +103,7 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(const repo::core::MongoClie
 	{
 		this->mongo = mongo;
 
-		RepoLogger::getInstance().log(repo::REPO_INFO, QObject::tr("Fetching databases...").toStdString());
+        std::cout << "Fetching databases..." << std::endl;
 				
         //----------------------------------------------------------------------
 		RepoWorkerDatabases * worker = new RepoWorkerDatabases(mongo);	
@@ -119,22 +129,22 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(const repo::core::MongoClie
 
 		QObject::connect(
 			worker, &RepoWorkerDatabases::finished,
-			databasesProgressBar, &QProgressBar::hide);	
+            ui->databasesProgressBar, &QProgressBar::hide);
 		
 		QObject::connect(
 			worker, &RepoWorkerDatabases::progressRangeChanged,
-			databasesProgressBar, &QProgressBar::setRange);	
+            ui->databasesProgressBar, &QProgressBar::setRange);
 
 		QObject::connect(
 			worker, &RepoWorkerDatabases::progressValueChanged,
-			databasesProgressBar, &QProgressBar::setValue);			
+            ui->databasesProgressBar, &QProgressBar::setValue);
 
         //----------------------------------------------------------------------
 		// Clear any previous entries in the databases and collection models
 		clearDatabaseModel();
 
         //----------------------------------------------------------------------
-		databasesProgressBar->show();
+        ui->databasesProgressBar->show();
 		threadPool.start(worker);	
 	}
 }
@@ -152,7 +162,7 @@ void repo::gui::RepoWidgetRepository::fetchCollection(
 {
 	if (!database.isEmpty() && !collection.isEmpty()) //&& cancelAllThreads())
 	{
-		RepoLogger::getInstance().log(repo::REPO_INFO, QObject::tr("Fetching collection...").toStdString());
+        std::cout << "Fetching collection..." << std::endl;
 		RepoWorkerCollection* worker = new RepoWorkerCollection(mongo, database, collection);	
 		worker->setAutoDelete(true);
 
@@ -167,22 +177,22 @@ void repo::gui::RepoWidgetRepository::fetchCollection(
 
 		QObject::connect(
 			worker, &RepoWorkerDatabases::finished,
-			collectionProgressBar, &QProgressBar::hide);	
+            ui->collectionProgressBar, &QProgressBar::hide);
 		
 		QObject::connect(
 			worker, &RepoWorkerDatabases::progressRangeChanged,
-			collectionProgressBar, &QProgressBar::setRange);	
+            ui->collectionProgressBar, &QProgressBar::setRange);
 
 		QObject::connect(
 			worker, &RepoWorkerDatabases::progressValueChanged,
-			collectionProgressBar, &QProgressBar::setValue);		
+            ui->collectionProgressBar, &QProgressBar::setValue);
 		
         //----------------------------------------------------------------------
 		// Clear any previous entries in the collection model 
 		clearCollectionModel();
 
         //----------------------------------------------------------------------
-		collectionProgressBar->show();
+        ui->collectionProgressBar->show();
 		threadPool.start(worker);
 	}
 }
@@ -200,7 +210,7 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
 	databasesModel->invisibleRootItem()->appendRow(row);
     //--------------------------------------------------------------------------
 	// Expand top most host by default
-	databasesTreeView->expand(
+    ui->databasesTreeView->expand(
 		databasesProxyModel->mapFromSource(databasesModel->indexFromItem(hostItem)));
 	//hostItem->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_hdd_o));
 }
@@ -238,8 +248,8 @@ void repo::gui::RepoWidgetRepository::addCollection(
 		row.append(createItem(collection));
 		row.at(0)->setIcon(getIcon(collection));
 
-		row.append(createItem(RepoLogger::toLocaleString(count), count, Qt::AlignRight));
-		row.append(createItem(RepoLogger::toFileSize(size), size, Qt::AlignRight));		
+        row.append(createItem(toLocaleString(count), count, Qt::AlignRight));
+        row.append(createItem(toFileSize(size), size, Qt::AlignRight));
 		if (QStandardItem * database = host->child(host->rowCount()-1, RepoDatabasesColumns::NAME))
 			database->appendRow(row);
 
@@ -270,14 +280,14 @@ void repo::gui::RepoWidgetRepository::addKeyValuePair(
 	QList<QStandardItem *> row;	
     //--------------------------------------------------------------------------
 	if (QVariant::Type::ULongLong == document.type())
-		row.append(createItem(RepoLogger::toLocaleString(document.toULongLong()), document, Qt::AlignLeft));
+        row.append(createItem(toLocaleString(document.toULongLong()), document, Qt::AlignLeft));
 	else
 		row.append(createItem(document.toString(), document, Qt::AlignLeft));
     //--------------------------------------------------------------------------
 	if (QVariant::Type::ULongLong == value.type())
-		row.append(createItem(RepoLogger::toFileSize(value.toULongLong()), value, Qt::AlignRight));	
+        row.append(createItem(toFileSize(value.toULongLong()), value, Qt::AlignRight));
 	else if (QVariant::Type::Int == value.type() || QVariant::Type::LongLong == value.type())
-		row.append(createItem(RepoLogger::toLocaleString(value.toLongLong()), value, Qt::AlignLeft));
+        row.append(createItem(toLocaleString(value.toLongLong()), value, Qt::AlignLeft));
 	else	
 		row.append(createItem(value.toString(), value, Qt::AlignLeft));
     //--------------------------------------------------------------------------
@@ -292,9 +302,9 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 {	
 	databasesModel->removeRows(0, databasesModel->rowCount());	
     //--------------------------------------------------------------------------
-	databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::COUNT);	
-	databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::SIZE);
-	databasesFilterLineEdit->clear();
+    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::COUNT);
+    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::SIZE);
+    ui->databasesFilterLineEdit->clear();
 }
 
 //------------------------------------------------------------------------------
@@ -303,9 +313,9 @@ void repo::gui::RepoWidgetRepository::clearCollectionModel()
 {
 	collectionModel->removeRows(0, collectionModel->rowCount());	
     //--------------------------------------------------------------------------
-	collectionTreeView->resizeColumnToContents(RepoCollectionColumns::VALUE);	
-	collectionTreeView->resizeColumnToContents(RepoCollectionColumns::TYPE);	
-	collectionFilterLineEdit->clear();
+    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::VALUE);
+    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::TYPE);
+    ui->collectionFilterLineEdit->clear();
 }
 
 //------------------------------------------------------------------------------
@@ -327,7 +337,7 @@ void repo::gui::RepoWidgetRepository::changeTab(int index)
 
 void repo::gui::RepoWidgetRepository::copySelectedCollectionCellToClipboard()
 {
-	const QModelIndex selectedIndex = collectionTreeView->selectionModel()->currentIndex();	
+    const QModelIndex selectedIndex = ui->collectionTreeView->selectionModel()->currentIndex();
 	QClipboard *clipboard = QApplication::clipboard();
 	clipboard->setText(selectedIndex.data().toString());
 }
@@ -342,13 +352,13 @@ QString repo::gui::RepoWidgetRepository::getSelectedHost() const
 	switch (getHierarchyDepth(index))
 	{
 		case 3 : // collection depth
-			host = databasesTreeView->model()->data(index.parent().parent());
+            host = ui->databasesTreeView->model()->data(index.parent().parent());
 			break;
 		case 2 : // database depth
-			host = databasesTreeView->model()->data(index.parent());
+            host = ui->databasesTreeView->model()->data(index.parent());
 			break;
 		case 1 : // host depth
-			host = databasesTreeView->model()->data(index);
+            host = ui->databasesTreeView->model()->data(index);
 			break;
 	}
 	return host.toString();
@@ -363,9 +373,9 @@ QString repo::gui::RepoWidgetRepository::getSelectedDatabase() const
     //--------------------------------------------------------------------------
 	unsigned int hierarchyDepth = getHierarchyDepth(index);
 	if (3 == hierarchyDepth) // collection depth
-		database = databasesTreeView->model()->data(index.parent());
+        database = ui->databasesTreeView->model()->data(index.parent());
 	else if (2 == hierarchyDepth) // database depth
-		database = databasesTreeView->model()->data(index);
+        database = ui->databasesTreeView->model()->data(index);
 	return database.toString();
 }
 
@@ -377,7 +387,7 @@ QString repo::gui::RepoWidgetRepository::getSelectedCollection() const
 	const QModelIndex index = getSelectedDatabasesTreeViewIndex();	
     //--------------------------------------------------------------------------
 	if (3 == getHierarchyDepth(index)) // collection depth
-		collection = databasesTreeView->model()->data(index);
+        collection = ui->databasesTreeView->model()->data(index);
 	return collection.toString();
 }
 
@@ -388,8 +398,8 @@ QModelIndex repo::gui::RepoWidgetRepository::getSelectedDatabasesTreeViewIndex()
     //--------------------------------------------------------------------------
 	// Selected index might be on different column, hence create a new index
 	// which has the selected row but the desired NAME column.
-	const QModelIndex selectedIndex = databasesTreeView->selectionModel()->currentIndex();	
-	return databasesTreeView->model()->index(selectedIndex.row(), RepoDatabasesColumns::NAME, selectedIndex.parent());
+    const QModelIndex selectedIndex = ui->databasesTreeView->selectionModel()->currentIndex();
+    return ui->databasesTreeView->model()->index(selectedIndex.row(), RepoDatabasesColumns::NAME, selectedIndex.parent());
 }
 
 //------------------------------------------------------------------------------
@@ -489,14 +499,14 @@ void repo::gui::RepoWidgetRepository::setItem(
 
 void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, unsigned long long value)
 {
-	setItem(item, RepoLogger::toLocaleString(value), value);
+    setItem(item, toLocaleString(value), value);
 }
 
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, unsigned long long value)
 {
-	setItem(item, RepoLogger::toFileSize(value), value);
+    setItem(item, toFileSize(value), value);
 }
 
 QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
@@ -527,3 +537,23 @@ QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
 	return icon;
 }
 
+QString repo::gui::RepoWidgetRepository::toFileSize(unsigned long long int bytes)
+ {
+    QString value;
+    if (0 != bytes)
+    {
+        QLocale locale;
+        //stream << setprecision(2) << fixed;
+        static const int unit = 1024;
+        if (bytes < unit)
+            value = locale.toString((double) bytes, 'f', 2) + " B";
+        else
+        {
+            int exp = (int) (std::log(bytes) / std::log(unit));
+            static const std::string prefixes = ("KMGTPEZY");
+            char prefix = prefixes.at(exp-1);
+            value = locale.toString((bytes / pow(unit, exp)), 'f', 2) + " " + prefix + "B";
+        }
+    }
+    return  value;
+ }

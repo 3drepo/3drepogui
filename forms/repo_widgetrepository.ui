@@ -107,7 +107,7 @@
           <number>100</number>
          </property>
          <property name="value">
-          <number>24</number>
+          <number>0</number>
          </property>
          <property name="format">
           <string>%p%</string>
@@ -177,7 +177,7 @@
        <item>
         <widget class="QProgressBar" name="collectionProgressBar">
          <property name="value">
-          <number>24</number>
+          <number>0</number>
          </property>
          <property name="format">
           <string>%p%</string>
@@ -194,7 +194,7 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>widgets/repo_lineedit.h</header>
+   <header>repo_lineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

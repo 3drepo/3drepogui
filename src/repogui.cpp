@@ -16,6 +16,8 @@
  */
 
 #include "repogui.h"
+#include "ui_repogui.h"
+#include "widgets/repo_widgetrepository.h"
 
 repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
@@ -26,9 +28,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                 RepoFontAwesome::getInstance().getIcon(
                             RepoFontAwesome::fa_database,
                             QColor(246, 101, 60)));
-
-
-    mongo = new repo::core::MongoClientWrapper();
 
     //--------------------------------------------------------------------------
     // For docks and windows not to update as they are slow to repaint.
@@ -64,57 +63,53 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
-
-    if (mongo)
-        delete mongo;
 }
 
 
 void repo::gui::RepoGUI::connect()
 {
     RepoDialogConnect connectionDialog(this);
-    if(connectionDialog.exec()) // if clicked "Connect"
+
+    if(!connectionDialog.exec()) // if not clicked "Connect"
     {
-
-        QString host = connectionDialog.getHost();
-        std::cout<< "host: " << host.toStdString() << std::endl;
-
+        std::cout<< "Connection dialog cancelled by user" << std::endl;
+    }
+    else
+    {
+        // TODO move mongo creation outside of this main GUI to repository widget
+        // or similar
+        core::MongoClientWrapper mongo;
 
         //----------------------------------------------------------------------
-        // if successfully connected
-        if (mongo->connect(connectionDialog.getHost().toStdString(), connectionDialog.getPort()))
+        // if not successfully connected
+        if (!mongo.connect(
+                    connectionDialog.getHost().toStdString(),
+                    connectionDialog.getPort()))
         {
-
-            if (!connectionDialog.getUsername().isEmpty())
-            {
-                mongo->authenticate(
-                    connectionDialog.getUsername().toStdString(),
-                    connectionDialog.getPassword().toStdString());
-            }
-
-            //repo::gui::RepoLogger::getInstance().log(repo::REPO_INFO, mongo->getUsernameAtHostAndPort());
-            refresh();
-
-            //-----------------------------------------------------------------
-            // enable buttons
-//            ui->actionRefresh->setEnabled(true);
-//            ui->actionHead->setEnabled(true);
-//            ui->actionHistory->setEnabled(true);
-//            ui->actionCommit->setEnabled(true);
-//            ui->actionDrop->setEnabled(true);
-//            ui->actionConnect->setEnabled(false);
+            std::cerr << "Connection error" << std::endl;
         }
         else
         {
-            //repo::gui::RepoLogger::getInstance().log(repo::REPO_ERROR, "Connection error");
+            if (!connectionDialog.getUsername().isEmpty())
+            {
+                mongo.authenticate(
+                    connectionDialog.getUsername().toStdString(),
+                    connectionDialog.getPassword().toStdString());
+            }
+            ui->widgetRepository->fetchDatabases(mongo);
+
+            //-----------------------------------------------------------------
+            // enable buttons
+            ui->actionRefresh->setEnabled(true);
+            ui->actionHead->setEnabled(true);
+            ui->actionHistory->setEnabled(true);
+            ui->actionCommit->setEnabled(true);
+            ui->actionDrop->setEnabled(true);
         }
-    }
-    else {
-        //repo::gui::RepoLogger::getInstance().log(repo::REPO_INFO, "Connection dialog cancelled by user");
     }
 }
 
 void repo::gui::RepoGUI::refresh()
 {
-   // repositoriesWidget->fetchDatabases(*mongo);
+    ui->widgetRepository->refresh();
 }
