@@ -75,8 +75,8 @@
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="actionTechnical_Support"/>
-    <addaction name="actionReport_Bug"/>
+    <addaction name="actionEmail_Technical_Support"/>
+    <addaction name="actionReport_Issues"/>
     <addaction name="separator"/>
     <addaction name="actionAbout_3D_Repo_GUI"/>
    </widget>
@@ -184,7 +184,7 @@
     <string>About 3D Repo GUI</string>
    </property>
   </action>
-  <action name="actionReport_Bug">
+  <action name="actionReport_Issues">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -192,9 +192,9 @@
     <string>Report Issues...</string>
    </property>
   </action>
-  <action name="actionTechnical_Support">
+  <action name="actionEmail_Technical_Support">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Email Technical Support</string>
@@ -264,6 +264,9 @@
    </property>
    <property name="text">
     <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
   <action name="actionHead">

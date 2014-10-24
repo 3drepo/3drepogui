@@ -65,8 +65,11 @@ public slots:
     //! Displays the popup context menu on the repositories widget databases view.
     void showDatabaseContextMenu(const QPoint &pos);
 
+    //! Displays the popup context menu on the repositories widget collection view.
     void showCollectionContextMenuSlot(const QPoint &pos);
 
+    //! Opens local email client with support email address predefined.
+    void openSupportEmail() const;
 
 private:
 

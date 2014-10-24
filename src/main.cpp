@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("3D Repo");
     QCoreApplication::setOrganizationDomain("3drepo.org");
     QCoreApplication::setApplicationName("3D Repo GUI");
+    QCoreApplication::setApplicationVersion("0.0.1");
 
     repo::gui::RepoGUI w;
     w.show();

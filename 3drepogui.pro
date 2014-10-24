@@ -24,7 +24,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 3drepogui
 TEMPLATE = app
-VERSION = 0.0.1
 
 #-------------------------------------------------------------------------------
 

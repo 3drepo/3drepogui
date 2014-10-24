@@ -48,6 +48,15 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 
 
     //--------------------------------------------------------------------------
+    // Exit
+    QObject::connect(ui->actionExit, SIGNAL(triggered()),
+                     QApplication::instance(), SLOT(quit()));
+    ui->actionExit->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_sign_out, QColor(Qt::darkRed)));
+
+
+    //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
     ui->actionConnect->setIcon(RepoDialogConnect::getIcon());
@@ -63,6 +72,16 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
 
+    //--------------------------------------------------------------------------
+    // Email Technical Support
+    QObject::connect(ui->actionEmail_Technical_Support, SIGNAL(triggered()),
+                    this, SLOT(openSupportEmail()));
+    ui->actionEmail_Technical_Support->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_envelope_o));
+
+
+
     //-------------------------------------------------------------------------
     // Context menus
      QObject::connect(
@@ -71,17 +90,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
         this,
         &RepoGUI::showDatabaseContextMenu);
 
-//	connect(
-//		repositoriesWidget->collectionTreeView, &QTreeView::customContextMenuRequested,
-//		this, &DatabaseManager::collectionTreeContextMenuSlot);
-
-    //--------------------------------------------------------------------------
-    // Exit
-    QObject::connect(ui->actionExit, SIGNAL(triggered()),
-                     QApplication::instance(), SLOT(quit()));
-    ui->actionExit->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_sign_out, QColor(Qt::darkRed)));
+    QObject::connect(
+        ui->widgetRepository->getCollectionTreeView(),
+        &QTreeView::customContextMenuRequested,
+        this,
+        &RepoGUI::showCollectionContextMenuSlot);
 }
 
 repo::gui::RepoGUI::~RepoGUI()
@@ -152,8 +165,7 @@ void repo::gui::RepoGUI::dropDatabase()
             "&No",
             QString::null, 1, 1))
         {
-            case 0:
-                // yes
+            case 0: // yes
 
                 // TODO: create a DB manager separate from repositories widget.
                 core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
@@ -191,17 +203,42 @@ void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 
 void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
 {
-//    QMenu menu();//repositoriesWidget->collectionTreeView);
-//    QAction * a = menu.addAction(tr("Copy"), ui->widgetRepository, SLOT(copySelectedCollectionCellToClipboard()));
-//    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
-//    menu.addAction(tr(EXPAND_ALL), this, SLOT(expandAllSlot()));
-//    menu.addSeparator();
+    QMenu menu(ui->widgetRepository->getCollectionTreeView());
+    QAction *a = menu.addAction(
+                tr("Copy"),
+                ui->widgetRepository,
+                SLOT(copySelectedCollectionCellToClipboard()));
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    menu.addAction(
+                tr("Expand all"),
+                ui->widgetRepository,
+                SLOT(expandAllCollectionRecords()));
+    menu.addSeparator();
 
-//    a = menu.addAction(tr(DELETE_RECORD), this, SLOT(deleteRecordSlot()));
-//    a->setEnabled(false);
-//    a = menu.addAction(tr(DELETE_ALL_RECORDS), this, SLOT(deleteAllRecordsSlot()));
-//    a->setEnabled(false);
+    a = menu.addAction(tr("Delete record"), this, SLOT(deleteRecordSlot()));
+    a->setEnabled(false);
+    a = menu.addAction(tr("Delete all records"), this, SLOT(deleteAllRecordsSlot()));
+    a->setEnabled(false);
 
-//    menu.exec();//repositoriesWidget->collectionTreeView->mapToGlobal(pos));
+    menu.exec(ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
 }
 
+
+void repo::gui::RepoGUI::openSupportEmail() const
+{
+    QString email = "support@3drepo.org";
+    QString subject = "GUI Support Request";
+
+    QString body;
+    body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    body += "\n";
+    body += QString("Qt ") + QT_VERSION_STR;
+    body += "\n";
+    body += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
+    body += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
+
+    QDesktopServices::openUrl(
+                QUrl("mailto:" + email +
+                     "?subject=" + subject +
+                     "&body=" + body));
+}

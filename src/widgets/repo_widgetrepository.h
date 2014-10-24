@@ -118,7 +118,10 @@ public slots :
 
 	void changeTab(int index);
 
+    //! Copies selected collection cell to clipboard.
 	void copySelectedCollectionCellToClipboard();
+
+    void expandAllCollectionRecords() { ui->collectionTreeView->expandAll(); }
 
 public :
 
@@ -145,8 +148,13 @@ public :
     //! Returns the databases tree view.
     QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
 
+    QWidget *getCollectionTreeView() const { return ui->collectionTreeView; }
+
     const QPoint &mapToGlobalDatabasesTreeView(const QPoint &pos)
         { return ui->databasesTreeView->viewport()->mapToGlobal(pos); }
+
+    const QPoint &mapToGlobalCollectionTreeView(const QPoint &pos)
+        { return ui->collectionTreeView->viewport()->mapToGlobal(pos); }
 
 private :
 
