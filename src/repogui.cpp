@@ -25,11 +25,17 @@
 #include "widgets/repo_widgetrepository.h"
 //------------------------------------------------------------------------------
 
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE = "RepoGUI/state";
+
 repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::RepoGUI)
 {
     ui->setupUi(this);
+
+    restoreSettings();
+
     this->setWindowIcon(
                 RepoFontAwesome::getInstance().getIcon(
                             RepoFontAwesome::fa_database,
@@ -241,4 +247,30 @@ void repo::gui::RepoGUI::openSupportEmail() const
                 QUrl("mailto:" + email +
                      "?subject=" + subject +
                      "&body=" + body));
+}
+
+//------------------------------------------------------------------------------
+//
+// Protected
+//
+//------------------------------------------------------------------------------
+
+void repo::gui::RepoGUI::closeEvent(QCloseEvent *event)
+{
+    storeSettings();
+    QMainWindow::closeEvent(event);
+}
+
+void repo::gui::RepoGUI::storeSettings()
+{
+    QSettings settings;
+    settings.setValue(REPO_SETTINGS_GUI_GEOMETRY, saveGeometry());
+    settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
+}
+
+void repo::gui::RepoGUI::restoreSettings()
+{
+    QSettings settings;
+    restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
+    restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
 }

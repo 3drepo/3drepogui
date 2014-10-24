@@ -71,10 +71,27 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
+protected :
+
+    //! Saves window geometry (position) and state.
+    void closeEvent(QCloseEvent *event);
+
+    //! Stores the current geometry and state of the application.
+    void storeSettings();
+
+    //! Restores the previously saved geometry and state of the application.
+    void restoreSettings();
+
 private:
 
     //! UI var
     Ui::RepoGUI *ui;
+
+    //! Settings geometry label.
+    static const QString REPO_SETTINGS_GUI_GEOMETRY;
+
+    //! Settings state label.
+    static const QString REPO_SETTINGS_GUI_STATE;
 
 }; // end class
 
