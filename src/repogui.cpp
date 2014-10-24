@@ -52,6 +52,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     format.setSamples(16); // Antialiasing (multisample)
     QGLFormat::setDefaultFormat(format);
 
+    //--------------------------------------------------------------------------
+    //
+    // File
+    //
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // Exit
@@ -63,6 +68,12 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 
 
     //--------------------------------------------------------------------------
+    //
+    // Repository
+    //
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
     ui->actionConnect->setIcon(RepoDialogConnect::getIcon());
@@ -70,13 +81,37 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     //--------------------------------------------------------------------------
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
-    ui->actionRefresh->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_refresh));
+    ui->actionRefresh->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_refresh,
+                    QColor(Qt::darkGreen)));
 
     //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(dropDatabase()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
+
+    //--------------------------------------------------------------------------
+    //
+    // View
+    //
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    // Full Screen
+    QObject::connect(ui->actionFull_Screen,
+                     SIGNAL(triggered()),
+                     this, SLOT(toggleFullScreen()));
+    ui->actionFull_Screen->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_arrows_alt));
+
+    //--------------------------------------------------------------------------
+    //
+    // Help
+    //
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     // Email Technical Support
@@ -88,7 +123,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 
 
 
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Context menus
      QObject::connect(
         ui->widgetRepository->getDatabasesTreeView(),
@@ -106,6 +141,22 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
+}
+
+
+//------------------------------------------------------------------------------
+//
+// Public
+//
+//------------------------------------------------------------------------------
+
+void repo::gui::RepoGUI::startup()
+{
+    //--------------------------------------------------------------------------
+    // Connection dialog
+    RepoDialogConnect connectionDialog(this);
+    if (connectionDialog.isShowAtStartup())
+        connect();
 }
 
 void repo::gui::RepoGUI::connect()
@@ -249,6 +300,28 @@ void repo::gui::RepoGUI::openSupportEmail() const
                      "&body=" + body));
 }
 
+void repo::gui::RepoGUI::toggleFullScreen()
+{
+    if (ui->actionFull_Screen->isChecked())
+    {
+        ui->menuBar->hide();
+        ui->dockWidgetRepositories->hide();
+        ui->dockWidgetLog->hide();
+        ui->dbToolBar->hide();
+//		glToolBar->hide();
+        showFullScreen();
+    }
+    else
+    {
+        ui->menuBar->show();
+        ui->dockWidgetRepositories->show();
+        ui->dockWidgetLog->show();
+        ui->dbToolBar->show();
+//		glToolBar->show();
+        showNormal();
+    }
+}
+
 //------------------------------------------------------------------------------
 //
 // Protected
@@ -259,6 +332,22 @@ void repo::gui::RepoGUI::closeEvent(QCloseEvent *event)
 {
     storeSettings();
     QMainWindow::closeEvent(event);
+}
+
+void repo::gui::RepoGUI::keyPressEvent(QKeyEvent *event)
+{
+    switch(event->key())
+    {
+        case Qt::Key_F11:
+            ui->actionFull_Screen->setChecked(!ui->actionFull_Screen->isChecked());
+            toggleFullScreen();
+            break;
+        case Qt::Key_Escape:
+            ui->actionFull_Screen->setChecked(false);
+            toggleFullScreen();
+            break;
+    }
+    QMainWindow::keyPressEvent(event);
 }
 
 void repo::gui::RepoGUI::storeSettings()

@@ -85,7 +85,7 @@
    <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="glToolBar">
+  <widget class="QToolBar" name="dbToolBar">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>0</horstretch>
@@ -315,6 +315,9 @@
    </property>
   </action>
   <action name="actionFull_Screen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Full Screen</string>
    </property>

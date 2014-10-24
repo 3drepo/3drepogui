@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 
     repo::gui::RepoGUI w;
     w.show();
+    w.startup();
 
     return a.exec();
 }

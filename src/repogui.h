@@ -53,6 +53,9 @@ public:
 
 public slots:
 
+    //! Runs startup procedures. Eg showing connect window if set via settings.
+    void startup();
+
     //! Shows connection dialog and connects to the specified database
     void connect();
 
@@ -71,10 +74,15 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
+    void toggleFullScreen();
+
 protected :
 
     //! Saves window geometry (position) and state.
     void closeEvent(QCloseEvent *event);
+
+    //! F11 and Esc to return from fullscreen mode.
+    void keyPressEvent(QKeyEvent *event);
 
     //! Stores the current geometry and state of the application.
     void storeSettings();

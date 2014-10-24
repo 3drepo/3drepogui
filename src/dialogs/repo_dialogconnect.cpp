@@ -18,10 +18,11 @@
 #include "repo_dialogconnect.h"
 
 //------------------------------------------------------------------------------
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_HOST		= "RepoConnectionDialog/host";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PORT		= "RepoConnectionDialog/port";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_USERNAME	= "RepoConnectionDialog/username";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD	= "RepoConnectionDialog/password";
+const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_HOST		= "RepoDialogConnect/host";
+const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PORT		= "RepoDialogConnect/port";
+const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_USERNAME	= "RepoDialogConnect/username";
+const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD	= "RepoDialogConnect/password";
+const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_STARTUP     = "RepoDialogConnect/startup";
 
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogConnect::RepoDialogConnect(
@@ -49,6 +50,10 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
                                "").toString());
     ui->lineEditPassword->setFocus();
+
+    ui->checkBoxShowAtStartup->setChecked(
+                settings.value(
+                    REPO_SETTINGS_CONNECTION_DIALOG_STARTUP, true).toBool());
 
     //--------------------------------------------------------------------------
 	QStringList wordList;
@@ -89,11 +94,16 @@ QString repo::gui::RepoDialogConnect::getPassword()
 	return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD).toString();
 }
 
+bool repo::gui::RepoDialogConnect::isShowAtStartup()
+{
+    return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_STARTUP).toBool();
+}
+
 //------------------------------------------------------------------------------
 QIcon repo::gui::RepoDialogConnect::getIcon()
 {
     return RepoFontAwesome::getInstance().getIcon(
-        RepoFontAwesome::fa_sign_in, QColor(0,122,204));
+        RepoFontAwesome::fa_sign_in, QColor(0, 122, 204)); // blue
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +124,11 @@ int repo::gui::RepoDialogConnect::exec()
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
                           ui->lineEditPassword->text());
 	}
+
+    // Deliberately save the show at startup checkbox state regardless of
+    // cancelling the dialog box.
+    settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_STARTUP,
+                      ui->checkBoxShowAtStartup->isChecked());
 	return result;
 }
 

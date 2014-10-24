@@ -81,6 +81,9 @@ public:
 	//! Returns the user specified password value and writes it to the global settings.
 	QString getPassword(); 
 
+    //! Returns true if to show at startup, false otherwise.
+    bool isShowAtStartup();
+
     //--------------------------------------------------------------------------
 	//
 	// Static
@@ -101,25 +104,29 @@ public slots:
 
 private :
 
+    //! Ui var
     Ui::RepoDialogConnect *ui;
 
 	//! Application settings such as user specified host/port/username/password.
 	QSettings settings;
 
-	//! Completer for databases line edit
+    //! Completer for databases line edit.
     QCompleter *databasesCompleter;
 
-	//! Settings host label
+    //! Settings host label.
 	static const QString REPO_SETTINGS_CONNECTION_DIALOG_HOST; 
 
-	//! Settings port label
+    //! Settings port label.
 	static const QString REPO_SETTINGS_CONNECTION_DIALOG_PORT;
 	
-	//! Settings username label
+    //! Settings username label.
 	static const QString REPO_SETTINGS_CONNECTION_DIALOG_USERNAME;
 
-	//! Settings password label
+    //! Settings password label.
 	static const QString REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD; 
+
+    //! Settings show at startup label.
+    static const QString REPO_SETTINGS_CONNECTION_DIALOG_STARTUP;
 };
 
 } // end namespace gui

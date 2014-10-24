@@ -108,10 +108,13 @@
      <item>
       <widget class="QCheckBox" name="checkBoxShowAtStartup">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Show at startup</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -169,6 +172,7 @@
    </item>
   </layout>
  </widget>
+ <resources/>
  <connections>
   <connection>
    <sender>okButton</sender>
