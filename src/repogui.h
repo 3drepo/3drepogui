@@ -74,6 +74,14 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
+    //! Opens a GitHub issues webpage in system web browser.
+    void reportIssue() const;
+
+    /*!
+     * Toggles fullscreen mode depending on the status of fullscreen menu action.
+     * All visual aspects such as menubar, toolbars, dockwidgets etc are hiddden
+     * when in a fullscreen mode and shown upon return.
+     */
     void toggleFullScreen();
 
 protected :

@@ -121,6 +121,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_envelope_o));
 
+    //--------------------------------------------------------------------------
+    // Report Issue
+    QObject::connect(ui->actionReport_Issue, SIGNAL(triggered()),
+                    this, SLOT(reportIssue()));
+    ui->actionReport_Issue->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_globe));
 
 
     //--------------------------------------------------------------------------
@@ -298,6 +305,11 @@ void repo::gui::RepoGUI::openSupportEmail() const
                 QUrl("mailto:" + email +
                      "?subject=" + subject +
                      "&body=" + body));
+}
+
+void repo::gui::RepoGUI::reportIssue() const
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/3drepo/3drepogui/issues"));
 }
 
 void repo::gui::RepoGUI::toggleFullScreen()
