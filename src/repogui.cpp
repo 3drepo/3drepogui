@@ -141,7 +141,10 @@ void repo::gui::RepoGUI::dropDatabase()
         {
             case 0:
                 // yes
-                if (ui->widgetRepository->getSelectedConnection().deleteDatabase(dbName.toStdString()))
+
+                core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+                mongo.reconnectAndReauthenticate();
+                if (mongo.dropDatabase(dbName.toStdString()))
                 {
                     std::cout << dbName.toStdString() << " deleted successfully."
                                  << std::endl;
