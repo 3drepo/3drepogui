@@ -62,6 +62,11 @@ public slots:
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
 
+    //! Displays the popup context menu on the repositories widget databases view.
+    void showDatabaseContextMenu(const QPoint &pos);
+
+    void showCollectionContextMenuSlot(const QPoint &pos);
+
 
 private:
 

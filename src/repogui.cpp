@@ -62,6 +62,19 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(dropDatabase()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
+
+    //-------------------------------------------------------------------------
+    // Context menus
+     QObject::connect(
+        ui->widgetRepository->getDatabasesTreeView(),
+        &QWidget::customContextMenuRequested,
+        this,
+        &RepoGUI::showDatabaseContextMenu);
+
+//	connect(
+//		repositoriesWidget->collectionTreeView, &QTreeView::customContextMenuRequested,
+//		this, &DatabaseManager::collectionTreeContextMenuSlot);
+
     //--------------------------------------------------------------------------
     // Exit
     QObject::connect(ui->actionExit, SIGNAL(triggered()),
@@ -142,6 +155,7 @@ void repo::gui::RepoGUI::dropDatabase()
             case 0:
                 // yes
 
+                // TODO: create a DB manager separate from repositories widget.
                 core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
                 mongo.reconnectAndReauthenticate();
                 if (mongo.dropDatabase(dbName.toStdString()))
@@ -157,6 +171,37 @@ void repo::gui::RepoGUI::dropDatabase()
     }
     else
     {
-        std::cout << "You are not allowed to delete 'local' and 'admin' databases." << std::endl;
+        std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
     }
 }
+
+void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
+{
+    QMenu menu(ui->widgetRepository->getDatabasesTreeView());
+    menu.addAction(ui->actionConnect);
+    menu.addAction(ui->actionRefresh);
+    menu.addSeparator();
+    menu.addAction(ui->actionHead);
+    menu.addAction(ui->actionHistory);
+    menu.addAction(ui->actionSwitch);
+    menu.addSeparator();
+    menu.addAction(ui->actionDrop);
+    menu.exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
+}
+
+void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
+{
+//    QMenu menu();//repositoriesWidget->collectionTreeView);
+//    QAction * a = menu.addAction(tr("Copy"), ui->widgetRepository, SLOT(copySelectedCollectionCellToClipboard()));
+//    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+//    menu.addAction(tr(EXPAND_ALL), this, SLOT(expandAllSlot()));
+//    menu.addSeparator();
+
+//    a = menu.addAction(tr(DELETE_RECORD), this, SLOT(deleteRecordSlot()));
+//    a->setEnabled(false);
+//    a = menu.addAction(tr(DELETE_ALL_RECORDS), this, SLOT(deleteAllRecordsSlot()));
+//    a->setEnabled(false);
+
+//    menu.exec();//repositoriesWidget->collectionTreeView->mapToGlobal(pos));
+}
+

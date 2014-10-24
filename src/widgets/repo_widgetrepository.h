@@ -68,8 +68,8 @@ public :
 signals :
 
 	/*! Signal emitted to cancel all running threads. 
-		Use waitForDone() to make sure all have finished.
-	*/
+     *	Use waitForDone() to make sure all have finished.
+     */
 	void cancel();
 
 public slots :
@@ -122,9 +122,15 @@ public slots :
 
 public :
 
+    //--------------------------------------------------------------------------
+    //
+    // Getters
+    //
+    //--------------------------------------------------------------------------
+
 	/*! Returns a copy of a selected connection. It is necessary to reconnect 
-		and reauthenticate.
-	*/
+     *	and reauthenticate.
+     */
     repo::core::MongoClientWrapper getSelectedConnection() const { return mongo; }
 
 	//! Returns selected host, empty string if none selected.
@@ -135,7 +141,13 @@ public :
 
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
-	
+
+    //! Returns the databases tree view.
+    QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
+
+    const QPoint &mapToGlobalDatabasesTreeView(const QPoint &pos)
+        { return ui->databasesTreeView->viewport()->mapToGlobal(pos); }
+
 private :
 
 	//! Returns a selected databases model corresponding to the NAME column.
@@ -178,8 +190,8 @@ private :
 	static void setItemCount(QStandardItem*, unsigned long long);
 
 	/*! Returns icon if collection contains recognized string such as "scene" or "history",
-		empty icon otherwise.
-	*/
+     *	empty icon otherwise.
+     */
 	QIcon getIcon(const QString& collection) const;
 
     //! Returns a human readable string of kilobytes, megabytes etc.
@@ -193,7 +205,6 @@ private :
         return locale.toString(value);
     }
 
-
     //--------------------------------------------------------------------------
 	//
 	// Private variables
@@ -205,22 +216,22 @@ private :
     Ui::RepoWidgetRepository *ui;
 
 	//! Default model for the databases.
-	QStandardItemModel* databasesModel;
+    QStandardItemModel *databasesModel;
 
 	//! Sorting model proxy for the databases.
-	QSortFilterProxyModel* databasesProxyModel;
+    QSortFilterProxyModel *databasesProxyModel;
 
 	//! Default model for the collection.
-	QStandardItemModel* collectionModel;
+    QStandardItemModel *collectionModel;
 
 	//! Sorting model proxy for the collection.
-	QSortFilterProxyModel* collectionProxyModel;
+    QSortFilterProxyModel *collectionProxyModel;
 
 	//! Private thread pool local to this object only.
 	QThreadPool threadPool;
 
 	//! TODO: improve (should enable multiple DB connections at once)
-	repo::core::MongoClientWrapper mongo;
+    core::MongoClientWrapper mongo;
 };
 
 } // end namespace gui
