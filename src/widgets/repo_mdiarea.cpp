@@ -22,7 +22,7 @@
 
 repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent) 
 	: QMdiArea(parent)
-	, logo(":/DatabaseManager/backgrounds/3drepo-bg.png")
+    , logo(":/images/3drepo-bg.png")
 {
 	setTabsMovable(true);
 	setAcceptDrops(true);
@@ -251,7 +251,7 @@ QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent * resizeEvent)
 {
 	//this->maximizeSubWindows();
-
+    // TODO: improve performance
 	QImage background(resizeEvent->size(), QImage::Format_ARGB32_Premultiplied);
 	QPainter backgroundPainter(&background);
 	backgroundPainter.fillRect(background.rect(), Qt::gray);

@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="3drepo-bg.png">resources/3drepo-bg.png</file>
+    </qresource>
+    <qresource prefix="/shaders">
+        <file alias="select.vert">resources/select.vert</file>
+        <file alias="select.frag">resources/select.frag</file>
+    </qresource>
+</RCC>

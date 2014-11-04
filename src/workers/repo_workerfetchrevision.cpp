@@ -108,10 +108,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 		}
 		else
 		{
-            std::cerr << "Fixme: Old fetch revision." << std::endl;
             mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
-            //core::RepoCore core;
-            //core.fetchHeadRevision(database, data, &mongo);
 		}
 		//---------------------------------------------------------------------
 		emit progress(done++, jobsCount);

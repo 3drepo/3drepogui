@@ -66,5 +66,8 @@ FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
             forms/repo_widgetrepository.ui \
 
-RESOURCES += submodules/fonts.qrc
+# http://qt-project.org/doc/qt-5/resources.html
+RESOURCES += resources.qrc \
+             submodules/fonts.qrc \
+
 

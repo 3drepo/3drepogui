@@ -110,7 +110,8 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
 	glcViewCollection.clear();
 	glcWorld.clear();
 		
-	GLC_SelectionMaterial::deleteShader(context());
+    GLC_SelectionMaterial::deleteShader(context());
+
 	for (int i = 0; i < shaders.size(); ++i)
 		delete shaders[i];
 	shaders.clear();
@@ -173,18 +174,18 @@ void repo::gui::RepoGLCWidget::initializeGL()
 
 void repo::gui::RepoGLCWidget::initializeShaders()
 {
-    /*
+
 	if (GLC_State::glslUsed())// && !GLC_State::selectionShaderUsed())
 	{
-		GLC_State::setSelectionShaderUsage(true);	
-		QFile vertexShaderFile(":/shaders/select.vert");
-		QFile fragmentShaderFile(":/shaders/select.frag");
-		GLC_SelectionMaterial::setShaders(
-			vertexShaderFile, 
-			fragmentShaderFile, 
-			context());
-		GLC_SelectionMaterial::initShader(context());
-
+        GLC_State::setSelectionShaderUsage(true);
+        QFile vertexShaderFile(":/shaders/select.vert");
+        QFile fragmentShaderFile(":/shaders/select.frag");
+        GLC_SelectionMaterial::setShaders(
+            vertexShaderFile,
+            fragmentShaderFile,
+            context());
+        GLC_SelectionMaterial::initShader(context());
+/*
 		
 		if (shaders.isEmpty())
 		{
@@ -221,14 +222,14 @@ void repo::gui::RepoGLCWidget::initializeShaders()
 			shaders.append(pShader);
 		}
 
-		
+    */
 	//	if (shaders.size() > 2)
 	//	{
 	//		shaderID = shaders[2]->id();
 	//		updateGL();
 	//	}
 	}
-    */
+
 }
 
 void repo::gui::RepoGLCWidget::paintGL()
