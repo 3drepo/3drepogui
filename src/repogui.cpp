@@ -33,7 +33,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui(new Ui::RepoGUI)
 {
     ui->setupUi(this);
-
     restoreSettings();
 
     this->setWindowIcon(
@@ -72,19 +71,22 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     // Repository
     //
     //--------------------------------------------------------------------------
-
-    //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
     ui->actionConnect->setIcon(RepoDialogConnect::getIcon());
 
-    //--------------------------------------------------------------------------
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
     ui->actionRefresh->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_refresh,
                     QColor(Qt::darkGreen)));
+
+    // Head
+    QObject::connect(ui->actionHead, SIGNAL(triggered()), this, SLOT(fetchHead()));
+    ui->actionHead->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_download));
 
     //--------------------------------------------------------------------------
     // Drop
@@ -106,6 +108,12 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionFull_Screen->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_arrows_alt));
+
+    // Link
+    ui->actionLink->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_link,
+                    RepoFontAwesome::fa_chain_broken));
 
     //--------------------------------------------------------------------------
     //
@@ -214,6 +222,17 @@ void repo::gui::RepoGUI::refresh()
     ui->widgetRepository->refresh();
 }
 
+void repo::gui::RepoGUI::fetchHead()
+{
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    ui->mdiArea->addSubWindow(
+                ui->widgetRepository->getSelectedConnection(),
+                database); // head revision from master branch
+
+    // make sure to hook controls if chain is on
+    ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+}
+
 void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
@@ -293,6 +312,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
     QString email = "support@3drepo.org";
     QString subject = "GUI Support Request";
 
+    // TODO: get system state printout directly from About dialog.
     QString body;
     body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
     body += "\n";

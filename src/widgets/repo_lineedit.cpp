@@ -26,14 +26,14 @@ repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent)
 	clearButton->setToolTip(tr("Clear"));
 	clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");    
-	//----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	QObject::connect(
 		clearButton, &QToolButton::clicked,
 		this, &RepoLineEdit::clear);
 	QObject::connect(
 		this, &RepoLineEdit::textChanged,
 		this, &RepoLineEdit::setClearButtonEnabled);
-	//----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	int width = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 	setStyleSheet(QString("QLineEdit { padding-right: %1px; } ").arg(
 		clearButton->sizeHint().width() + width + 1));
@@ -62,4 +62,6 @@ repo::gui::RepoLineEdit::~RepoLineEdit()
 	bool on = !text.isEmpty();
 	clearButton->setVisible(on);
 	clearButton->setEnabled(on);
+    QString color = on ? "#fff2cc" : "#fff"; // TODO: move colours to settings
+    this->setStyleSheet("background-color: " + color);
  }

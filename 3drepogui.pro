@@ -32,10 +32,17 @@ HEADERS  += src/repogui.h \
             src/dialogs/repo_dialogconnect.h \
             src/widgets/repo_widgetrepository.h \
             src/widgets/repo_lineedit.h \
+            src/widgets/repo_mdiarea.h \
+            src/widgets/repo_mdisubwindow.h \
+            src/widgets/repo_glcwidget.h \
             src/workers/repo_workerdatabases.h \
             src/workers/repo_worker_abstract.h \
             src/workers/repo_workercollection.h \
+            src/workers/repo_worker_assimp.h \
+            src/workers/repo_workerfetchrevision.h \
             src/primitives/repo_sortfilterproxymodel.h \
+            src/primitives/repo_glccamera.h \
+            src/conversion/repo_transcoder_assimp.h \
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -43,11 +50,17 @@ SOURCES += src/main.cpp\
            src/dialogs/repo_dialogconnect.cpp \
            src/widgets/repo_widgetrepository.cpp \
            src/widgets/repo_lineedit.cpp \
+           src/widgets/repo_mdiarea.cpp \
+           src/widgets/repo_mdisubwindow.cpp \
+           src/widgets/repo_glcwidget.cpp \
            src/workers/repo_workerdatabases.cpp \
            src/workers/repo_worker_abstract.cpp \
            src/workers/repo_workercollection.cpp \
+           src/workers/repo_worker_assimp.cpp \
+           src/workers/repo_workerfetchrevision.cpp \
            src/primitives/repo_sortfilterproxymodel.cpp \
-
+           src/primitives/repo_glccamera.cpp \
+           src/conversion/repo_transcoder_assimp.cpp \
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

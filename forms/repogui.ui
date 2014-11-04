@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>3D Repo GUI</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="repo::gui::RepoMdiArea" name="mdiArea"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
@@ -197,7 +197,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Email Technical Support</string>
+    <string>Email Tech Support...</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -365,6 +365,12 @@
    </property>
   </action>
   <action name="actionLink">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Link</string>
    </property>
@@ -376,6 +382,12 @@
    <class>repo::gui::RepoWidgetRepository</class>
    <extends>QWidget</extends>
    <header>widgets/repo_widgetrepository.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoMdiArea</class>
+   <extends>QWidget</extends>
+   <header>widgets/repo_mdiarea.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

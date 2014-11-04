@@ -30,7 +30,8 @@
 //------------------------------------------------------------------------------
 
 
-namespace Ui {
+namespace Ui
+{
     class RepoGUI;
 }
 
@@ -53,7 +54,7 @@ public:
 
 public slots:
 
-    //! Runs startup procedures. Eg showing connect window if set via settings.
+    //! Runs startup procedures. Eg showing connect window if set via settings
     void startup();
 
     //! Shows connection dialog and connects to the specified database
@@ -62,13 +63,16 @@ public slots:
     //! Refreshes currently connected database
     void refresh();
 
+    //! Fetches head revision from selected DB and branch
+    void fetchHead();
+
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
 
-    //! Displays the popup context menu on the repositories widget databases view.
+    //! Displays the popup context menu on the repositories widget databases view
     void showDatabaseContextMenu(const QPoint &pos);
 
-    //! Displays the popup context menu on the repositories widget collection view.
+    //! Displays the popup context menu on the repositories widget collection view
     void showCollectionContextMenuSlot(const QPoint &pos);
 
     //! Opens local email client with support email address predefined.
