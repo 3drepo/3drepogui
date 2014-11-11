@@ -61,6 +61,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
     ui->actionOpen->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_folder_open));
 
+    // Save As
+    QObject::connect(ui->actionSave_As, SIGNAL(triggered()), this,
+                     SLOT(saveAs()));
+    ui->actionSave_As->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_floppy_o));
+
 
     //--------------------------------------------------------------------------
     // Exit
@@ -115,6 +120,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                     RepoFontAwesome::fa_arrows_alt));
 
     // Link
+    QObject::connect(ui->actionLink, SIGNAL(triggered(bool)), ui->mdiArea, SLOT(chainSubWindows(bool)));
     ui->actionLink->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_link,
@@ -181,15 +187,6 @@ repo::gui::RepoGUI::~RepoGUI()
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGUI::startup()
-{
-    //--------------------------------------------------------------------------
-    // Connection dialog
-    RepoDialogConnect connectionDialog(this);
-    if (connectionDialog.isShowAtStartup())
-        connect();
-}
-
 void repo::gui::RepoGUI::connect()
 {
     RepoDialogConnect connectionDialog(this);
@@ -233,22 +230,6 @@ void repo::gui::RepoGUI::connect()
     }
 }
 
-void repo::gui::RepoGUI::refresh()
-{
-    ui->widgetRepository->refresh();
-}
-
-void repo::gui::RepoGUI::fetchHead()
-{
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    ui->mdiArea->addSubWindow(
-                ui->widgetRepository->getSelectedConnection(),
-                database); // head revision from master branch
-
-    // make sure to hook controls if chain is on
-    ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
-}
-
 void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
@@ -287,97 +268,15 @@ void repo::gui::RepoGUI::dropDatabase()
     }
 }
 
-void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
+void repo::gui::RepoGUI::fetchHead()
 {
-    QMenu menu(ui->widgetRepository->getDatabasesTreeView());
-    menu.addAction(ui->actionConnect);
-    menu.addAction(ui->actionRefresh);
-    menu.addSeparator();
-    menu.addAction(ui->actionHead);
-    menu.addAction(ui->actionHistory);
-    menu.addAction(ui->actionSwitch);
-    menu.addSeparator();
-    menu.addAction(ui->actionDrop);
-    menu.exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
-}
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    ui->mdiArea->addSubWindow(
+                ui->widgetRepository->getSelectedConnection(),
+                database); // head revision from master branch
 
-void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
-{
-    QMenu menu(ui->widgetRepository->getCollectionTreeView());
-    QAction *a = menu.addAction(
-                tr("Copy"),
-                ui->widgetRepository,
-                SLOT(copySelectedCollectionCellToClipboard()));
-    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
-    menu.addAction(
-                tr("Expand all"),
-                ui->widgetRepository,
-                SLOT(expandAllCollectionRecords()));
-    menu.addSeparator();
-
-    a = menu.addAction(tr("Delete record"), this, SLOT(deleteRecordSlot()));
-    a->setEnabled(false);
-    a = menu.addAction(tr("Delete all records"), this, SLOT(deleteAllRecordsSlot()));
-    a->setEnabled(false);
-
-    menu.exec(ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
-}
-
-void repo::gui::RepoGUI::openFile()
-{
-    QStringList filePaths = QFileDialog::getOpenFileNames(
-        this,
-        tr("Select one or more files to open"),
-        QString::null,
-        repo::core::AssimpWrapper::getImportFormats().c_str());
-    loadFiles(filePaths);
-}
-
-void repo::gui::RepoGUI::openSupportEmail() const
-{
-    QString email = "support@3drepo.org";
-    QString subject = "GUI Support Request";
-
-    // TODO: get system state printout directly from About dialog.
-    QString body;
-    body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
-    body += "\n";
-    body += QString("Qt ") + QT_VERSION_STR;
-    body += "\n";
-    body += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
-    body += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
-
-    QDesktopServices::openUrl(
-                QUrl("mailto:" + email +
-                     "?subject=" + subject +
-                     "&body=" + body));
-}
-
-void repo::gui::RepoGUI::reportIssue() const
-{
-    QDesktopServices::openUrl(QUrl("https://github.com/3drepo/3drepogui/issues"));
-}
-
-void repo::gui::RepoGUI::toggleFullScreen()
-{
-    if (ui->actionFull_Screen->isChecked())
-    {
-        ui->menuBar->hide();
-        ui->dockWidgetRepositories->hide();
-        ui->dockWidgetLog->hide();
-        ui->repositoriesToolBar->hide();
-        ui->openGLToolBar->hide();
-        showFullScreen();
-    }
-    else
-    {
-        ui->menuBar->show();
-        ui->dockWidgetRepositories->show();
-        ui->dockWidgetLog->show();
-        ui->repositoriesToolBar->show();
-        ui->openGLToolBar->show();
-        showNormal();
-    }
+    // make sure to hook controls if chain is on
+    ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
 void repo::gui::RepoGUI::loadFile(const QString &filePath)
@@ -413,6 +312,186 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
         QUrl url = *it;
         loadFile(url.toLocalFile());
         ++it;
+    }
+}
+
+void repo::gui::RepoGUI::openFile()
+{
+    QStringList filePaths = QFileDialog::getOpenFileNames(
+        this,
+        tr("Select one or more files to open"),
+        QString::null,
+        repo::core::AssimpWrapper::getImportFormats().c_str());
+    loadFiles(filePaths);
+}
+
+void repo::gui::RepoGUI::openSupportEmail() const
+{
+    QString email = "support@3drepo.org";
+    QString subject = "GUI Support Request";
+
+    // TODO: get system state printout directly from About dialog.
+    QString body;
+    body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    body += "\n";
+    body += QString("Qt ") + QT_VERSION_STR;
+    body += "\n";
+    body += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
+    body += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
+
+    QDesktopServices::openUrl(
+                QUrl("mailto:" + email +
+                     "?subject=" + subject +
+                     "&body=" + body));
+}
+
+void repo::gui::RepoGUI::refresh()
+{
+    ui->widgetRepository->refresh();
+}
+
+void repo::gui::RepoGUI::reportIssue() const
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/3drepo/3drepogui/issues"));
+}
+
+void repo::gui::RepoGUI::saveAs()
+{
+    RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
+
+    if (!widget)
+        std::cout << "A 3D window has to be open." << std::endl;
+    else
+    {
+        QString path = QFileDialog::getSaveFileName(
+            this,
+            tr("Select a file to save"),
+            QString(QDir::separator()) + widget->windowTitle(),
+            tr(core::AssimpWrapper::getExportFormats().c_str()));
+        QFileInfo fileInfo(path);
+        QDir directory = fileInfo.absoluteDir();
+        QString fileExtension = fileInfo.completeSuffix();
+        const core::RepoGraphScene& repoScene = widget->getRepoScene();
+
+        std::cout << "Exporting to " << path.toStdString() << std::endl;
+
+        string embeddedTextureExtension = ".jpg";
+        aiScene scene = new aiScene();
+        scene->mFlags = 0; //getPostProcessingFlags(); // TODO FIX ME!
+        repoScene.toAssimp(scene);
+        core::AssimpWrapper exporter;
+
+        bool successful = exporter.exportModel(scene,
+            core::AssimpWrapper::getExportFormatID(fileExtension.toStdString()),
+            path.toStdString(),
+            embeddedTextureExtension);
+
+        if (!successful)
+           std::cerr << "Export unsuccessful." << std::endl;
+        else
+        {
+           std::vector<core::RepoNodeTexture *> textures = repoScene.getTextures();
+           for (size_t i = 0; i < textures.size(); ++i)
+           {
+               core::RepoNodeTexture *repoTex = textures[i];
+                const unsigned char *data = (unsigned char*) repoTex->getData();
+                QImage image = QImage::fromData(data, repoTex->getDataSize());
+                QString filename = QString::fromStdString(repoTex->getName());
+
+                if (scene->HasTextures())
+                {
+                    string name = repoTex->getName();
+                    name = name.substr(1, name.size()); // remove leading '*' char
+                    filename = QString::fromStdString(name + embeddedTextureExtension);
+                }
+                QFileInfo fi(directory,filename);
+                image.save(fi.absoluteFilePath());
+            }
+            /* TODO: textures
+            const map<string, QImage> textures = widget->getTextures();
+            for (map<string, QImage>::const_iterator it = textures.begin(); it != textures.end(); it++)
+            {
+                QString filename(((*it).first).c_str());
+
+                // if embedded textures
+                if (scene->HasTextures())
+                {
+                    string name = (*it).first;
+                    name = name.substr(1, name.size()); // remove leading '*' char
+                    filename = QString((name + embeddedTextureExtension).c_str());
+                }
+                QFileInfo fi(directory,filename);
+                QImage image = (*it).second;
+                image.save(fi.absoluteFilePath());
+            }*/
+            std::cout << "Export successful." << std::endl;
+        }
+        delete scene;
+    }
+}
+
+void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
+{
+    QMenu menu(ui->widgetRepository->getCollectionTreeView());
+    QAction *a = menu.addAction(
+                tr("Copy"),
+                ui->widgetRepository,
+                SLOT(copySelectedCollectionCellToClipboard()));
+    a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
+    menu.addAction(
+                tr("Expand all"),
+                ui->widgetRepository,
+                SLOT(expandAllCollectionRecords()));
+    menu.addSeparator();
+
+    a = menu.addAction(tr("Delete record"), this, SLOT(deleteRecordSlot()));
+    a->setEnabled(false);
+    a = menu.addAction(tr("Delete all records"), this, SLOT(deleteAllRecordsSlot()));
+    a->setEnabled(false);
+
+    menu.exec(ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
+}
+
+void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
+{
+    QMenu menu(ui->widgetRepository->getDatabasesTreeView());
+    menu.addAction(ui->actionConnect);
+    menu.addAction(ui->actionRefresh);
+    menu.addSeparator();
+    menu.addAction(ui->actionHead);
+    menu.addAction(ui->actionHistory);
+    menu.addAction(ui->actionSwitch);
+    menu.addSeparator();
+    menu.addAction(ui->actionDrop);
+    menu.exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
+}
+
+void repo::gui::RepoGUI::startup()
+{
+    RepoDialogConnect connectionDialog(this);
+    if (connectionDialog.isShowAtStartup())
+        connect();
+}
+
+void repo::gui::RepoGUI::toggleFullScreen()
+{
+    if (ui->actionFull_Screen->isChecked())
+    {
+        ui->menuBar->hide();
+        ui->dockWidgetRepositories->hide();
+        ui->dockWidgetLog->hide();
+        ui->repositoriesToolBar->hide();
+        ui->openGLToolBar->hide();
+        showFullScreen();
+    }
+    else
+    {
+        ui->menuBar->show();
+        ui->dockWidgetRepositories->show();
+        ui->dockWidgetLog->show();
+        ui->repositoriesToolBar->show();
+        ui->openGLToolBar->show();
+        showNormal();
     }
 }
 
@@ -459,6 +538,14 @@ void repo::gui::RepoGUI::keyPressEvent(QKeyEvent *event)
     QMainWindow::keyPressEvent(event);
 }
 
+void repo::gui::RepoGUI::restoreSettings()
+{
+    QSettings settings;
+    restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
+    restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
+    ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, false).toBool());
+}
+
 void repo::gui::RepoGUI::storeSettings()
 {
     QSettings settings;
@@ -467,10 +554,3 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
 }
 
-void repo::gui::RepoGUI::restoreSettings()
-{
-    QSettings settings;
-    restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
-    restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
-    ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, false).toBool());
-}

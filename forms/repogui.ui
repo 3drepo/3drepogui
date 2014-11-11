@@ -78,12 +78,13 @@
     <property name="title">
      <string>OpenGL</string>
     </property>
+    <addaction name="actionLink"/>
+    <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
     <addaction name="actionHighlights"/>
     <addaction name="actionTextures"/>
     <addaction name="separator"/>
     <addaction name="actionAuto_Camera"/>
-    <addaction name="actionLink"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRepository"/>

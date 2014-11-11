@@ -54,42 +54,14 @@ public:
 
 public slots:
 
-    //! Runs startup procedures. E.g. showing connect window if set via settings
-    void startup();
-
     //! Shows connection dialog and connects to the specified database
     void connect();
-
-    //! Refreshes currently connected database
-    void refresh();
-
-    //! Fetches head revision from selected DB and branch
-    void fetchHead();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
 
-    //! Displays the popup context menu on the repositories widget databases view
-    void showDatabaseContextMenu(const QPoint &pos);
-
-    //! Displays the popup context menu on the repositories widget collection view
-    void showCollectionContextMenuSlot(const QPoint &pos);
-
-    //! Opens a file dialog.
-    void openFile();
-
-    //! Opens local email client with support email address predefined.
-    void openSupportEmail() const;
-
-    //! Opens a GitHub issues webpage in the default web browser.
-    void reportIssue() const;
-
-    /*!
-     * Toggles fullscreen mode depending on the status of fullscreen menu action.
-     * All visual aspects such as menubar, toolbars, dockwidgets etc are hiddden
-     * when in a fullscreen mode and shown upon return.
-     */
-    void toggleFullScreen();
+    //! Fetches head revision from selected DB and branch
+    void fetchHead();
 
     //! Loads a single 3D file asynchronously given a full file path.
     void loadFile(const QString &filePath);
@@ -100,8 +72,36 @@ public slots:
     //! Loads files from a list of full file paths.
     void loadFiles(const QStringList &filePaths);
 
+    //! Opens a file dialog.
+    void openFile();
 
+    //! Opens local email client with support email address predefined.
+    void openSupportEmail() const;
 
+    //! Refreshes currently connected database
+    void refresh();
+
+    //! Opens a GitHub issues webpage in the default web browser.
+    void reportIssue() const;
+
+    //! Saves open 3D window as a file.
+    void saveAs();
+
+    //! Displays the popup context menu on the repositories widget collection view
+    void showCollectionContextMenuSlot(const QPoint &pos);
+
+    //! Displays the popup context menu on the repositories widget databases view
+    void showDatabaseContextMenu(const QPoint &pos);
+
+    //! Runs startup procedures. E.g. showing connect window if set via settings
+    void startup();
+
+    /*!
+     * Toggles fullscreen mode depending on the status of fullscreen menu action.
+     * All visual aspects such as menubar, toolbars, dockwidgets etc are hiddden
+     * when in a fullscreen mode and shown upon return.
+     */
+    void toggleFullScreen();
 
 protected :
 
@@ -117,12 +117,11 @@ protected :
     //! F11 and Esc to return from fullscreen mode.
     void keyPressEvent(QKeyEvent *event);
 
-    //! Stores the current geometry and state of the application.
-    void storeSettings();
-
     //! Restores the previously saved geometry and state of the application.
     void restoreSettings();
 
+    //! Stores the current geometry and state of the application.
+    void storeSettings();
 
 private:
 

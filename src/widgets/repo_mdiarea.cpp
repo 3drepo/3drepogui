@@ -248,21 +248,21 @@ QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	return subWindowList;
 }
 
-void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent * resizeEvent)
+void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 {
 	//this->maximizeSubWindows();
     // TODO: improve performance
-	QImage background(resizeEvent->size(), QImage::Format_ARGB32_Premultiplied);
+    QImage background(resizeEvent->size(), QImage::Format_ARGB32_Premultiplied);
 	QPainter backgroundPainter(&background);
 	backgroundPainter.fillRect(background.rect(), Qt::gray);
-	//QImage scaled = backgroundImage.scaled(resizeEvent->size(),Qt::KeepAspectRatio);
+    //QImage scaled = backgroundImage.scaled(resizeEvent->size(),Qt::KeepAspectRatio);
 	QRect scaledRect = logo.rect();
 	scaledRect.moveBottomRight(
 		QPoint(resizeEvent->size().width(), 
 			resizeEvent->size().height()));
-	backgroundPainter.drawImage(scaledRect, logo);
+    backgroundPainter.drawImage(scaledRect, logo);
 	setBackground(background);
-		
+
     //--------------------------------------------------------------------------
 	// Pass the event to the super class.
 	QMdiArea::resizeEvent(resizeEvent);
