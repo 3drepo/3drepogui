@@ -175,7 +175,7 @@ void repo::gui::RepoGLCWidget::initializeGL()
 void repo::gui::RepoGLCWidget::initializeShaders()
 {
 
-	if (GLC_State::glslUsed())// && !GLC_State::selectionShaderUsed())
+    if (GLC_State::glslUsed() && !GLC_State::selectionShaderUsed())
 	{
         GLC_State::setSelectionShaderUsage(true);
         QFile vertexShaderFile(":/shaders/select.vert");

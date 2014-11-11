@@ -54,7 +54,7 @@ public:
 
 public slots:
 
-    //! Runs startup procedures. Eg showing connect window if set via settings
+    //! Runs startup procedures. E.g. showing connect window if set via settings
     void startup();
 
     //! Shows connection dialog and connects to the specified database
@@ -75,10 +75,13 @@ public slots:
     //! Displays the popup context menu on the repositories widget collection view
     void showCollectionContextMenuSlot(const QPoint &pos);
 
+    //! Opens a file dialog.
+    void openFile();
+
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
-    //! Opens a GitHub issues webpage in system web browser.
+    //! Opens a GitHub issues webpage in the default web browser.
     void reportIssue() const;
 
     /*!
@@ -88,10 +91,28 @@ public slots:
      */
     void toggleFullScreen();
 
+    //! Loads a single 3D file asynchronously given a full file path.
+    void loadFile(const QString &filePath);
+
+    //! Loads files from a list of URLs.
+    void loadFiles(const QList<QUrl> &urls);
+
+    //! Loads files from a list of full file paths.
+    void loadFiles(const QStringList &filePaths);
+
+
+
+
 protected :
 
     //! Saves window geometry (position) and state.
     void closeEvent(QCloseEvent *event);
+
+    //! Triggered when mouse is being dragged and enters the window.
+    void dragEnterEvent(QDragEnterEvent *event);
+
+    //! Triggered when the mouse drops the drag event.
+    void dropEvent(QDropEvent *event);
 
     //! F11 and Esc to return from fullscreen mode.
     void keyPressEvent(QKeyEvent *event);
@@ -101,6 +122,7 @@ protected :
 
     //! Restores the previously saved geometry and state of the application.
     void restoreSettings();
+
 
 private:
 
@@ -112,6 +134,9 @@ private:
 
     //! Settings state label.
     static const QString REPO_SETTINGS_GUI_STATE;
+
+    //! Settings link windows label.
+    static const QString REPO_SETTINGS_LINK_WINDOWS;
 
 }; // end class
 

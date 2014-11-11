@@ -10,6 +10,9 @@
     <height>608</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string>3D Repo GUI</string>
   </property>
@@ -40,7 +43,7 @@
    </widget>
    <widget class="QMenu" name="menuRepository">
     <property name="title">
-     <string>Repository</string>
+     <string>Repositories</string>
     </property>
     <addaction name="actionConnect"/>
     <addaction name="actionRefresh"/>
@@ -54,21 +57,12 @@
     <addaction name="separator"/>
     <addaction name="actionDrop"/>
    </widget>
-   <widget class="QMenu" name="menuView">
+   <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>View</string>
+     <string>Window</string>
     </property>
     <addaction name="actionFull_Screen"/>
     <addaction name="actionMaximize"/>
-    <addaction name="actionPanels"/>
-    <addaction name="separator"/>
-    <addaction name="actionScene_Graph"/>
-    <addaction name="separator"/>
-    <addaction name="actionHighlights"/>
-    <addaction name="actionTextures"/>
-    <addaction name="separator"/>
-    <addaction name="actionAuto_Camera"/>
-    <addaction name="actionLink"/>
     <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -80,12 +74,24 @@
     <addaction name="separator"/>
     <addaction name="actionAbout_3D_Repo_GUI"/>
    </widget>
+   <widget class="QMenu" name="menuOpenGL">
+    <property name="title">
+     <string>OpenGL</string>
+    </property>
+    <addaction name="actionScene_Graph"/>
+    <addaction name="actionHighlights"/>
+    <addaction name="actionTextures"/>
+    <addaction name="separator"/>
+    <addaction name="actionAuto_Camera"/>
+    <addaction name="actionLink"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRepository"/>
-   <addaction name="menuView"/>
+   <addaction name="menuOpenGL"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QToolBar" name="dbToolBar">
+  <widget class="QToolBar" name="repositoriesToolBar">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
      <horstretch>0</horstretch>
@@ -93,7 +99,7 @@
     </sizepolicy>
    </property>
    <property name="windowTitle">
-    <string>OpenGL Toolbar</string>
+    <string>Repositories Toolbar</string>
    </property>
    <property name="iconSize">
     <size>
@@ -145,6 +151,33 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="openGLToolBar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>OpenGL Toolbar</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>16</width>
+     <height>16</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionLink"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetLog">
    <property name="windowTitle">
@@ -330,11 +363,6 @@
     <string>Maximize</string>
    </property>
   </action>
-  <action name="actionPanels">
-   <property name="text">
-    <string>Panels</string>
-   </property>
-  </action>
   <action name="actionScene_Graph">
    <property name="enabled">
     <bool>false</bool>
@@ -360,6 +388,9 @@
    </property>
   </action>
   <action name="actionAuto_Camera">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Auto Camera</string>
    </property>

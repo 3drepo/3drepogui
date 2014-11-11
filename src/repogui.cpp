@@ -27,6 +27,7 @@
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE = "RepoGUI/state";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS = "RepoGUI/link";
 
 repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
@@ -56,6 +57,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     // File
     //
     //--------------------------------------------------------------------------
+    // Open
+    QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
+    ui->actionOpen->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_folder_open));
+
 
     //--------------------------------------------------------------------------
     // Exit
@@ -115,6 +120,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                     RepoFontAwesome::fa_link,
                     RepoFontAwesome::fa_chain_broken));
 
+    // Panels
+    QMenu *menuPanels = QMainWindow::createPopupMenu();
+    menuPanels->setTitle(QString("Panels"));
+    menuPanels->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
+    ui->menuWindow->addMenu(menuPanels);
+
+
     //--------------------------------------------------------------------------
     //
     // Help
@@ -136,6 +148,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionReport_Issue->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_globe));
+
+
+
+
 
 
     //--------------------------------------------------------------------------
@@ -236,10 +252,15 @@ void repo::gui::RepoGUI::fetchHead()
 void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
-    if (!dbName.isNull() &&
-        !dbName.isEmpty() &&
-        dbName != "local" &&
-        dbName != "admin")
+    if (dbName.isNull() || dbName.isEmpty())
+    {
+        std::cout << "A database must be selected." << std::endl;
+    }
+    else if (dbName == "local" || dbName == "admin")
+    {
+        std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
+    }
+    else
     {
         switch (QMessageBox::warning(this,
             "Drop Database?",
@@ -263,10 +284,6 @@ void repo::gui::RepoGUI::dropDatabase()
                 refresh();
                 break;
             }
-    }
-    else
-    {
-        std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
     }
 }
 
@@ -306,6 +323,15 @@ void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
     menu.exec(ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
 }
 
+void repo::gui::RepoGUI::openFile()
+{
+    QStringList filePaths = QFileDialog::getOpenFileNames(
+        this,
+        tr("Select one or more files to open"),
+        QString::null,
+        repo::core::AssimpWrapper::getImportFormats().c_str());
+    loadFiles(filePaths);
+}
 
 void repo::gui::RepoGUI::openSupportEmail() const
 {
@@ -339,8 +365,8 @@ void repo::gui::RepoGUI::toggleFullScreen()
         ui->menuBar->hide();
         ui->dockWidgetRepositories->hide();
         ui->dockWidgetLog->hide();
-        ui->dbToolBar->hide();
-//		glToolBar->hide();
+        ui->repositoriesToolBar->hide();
+        ui->openGLToolBar->hide();
         showFullScreen();
     }
     else
@@ -348,9 +374,45 @@ void repo::gui::RepoGUI::toggleFullScreen()
         ui->menuBar->show();
         ui->dockWidgetRepositories->show();
         ui->dockWidgetLog->show();
-        ui->dbToolBar->show();
-//		glToolBar->show();
+        ui->repositoriesToolBar->show();
+        ui->openGLToolBar->show();
         showNormal();
+    }
+}
+
+void repo::gui::RepoGUI::loadFile(const QString &filePath)
+{
+    if (!filePath.isEmpty())
+    {
+        QFileInfo pathInfo(filePath);
+        string fileName = pathInfo.fileName().toStdString();
+        std::cout << "Loading " << fileName << " ..." << std::endl;
+
+        // TODO: get assimp post processing flags from settings dialog box.
+        unsigned int postProcessingFlags = 0;
+        ui->mdiArea->addSubWindow(filePath, postProcessingFlags);
+        ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+    }
+}
+
+void repo::gui::RepoGUI::loadFiles(const QStringList &filePaths)
+{
+    QStringList::ConstIterator it = filePaths.begin();
+    while(it != filePaths.end())
+    {
+        loadFile(*it);
+        ++it;
+    }
+}
+
+void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
+{
+    QList<QUrl>::ConstIterator it = urls.begin();
+    while(it != urls.end())
+    {
+        QUrl url = *it;
+        loadFile(url.toLocalFile());
+        ++it;
     }
 }
 
@@ -364,6 +426,21 @@ void repo::gui::RepoGUI::closeEvent(QCloseEvent *event)
 {
     storeSettings();
     QMainWindow::closeEvent(event);
+}
+
+void repo::gui::RepoGUI::dragEnterEvent(QDragEnterEvent *event)
+{
+    // accept only drag events that provide urls (paths) to files/resources
+   if (event->mimeData()->hasUrls())
+        event->acceptProposedAction();
+}
+
+void repo::gui::RepoGUI::dropEvent(QDropEvent *event)
+{
+    // a list of full paths to files dragged onto the window
+    loadFiles(event->mimeData()->urls());
+    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    event->acceptProposedAction();
 }
 
 void repo::gui::RepoGUI::keyPressEvent(QKeyEvent *event)
@@ -387,6 +464,7 @@ void repo::gui::RepoGUI::storeSettings()
     QSettings settings;
     settings.setValue(REPO_SETTINGS_GUI_GEOMETRY, saveGeometry());
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
+    settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
 }
 
 void repo::gui::RepoGUI::restoreSettings()
@@ -394,4 +472,5 @@ void repo::gui::RepoGUI::restoreSettings()
     QSettings settings;
     restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
     restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
+    ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, false).toBool());
 }
