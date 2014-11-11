@@ -376,7 +376,7 @@ void repo::gui::RepoGUI::saveAs()
         std::cout << "Exporting to " << path.toStdString() << std::endl;
 
         string embeddedTextureExtension = ".jpg";
-        aiScene scene = new aiScene();
+        aiScene * scene = new aiScene();
         scene->mFlags = 0; //getPostProcessingFlags(); // TODO FIX ME!
         repoScene.toAssimp(scene);
         core::AssimpWrapper exporter;
