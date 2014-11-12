@@ -21,7 +21,7 @@
 #include "graph/repo_graph_history.h"
 //------------------------------------------------------------------------------
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
-	const repo::core::MongoClientWrapper& mongo,
+    const repo::core::MongoClientWrapper &mongo,
 	const QString& database,
 	const QUuid& id,
 	bool headRevision)

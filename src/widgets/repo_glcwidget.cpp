@@ -533,7 +533,7 @@ void repo::gui::RepoGLCWidget::setGLCMeshColors(
         GLC_Mesh *glcMesh = it.value();
 		// Always [r,g,b,a] hence times 4
 		QVector<GLfloat> vector(glcMesh->VertexCount() * 4); 
-		for (unsigned int i = 0; i < vector.size(); i += 4)
+        for (size_t i = 0; i < vector.size(); i += 4)
 		{
 			vector[i + 0] = r;
 			vector[i + 1] = g;

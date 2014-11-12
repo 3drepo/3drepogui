@@ -30,6 +30,7 @@ TEMPLATE = app
 HEADERS  += src/repogui.h \
             src/primitives/repo_fontawesome.h \
             src/dialogs/repo_dialogconnect.h \
+            src/dialogs/repo_dialogcommit.h \
             src/widgets/repo_widgetrepository.h \
             src/widgets/repo_lineedit.h \
             src/widgets/repo_mdiarea.h \
@@ -39,6 +40,7 @@ HEADERS  += src/repogui.h \
             src/workers/repo_worker_abstract.h \
             src/workers/repo_workercollection.h \
             src/workers/repo_worker_assimp.h \
+            src/workers/repo_workercommit.h \
             src/workers/repo_workerfetchrevision.h \
             src/primitives/repo_sortfilterproxymodel.h \
             src/primitives/repo_glccamera.h \
@@ -48,6 +50,7 @@ SOURCES += src/main.cpp\
            src/repogui.cpp \
            src/primitives/repo_fontawesome.cpp \
            src/dialogs/repo_dialogconnect.cpp \
+           src/dialogs/repo_dialogcommit.cpp \
            src/widgets/repo_widgetrepository.cpp \
            src/widgets/repo_lineedit.cpp \
            src/widgets/repo_mdiarea.cpp \
@@ -55,6 +58,7 @@ SOURCES += src/main.cpp\
            src/widgets/repo_glcwidget.cpp \
            src/workers/repo_workerdatabases.cpp \
            src/workers/repo_worker_abstract.cpp \
+           src/workers/repo_workercommit.cpp \
            src/workers/repo_workercollection.cpp \
            src/workers/repo_worker_assimp.cpp \
            src/workers/repo_workerfetchrevision.cpp \
@@ -64,6 +68,7 @@ SOURCES += src/main.cpp\
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
+            forms/repo_dialogcommit.ui \
             forms/repo_widgetrepository.ui \
 
 # http://qt-project.org/doc/qt-5/resources.html

@@ -20,7 +20,7 @@
 #define REPO_WORKER_COLLECTION_H
 //------------------------------------------------------------------------------
 // Repo Core
-#include <RepoMongoClient>
+#include <RepoWrapperMongo>
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "repo_worker_abstract.h"

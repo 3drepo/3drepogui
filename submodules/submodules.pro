@@ -18,7 +18,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += 3drepocore \
-           GLC_lib/glc_lib.pro
+           GLC_lib/src/src.pro
 
 
 

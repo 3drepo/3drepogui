@@ -247,6 +247,11 @@ QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	return subWindowList;
 }
 
+repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindow() const
+{
+    return dynamic_cast<RepoMdiSubWindow*>(QMdiArea::activeSubWindow());
+}
+
 void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 {
 	//this->maximizeSubWindows();

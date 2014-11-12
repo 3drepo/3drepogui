@@ -22,11 +22,12 @@
 #include <QGLFormat>
 //------------------------------------------------------------------------------
 // Core
-#include "mongoclientwrapper.h"
+#include <RepoWrapperMongo>
+#include <RepoGraphScene>
 //------------------------------------------------------------------------------
 // GUI
-#include "primitives/repo_fontawesome.h"
-#include "dialogs/repo_dialogconnect.h"
+
+#include "widgets/repo_glcwidget.h"
 //------------------------------------------------------------------------------
 
 
@@ -54,6 +55,9 @@ public:
 
 public slots:
 
+    //! Shows a commit dialog based on currently active 3D window.
+    void commit();
+
     //! Shows connection dialog and connects to the specified database
     void connect();
 
@@ -62,6 +66,12 @@ public slots:
 
     //! Fetches head revision from selected DB and branch
     void fetchHead();
+
+    //! Returns active 3D window, returns null if none and writes to cout.
+    const RepoGLCWidget *getActiveWidget();
+
+    //! Returns the scene graph of the active 3D window if any.
+    const core::RepoGraphScene *getActiveScene();
 
     //! Loads a single 3D file asynchronously given a full file path.
     void loadFile(const QString &filePath);

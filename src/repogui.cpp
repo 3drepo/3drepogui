@@ -15,14 +15,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Qt
 #include <QMessageBox>
+
 //------------------------------------------------------------------------------
-// Repo
+// Core
+#include <RepoGraphHistory>
+
+//------------------------------------------------------------------------------
+// GUI
 #include "repogui.h"
 #include "ui_repogui.h"
 #include "widgets/repo_widgetrepository.h"
+#include "workers/repo_workercommit.h"
+#include "dialogs/repo_dialogcommit.h"
+#include "primitives/repo_fontawesome.h"
+#include "dialogs/repo_dialogconnect.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
@@ -97,6 +106,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionHead->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_download));
+
+    // Commit
+    QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
+    ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
     //--------------------------------------------------------------------------
     // Drop
@@ -187,6 +200,66 @@ repo::gui::RepoGUI::~RepoGUI()
 //
 //------------------------------------------------------------------------------
 
+void repo::gui::RepoGUI::commit()
+{
+    RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+    const RepoGLCWidget *widget = getActiveWidget();
+
+    if (activeWindow && widget)
+    {
+        const core::RepoGraphScene *repoScene = widget->getRepoScene();
+        // TODO: fix !!!
+        std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
+
+        // MongoDB cannot have dots in database names, hence replace with underscores
+        // (and remove file extension if any)
+        // http://docs.mongodb.org/manual/reference/limits/#naming-restrictions
+        QFileInfo path(activeWindow->windowTitle());
+        QString dbName = path.completeBaseName();
+        //dbName = dbName.mid(0, dbName.indexOf("_"));
+        dbName.replace(".", "_");
+        repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
+
+        core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+        std::string username = mongo.getUsername(dbName.toStdString());
+
+        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username.empty() ? "anonymous" : username);
+        revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
+        history->setCommitRevision(revision);
+
+        repo::gui::RepoDialogCommit commitDialog(
+            QString::fromStdString(mongo.getUsernameAtHostAndPort()) + "/" + dbName,
+            repoScene,
+            revision,
+            this,
+            Qt::Window);
+        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + dbName);
+
+        if(!commitDialog.exec())
+            std::cout << "Commit dialog cancelled by user" << std::endl;
+        else // Clicked "OK"
+        {
+            // TODO: move this to the commit dialog.
+            std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
+            //------------------------------------------------------------------
+            // Establish and connect the new worker.
+            RepoWorkerCommit *worker = new RepoWorkerCommit(
+                        mongo,
+                        dbName,
+                        history,
+                        widget->getRepoScene());
+
+            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+            QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+            //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+
+            //-------------------------------------------------------------------------
+            // Fire up the asynchronous calculation.
+            QThreadPool::globalInstance()->start(worker);
+        }
+    }
+}
+
 void repo::gui::RepoGUI::connect()
 {
     RepoDialogConnect connectionDialog(this);
@@ -234,13 +307,9 @@ void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
     if (dbName.isNull() || dbName.isEmpty())
-    {
         std::cout << "A database must be selected." << std::endl;
-    }
     else if (dbName == "local" || dbName == "admin")
-    {
         std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
-    }
     else
     {
         switch (QMessageBox::warning(this,
@@ -277,6 +346,22 @@ void repo::gui::RepoGUI::fetchHead()
 
     // make sure to hook controls if chain is on
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+}
+
+const repo::gui::RepoGLCWidget * repo::gui::RepoGUI::getActiveWidget()
+{
+    RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
+    if (!widget)
+        std::cout << "A 3D window has to be open." << std::endl;
+    return widget;
+}
+
+const repo::core::RepoGraphScene *repo::gui::RepoGUI::getActiveScene()
+{
+    const repo::core::RepoGraphScene *scene = 0;
+    if (const RepoGLCWidget *widget = getActiveWidget())
+        scene = widget->getRepoScene();
+    return scene;
 }
 
 void repo::gui::RepoGUI::loadFile(const QString &filePath)
@@ -357,12 +442,9 @@ void repo::gui::RepoGUI::reportIssue() const
 
 void repo::gui::RepoGUI::saveAs()
 {
-    RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
-
-    if (!widget)
-        std::cout << "A 3D window has to be open." << std::endl;
-    else
+    if (const RepoGLCWidget *widget = getActiveWidget())
     {
+        // TODO: create export worker
         QString path = QFileDialog::getSaveFileName(
             this,
             tr("Select a file to save"),

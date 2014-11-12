@@ -29,7 +29,7 @@
 
 
 namespace Ui {
-class RepoDialogConnect;
+    class RepoDialogConnect;
 }
 
 namespace repo {
@@ -39,7 +39,7 @@ namespace gui {
  * Connection dialog that saves host, port, username and password as user
  * settings.
  */
-class RepoDialogConnect : public QDialog //, public Ui::RepoDialogConnect
+class RepoDialogConnect : public QDialog
 {
 	Q_OBJECT
  
