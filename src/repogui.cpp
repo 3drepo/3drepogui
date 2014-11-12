@@ -371,14 +371,14 @@ void repo::gui::RepoGUI::saveAs()
         QFileInfo fileInfo(path);
         QDir directory = fileInfo.absoluteDir();
         QString fileExtension = fileInfo.completeSuffix();
-        const core::RepoGraphScene& repoScene = widget->getRepoScene();
+        const core::RepoGraphScene *repoScene = widget->getRepoScene();
 
         std::cout << "Exporting to " << path.toStdString() << std::endl;
 
         string embeddedTextureExtension = ".jpg";
-        aiScene * scene = new aiScene();
+        aiScene *scene = new aiScene();
         scene->mFlags = 0; //getPostProcessingFlags(); // TODO FIX ME!
-        repoScene.toAssimp(scene);
+        repoScene->toAssimp(scene);
         core::AssimpWrapper exporter;
 
         bool successful = exporter.exportModel(scene,
@@ -390,7 +390,7 @@ void repo::gui::RepoGUI::saveAs()
            std::cerr << "Export unsuccessful." << std::endl;
         else
         {
-           std::vector<core::RepoNodeTexture *> textures = repoScene.getTextures();
+           std::vector<core::RepoNodeTexture *> textures = repoScene->getTextures();
            for (size_t i = 0; i < textures.size(); ++i)
            {
                core::RepoNodeTexture *repoTex = textures[i];

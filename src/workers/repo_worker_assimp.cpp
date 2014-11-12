@@ -183,25 +183,21 @@ void repo::gui::RepoWorkerAssimp::run()
 		fileName, 
 		fullPath.toStdString(), 
 		pFlags);
-	const aiScene * assimpScene = assimpWrapper.getScene();
+    const aiScene *assimpScene = assimpWrapper.getScene();
 	emit progress(1, jobsCount);
 	
 	repo::core::RepoGraphScene * repoGraphScene = 0;
 	GLC_World glcWorld;
 
 	if (!assimpScene)
-    {
         std::cerr << std::string(aiGetErrorString()) << std::endl;
-    }
 	else
 	{
 		//-------------------------------------------------------------------------
 		// Polygon count
 		qlonglong polyCount = 0;
 		for (unsigned int i = 0; i < assimpScene->mNumMeshes; ++i) 
-		{
 			polyCount += assimpScene->mMeshes[i]->mNumFaces;
-		}
 
         std::cout << "Loaded ";
         std::cout << fileName << " with " << polyCount << " polygons in ";
@@ -228,8 +224,6 @@ void repo::gui::RepoWorkerAssimp::run()
 		//-------------------------------------------------------------------------
 		// GLC World conversion
 		glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
-
-		// TODO: make sure the Assimp Importer destructor is called to clean up memory
 	}
 	emit progress(jobsCount, jobsCount);
 

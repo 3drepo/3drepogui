@@ -180,14 +180,10 @@ public :
 	//
     //--------------------------------------------------------------------------
 
-	/*!
-	 * Sets the 3D Repo scene for this widget. 
-	 */
-	void setRepoScene(core::RepoGraphScene&);
+    //! Sets the 3D Repo scene for this widget.
+    void setRepoScene(core::RepoGraphScene *repoScene);
 	
-	/*!
-	 * Sets the GLC World for this widget which is used for rendering purposes.
-	 */ 
+    //! Sets the GLC World for this widget which is used for rendering purposes.
 	void setGLCWorld(GLC_World);
 
 	//! Sets the globally applied shader from the shaders list.
@@ -223,7 +219,7 @@ public :
     //--------------------------------------------------------------------------
 
 	//! Returns the 3D Repo scene of this widget.
-	const core::RepoGraphScene& getRepoScene() const;
+    const core::RepoGraphScene *getRepoScene() const { return repoScene; }
 
 	//! Returns the GLC World of this widget.
 	const GLC_World& getGLCWorld() const;
@@ -281,7 +277,7 @@ protected :
     //--------------------------------------------------------------------------
 
 	//! 3D scene, the scene graph representation to store in the DB.
-	core::RepoGraphScene repoScene;
+    core::RepoGraphScene *repoScene;
 
 	//! 3D world, the main scene to render.
 	GLC_World glcWorld;

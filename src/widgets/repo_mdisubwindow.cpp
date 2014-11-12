@@ -121,14 +121,14 @@ QWidget * repo::gui::RepoMdiSubWindow::widget() const
 }
 
 void repo::gui::RepoMdiSubWindow::finishedLoading(
-	repo::core::RepoGraphScene* repoScene, 
+    repo::core::RepoGraphScene *repoScene,
 	GLC_World& glcWorld)
 {	
-	RepoGLCWidget* widget = dynamic_cast<RepoGLCWidget*>(this->widget());
+    RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());
 	if (widget)
 	{
 		if (repoScene)
-			widget->setRepoScene(*repoScene);
+            widget->setRepoScene(repoScene);
 		widget->setGLCWorld(glcWorld);
 	}
 }

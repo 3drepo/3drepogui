@@ -125,14 +125,13 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 
 	qlonglong polyCount = 0;
 	qlonglong meshesCount = 0;
-
-    QList<RepoMdiSubWindow *>::iterator it;
-
-    for (it = openWindows.begin(); it != openWindows.end(); ++it)
+    for (QList<RepoMdiSubWindow *>::iterator it = openWindows.begin();
+         it != openWindows.end();
+         ++it)
 	{
         RepoMdiSubWindow *subWindow = *it;
         RepoGLCWidget *widget = subWindow->widget<RepoGLCWidget*>();
-        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene().getMeshes();
+        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshes();
         for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
              i < meshes.size(); ++i)
         {

@@ -63,6 +63,7 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	, renderingFlag(glc::ShadingFlag)
 	, fpsCounter(0)
 	, fps(0)
+    , repoScene(0)
 {
     //--------------------------------------------------------------------------
 	// Default settings
@@ -115,6 +116,9 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
 	for (int i = 0; i < shaders.size(); ++i)
 		delete shaders[i];
 	shaders.clear();
+
+    if (repoScene)
+        delete repoScene;
 }
 
 //------------------------------------------------------------------------------
@@ -644,8 +648,11 @@ void repo::gui::RepoGLCWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene& repoScene)
+void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
 {
+    if (this->repoScene)
+        delete this->repoScene;
+
 	this->repoScene = repoScene;
 }
 
@@ -662,11 +669,6 @@ void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 // Getters
 //
 //------------------------------------------------------------------------------
-
-const repo::core::RepoGraphScene& repo::gui::RepoGLCWidget::getRepoScene() const
-{
-	return repoScene;
-}
 
 const GLC_World& repo::gui::RepoGLCWidget::getGLCWorld() const
 {
