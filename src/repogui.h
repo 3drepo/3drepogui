@@ -58,13 +58,13 @@ public slots:
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
-    //! Shows connection dialog and connects to the specified database
+    //! Shows a connection dialog and connects to the specified database.
     void connect();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
 
-    //! Fetches head revision from selected DB and branch
+    //! Fetches head revision from selected DB and branch.
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
@@ -72,6 +72,9 @@ public slots:
 
     //! Returns the scene graph of the active 3D window if any.
     const core::RepoGraphScene *getActiveScene();
+
+    //! Shows a history dialog for selected repository.
+    void history();
 
     //! Loads a single 3D file asynchronously given a full file path.
     void loadFile(const QString &filePath);
@@ -88,7 +91,7 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
-    //! Refreshes currently connected database
+    //! Refreshes currently connected database.
     void refresh();
 
     //! Opens a GitHub issues webpage in the default web browser.
@@ -97,13 +100,13 @@ public slots:
     //! Saves open 3D window as a file.
     void saveAs();
 
-    //! Displays the popup context menu on the repositories widget collection view
+    //! Displays the popup context menu on the repositories widget collection view.
     void showCollectionContextMenuSlot(const QPoint &pos);
 
-    //! Displays the popup context menu on the repositories widget databases view
+    //! Displays the popup context menu on the repositories widget databases view.
     void showDatabaseContextMenu(const QPoint &pos);
 
-    //! Runs startup procedures. E.g. showing connect window if set via settings
+    //! Runs startup procedures. E.g. showing connect window if set via settings.
     void startup();
 
     /*!
@@ -135,7 +138,7 @@ protected :
 
 private:
 
-    //! UI var
+    //! UI var.
     Ui::RepoGUI *ui;
 
     //! Settings geometry label.

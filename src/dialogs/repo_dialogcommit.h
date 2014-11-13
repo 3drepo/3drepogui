@@ -99,14 +99,16 @@ public slots:
 	 */
 	virtual int exec();
 
+private :
+
+    //! Extracts modified objects from the revision and scene to list in change table.
+    void setModifiedObjects();
+
 private:
 
-    //! Ui var
+    //! Ui var.
     Ui::RepoDialogCommit *ui;
 		   
-	//! Extracts modified objects from the revision and scene to list in change table.
-	void setModifiedObjects();
-
 	//! Revision object on which user preferences (message, nodes to commit) are set.	
 	repo::core::RepoNodeRevision *revision;
 

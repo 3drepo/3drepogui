@@ -32,6 +32,7 @@
 #include "dialogs/repo_dialogcommit.h"
 #include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
+#include "dialogs/repo_dialoghistory.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
@@ -106,6 +107,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionHead->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_download));
+
+    // History
+    QObject::connect(ui->actionHistory, SIGNAL(triggered()), this, SLOT(history()));
+    ui->actionHistory->setIcon(RepoDialogHistory::getIcon());
+
 
     // Commit
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
@@ -366,6 +372,28 @@ const repo::core::RepoGraphScene *repo::gui::RepoGUI::getActiveScene()
     if (const RepoGLCWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
+}
+
+void repo::gui::RepoGUI::history()
+{
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    core::MongoClientWrapper mongo =
+            ui->widgetRepository->getSelectedConnection();
+    RepoDialogHistory historyDialog(mongo, database, this);
+
+    if(!historyDialog.exec()) // if not OK
+        std::cout << "Revision History dialog cancelled by user." << std::endl;
+    else
+    {
+        QList<QUuid> revisions = historyDialog.getSelectedRevisions();
+        for (QList<QUuid>::iterator uid = revisions.begin();
+             uid != revisions.end();
+             ++uid)
+            ui->mdiArea->addSubWindow(mongo, database, *uid, false);
+        //---------------------------------------------------------------------
+        // make sure to hook controls if chain is on
+        ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+    }
 }
 
 void repo::gui::RepoGUI::loadFile(const QString &filePath)
