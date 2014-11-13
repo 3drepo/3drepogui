@@ -368,7 +368,7 @@ const repo::gui::RepoGLCWidget * repo::gui::RepoGUI::getActiveWidget()
 
 const repo::core::RepoGraphScene *repo::gui::RepoGUI::getActiveScene()
 {
-    const repo::core::RepoGraphScene *scene = 0;
+    const core::RepoGraphScene *scene = 0;
     if (const RepoGLCWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;

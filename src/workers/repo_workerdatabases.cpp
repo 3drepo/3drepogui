@@ -17,6 +17,13 @@
 
 
 #include "repo_workerdatabases.h"
+#include <list>
+#include <string>
+#include <cctype>
+
+#if defined(_WIN32) || defined(_WIN64)
+  #define strcasecmp _stricmp
+#endif
 
 repo::gui::RepoWorkerDatabases::RepoWorkerDatabases(const repo::core::MongoClientWrapper& mongo)
 	: RepoWorkerAbstract()
@@ -31,7 +38,7 @@ repo::gui::RepoWorkerDatabases::~RepoWorkerDatabases() {}
 
 void repo::gui::RepoWorkerDatabases::run()
 {	
-	int jobsCount = 0;
+    int jobsCount = 0;
 	// undetermined (moving) progress bar
 	emit progressRangeChanged(0, 0);
 	emit progressValueChanged(0);
@@ -48,12 +55,11 @@ void repo::gui::RepoWorkerDatabases::run()
 		std::list<std::string> databases = mongo.getDbs();
 
         //----------------------------------------------------------------------
-		// TODO: write custom sorter which is case insensitive
-		databases.sort();
+        databases.sort(&repo::gui::RepoWorkerDatabases::caseInsensitiveStringCompare);
 
         //----------------------------------------------------------------------
-		jobsCount = databases.size();
-		emit progressRangeChanged(0, jobsCount);
+        jobsCount = (int) databases.size();
+        emit progressRangeChanged(0, jobsCount);
 
 		int counter = 0;
         //----------------------------------------------------------------------
@@ -83,6 +89,13 @@ void repo::gui::RepoWorkerDatabases::run()
 		}
 	}
     //--------------------------------------------------------------------------
-	emit progressValueChanged(jobsCount);
+    emit progressValueChanged(jobsCount);
 	emit RepoWorkerAbstract::finished();
+}
+
+bool repo::gui::RepoWorkerDatabases::caseInsensitiveStringCompare(
+        const std::string& s1,
+        const std::string& s2)
+{
+    return strcasecmp(s1.c_str(), s2.c_str()) <= 0;
 }

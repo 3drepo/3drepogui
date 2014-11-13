@@ -61,6 +61,10 @@ public slots :
 	 */
 	void run();
 
+public :
+
+    static bool caseInsensitiveStringCompare(const std::string& s1, const std::string& s2);
+
 private :
 
 	//! Database connector.
