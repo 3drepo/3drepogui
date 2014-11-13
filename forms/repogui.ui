@@ -122,6 +122,8 @@
    <addaction name="separator"/>
    <addaction name="actionHead"/>
    <addaction name="actionHistory"/>
+   <addaction name="separator"/>
+   <addaction name="actionCommit"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetRepositories">
    <property name="windowTitle">

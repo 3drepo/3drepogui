@@ -705,18 +705,18 @@ public:
 
         switch (mode)
         {
-        case QIcon::Normal :
-            color = colorActive;
-            break;
-        case QIcon::Disabled :
-            color = QWidget().palette().dark().color(); //QColor(70,70,70,60);
-            break;
-        case QIcon::Active :
-            color = colorActive;
-            break;
-        case QIcon::Selected :
-            color = QWidget().palette().shadow().color(); //QColor(10,10,10);
-            break;
+            case QIcon::Normal :
+                color = colorActive;
+                break;
+            case QIcon::Disabled :
+                color = QWidget().palette().dark().color(); //QColor(70,70,70,60);
+                break;
+            case QIcon::Active :
+                color = colorActive;
+                break;
+            case QIcon::Selected :
+                color = QWidget().palette().shadow().color(); //QColor(10,10,10);
+                break;
         }
 
         painter->setFont(awesome->getFont(qRound(rect.height() * 0.9f)));

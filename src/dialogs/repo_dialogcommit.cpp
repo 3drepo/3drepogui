@@ -26,7 +26,9 @@
 
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogCommit::RepoDialogCommit(
-    const QString &destination,
+    const QString &server,
+    const QString &repository,
+    const QString &branch,
     const core::RepoGraphAbstract *scene,
     core::RepoNodeRevision *revision,
     QWidget *parent,
@@ -62,9 +64,21 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
         ui->filterLineEdit, &QLineEdit::textChanged,
 		proxyModel, &QSortFilterProxyModel::setFilterFixedString);	
 
-    ui->commitToLabel->setText(
-        ui->commitToLabel->text() + " <b>mongodb://" + destination + "</b>");
+    ui->serverLabel->setText(" <b>mongodb://" + server + "/</b>");
+    ui->repositoryLineEdit->setText(repository);
+    ui->branchLineEdit->setText(branch);
     this->setWindowIcon(getIcon());
+
+    ui->repositoryPushButton->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_unlock_alt,
+                    RepoFontAwesome::fa_lock));
+
+    ui->branchPushButton->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_unlock_alt,
+                    RepoFontAwesome::fa_lock));
+
 }
 
 //------------------------------------------------------------------------------

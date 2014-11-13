@@ -222,13 +222,17 @@ void repo::gui::RepoGUI::commit()
 
         core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
         std::string username = mongo.getUsername(dbName.toStdString());
+        username = username.empty() ? "anonymous" : username;
 
-        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username.empty() ? "anonymous" : username);
+        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
 
+        // http://docs.mongodb.org/manual/reference/connection-string/
         repo::gui::RepoDialogCommit commitDialog(
-            QString::fromStdString(mongo.getUsernameAtHostAndPort()) + "/" + dbName,
+            QString::fromStdString(username + "@" + mongo.getHostAndPort()),
+            dbName,
+            "master {00000000-0000-0000-0000-000000000000}", // TODO: get currently active branch from QSettings
             repoScene,
             revision,
             this,
@@ -253,7 +257,7 @@ void repo::gui::RepoGUI::commit()
             QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
             //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
-            //-------------------------------------------------------------------------
+            //------------------------------------------------------------------
             // Fire up the asynchronous calculation.
             QThreadPool::globalInstance()->start(worker);
         }
@@ -352,7 +356,7 @@ const repo::gui::RepoGLCWidget * repo::gui::RepoGUI::getActiveWidget()
 {
     RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
     if (!widget)
-        std::cout << "A 3D window has to be open." << std::endl;
+        std::cerr << "A 3D window has to be open." << std::endl;
     return widget;
 }
 

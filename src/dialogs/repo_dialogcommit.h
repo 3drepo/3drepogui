@@ -34,6 +34,7 @@
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
+#include "../widgets/repo_lineedit.h"
 //------------------------------------------------------------------------------
 
 namespace Ui {
@@ -66,7 +67,9 @@ public:
 	 * dialog to have minimize/maximize buttons.
 	 */
 	RepoDialogCommit(
-		const QString& destination, 
+        const QString &server,
+        const QString &repository,
+        const QString &branch,
         const core::RepoGraphAbstract *scene,
         core::RepoNodeRevision *revision,
 		QWidget* parent = 0, 
