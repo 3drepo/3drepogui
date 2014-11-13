@@ -193,9 +193,10 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>widgets/repo_lineedit.h</header>
+   <header>../widgets/repo_lineedit.h</header>
   </customwidget>
  </customwidgets>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

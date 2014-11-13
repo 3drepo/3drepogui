@@ -46,6 +46,9 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->setupUi(this);
     restoreSettings();
 
+
+    core::RepoCore *c = new core::RepoCore();
+
     this->setWindowIcon(
                 RepoFontAwesome::getInstance().getIcon(
                             RepoFontAwesome::fa_database,
