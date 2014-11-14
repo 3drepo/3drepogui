@@ -22,6 +22,7 @@
 //------------------------------------------------------------------------------
 // Core
 #include <RepoGraphHistory>
+#include <RepoLogger>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -33,6 +34,10 @@
 #include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
+
+#include "widgets/repo_textbrowser.h"
+
+
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
@@ -47,7 +52,19 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     restoreSettings();
 
 
-    core::RepoCore *c = new core::RepoCore();
+
+
+    core::RepoLogger *l = new core::RepoLogger();
+
+    l->addListener(ui->logTextBrowser);
+
+
+//    ui->logTextBrowser->setSource(
+//                QUrl(
+//                    QString::fromStdString(core::RepoLogger::getFilename())));
+
+
+   // ui->logTextBrowser->append(QString::fromStdString(core::RepoLogger::getWorkingDirectory()));
 
     this->setWindowIcon(
                 RepoFontAwesome::getInstance().getIcon(

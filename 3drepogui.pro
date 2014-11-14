@@ -34,6 +34,7 @@ HEADERS  += src/repogui.h \
             src/dialogs/repo_dialoghistory.h \
             src/widgets/repo_widgetrepository.h \
             src/widgets/repo_lineedit.h \
+            src/widgets/repo_textbrowser.h \
             src/widgets/repo_mdiarea.h \
             src/widgets/repo_mdisubwindow.h \
             src/widgets/repo_glcwidget.h \
@@ -56,6 +57,7 @@ SOURCES += src/main.cpp\
            src/dialogs/repo_dialoghistory.cpp \
            src/widgets/repo_widgetrepository.cpp \
            src/widgets/repo_lineedit.cpp \
+           src/widgets/repo_textbrowser.cpp \
            src/widgets/repo_mdiarea.cpp \
            src/widgets/repo_mdisubwindow.cpp \
            src/widgets/repo_glcwidget.cpp \

@@ -210,7 +210,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QTextBrowser" name="textBrowser"/>
+      <widget class="repo::gui::RepoTextBrowser" name="logTextBrowser"/>
      </item>
     </layout>
    </widget>
@@ -423,6 +423,11 @@
    <extends>QWidget</extends>
    <header>widgets/repo_mdiarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoTextBrowser</class>
+   <extends>QTextBrowser</extends>
+   <header>widgets/repo_textbrowser.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
