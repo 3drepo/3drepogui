@@ -51,11 +51,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->setupUi(this);
     restoreSettings();
 
-    core::RepoLogger::instance().addListener(ui->textBrowser);
-
-    ui->logTextBrowser->addFilePath(
-                QString::fromStdString(core::RepoLogger::instance().getFullFilePath()));
-
+    core::RepoLogger::instance().addListener(ui->logTextBrowser);
 
     this->setWindowIcon(
                 RepoFontAwesome::getInstance().getIcon(
