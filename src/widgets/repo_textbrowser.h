@@ -20,7 +20,11 @@
 
 //------------------------------------------------------------------------------
 // Qt
+#include <QFile>
+#include <QPair>
 #include <QTextBrowser>
+#include <QTextStream>
+#include <QFileSystemWatcher>
 
 //------------------------------------------------------------------------------
 // Core
@@ -30,17 +34,38 @@ namespace repo {
 namespace gui {
 
 
-class RepoTextBrowser : public QTextBrowser, public core::RepoAbstractListener
+class RepoTextBrowser
+        : public QTextBrowser
+        , public core::RepoAbstractListener
 {
 	Q_OBJECT
 		
 public :
 
+    //! Default constructor that allocates a file system watcher.
     RepoTextBrowser(QWidget * parent = 0);
 
+    //! Deallocates file system watcher and associated text streams if any.
     ~RepoTextBrowser();
 
+    //! Reimplemented from abstract listener.
     void messageGenerated(const std::string &msg);
+
+public slots :
+
+    //! Adds full file path to a log file that is to be monitored.
+    void addFilePath(const QString &filePath);
+
+    //! Appends the last line from the given file to the text browser.
+    void watchedFileChanged(const QString &filePath);
+
+private :
+
+    //! On old macs there can be only 256 file watchers on the OS.
+    QFileSystemWatcher *fileWatcher;
+
+    //! Hash map of full file paths and the associated streams.
+    QHash<QString, QPair<QFile*, QTextStream*>> watchedFiles;
 
 };
 

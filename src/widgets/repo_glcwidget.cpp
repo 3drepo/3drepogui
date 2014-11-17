@@ -1093,8 +1093,6 @@ void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
 		QString occurrenceName = occurrence->name();
 		glcOccurrences.insert(occurrenceName, occurrence);
 
-		std::cout  << "GLCWidget: "  << occurrenceName.toStdString() << endl;
-
 		if (occurrence->structInstance() && 
 			occurrence->structInstance()->structReference())
 		{

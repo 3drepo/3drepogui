@@ -40,9 +40,9 @@
 
 //------------------------------------------------------------------------------
 
-const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY = "RepoGUI/geometry";
-const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE = "RepoGUI/state";
-const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS = "RepoGUI/link";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 
 repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QMainWindow(parent),
@@ -51,20 +51,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->setupUi(this);
     restoreSettings();
 
+    core::RepoLogger::instance().addListener(ui->textBrowser);
 
+    ui->logTextBrowser->addFilePath(
+                QString::fromStdString(core::RepoLogger::instance().getFullFilePath()));
 
-
-    core::RepoLogger *l = new core::RepoLogger();
-
-    l->addListener(ui->logTextBrowser);
-
-
-//    ui->logTextBrowser->setSource(
-//                QUrl(
-//                    QString::fromStdString(core::RepoLogger::getFilename())));
-
-
-   // ui->logTextBrowser->append(QString::fromStdString(core::RepoLogger::getWorkingDirectory()));
 
     this->setWindowIcon(
                 RepoFontAwesome::getInstance().getIcon(

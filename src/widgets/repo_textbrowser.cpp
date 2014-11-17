@@ -17,24 +17,75 @@
 
 #include "repo_textbrowser.h"
 
+//------------------------------------------------------------------------------
 #include <QTextBlock>
 #include <QTextCursor>
+#include <QTextStream>
+//------------------------------------------------------------------------------
 
 repo::gui::RepoTextBrowser::RepoTextBrowser(QWidget * parent)
         : QTextBrowser(parent)
+        , RepoAbstractListener()
 {
+    fileWatcher = new QFileSystemWatcher(this);
+
     qRegisterMetaType<QTextBlock>("QTextBlock");
     qRegisterMetaType<QTextCursor>("QTextCursor");
+
+    QObject::connect(
+                fileWatcher, SIGNAL(fileChanged(const QString &)),
+                this, SLOT(watchedFileChanged(const QString &)));
+
 }
 
 repo::gui::RepoTextBrowser::~RepoTextBrowser()
 {
+    delete fileWatcher;
 
+    //--------------------------------------------------------------------------
+    for (QHash<QString, QPair<QFile*,QTextStream*>>::iterator it =
+         watchedFiles.begin();
+         it != watchedFiles.end(); ++it)
+    {
+        delete it.value().second; // QTextStream
+        delete it.value().first; // QFile
+    }
+    watchedFiles.clear();
 }
-
 
 void repo::gui::RepoTextBrowser::messageGenerated(const std::string &msg)
 { 
     QMetaObject::invokeMethod(this, "append", Qt::AutoConnection,
         Q_ARG(QString, QString::fromStdString(msg)));
+}
+
+void repo::gui::RepoTextBrowser::addFilePath(const QString &filePath)
+{
+    if(fileWatcher->addPath(filePath))
+    {
+        QFile *file = new QFile(filePath);
+        if (!file->open(QIODevice::ReadOnly | QIODevice::Text))
+            delete file;
+        else
+        {
+            QTextStream *textStream = new QTextStream(file);
+            textStream->seek(file->size());
+            watchedFiles.insert(filePath, QPair<QFile*, QTextStream*>(file, textStream));
+
+            watchedFileChanged(filePath);
+            watchedFileChanged(filePath);
+        }
+    }
+}
+
+void repo::gui::RepoTextBrowser::watchedFileChanged(const QString &filePath)
+{
+    QHash<QString, QPair<QFile*,QTextStream*>>::iterator it =
+            watchedFiles.find(filePath);
+
+    if (it != watchedFiles.end())
+    {
+        QMetaObject::invokeMethod(this, "append", Qt::AutoConnection,
+            Q_ARG(QString, it.value().second->readLine()));
+    }
 }
