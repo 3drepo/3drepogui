@@ -79,6 +79,7 @@
      <string>OpenGL</string>
     </property>
     <addaction name="actionLink"/>
+    <addaction name="actionOculus"/>
     <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
     <addaction name="actionHighlights"/>
@@ -407,6 +408,11 @@
    </property>
    <property name="text">
     <string>Link</string>
+   </property>
+  </action>
+  <action name="actionOculus">
+   <property name="text">
+    <string>Oculus</string>
    </property>
   </action>
  </widget>

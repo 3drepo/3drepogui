@@ -85,6 +85,9 @@ public slots:
     //! Loads files from a list of full file paths.
     void loadFiles(const QStringList &filePaths);
 
+    //! Opens an oculus rift rendering window.
+    void oculus();
+
     //! Opens a file dialog.
     void openFile();
 

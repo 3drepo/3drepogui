@@ -17,6 +17,9 @@
 
 #include "repo_mdiarea.h"
 #include "repo_glcwidget.h"
+
+#include "../oculus/repo_oculus.h"
+
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerfetchrevision.h"
 
@@ -225,6 +228,26 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	this->repaint();
 	return repoSubWindow;
 }
+
+
+
+repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::addOculus()
+{
+
+    RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
+
+    RepoOculus *oculus = new RepoOculus();
+
+    repoSubWindow->setWidget(oculus);
+    QMdiArea::addSubWindow(repoSubWindow);
+    repoSubWindow->show();
+
+    this->update();
+    this->repaint();
+    return repoSubWindow;
+}
+
+
 
 QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	bool onlyVisible,

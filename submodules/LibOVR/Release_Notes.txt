@@ -1,0 +1,130 @@
+﻿Oculus SDK 0.4.3 Release Notes - Runtime Rev 1
+----------------------------------------------
+
+After installing the SDK, update the Oculus DK2 firmware
+to the most recent version, 2.12. The Firmware update dialog can be found under
+"Tools / Advanced / Update Firmware..." menu of the Oculus Configuration
+Utility. If you experience any issues, please refer to the Troubleshooting
+and Known Issues sections below.
+
+
+New SDK Features
+----------------
+
+* Display Driver latency reduction in Direct Mode by 1 frame, resulting in 0ms Post-present.
+
+* Updated display driver to support multi-threaded calls efficiently, this may improve performance in some scenarios.
+
+* New thread-safe function ovrHmd_GetEyePoses() in OVR_CAPI makes it easier for the 
+  application to query the two eye (camera) poses by internalizing the HMD-to-eye-offset 
+  calculations among other benefits. The ovrHmd_GetEyePose() function is being deprecated.
+
+* Added Pixel Luminance Overdrive support to the OVR_CAPI OpenGL rendering back-end to 
+  remove various 2-frame-rise (ghosting) artifacts. This feature is tied to the 
+  ovrDistortionCap_Overdrive flag in OVR_CAPI. This effect can be toggled 
+  OculusWorldDemo’s option menu.
+  
+* Added option to re-center starting head position across all applications.
+  This is tied to a specific device and serial number and will be shared
+  across profiles on the same system.
+  
+* Added option in the Oculus Configuration Utility to Suppress the Health and Safety Warning
+  during active development.  Please see section 7.2 of the Oculus Developer Guide for more 
+  information.
+
+* Added option in the Oculus Configuration Utility to set the OVRServer logging level.
+  
+* Added pop-up error messages when the Rift can't be activated in Direct Display mode.
+
+* Updated the Health and Safety Warning screen to reflect an age restriction of 13. 
+  More information can be found in the Oculus VR Best Practices Guide and in the Oculus VR 
+  Health And Safety Warnings documentation.
+  
+Unity
+* Overhauled C# API. Reduced performance overhead. See the migration guide for more details.
+
+* Improved support for multi-layered rendering. Just instantiate multiple OVRCameraRigs, set Camera.depth and Camera.clearFlags for each eye, and use.
+
+* Added support for Unity Free in Unity 4.5.5 and up.
+
+* Added support for Unity 5 internal beta.
+
+* Improved performance on all platforms.
+
+
+
+Bug Fixes since 0.4.2
+---------------------
+
+*  OculusWorldDemo now showcases MSAA the proper way for both D3D10/11 and OpenGL by resolving the multi-sampled buffer before feeding it into the ovrHmd_EndFrame() function.
+*  Improved OpenGL state management through contexts
+*  Fixes in Vsync direct mode tearing
+*  Fixed a bug in the D3D10/11 rendering path that was causing the overall brightness of the visuals to change on some systems.
+*  Fix LibOVR build on OSX Yosemite
+
+Unity
+*  Fixed a source of jitter in TimeWarp timing that resulted in shaky images.
+*  Removed problematic "out of camera range" message. Will be replaced by an optional camera bounds visualization in a future release.
+*  In the editor, Game view rendering no longer targets the wrong view.
+*  In the editor, Game view rendering no longer breaks when you resize the window or view.
+
+
+Troubleshooting
+---------------
+
+The most likely issues you may experience with DK2 are scene Judder and Vsync tearing.
+Here we describe these issues and provide advice on addressing them.
+
+* Scene Judder - The whole view jitters as you look around, producing a strobing
+  back-and-forth effect. This effect is the result of skipping frames (or Vsync)
+  on a low-persistence display, it will usually be noticeable on DK2 when frame rate
+  falls below 75 FPS. This is often the result of insufficient GPU performance or
+  attempting to render too complex of a scene. Optimizing the engine or scene content
+  should help.
+  
+  We expect the situation to improve in this area as we introduce asynchronous
+  timewarp and other optimizations over the next few months. 
+  If you experience this on DK2 with multiple monitors attached, please try 
+  disabling one monitor to see if the problem goes away.
+
+
+0.4.3 Rev 1 Known Issues - LibOVR and Display Driver
+----------------------------------------------------
+
+* Monitors in multiple display configurations will blink when activating the Rift.
+
+* Current SDK rendering path includes two GPU/CPU sync points to reduce latency. 
+  As may reduce performance due to GPU under-utilization and draw call buffering; 
+  we are looking into addressing this in the future.
+
+* The ovrDistortionCap_sRGB flag affects the rendering 
+  path in slightly different ways for D3D10/11 and OpenGL, but the differences 
+  should not be exposed to the app developer. 
+  We will be looking at unifying this path for better visual fidelity.
+
+* Intel hardware as a single GPU configuration is generally too slow to run
+  VR scenes with DK2. The most obvious effect will be judder.
+
+* Nvidia Optimus GPU configurations are not universally supported.
+  Some Windows 7 and 8 configurations were tested successfully.
+  Windows 8.1 is more likely to have issues.
+
+* On some Radeon graphics cards, multisampling may cause scene judder.
+  The work around is to turn-off multi-sampling for the back buffer.
+  
+* The runtime installer does not support downgrading to previous versions
+  of the installer.  If you need to go back to a previous version, first
+  uninstall the current version and then install the previous one.
+
+
+Known Issues - Unity
+--------------------
+
+* Unity app latency on Mac is higher than in C++ OWD resulting in slightly swimmy display.
+
+* Editor Game view does not yet directly render to the Rift.
+
+* D3D11 in extended mode is unsupported for this release. This configuration will typically appear to judder due to being capped at the 60hz refresh of your primary monitor.
+
+* Forcing Unity to use OpenGL on Windows is unsupported for this release. This configuration is currently unstable and may encounter crashes.
+

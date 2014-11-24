@@ -130,12 +130,33 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
 
-    //--------------------------------------------------------------------------
-    //
-    // View
-    //
-    //--------------------------------------------------------------------------
 
+
+    //--------------------------------------------------------------------------
+    //
+    // OpenGL
+    //
+    //--------------------------------------------------------------------------
+    // Link
+    QObject::connect(ui->actionLink, SIGNAL(triggered(bool)), ui->mdiArea, SLOT(chainSubWindows(bool)));
+    ui->actionLink->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_link,
+                    RepoFontAwesome::fa_chain_broken));
+
+
+    QObject::connect(ui->actionOculus, SIGNAL(triggered()), this, SLOT(oculus()));
+    ui->actionOculus->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_eye));
+
+
+
+
+    //--------------------------------------------------------------------------
+    //
+    // Window
+    //
     //--------------------------------------------------------------------------
     // Full Screen
     QObject::connect(ui->actionFull_Screen,
@@ -144,13 +165,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     ui->actionFull_Screen->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_arrows_alt));
-
-    // Link
-    QObject::connect(ui->actionLink, SIGNAL(triggered(bool)), ui->mdiArea, SLOT(chainSubWindows(bool)));
-    ui->actionLink->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_link,
-                    RepoFontAwesome::fa_chain_broken));
 
     // Panels
     QMenu *menuPanels = QMainWindow::createPopupMenu();
@@ -199,6 +213,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
         &QTreeView::customContextMenuRequested,
         this,
         &RepoGUI::showCollectionContextMenuSlot);
+
+
+
+    std::cout << "tester" << 9999 << std::endl;
+    std::cout << 666 << std::endl;
 }
 
 repo::gui::RepoGUI::~RepoGUI()
@@ -437,6 +456,12 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
         loadFile(url.toLocalFile());
         ++it;
     }
+}
+
+
+void repo::gui::RepoGUI::oculus()
+{
+    ui->mdiArea->addOculus();
 }
 
 void repo::gui::RepoGUI::openFile()

@@ -15,6 +15,7 @@
 
 include(3drepocore.pri)
 include(glclib.pri)
+include(oculus.pri)
 
 #-------------------------------------------------------------------------------
 
@@ -48,6 +49,7 @@ HEADERS  += src/repogui.h \
             src/primitives/repo_sortfilterproxymodel.h \
             src/primitives/repo_glccamera.h \
             src/conversion/repo_transcoder_assimp.h \
+            src/oculus/repo_oculus.h \
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -71,6 +73,7 @@ SOURCES += src/main.cpp\
            src/primitives/repo_sortfilterproxymodel.cpp \
            src/primitives/repo_glccamera.cpp \
            src/conversion/repo_transcoder_assimp.cpp \
+           src/oculus/repo_oculus.cpp \
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

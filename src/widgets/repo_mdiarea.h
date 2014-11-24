@@ -92,6 +92,8 @@ public :
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
 
+    RepoMdiSubWindow *addOculus();
+
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 
 	 * CreationOrder (the default), the windows are sorted in the order in 
