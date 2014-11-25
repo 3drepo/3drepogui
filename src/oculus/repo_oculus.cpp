@@ -124,7 +124,6 @@ void repo::gui::RepoOculus::initializeOVR()
     renderTargetSize.w = recommendedTex0Size.w + recommendedTex1Size.w;
     renderTargetSize.h = qMax(recommendedTex0Size.h, recommendedTex1Size.h);
 
-
     //--------------------------------------------------------------------------
     // Initialize eye rendering information.
     // The viewport sizes are re-computed in case RenderTargetSize changed due to HW limitations.
@@ -195,12 +194,12 @@ void repo::gui::RepoOculus::initializeOVR()
         qDebug() << "Failed loading image";
       }
 
-      glEnable(GL_TEXTURE_2D);
-      textID = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+//      glEnable(GL_TEXTURE_2D);
+//      textID = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      Q_ASSERT(!glGetError());
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//      Q_ASSERT(!glGetError());
 
 
 
@@ -282,6 +281,8 @@ void repo::gui::RepoOculus::paintGL()
 {
     static ovrPosef eyeRenderPose[2];
     static ovrTrackingState hmdState;
+    static ovrTexture eyeTexture[2];
+    static QSize targetSize(renderTargetSize.w, renderTargetSize.h);
 
 
     try
@@ -327,9 +328,10 @@ void repo::gui::RepoOculus::paintGL()
         ovrPosef headPose[2];
         for (int eyeIndex = 0; eyeIndex < ovrEye_Count; ++eyeIndex)
         {
-            ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
-            //headPose[eye] = ovrHmd_GetEyePoses(hmd, eye);
 
+            makeCurrent();
+
+            ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
 
 
             OVR::Quatf orientation = OVR::Quatf(headPose[eye].Orientation);
@@ -360,22 +362,36 @@ void repo::gui::RepoOculus::paintGL()
 */
 
 
-            setAutoBufferSwap(false);
-            //setSnapShootMode(true);
+            QOpenGLFramebufferObjectFormat frameBufferFormat;
+            //QGLFramebufferObjectFormat frameBufferFormat;
+            frameBufferFormat.setSamples(this->format().samples());
+            frameBufferFormat.setAttachment(QOpenGLFramebufferObject::Depth);
+            // Create the framebuffer
 
 
+            QOpenGLFramebufferObject framebufferObject(targetSize, frameBufferFormat);
+            //QGLFramebufferObject framebufferObject(targetSize, frameBufferFormat);
+            framebufferObject.bind();
+            glcViewport.setWinGLSize(framebufferObject.width(), framebufferObject.height());
+            //updateGL();
 
-//            QGLFramebufferObjectFormat frameBufferFormat;
-//                frameBufferFormat.setSamples(this->format().samples());
-//                frameBufferFormat.setAttachment(QGLFramebufferObject::Depth);
-//                // Create the framebuffer
-//                QGLFramebufferObject framebufferObject(targetSize, frameBufferFormat);
-//                framebufferObject.bind();
-//                m_GlView.setWinGLSize(framebufferObject.width(), framebufferObject.height());
-//                updateGL();
-//                imageToSave= framebufferObject.toImage();
-//                framebufferObject.release();
-//                m_GlView.setWinGLSize(size().width(), size().height());
+            //------------------------------------------------------------------
+            // RENDER here
+            glcViewport.setDistMinAndMax(glcWorld.boundingBox());
+            glcWorld.collection()->updateInstanceViewableState();
+            GLC_Context::current()->glcLoadIdentity();
+            glcLight.glExecute();
+            glcViewport.glExecuteCam();
+            glcWorld.render(0, glc::ShadingFlag);
+            glcMoverController.drawActiveMoverRep();
+            //------------------------------------------------------------------
+
+
+            //imageToSave = framebufferObject.toImage();
+            eyeTextureGL[eye].OGL.TexId = framebufferObject.texture();
+
+            framebufferObject.release();
+            glcViewport.setWinGLSize(size().width(), size().height());
 
 
 
@@ -384,7 +400,12 @@ void repo::gui::RepoOculus::paintGL()
          }
         // glDisable(GL_CULL_FACE);
         // glDisable(GL_DEPTH_TEST);
-  //       ovrHmd_EndFrame(hmd, headPose, eyeTextureGL);
+
+
+        eyeTexture[0] = eyeTextureGL[0].Texture;
+        eyeTexture[1] = eyeTextureGL[1].Texture;
+
+         ovrHmd_EndFrame(hmd, headPose, eyeTexture);
 
          //glEnable(GL_CULL_FACE);
          //glEnable(GL_DEPTH_TEST);
