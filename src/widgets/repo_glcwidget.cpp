@@ -59,7 +59,6 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	, isWireframe(false)
 	, shaderID(0)
 	, isInfoVisible(true)
-	, glc3DWidgetManager(&glcViewport)
 	, renderingFlag(glc::ShadingFlag)
 	, fpsCounter(0)
 	, fps(0)
@@ -621,7 +620,7 @@ void repo::gui::RepoGLCWidget::setBackgroundColor(
 	glcViewport.setBackgroundColor(color); 
 	if (repaint)
 		updateGL(); 
-};
+}
 
 void repo::gui::RepoGLCWidget::linkCameras(
 	const RepoGLCWidget *widget, 

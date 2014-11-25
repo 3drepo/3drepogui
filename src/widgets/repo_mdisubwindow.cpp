@@ -19,6 +19,8 @@
 #include "repo_glcwidget.h"
 #include "../primitives/repo_fontawesome.h"
 
+#include "../oculus/repo_oculus.h"
+
 repo::gui::RepoMdiSubWindow::RepoMdiSubWindow(
         QWidget *parent,
         Qt::WindowFlags flags)
@@ -75,11 +77,12 @@ void repo::gui::RepoMdiSubWindow::setWidget(
 	const QString& filePath,
 	const unsigned int pFlags)
 {
-	setWidget(new RepoGLCWidget(this, RepoWorkerAssimp::getFileName(filePath)));
+    //setWidget(new RepoGLCWidget(this, RepoWorkerAssimp::getFileName(filePath)));
+    setWidget(new RepoOculus(this, RepoWorkerAssimp::getFileName(filePath)));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	RepoWorkerAssimp * worker = new RepoWorkerAssimp(filePath, pFlags);
+    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, pFlags);
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)), 
 		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
@@ -133,6 +136,12 @@ void repo::gui::RepoMdiSubWindow::finishedLoading(
             widget->setRepoScene(repoScene);
 		widget->setGLCWorld(glcWorld);
 	}
+    else
+    {
+        RepoOculus *oculusWidget = dynamic_cast<RepoOculus*>(this->widget());
+        if (oculusWidget)
+            oculusWidget->setGLCWorld(glcWorld);
+    }
 }
 
 void repo::gui::RepoMdiSubWindow::progress(int value, int maximum)

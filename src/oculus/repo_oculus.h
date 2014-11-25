@@ -32,12 +32,18 @@
 #include <GLC_Light>
 #include <GLC_Viewport>
 #include <GLC_Exception>
+#include <GLC_Factory>
+#include <GLC_MoverController>
 
 //------------------------------------------------------------------------------
 // Oculus
 #include "OVR_CAPI.h"
 #include "OVR.h"
 #include "OVR_CAPI_GL.h"
+
+//------------------------------------------------------------------------------
+// Core
+#include <RepoGraphScene>
 
 namespace repo {
 namespace gui {
@@ -52,17 +58,25 @@ public :
 
     ~RepoOculus();
 
+    void setGLCWorld(GLC_World);
+
 protected :
 
     void initializeGL();
 
     void initializeOVR();
 
-    void initializeTex();
+    void mousePressEvent(QMouseEvent *e);
+
+    void mouseMoveEvent(QMouseEvent *e);
+
+    void mouseReleaseEvent(QMouseEvent *e);
+
+    void paintGL();
 
     void resizeGL(int w, int h);
 
-    void paintGL();
+    void wheelEvent(QWheelEvent * e);
 
 
 
@@ -82,6 +96,12 @@ private :
 
     //! The viewport, in GLC lib attributed as glView.
     GLC_Viewport glcViewport;
+
+    //! 3D world, the main scene to render.
+    GLC_World glcWorld;
+
+    //! The navigation controller of the scene (arc ball, fly etc).
+    GLC_MoverController glcMoverController;
 
 
     ovrHmd hmd;

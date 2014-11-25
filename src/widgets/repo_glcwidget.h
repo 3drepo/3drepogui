@@ -288,8 +288,6 @@ protected :
 	//! The viewport, in GLC lib attributed as glView.
 	GLC_Viewport glcViewport;
 
-	//! GLC 3D Widget manager. Usage unknown.
-	GLC_3DWidgetManager glc3DWidgetManager;
 
 	//! The main collection of auxiliary objects (such as bboxes).
 	GLC_3DViewCollection glcViewCollection;

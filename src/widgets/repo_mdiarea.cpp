@@ -163,7 +163,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	const QString& fullPath,
 	const unsigned int pFlags)
 {
-	RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
+    RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
 	repoSubWindow->setWidget(fullPath, pFlags);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
