@@ -26,6 +26,7 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QGLWidget>
+#include <QOpenGLFramebufferObject>
 
 //------------------------------------------------------------------------------
 // GLC Lib
@@ -112,6 +113,10 @@ private :
 
 
     GLuint textID;
+
+
+    QOpenGLFramebufferObject *fbos[2];
+
 
 
 
