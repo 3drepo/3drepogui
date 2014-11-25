@@ -30,5 +30,7 @@ DEPENDPATH += $$PWD/submodules/LibOVR/Src \
 win32:LIBS += -lwinmm \
               -lshell32
 
+win32:DEFINES += OVR_OS_WIN32
+
 
 

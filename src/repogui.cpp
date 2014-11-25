@@ -213,11 +213,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
         &QTreeView::customContextMenuRequested,
         this,
         &RepoGUI::showCollectionContextMenuSlot);
-
-
-
-    std::cout << "tester" << 9999 << std::endl;
-    std::cout << 666 << std::endl;
 }
 
 repo::gui::RepoGUI::~RepoGUI()

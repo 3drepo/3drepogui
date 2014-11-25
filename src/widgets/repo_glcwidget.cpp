@@ -69,7 +69,7 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	// Default settings
 	this->setWindowTitle(windowTitle);
 	this->setToolTip(windowTitle);
-	this->setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_file));
+    this->setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_cube));
 	this->setAttribute(Qt::WA_DeleteOnClose);
 	this->setFocusPolicy(Qt::StrongFocus);
 

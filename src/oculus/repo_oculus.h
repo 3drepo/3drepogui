@@ -18,20 +18,26 @@
 #ifndef REPO_OCULUS_H
 #define REPO_OCULUS_H
 
+//------------------------------------------------------------------------------
+// STL
+#include <iostream>
+
 
 //------------------------------------------------------------------------------
 // Qt
 #include <QGLWidget>
 
+//------------------------------------------------------------------------------
+// GLC Lib
+#include <GLC_Light>
+#include <GLC_Viewport>
+#include <GLC_Exception>
 
 //------------------------------------------------------------------------------
 // Oculus
-//#include "OVR_CAPI.h"
+#include "OVR_CAPI.h"
 #include "OVR.h"
-
-
-#include <iostream>
-//------------------------------------------------------------------------------
+#include "OVR_CAPI_GL.h"
 
 namespace repo {
 namespace gui {
@@ -46,12 +52,49 @@ public :
 
     ~RepoOculus();
 
-    void init();
+protected :
+
+    void initializeGL();
+
+    void initializeOVR();
+
+    void initializeTex();
+
+    void resizeGL(int w, int h);
+
+    void paintGL();
+
+
 
 
 private :
 
+
+    //ovrEyeDesc eyes[2]; // eyeRenderDesc
+
+
+    ovrEyeRenderDesc   eyeRenderDesc[2];
+    ovrRecti           eyeRenderViewport[2];
+
+
+    //! Main light of the scene.
+    GLC_Light glcLight;
+
+    //! The viewport, in GLC lib attributed as glView.
+    GLC_Viewport glcViewport;
+
+
     ovrHmd hmd;
+
+
+    ovrGLTexture eyeTextureGL[2];
+    ovrSizei renderTargetSize;
+
+
+    GLuint textID;
+
+
+
 
 }; // end class
 

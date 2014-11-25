@@ -28,7 +28,7 @@ repo::gui::RepoMdiSubWindow::RepoMdiSubWindow(
 	// General settings
 	setAttribute(Qt::WA_DeleteOnClose);
 	setStyleSheet("background-color:white;");
-	setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_file));
+    setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_file));
 	resize(400, 400);
 
     //--------------------------------------------------------------------------
@@ -68,6 +68,7 @@ repo::gui::RepoMdiSubWindow::~RepoMdiSubWindow()
 void repo::gui::RepoMdiSubWindow::setWidget(const QString& windowTitle)
 {
 	setWidget(new RepoGLCWidget(this, windowTitle));
+    setWindowIcon(this->widget()->windowIcon());
 }
 
 void repo::gui::RepoMdiSubWindow::setWidget(
@@ -99,6 +100,7 @@ void repo::gui::RepoMdiSubWindow::setWidget(QWidget * widget)
 	// Add the new widget.
 	boxLayout->addWidget(widget);
 	setWindowTitle(widget->windowTitle());
+    setWindowIcon(widget->windowIcon());
 }
 
 
