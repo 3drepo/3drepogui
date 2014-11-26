@@ -23,8 +23,10 @@ include(submodules/3drepocore/mongo.pri)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/release/ -l3drepocore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/3drepocore/debug/ -l3drepocore
-else:unix: LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore
-
+else:unix {
+LIBS += -L$$OUT_PWD/submodules/3drepocore/ -l3drepocore -lboost_system -lmongoclient -lGLC_lib
+INCLUDEPATH += $$PWD/src/widgets
+}
 INCLUDEPATH += $$PWD/submodules/3drepocore/src
 DEPENDPATH += $$PWD/submodules/3drepocore/src
 

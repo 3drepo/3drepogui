@@ -19,12 +19,14 @@ include(oculus.pri)
 
 #-------------------------------------------------------------------------------
 
-QT += core gui opengl
+QT += core gui opengl gui-private x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 3drepogui
 TEMPLATE = app
+
+INCLUDEPATH += src
 
 #-------------------------------------------------------------------------------
 

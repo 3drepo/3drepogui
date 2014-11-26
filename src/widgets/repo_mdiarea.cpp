@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerfetchrevision.h"
 
-repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent) 
+repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
     , logo(":/images/3drepo-bg.png")
 {
@@ -41,12 +41,12 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 
     //--------------------------------------------------------------------------
 	// Needed for 3D file loading and signal passing.
-	qRegisterMetaType<GLC_World>("GLC_World&");	
+	qRegisterMetaType<GLC_World>("GLC_World&");
 	qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
-	
+
 	qRegisterMetaType<QVector<GLfloat>>("QVector<GLfloat>");
 
-	
+
     //--------------------------------------------------------------------------
 	// RepoGLCWidget selection
 	qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
@@ -81,19 +81,19 @@ void repo::gui::RepoMdiArea::chainSubWindows(bool checked)
     {
         RepoGLCWidget * widget = widgets[j];
         // dis/connect hooks to all previous windows
-		for(i = 0; i != visited.size(); ++i) 
-		{	
+		for(i = 0; i != visited.size(); ++i)
+		{
 			widget->linkCameras(visited.at(i), checked);
-			visited.at(i)->linkCameras(widget, checked);				
+			visited.at(i)->linkCameras(widget, checked);
 		}
-		visited.push_back(widget); // store current window		   
+		visited.push_back(widget); // store current window
 	}
 }
 
 void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 {
 	QList<RepoMdiSubWindow *> openWindows = subWindowList(true, order);
-	
+
 	QSize size = this->size();
 	int widthHalf = size.width()/2;
 	int heightFull = size.height();
@@ -103,17 +103,17 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 	int widthTwoThirds = (2 * size.width() / 3);
 
 	switch (openWindows.size())
-	{	
+	{
 		case 1 :
-			openWindows[0]->showMaximized(); 
+			openWindows[0]->showMaximized();
 			break;
-		case 2 :			
+		case 2 :
 			openWindows[0]->resize(widthHalf, heightFull);
 			openWindows[0]->move((QPoint(0, 0)));
 			openWindows[1]->resize(widthHalf, heightFull);
 			openWindows[1]->move((QPoint(widthHalf, 0)));
 			break;
-		case 3 :	
+		case 3 :
 			openWindows[0]->resize( widthThird, heightHalf);
 			openWindows[0]->move((QPoint(0, 0)));
 			openWindows[1]->resize(widthThird, heightHalf);
@@ -143,7 +143,7 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 			++meshesCount;
 		}
 	}
-	
+
     //--------------------------------------------------------------------------
 	// Polygon count
     std::cout << polyCount << " polygons in " << meshesCount << " " ;
@@ -187,26 +187,26 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	repoSubWindow->setWidget(database + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
-		
+
 	QObject::connect(
 			fpsTimer, &QTimer::timeout,
 			repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::updateGL);
-	
+
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
 	RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, id, headRevision);
-	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)), 
+	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
 
 	QObject::connect(
 		repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
 		worker, &RepoWorkerFetchRevision::cancel, Qt::DirectConnection);
-	
+
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
 	QThreadPool::globalInstance()->start(worker);
-	
+
 	this->update();
 	this->repaint();
 	return repoSubWindow;
@@ -219,7 +219,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	repoSubWindow->setWidget(widget);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
-	
+
 	QObject::connect(
 			fpsTimer, &QTimer::timeout,
 			repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::updateGL);
@@ -285,7 +285,7 @@ void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
     //QImage scaled = backgroundImage.scaled(resizeEvent->size(),Qt::KeepAspectRatio);
 	QRect scaledRect = logo.rect();
 	scaledRect.moveBottomRight(
-		QPoint(resizeEvent->size().width(), 
+		QPoint(resizeEvent->size().width(),
 			resizeEvent->size().height()));
     backgroundPainter.drawImage(scaledRect, logo);
 	setBackground(background);

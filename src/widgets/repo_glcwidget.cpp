@@ -42,6 +42,21 @@
 	#include <OpenGL.h>
 #endif
 
+#if defined(Q_OS_LINUX)
+    #include <unistd.h>
+    #include <time.h>
+
+    uint32_t GetTickCount()
+    {
+        timespec ts;
+        clock_gettime( CLOCK_MONOTONIC, &ts);
+        unsigned tick = ts.tv_nsec / 1000000;
+        tick += ts.tv_sec * 1000;
+        return tick;
+    }
+#endif
+
+
 //------------------------------------------------------------------------------
 //
 // Static variables

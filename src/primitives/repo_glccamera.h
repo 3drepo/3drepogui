@@ -19,8 +19,8 @@
 #define REPO_GLCCAMERA_H
 //------------------------------------------------------------------------------
 #include "assimp/scene.h"
-#include "geometry/../glc_geometry"
-#include "viewport/../glc_camera"
+#include "geometry/../GLC_Geometry"
+#include "viewport/../GLC_Camera"
 
 namespace repo {
 namespace gui {

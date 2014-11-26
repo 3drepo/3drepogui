@@ -16,8 +16,43 @@
  */
 
 #include "repo_oculus.h"
+#include "qpa/qplatformnativeinterface.h"
+
+#if defined(Q_OS_LINUX)
+	#include <QX11Info>
+#endif
+
+#include <cstdio>
 
 #include "../primitives/repo_fontawesome.h"
+
+void printOvrMatrix(const ovrMatrix4f &mat)
+{
+	for(int r = 0; r < 4; r++)
+	{
+		for(int c= 0; c < 4; c++)
+		{
+			printf("%f ", mat.M[r][c]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+void updateCam(const ovrEyeRenderDesc &eye, GLC_Camera *cam)
+{
+	OVR::Matrix4f proj = ovrMatrix4f_Projection(eye.Fov, 0.01f, 10000.0f, true);
+
+	GLC_Point3d eyePos(eye.HmdToEyeViewOffset.x,
+						eye.HmdToEyeViewOffset.y,
+						eye.HmdToEyeViewOffset.z);
+
+	GLC_Vector3d up(proj.M[1][0], proj.M[1][1], -proj.M[1][2]);
+	GLC_Vector3d right(proj.M[0][0], proj.M[0][1], proj.M[0][2]);
+	GLC_Point3d forward = up^right;
+
+	cam->setCam(eyePos, forward, up);
+}
 
 repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
     : QGLWidget(new GLC_Context(QGLFormat::defaultFormat()), parent)
@@ -33,8 +68,8 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
     setMouseTracking(true);
     setWindowTitle(windowTitle);
 
-
-
+	fbos[0] = 0;
+	fbos[1] = 0;
 
     //--------------------------------------------------------------------------
     // GLC settings
@@ -127,14 +162,17 @@ void repo::gui::RepoOculus::initializeOVR()
     // See Oculus SDK page 29
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::Depth);
-    fbos[0] = new QOpenGLFramebufferObject(renderTargetSize.w/2, renderTargetSize.h, format);
-    fbos[1] = new QOpenGLFramebufferObject(renderTargetSize.w/2, renderTargetSize.h, format);
-    renderTargetSize.w = fbos[0]->width();
+    fbos[0] = new QOpenGLFramebufferObject(renderTargetSize.w, renderTargetSize.h, format);
+    //fbos[1] = new QOpenGLFramebufferObject(renderTargetSize.w, renderTargetSize.h, format);
+    fbos[1] = fbos[0];
+	renderTargetSize.w = fbos[0]->width();
     renderTargetSize.h = fbos[0]->height();
     //--------------------------------------------------------------------------
 
+	resize(renderTargetSize.w, renderTargetSize.h);
 
-
+	//printf("WH: %d %d\n",width(), height());
+	//printf("WHI: %d %d\n", renderTargetSize.w, renderTargetSize.h);
 
     //--------------------------------------------------------------------------
     // Initialize eye rendering information.
@@ -159,8 +197,9 @@ void repo::gui::RepoOculus::initializeOVR()
     eyeTextureGL[1].OGL.Header.RenderViewport.Size = eyeTextureGL[0].OGL.Header.RenderViewport.Size;
     eyeTextureGL[1].OGL.TexId = fbos[1]->texture();
 
+	glcViewport.setWinGLSize(renderTargetSize.w, renderTargetSize.h);
 
-
+	//printf("FBO %d %d\n", glcViewport.viewHSize(), glcViewport.viewHSize());
 
     //--------------------------------------------------------------------------
     // Configure OVR for OpenGL
@@ -169,17 +208,26 @@ void repo::gui::RepoOculus::initializeOVR()
     cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
     cfg.OGL.Header.RTSize = OVR::Sizei(hmd->Resolution.w, hmd->Resolution.h);
     cfg.OGL.Header.Multisample = backBufferMultisample;
-    cfg.OGL.Window = reinterpret_cast<HWND>(winId());
-    makeCurrent();
 
+	const QWindow *w = this->windowHandle();
+	void *winHandle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), w);
+	#if defined(Q_OS_LINUX)
+		cfg.OGL.Win = (Window)winHandle;
+	#elif defined(Q_OS_WIN)
+		cfg.OGL.Window = (HWND)winHandle;
+	#endif
 
+	makeCurrent();
 
-   // cfg.OGL.WglContext = wglGetCurrentContext();
-   // cfg.OGL.GdiDc = wglGetCurrentDC();
-    cfg.OGL.DC = wglGetCurrentDC();
-
-    std::cout << "Window: " << cfg.OGL.Window << std::endl;
-    std::cout << "DC: " << cfg.OGL.DC << std::endl;
+	// cfg.OGL.WglContext = wglGetCurrentContext();
+	// cfg.OGL.GdiDc = wglGetCurrentDC();
+	#if defined(Q_OS_WIN)
+		cfg.OGL.DC = wglGetCurrentDC();
+	    std::cout << "Window: " << cfg.OGL.Window << std::endl;
+		std::cout << "DC: " << cfg.OGL.DC << std::endl;
+	#elif defined(Q_OS_LINUX)
+		cfg.OGL.Disp = QX11Info::display();
+	#endif
 
     if(!ovrHmd_ConfigureRendering(
                 hmd,
@@ -192,12 +240,14 @@ void repo::gui::RepoOculus::initializeOVR()
     }
 
 
-    // Direct rendering from a window handle to the Hmd.
-    // Not required if ovrHmdCap_ExtendDesktop flag is set.
-    if (false)
-        ovrHmd_AttachToWindow(hmd, cfg.OGL.Window, NULL, NULL);
+	#if defined(Q_OS_WIN)
+		// Direct rendering from a window handle to the Hmd.
+		// Not required if ovrHmdCap_ExtendDesktop flag is set.
+		if (false)
+			ovrHmd_AttachToWindow(hmd, cfg.OGL.Window, NULL, NULL);
+	#endif
 
-
+	/*
     //--------------------------------------------------------------------------
     // TESTER Texture
 
@@ -205,19 +255,15 @@ void repo::gui::RepoOculus::initializeOVR()
       if(img.isNull()){
         qDebug() << "Failed loading image";
       }
+
+
       glEnable(GL_TEXTURE_2D);
-      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+      //eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       Q_ASSERT(!glGetError());
-
-
-
-
-
-
-
+	*/
 }
 
 
@@ -313,16 +359,11 @@ void repo::gui::RepoOculus::paintGL()
 
         ovrFrameTiming hmdFrameTiming = ovrHmd_BeginFrame(hmd, 0);
 
-
-
         ovrVector3f hmdToEyeViewOffset[2] = {
             eyeRenderDesc[0].HmdToEyeViewOffset,
             eyeRenderDesc[1].HmdToEyeViewOffset };
         ovrHmd_GetEyePoses(hmd, 0,
                            hmdToEyeViewOffset, eyeRenderPose, &hmdState);
-
-
-
 
         glEnable(GL_TEXTURE_2D);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -331,37 +372,57 @@ void repo::gui::RepoOculus::paintGL()
         for (int eyeIndex = 0; eyeIndex < ovrEye_Count; ++eyeIndex)
         {
 
-            makeCurrent();
+            //makeCurrent();
 
             ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
 
-
+			ovrEyeRenderDesc *currEye = &eyeRenderDesc[eye];
+			/*
             OVR::Quatf orientation = OVR::Quatf(headPose[eye].Orientation);
             OVR::Matrix4f proj = ovrMatrix4f_Projection(
                         eyeRenderDesc[eye].Fov, 0.01f, 10000.0f, true);
             //ovrPosef    eyePose = ovrHmd_BeginEyeRender(hmd, eye);
 
+			ovrVector3f WorldEyePos = eyeRenderDesc[eye].HmdToEyeViewOffset;
+
+
+
+			WorldEyePos.x *= -1;
+			WorldEyePos.y *= -1;
+			WorldEyePos.z *= -1;
+
+			printf("EYE: %f %f %f\n", WorldEyePos.x, WorldEyePos.y, WorldEyePos.z);
+
             // Assign quaternion result directly to view (translation is ignored).
-            //OVR::Matrix4f view = OVR::Matrix4f(orientation.Inverted()) * OVR::Matrix4f::Translation(-WorldEyePos);
+            //OVR::Matrix4f view = OVR::Matrix4f(orientation.Inverted()) * OVR::Matrix4f::Translation(WorldEyePos);
 
+			OVR::Matrix4f view = OVR::Matrix4f::Translation(WorldEyePos);
+			*/
 
+			//printOvrMatrix(view);
 
-/*
-           glViewport(eyeRenderDesc[eye].Desc.RenderViewport.Pos.x,
-                      eyeRenderDesc[eye].Desc.RenderViewport.Pos.y,
-                      eyeRenderDesc[eye].Desc.RenderViewport.Size.w,
-                      eyeRenderDesc[eye].Desc.RenderViewport.Size.h);
+			/*
+           glViewport(eyeRenderDesc[eye].DistortedViewport.Pos.x,
+                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
+                      eyeRenderDesc[eye].DistortedViewport.Size.w,
+                      eyeRenderDesc[eye].DistortedViewport.Size.h);
+
+			printf("%d - %d %d %d %d\n", eye,
+					eyeRenderDesc[eye].DistortedViewport.Pos.x,
+                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
+                      eyeRenderDesc[eye].DistortedViewport.Size.w,
+                      eyeRenderDesc[eye].DistortedViewport.Size.h);
 
            glMatrixMode(GL_PROJECTION);
            glLoadIdentity();
            glMultMatrixf(&(proj.Transposed().M[0][0]));
            glMatrixMode(GL_MODELVIEW);
            glLoadIdentity();
-           glTranslatef(eyeRenderDesc[eye].ViewAdjust.x,
-                        eyeRenderDesc[eye].ViewAdjust.y,
-                        eyeRenderDesc[eye].ViewAdjust.z);
+           glTranslatef(-WorldEyePos.x, -WorldEyePos.y, -WorldEyePos.z);
            glMultMatrixf(&(view.Transposed().M[0][0]));
-*/
+			*/
+
+
 
 
 
@@ -369,25 +430,37 @@ void repo::gui::RepoOculus::paintGL()
 
 
 
-            makeCurrent();
+            //makeCurrent();
             fbos[eye]->bind();
-            resizeGL(fbos[eye]->width(), fbos[eye]->height());
+			glcViewport.setWinGLSize(fbos[eye]->width(), fbos[eye]->height(), false);
+			//parentWidget()->resize(fbos[eye]->width(), fbos[eye]->height());
+            //resizeGL(fbos[eye]->width(), fbos[eye]->height());
 
             //------------------------------------------------------------------
             // RENDER here
-            glcViewport.setDistMinAndMax(glcWorld.boundingBox());
+			glViewport(currEye->DistortedViewport.Pos.x,
+				currEye->DistortedViewport.Pos.y,
+				currEye->DistortedViewport.Size.w,
+				currEye->DistortedViewport.Size.h);
+
+            //glcViewport.setDistMinAndMax(glcWorld.boundingBox());
             glcWorld.collection()->updateInstanceViewableState();
             GLC_Context::current()->glcLoadIdentity();
             glcLight.glExecute();
+			updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
             glcViewport.glExecuteCam();
             glcViewport.useClipPlane(true);
             glcWorld.render(0, glc::ShadingFlag);
-            glcMoverController.drawActiveMoverRep();
-            //------------------------------------------------------------------
+            //glcMoverController.drawActiveMoverRep();
+
+			//------------------------------------------------------------------
+
+
+			//printf("FBO %d %d\n", glcViewport.viewHSize(), glcViewport.viewHSize());
 
 
             fbos[eye]->release();
-            resizeGL(size().width(), size().height());
+            //resizeGL(size().width(), size().height());
 
 
 

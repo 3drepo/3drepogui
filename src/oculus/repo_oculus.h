@@ -22,6 +22,9 @@
 // STL
 #include <iostream>
 
+//------------------------------------------------------------------------------
+// Core
+#include <RepoGraphScene>
 
 //------------------------------------------------------------------------------
 // Qt
@@ -35,16 +38,14 @@
 #include <GLC_Exception>
 #include <GLC_Factory>
 #include <GLC_MoverController>
+#include <GLC_Point3d>
+#include <GLC_Vector3d>
 
 //------------------------------------------------------------------------------
 // Oculus
 #include "OVR_CAPI.h"
 #include "OVR.h"
 #include "OVR_CAPI_GL.h"
-
-//------------------------------------------------------------------------------
-// Core
-#include <RepoGraphScene>
 
 namespace repo {
 namespace gui {
