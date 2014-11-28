@@ -113,10 +113,15 @@ private :
     ovrSizei renderTargetSize;
 
 
+
+
     GLuint textID;
 
 
     QOpenGLFramebufferObject *fbos[2];
+
+
+    QOpenGLFramebufferObject *fbo;
 
 
 

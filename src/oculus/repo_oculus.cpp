@@ -16,10 +16,11 @@
  */
 
 #include "repo_oculus.h"
-#include "qpa/qplatformnativeinterface.h"
+
 
 #if defined(Q_OS_LINUX)
 	#include <QX11Info>
+    #include <qpa/qplatformnativeinterface.h>
 #endif
 
 #include <cstdio>
@@ -71,6 +72,16 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
 	fbos[0] = 0;
 	fbos[1] = 0;
 
+
+
+    makeCurrent();
+
+    GLC_Context::current();
+
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::Depth);
+    fbo = new QOpenGLFramebufferObject(1182, 1461, format);
+
     //--------------------------------------------------------------------------
     // GLC settings
     QColor repColor;
@@ -88,10 +99,14 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
 
     //--------------------------------------------------------------------------
     // Oculus settings
-    initializeOVR();
+    //initializeOVR();
+
+
+
+
 
     setAutoBufferSwap(false);
-    // resizeGL(400,400);
+   // resizeGL(400,400);
 }
 
 repo::gui::RepoOculus::~RepoOculus()
@@ -153,7 +168,7 @@ void repo::gui::RepoOculus::initializeOVR()
     ovrSizei recommendedTex0Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Left, hmd->DefaultEyeFov[0], 1.0f);
     ovrSizei recommendedTex1Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Right, hmd->DefaultEyeFov[1], 1.0f);
 
-    renderTargetSize.w = recommendedTex0Size.w + recommendedTex1Size.w;
+    renderTargetSize.w = (recommendedTex0Size.w + recommendedTex1Size.w)/2;
     renderTargetSize.h = qMax(recommendedTex0Size.h, recommendedTex1Size.h);
 
 
@@ -163,10 +178,12 @@ void repo::gui::RepoOculus::initializeOVR()
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::Depth);
     fbos[0] = new QOpenGLFramebufferObject(renderTargetSize.w, renderTargetSize.h, format);
-    //fbos[1] = new QOpenGLFramebufferObject(renderTargetSize.w, renderTargetSize.h, format);
-    fbos[1] = fbos[0];
+    fbos[1] = new QOpenGLFramebufferObject(renderTargetSize.w, renderTargetSize.h, format);
 	renderTargetSize.w = fbos[0]->width();
     renderTargetSize.h = fbos[0]->height();
+
+    std::cout << "WH: " <<  renderTargetSize.w << " x " << renderTargetSize.h << std::endl;
+
     //--------------------------------------------------------------------------
 
 	resize(renderTargetSize.w, renderTargetSize.h);
@@ -189,13 +206,13 @@ void repo::gui::RepoOculus::initializeOVR()
     eyeTextureGL[0].OGL.Header.TextureSize = renderTargetSize;
     eyeTextureGL[0].OGL.Header.RenderViewport.Pos = OVR::Vector2i(0,0);
     eyeTextureGL[0].OGL.Header.RenderViewport.Size = OVR::Sizei(renderTargetSize.w, renderTargetSize.h);
-    eyeTextureGL[0].OGL.TexId = fbos[0]->texture();
+   // eyeTextureGL[0].OGL.TexId = fbos[0]->texture();
 
     // Right eye
     eyeTextureGL[1] = eyeTextureGL[0];
     eyeTextureGL[1].OGL.Header.RenderViewport.Pos = OVR::Vector2i((renderTargetSize.w + 1) / 2, 0);
     eyeTextureGL[1].OGL.Header.RenderViewport.Size = eyeTextureGL[0].OGL.Header.RenderViewport.Size;
-    eyeTextureGL[1].OGL.TexId = fbos[1]->texture();
+  //  eyeTextureGL[1].OGL.TexId = fbos[1]->texture();
 
 	glcViewport.setWinGLSize(renderTargetSize.w, renderTargetSize.h);
 
@@ -209,13 +226,14 @@ void repo::gui::RepoOculus::initializeOVR()
     cfg.OGL.Header.RTSize = OVR::Sizei(hmd->Resolution.w, hmd->Resolution.h);
     cfg.OGL.Header.Multisample = backBufferMultisample;
 
-	const QWindow *w = this->windowHandle();
-	void *winHandle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), w);
+
+
+//	void *winHandle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), w);
 	#if defined(Q_OS_LINUX)
-		cfg.OGL.Win = (Window)winHandle;
-	#elif defined(Q_OS_WIN)
-		cfg.OGL.Window = (HWND)winHandle;
-	#endif
+        cfg.OGL.Win = (Window)(winId());
+    #elif defined(Q_OS_WIN)
+        cfg.OGL.Window = reinterpret_cast<HWND>(winId());
+    #endif
 
 	makeCurrent();
 
@@ -247,7 +265,7 @@ void repo::gui::RepoOculus::initializeOVR()
 			ovrHmd_AttachToWindow(hmd, cfg.OGL.Window, NULL, NULL);
 	#endif
 
-	/*
+
     //--------------------------------------------------------------------------
     // TESTER Texture
 
@@ -258,12 +276,12 @@ void repo::gui::RepoOculus::initializeOVR()
 
 
       glEnable(GL_TEXTURE_2D);
-      //eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       Q_ASSERT(!glGetError());
-	*/
+
 }
 
 
@@ -325,14 +343,52 @@ void repo::gui::RepoOculus::wheelEvent(QWheelEvent * e)
 
 void repo::gui::RepoOculus::paintGL()
 {
-    static ovrPosef eyeRenderPose[2];
-    static ovrTrackingState hmdState;
-    static ovrTexture eyeTexture[2];
+//    static ovrPosef eyeRenderPose[2];
+//    static ovrTrackingState hmdState;
+//    static ovrTexture eyeTexture[2];
+
+//    /glEnable(GL_TEXTURE_2D);
 
 
 
 
 
+
+
+
+
+
+
+    makeCurrent();
+    fbo->bind();
+    resizeGL(1182, 1461);
+
+  //  updateGL();
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+    glcViewport.setDistMinAndMax(glcWorld.boundingBox());
+    glcWorld.collection()->updateInstanceViewableState();
+    GLC_Context::current()->glcLoadIdentity();
+
+
+    glcLight.glExecute();
+    //updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
+    glcViewport.glExecuteCam();
+    glcViewport.useClipPlane(true);
+
+    glcWorld.render(0, glc::ShadingFlag);
+    glcMoverController.drawActiveMoverRep();
+
+    QImage image = fbo->toImage();
+    image.save("test.jpg");
+
+    fbo->release();
+    resizeGL(size().width(), size().height());
+
+
+/*
     try
     {
         makeCurrent();
@@ -355,9 +411,8 @@ void repo::gui::RepoOculus::paintGL()
 
         const int ms(1000/60);
         QTimer::singleShot(ms, this, SLOT(update()));
-        makeCurrent();
 
-        ovrFrameTiming hmdFrameTiming = ovrHmd_BeginFrame(hmd, 0);
+      //  ovrFrameTiming hmdFrameTiming = ovrHmd_BeginFrame(hmd, 0);
 
         ovrVector3f hmdToEyeViewOffset[2] = {
             eyeRenderDesc[0].HmdToEyeViewOffset,
@@ -374,53 +429,53 @@ void repo::gui::RepoOculus::paintGL()
 
             //makeCurrent();
 
-            ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
+//            ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
 
-			ovrEyeRenderDesc *currEye = &eyeRenderDesc[eye];
-			/*
-            OVR::Quatf orientation = OVR::Quatf(headPose[eye].Orientation);
-            OVR::Matrix4f proj = ovrMatrix4f_Projection(
-                        eyeRenderDesc[eye].Fov, 0.01f, 10000.0f, true);
-            //ovrPosef    eyePose = ovrHmd_BeginEyeRender(hmd, eye);
+//			ovrEyeRenderDesc *currEye = &eyeRenderDesc[eye];
 
-			ovrVector3f WorldEyePos = eyeRenderDesc[eye].HmdToEyeViewOffset;
+//            OVR::Quatf orientation = OVR::Quatf(headPose[eye].Orientation);
+//            OVR::Matrix4f proj = ovrMatrix4f_Projection(
+//                        eyeRenderDesc[eye].Fov, 0.01f, 10000.0f, true);
+//            //ovrPosef    eyePose = ovrHmd_BeginEyeRender(hmd, eye);
+
+//			ovrVector3f WorldEyePos = eyeRenderDesc[eye].HmdToEyeViewOffset;
 
 
 
-			WorldEyePos.x *= -1;
-			WorldEyePos.y *= -1;
-			WorldEyePos.z *= -1;
+//			WorldEyePos.x *= -1;
+//			WorldEyePos.y *= -1;
+//			WorldEyePos.z *= -1;
 
-			printf("EYE: %f %f %f\n", WorldEyePos.x, WorldEyePos.y, WorldEyePos.z);
+//			printf("EYE: %f %f %f\n", WorldEyePos.x, WorldEyePos.y, WorldEyePos.z);
 
-            // Assign quaternion result directly to view (translation is ignored).
-            //OVR::Matrix4f view = OVR::Matrix4f(orientation.Inverted()) * OVR::Matrix4f::Translation(WorldEyePos);
+//            // Assign quaternion result directly to view (translation is ignored).
+//            //OVR::Matrix4f view = OVR::Matrix4f(orientation.Inverted()) * OVR::Matrix4f::Translation(WorldEyePos);
 
-			OVR::Matrix4f view = OVR::Matrix4f::Translation(WorldEyePos);
-			*/
+//			OVR::Matrix4f view = OVR::Matrix4f::Translation(WorldEyePos);
+
 
 			//printOvrMatrix(view);
 
-			/*
-           glViewport(eyeRenderDesc[eye].DistortedViewport.Pos.x,
-                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
-                      eyeRenderDesc[eye].DistortedViewport.Size.w,
-                      eyeRenderDesc[eye].DistortedViewport.Size.h);
 
-			printf("%d - %d %d %d %d\n", eye,
-					eyeRenderDesc[eye].DistortedViewport.Pos.x,
-                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
-                      eyeRenderDesc[eye].DistortedViewport.Size.w,
-                      eyeRenderDesc[eye].DistortedViewport.Size.h);
+//           glViewport(eyeRenderDesc[eye].DistortedViewport.Pos.x,
+//                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
+//                      eyeRenderDesc[eye].DistortedViewport.Size.w,
+//                      eyeRenderDesc[eye].DistortedViewport.Size.h);
 
-           glMatrixMode(GL_PROJECTION);
-           glLoadIdentity();
-           glMultMatrixf(&(proj.Transposed().M[0][0]));
-           glMatrixMode(GL_MODELVIEW);
-           glLoadIdentity();
-           glTranslatef(-WorldEyePos.x, -WorldEyePos.y, -WorldEyePos.z);
-           glMultMatrixf(&(view.Transposed().M[0][0]));
-			*/
+//			printf("%d - %d %d %d %d\n", eye,
+//					eyeRenderDesc[eye].DistortedViewport.Pos.x,
+//                      eyeRenderDesc[eye].DistortedViewport.Pos.y,
+//                      eyeRenderDesc[eye].DistortedViewport.Size.w,
+//                      eyeRenderDesc[eye].DistortedViewport.Size.h);
+
+//           glMatrixMode(GL_PROJECTION);
+//           glLoadIdentity();
+//           glMultMatrixf(&(proj.Transposed().M[0][0]));
+//           glMatrixMode(GL_MODELVIEW);
+//           glLoadIdentity();
+//           glTranslatef(-WorldEyePos.x, -WorldEyePos.y, -WorldEyePos.z);
+//           glMultMatrixf(&(view.Transposed().M[0][0]));
+
 
 
 
@@ -429,37 +484,48 @@ void repo::gui::RepoOculus::paintGL()
             // Create the framebuffer
 
 
+            // See Oculus SDK page 29
+//            QOpenGLFramebufferObjectFormat format;
+//            format.setAttachment(QOpenGLFramebufferObject::Depth);
+//            QOpenGLFramebufferObject fbo(renderTargetSize.w, renderTargetSize.h, format);
+
+
+
 
             //makeCurrent();
-            fbos[eye]->bind();
-			glcViewport.setWinGLSize(fbos[eye]->width(), fbos[eye]->height(), false);
+          //  fbo.bind();
+          //  glcViewport.setWinGLSize(fbos[eye]->width(), fbos[eye]->height());
 			//parentWidget()->resize(fbos[eye]->width(), fbos[eye]->height());
             //resizeGL(fbos[eye]->width(), fbos[eye]->height());
 
             //------------------------------------------------------------------
             // RENDER here
-			glViewport(currEye->DistortedViewport.Pos.x,
-				currEye->DistortedViewport.Pos.y,
-				currEye->DistortedViewport.Size.w,
-				currEye->DistortedViewport.Size.h);
+//			glViewport(currEye->DistortedViewport.Pos.x,
+//				currEye->DistortedViewport.Pos.y,
+//				currEye->DistortedViewport.Size.w,
+//				currEye->DistortedViewport.Size.h);
 
-            //glcViewport.setDistMinAndMax(glcWorld.boundingBox());
+            glcViewport.setDistMinAndMax(glcWorld.boundingBox());
             glcWorld.collection()->updateInstanceViewableState();
             GLC_Context::current()->glcLoadIdentity();
             glcLight.glExecute();
-			updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
+
+            //updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
+
             glcViewport.glExecuteCam();
             glcViewport.useClipPlane(true);
             glcWorld.render(0, glc::ShadingFlag);
-            //glcMoverController.drawActiveMoverRep();
+            glcMoverController.drawActiveMoverRep();
 
 			//------------------------------------------------------------------
 
 
 			//printf("FBO %d %d\n", glcViewport.viewHSize(), glcViewport.viewHSize());
 
+//            QImage image = fbo.toImage();
+//            image.save("test.png");
 
-            fbos[eye]->release();
+//            fbo.release();
             //resizeGL(size().width(), size().height());
 
 
@@ -471,10 +537,10 @@ void repo::gui::RepoOculus::paintGL()
         // glDisable(GL_DEPTH_TEST);
 
 
-        eyeTexture[0] = eyeTextureGL[0].Texture;
-        eyeTexture[1] = eyeTextureGL[1].Texture;
+       // eyeTexture[0] = eyeTextureGL[0].Texture;
+       // eyeTexture[1] = eyeTextureGL[1].Texture;
 
-        ovrHmd_EndFrame(hmd, headPose, eyeTexture);
+       // ovrHmd_EndFrame(hmd, headPose, eyeTexture);
 
          //glEnable(GL_CULL_FACE);
          //glEnable(GL_DEPTH_TEST);
@@ -484,7 +550,7 @@ void repo::gui::RepoOculus::paintGL()
     {
         std::cerr << e.what() << std::endl;
     }
-
+*/
 
     swapBuffers();
     doneCurrent();
