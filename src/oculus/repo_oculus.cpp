@@ -99,7 +99,7 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
 
     //--------------------------------------------------------------------------
     // Oculus settings
-    //initializeOVR();
+    initializeOVR();
 
 
 
@@ -186,7 +186,7 @@ void repo::gui::RepoOculus::initializeOVR()
 
     //--------------------------------------------------------------------------
 
-	resize(renderTargetSize.w, renderTargetSize.h);
+    //resize(renderTargetSize.w, renderTargetSize.h);
 
 	//printf("WH: %d %d\n",width(), height());
 	//printf("WHI: %d %d\n", renderTargetSize.w, renderTargetSize.h);
@@ -206,13 +206,15 @@ void repo::gui::RepoOculus::initializeOVR()
     eyeTextureGL[0].OGL.Header.TextureSize = renderTargetSize;
     eyeTextureGL[0].OGL.Header.RenderViewport.Pos = OVR::Vector2i(0,0);
     eyeTextureGL[0].OGL.Header.RenderViewport.Size = OVR::Sizei(renderTargetSize.w, renderTargetSize.h);
-   // eyeTextureGL[0].OGL.TexId = fbos[0]->texture();
+    eyeTextureGL[0].OGL.TexId = fbo->texture();
 
     // Right eye
     eyeTextureGL[1] = eyeTextureGL[0];
-    eyeTextureGL[1].OGL.Header.RenderViewport.Pos = OVR::Vector2i((renderTargetSize.w + 1) / 2, 0);
+    eyeTextureGL[1].OGL.Header.RenderViewport.Pos = OVR::Vector2i(0,0); //OVR::Vector2i((renderTargetSize.w + 1) / 2, 0);
     eyeTextureGL[1].OGL.Header.RenderViewport.Size = eyeTextureGL[0].OGL.Header.RenderViewport.Size;
-  //  eyeTextureGL[1].OGL.TexId = fbos[1]->texture();
+    eyeTextureGL[1].OGL.TexId = fbo->texture();
+
+    std::cout << "TexId: " << fbo->texture() << std::endl;
 
 	glcViewport.setWinGLSize(renderTargetSize.w, renderTargetSize.h);
 
@@ -269,18 +271,18 @@ void repo::gui::RepoOculus::initializeOVR()
     //--------------------------------------------------------------------------
     // TESTER Texture
 
-    QImage img(":/images/3drepo-bg.png");
-      if(img.isNull()){
-        qDebug() << "Failed loading image";
-      }
+//    QImage img(":/images/3drepo-bg.png");
+//      if(img.isNull()){
+//        qDebug() << "Failed loading image";
+//      }
 
 
-      glEnable(GL_TEXTURE_2D);
-      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+//      glEnable(GL_TEXTURE_2D);
+//      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-      Q_ASSERT(!glGetError());
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//      Q_ASSERT(!glGetError());
 
 }
 
@@ -345,47 +347,62 @@ void repo::gui::RepoOculus::paintGL()
 {
 //    static ovrPosef eyeRenderPose[2];
 //    static ovrTrackingState hmdState;
-//    static ovrTexture eyeTexture[2];
 
 //    /glEnable(GL_TEXTURE_2D);
 
 
+    try
+    {
+        ovrTexture eyeTexture[2];
+        ovrPosef headPose[2];
+
+        makeCurrent();
+        ovrHmd_BeginFrame(hmd, 0);
 
 
+        //--------------------------------------------------------------------------
+
+        fbo->bind();
+        resizeGL(1182, 1461);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+        glcViewport.setDistMinAndMax(glcWorld.boundingBox());
+        glcWorld.collection()->updateInstanceViewableState();
+        GLC_Context::current()->glcLoadIdentity();
 
 
+        glcLight.glExecute();
+        //updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
+        glcViewport.glExecuteCam();
+        glcViewport.useClipPlane(true);
+
+        glcWorld.render(0, glc::ShadingFlag);
+        glcMoverController.drawActiveMoverRep();
+
+        QImage image = fbo->toImage();
+        image.save("test.jpg");
 
 
+        std::cout << "Texture ID:" << eyeTextureGL[1].OGL.TexId << std::endl;
 
-    makeCurrent();
-    fbo->bind();
-    resizeGL(1182, 1461);
+        //
 
-  //  updateGL();
+        fbo->release();
+        resizeGL(size().width(), size().height());
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    glcViewport.setDistMinAndMax(glcWorld.boundingBox());
-    glcWorld.collection()->updateInstanceViewableState();
-    GLC_Context::current()->glcLoadIdentity();
+        //--------------------------------------------------------------------------
+        ovrHmd_EndFrame(hmd, headPose, eyeTexture);
 
 
-    glcLight.glExecute();
-    //updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
-    glcViewport.glExecuteCam();
-    glcViewport.useClipPlane(true);
-
-    glcWorld.render(0, glc::ShadingFlag);
-    glcMoverController.drawActiveMoverRep();
-
-    QImage image = fbo->toImage();
-    image.save("test.jpg");
-
-    fbo->release();
-    resizeGL(size().width(), size().height());
+    }
+    catch (GLC_Exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+  //  swapBuffers();
+    doneCurrent();
 
 
 /*
@@ -550,10 +567,10 @@ void repo::gui::RepoOculus::paintGL()
     {
         std::cerr << e.what() << std::endl;
     }
-*/
 
     swapBuffers();
     doneCurrent();
+    */
 }
 
 
