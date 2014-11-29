@@ -63,6 +63,8 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
     , textID(-1)
 {
 
+
+
     setAttribute(Qt::WA_DeleteOnClose);
     setFocusPolicy(Qt::StrongFocus);
     setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_eye));
@@ -73,11 +75,9 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
 	fbos[1] = 0;
 
 
-
+    //--------------------------------------------------------------------------
+    // Allocate frame buffer
     makeCurrent();
-
-    GLC_Context::current();
-
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::Depth);
     fbo = new QOpenGLFramebufferObject(1182, 1461, format);
@@ -94,15 +94,15 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
     connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
     connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(updateGL()));
 
-    glcViewport.setBackgroundColor(Qt::white);
+    glcViewport.setBackgroundColor(Qt::red);
     glcLight.setPosition(1.0, 1.0, 1.0);
+
+
+
 
     //--------------------------------------------------------------------------
     // Oculus settings
     initializeOVR();
-
-
-
 
 
     setAutoBufferSwap(false);
@@ -136,6 +136,9 @@ void repo::gui::RepoOculus::initializeOVR()
     ovr_Initialize();
     //int hmdCount = ovrHmd_Detect();
     //std::cout << "Number of available HMDs: " << hmdCount << std::endl;
+
+
+
 
     hmd = ovrHmd_Create(0);
     if (!hmd)
@@ -216,7 +219,7 @@ void repo::gui::RepoOculus::initializeOVR()
 
     std::cout << "TexId: " << fbo->texture() << std::endl;
 
-	glcViewport.setWinGLSize(renderTargetSize.w, renderTargetSize.h);
+    //glcViewport.setWinGLSize(renderTargetSize.w, renderTargetSize.h);
 
 	//printf("FBO %d %d\n", glcViewport.viewHSize(), glcViewport.viewHSize());
 
@@ -227,20 +230,21 @@ void repo::gui::RepoOculus::initializeOVR()
     cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
     cfg.OGL.Header.RTSize = OVR::Sizei(hmd->Resolution.w, hmd->Resolution.h);
     cfg.OGL.Header.Multisample = backBufferMultisample;
-
+    cfg.OGL.Window = reinterpret_cast<HWND>(winId());
 
 
 //	void *winHandle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), w);
-	#if defined(Q_OS_LINUX)
-        cfg.OGL.Win = (Window)(winId());
-    #elif defined(Q_OS_WIN)
-        cfg.OGL.Window = reinterpret_cast<HWND>(winId());
-    #endif
+//	#if defined(Q_OS_LINUX)
+//        cfg.OGL.Win = (Window)(winId());
+//    #elif defined(Q_OS_WIN)
+//        cfg.OGL.Window = reinterpret_cast<HWND>(winId());
+//    #endif
 
 	makeCurrent();
 
-	// cfg.OGL.WglContext = wglGetCurrentContext();
-	// cfg.OGL.GdiDc = wglGetCurrentDC();
+//    cfg.OGL.WglContext = wglGetCurrentContext();
+//    cfg.OGL.GdiDc = wglGetCurrentDC();
+
 	#if defined(Q_OS_WIN)
 		cfg.OGL.DC = wglGetCurrentDC();
 	    std::cout << "Window: " << cfg.OGL.Window << std::endl;
@@ -268,21 +272,23 @@ void repo::gui::RepoOculus::initializeOVR()
 	#endif
 
 
+
+
     //--------------------------------------------------------------------------
     // TESTER Texture
 
-//    QImage img(":/images/3drepo-bg.png");
-//      if(img.isNull()){
-//        qDebug() << "Failed loading image";
-//      }
+    QImage img(":/images/3drepo-bg.png");
+      if(img.isNull()){
+        qDebug() << "Failed loading image";
+      }
 
 
-//      glEnable(GL_TEXTURE_2D);
-//      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+      glEnable(GL_TEXTURE_2D);
+      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
-//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//      Q_ASSERT(!glGetError());
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      Q_ASSERT(!glGetError());
 
 }
 
@@ -351,6 +357,7 @@ void repo::gui::RepoOculus::paintGL()
 //    /glEnable(GL_TEXTURE_2D);
 
 
+
     try
     {
         ovrTexture eyeTexture[2];
@@ -385,12 +392,13 @@ void repo::gui::RepoOculus::paintGL()
         image.save("test.jpg");
 
 
-        std::cout << "Texture ID:" << eyeTextureGL[1].OGL.TexId << std::endl;
 
-        //
 
         fbo->release();
         resizeGL(size().width(), size().height());
+
+        eyeTexture[0] = eyeTextureGL[0].Texture;
+        eyeTexture[1] = eyeTextureGL[1].Texture;
 
         //--------------------------------------------------------------------------
         ovrHmd_EndFrame(hmd, headPose, eyeTexture);
@@ -401,7 +409,7 @@ void repo::gui::RepoOculus::paintGL()
     {
         std::cerr << e.what() << std::endl;
     }
-  //  swapBuffers();
+   // swapBuffers();
     doneCurrent();
 
 
