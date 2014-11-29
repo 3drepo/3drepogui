@@ -138,8 +138,6 @@ void repo::gui::RepoOculus::initializeOVR()
     //std::cout << "Number of available HMDs: " << hmdCount << std::endl;
 
 
-
-
     hmd = ovrHmd_Create(0);
     if (!hmd)
     {
@@ -256,7 +254,7 @@ void repo::gui::RepoOculus::initializeOVR()
     if(!ovrHmd_ConfigureRendering(
                 hmd,
                 &cfg.Config,
-                ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp,
+                ovrDistortionCap_NoRestore | ovrDistortionCap_Chromatic, // | ovrDistortionCap_TimeWarp,
                 eyesFov,
                 eyeRenderDesc))
     {
@@ -356,8 +354,6 @@ void repo::gui::RepoOculus::paintGL()
 
 //    /glEnable(GL_TEXTURE_2D);
 
-
-
     try
     {
         ovrTexture eyeTexture[2];
@@ -395,12 +391,12 @@ void repo::gui::RepoOculus::paintGL()
 
 
         fbo->release();
-        resizeGL(size().width(), size().height());
+      //  resizeGL(size().width(), size().height());
 
         eyeTexture[0] = eyeTextureGL[0].Texture;
         eyeTexture[1] = eyeTextureGL[1].Texture;
 
-        //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
         ovrHmd_EndFrame(hmd, headPose, eyeTexture);
 
 
@@ -409,7 +405,6 @@ void repo::gui::RepoOculus::paintGL()
     {
         std::cerr << e.what() << std::endl;
     }
-   // swapBuffers();
     doneCurrent();
 
 
