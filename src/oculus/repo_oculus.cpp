@@ -61,6 +61,7 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
     , glcViewport()
     , glcMoverController()
     , textID(-1)
+    , fbo(0)
 {
 
 
@@ -75,12 +76,18 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
 	fbos[1] = 0;
 
 
+
     //--------------------------------------------------------------------------
     // Allocate frame buffer
     makeCurrent();
+
+
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::Depth);
     fbo = new QOpenGLFramebufferObject(1182, 1461, format);
+
+
+
 
     //--------------------------------------------------------------------------
     // GLC settings
@@ -90,11 +97,12 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QString &windowTitle)
         repColor, &glcViewport);
 
 
+
     // Connect slots
     connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
     connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(updateGL()));
 
-    glcViewport.setBackgroundColor(Qt::red);
+    glcViewport.setBackgroundColor(Qt::white);
     glcLight.setPosition(1.0, 1.0, 1.0);
 
 
@@ -254,7 +262,7 @@ void repo::gui::RepoOculus::initializeOVR()
     if(!ovrHmd_ConfigureRendering(
                 hmd,
                 &cfg.Config,
-                ovrDistortionCap_NoRestore | ovrDistortionCap_Chromatic, // | ovrDistortionCap_TimeWarp,
+                ovrDistortionCap_NoRestore, // | ovrDistortionCap_Chromatic, // | ovrDistortionCap_TimeWarp,
                 eyesFov,
                 eyeRenderDesc))
     {
@@ -270,7 +278,7 @@ void repo::gui::RepoOculus::initializeOVR()
 	#endif
 
 
-
+    std::cerr << "GL Error: " << glGetError()  << std::endl;
 
     //--------------------------------------------------------------------------
     // TESTER Texture
@@ -282,7 +290,7 @@ void repo::gui::RepoOculus::initializeOVR()
 
 
       glEnable(GL_TEXTURE_2D);
-      eyeTextureGL[0].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+      eyeTextureGL[1].OGL.TexId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -293,6 +301,8 @@ void repo::gui::RepoOculus::initializeOVR()
 
 void repo::gui::RepoOculus::mousePressEvent(QMouseEvent *e)
 {
+
+    ovrHmd_DismissHSWDisplay(hmd);
     switch (e->button())
     {
         case (Qt::RightButton):
@@ -354,20 +364,21 @@ void repo::gui::RepoOculus::paintGL()
 
 //    /glEnable(GL_TEXTURE_2D);
 
+    makeCurrent();
     try
     {
         ovrTexture eyeTexture[2];
         ovrPosef headPose[2];
 
-        makeCurrent();
+
         ovrHmd_BeginFrame(hmd, 0);
 
 
-        //--------------------------------------------------------------------------
 
+        //----------------------------------------------------------------------
+        // Render to off-screen buffer.
         fbo->bind();
         resizeGL(1182, 1461);
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -389,22 +400,28 @@ void repo::gui::RepoOculus::paintGL()
 
 
 
-
         fbo->release();
-      //  resizeGL(size().width(), size().height());
+        resizeGL(size().width(), size().height());
 
         eyeTexture[0] = eyeTextureGL[0].Texture;
         eyeTexture[1] = eyeTextureGL[1].Texture;
 
         //----------------------------------------------------------------------
-        ovrHmd_EndFrame(hmd, headPose, eyeTexture);
 
+
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
+        ovrHmd_EndFrame(hmd, headPose, eyeTexture);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_DEPTH_TEST);
+        glClearDepth(1.0);
 
     }
     catch (GLC_Exception &e)
     {
         std::cerr << e.what() << std::endl;
     }
+
     doneCurrent();
 
 
