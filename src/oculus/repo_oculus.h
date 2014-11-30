@@ -29,6 +29,7 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QGLWidget>
+#include <QGLFormat>
 #include <QOpenGLFramebufferObject>
 
 //------------------------------------------------------------------------------
@@ -56,7 +57,9 @@ class RepoOculus : public QGLWidget
 
 public :
 
-    RepoOculus(QWidget *parent = 0, const QString &windowTitle = "");
+    RepoOculus(QWidget *parent = 0,
+               const QGLFormat &format = QGLFormat::defaultFormat(),
+               const QString &windowTitle = "");
 
     ~RepoOculus();
 
@@ -76,9 +79,15 @@ protected :
 
     void paintGL();
 
+    void paintGLC();
+
+
+
     void resizeGL(int w, int h);
 
     void wheelEvent(QWheelEvent * e);
+
+
 
 
 
@@ -119,6 +128,8 @@ private :
 
     QOpenGLFramebufferObject *fbo;
    // QGLFramebufferObject *fbo;
+
+    bool isRenderOVR;
 
 
 

@@ -78,7 +78,14 @@ void repo::gui::RepoMdiSubWindow::setWidget(
 	const unsigned int pFlags)
 {
     //setWidget(new RepoGLCWidget(this, RepoWorkerAssimp::getFileName(filePath)));
-    setWidget(new RepoOculus(this, RepoWorkerAssimp::getFileName(filePath)));
+
+
+    //--------------------------------------------------------------------------
+    // Disable double buffering
+    QGLFormat format;
+    format.setDoubleBuffer(false);
+
+    setWidget(new RepoOculus(this, format, RepoWorkerAssimp::getFileName(filePath)));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
