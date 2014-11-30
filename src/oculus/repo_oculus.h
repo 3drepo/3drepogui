@@ -115,13 +115,10 @@ private :
 
 
 
-    GLuint textID;
-
-
-    QOpenGLFramebufferObject *fbos[2];
-
+    GLuint texId;
 
     QOpenGLFramebufferObject *fbo;
+   // QGLFramebufferObject *fbo;
 
 
 
