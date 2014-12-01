@@ -391,6 +391,11 @@ void repo::gui::RepoOculus::paintGL()
         //----------------------------------------------------------------------
 
 
+        // TODO: TRY with pixel buffer instead of FBO:
+        // http://qt-project.org/doc/qt-4.8/opengl-pbuffers-glwidget-cpp.html
+        // QGLPixelBuffer: http://qt-project.org/doc/qt-5/qglpixelbuffer.html
+
+
         ovrHmd_BeginFrame(hmd, 0);
 
 
