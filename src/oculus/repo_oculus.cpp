@@ -139,7 +139,22 @@ void repo::gui::RepoOculus::initializeGL()
     format.setInternalTextureFormat(GL_RGBA);
     fbo = new QOpenGLFramebufferObject(renderTargetSize.w , renderTargetSize.h, format);
 
-    eyeTextureGL[0].OGL.TexId = fbo->texture();
+
+
+    //--------------------------------------------------------------------------
+    // Test with pixel buffer
+    QGLFormat pbufferFormat;
+    pbufferFormat.setSampleBuffers(false);
+    pbuffer = new QGLPixelBuffer(QSize(renderTargetSize.w , renderTargetSize.h), pbufferFormat, this);
+
+    pbuffer->makeCurrent();
+   texId = pbuffer->generateDynamicTexture();
+
+    makeCurrent();
+
+
+
+    eyeTextureGL[0].OGL.TexId = texId; //fbo->texture();
     eyeTextureGL[1].OGL.TexId = texId; //fbo->texture();
 
     // The actual RT size may be different due to HW limits.
@@ -302,7 +317,7 @@ void repo::gui::RepoOculus::initializeOVR()
 
 
       glEnable(GL_TEXTURE_2D);
-      texId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
+    //  texId = QGLWidget::context()->bindTexture(img, GL_TEXTURE_2D, GL_RGBA);
 
       std::cerr << "Test texture ID: " << texId << std::endl;
 
@@ -411,25 +426,43 @@ void repo::gui::RepoOculus::paintGL()
 
         // push the projection matrix and the entire GL state before
         // doing any rendering into our framebuffer object
-        glPushAttrib(GL_ALL_ATTRIB_BITS);
-        glPushMatrix();
+//        glPushAttrib(GL_ALL_ATTRIB_BITS);
+//        glPushMatrix();
 
 
 
-        makeCurrent();
-        fbo->bind();
+//        makeCurrent();
+//        fbo->bind();
+
+
+
+        pbuffer->makeCurrent();
+        pbuffer->bindToDynamicTexture(texId);
+
         resizeGL(fbo->width(), fbo->height());
 
         // Render scene
         paintGLC();
 
-        fbo->release();
+        QImage tester = pbuffer->toImage();
+        tester.save("pbuffer.jpg");
+
+
+
+        pbuffer->releaseFromDynamicTexture();
+
+       // pbuffer->updateDynamicTexture(eyeTextureGL[0].OGL.TexId);
+
+        //fbo->release();
+        makeCurrent();
         resizeGL(width(), height());
 
 
 
-        glPopAttrib();
-        glPopMatrix();
+
+
+//        glPopAttrib();
+//        glPopMatrix();
 
 
         eyeTexture[0] = eyeTextureGL[0].Texture;
@@ -632,9 +665,7 @@ void repo::gui::RepoOculus::paintGL()
 
 void repo::gui::RepoOculus::paintGLC()
 {
-    GLC_Context::current()->makeCurrent();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
-
     glcViewport.setDistMinAndMax(glcWorld.boundingBox());
 
     glcWorld.collection()->updateInstanceViewableState();

@@ -122,6 +122,7 @@ private :
     ovrSizei renderTargetSize;
 
 
+    QGLPixelBuffer *pbuffer;
 
 
     GLuint texId;
