@@ -79,9 +79,7 @@ protected :
 
     void paintGL();
 
-    void paintGLC();
-
-
+    void paintGLC(int eye);
 
     void resizeGL(int w, int h);
 
@@ -119,23 +117,21 @@ private :
 
 
     ovrGLTexture eyeTextureGL[2];
-    ovrSizei renderTargetSize;
+    ovrSizei renderTargetSize[2];
 
 
-    QGLPixelBuffer *pbuffer;
+    QGLPixelBuffer *pbuffer[2];
 
 
-    GLuint texId;
+    GLuint texId[2];
 
     QOpenGLFramebufferObject *fbo;
    // QGLFramebufferObject *fbo;
 
     bool isRenderOVR;
 
-
-
-
-
+    ovrPosef eyeRenderPose[2];
+    ovrTrackingState hmdState;
 }; // end class
 
 } // end namespace gui

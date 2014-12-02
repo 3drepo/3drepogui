@@ -23,40 +23,26 @@
 
 
 #if defined(Q_OS_LINUX)
+	#include <X11/X.h>
 	#include <QX11Info>
-    #include <qpa/qplatformnativeinterface.h>
 #endif
 
 #include <cstdio>
 
 #include "../primitives/repo_fontawesome.h"
 
-void printOvrMatrix(const ovrMatrix4f &mat)
+template <typename T>
+void printOvrMatrix(T *mat)
 {
 	for(int r = 0; r < 4; r++)
 	{
 		for(int c= 0; c < 4; c++)
 		{
-			printf("%f ", mat.M[r][c]);
+			printf("%f ", (float)(mat[r + 4 * c]));
 		}
 		printf("\n");
 	}
 	printf("\n");
-}
-
-void updateCam(const ovrEyeRenderDesc &eye, GLC_Camera *cam)
-{
-	OVR::Matrix4f proj = ovrMatrix4f_Projection(eye.Fov, 0.01f, 10000.0f, true);
-
-	GLC_Point3d eyePos(eye.HmdToEyeViewOffset.x,
-						eye.HmdToEyeViewOffset.y,
-						eye.HmdToEyeViewOffset.z);
-
-	GLC_Vector3d up(proj.M[1][0], proj.M[1][1], -proj.M[1][2]);
-	GLC_Vector3d right(proj.M[0][0], proj.M[0][1], proj.M[0][2]);
-	GLC_Point3d forward = up^right;
-
-	cam->setCam(eyePos, forward, up);
 }
 
 repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, const QString &windowTitle)
@@ -64,9 +50,11 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, cons
     , glcLight()
     , glcViewport()
     , glcMoverController()
-    , texId(-1)
-    , fbo(0)
+    //, texId(-1)
+    //, fbo(0)
 {
+	texId[0] = 0;
+	texId[1] = 0;
 
     isRenderOVR = true;
 
@@ -129,6 +117,7 @@ void repo::gui::RepoOculus::initializeGL()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+/*
     //--------------------------------------------------------------------------
     // Prepare OpenGL frame buffer objects for texture rendering
     // See Oculus SDK page 29
@@ -138,29 +127,37 @@ void repo::gui::RepoOculus::initializeGL()
     format.setSamples(0);
     format.setInternalTextureFormat(GL_RGBA);
     fbo = new QOpenGLFramebufferObject(renderTargetSize.w , renderTargetSize.h, format);
-
+*/
 
 
     //--------------------------------------------------------------------------
     // Test with pixel buffer
     QGLFormat pbufferFormat;
     pbufferFormat.setSampleBuffers(false);
-    pbuffer = new QGLPixelBuffer(QSize(renderTargetSize.w , renderTargetSize.h), pbufferFormat, this);
+    pbuffer[0] = new QGLPixelBuffer(QSize(renderTargetSize[0].w, renderTargetSize[0].h), pbufferFormat, this);
+	pbuffer[1] = new QGLPixelBuffer(QSize(renderTargetSize[1].w, renderTargetSize[1].h), pbufferFormat, this);
 
-    pbuffer->makeCurrent();
-   texId = pbuffer->generateDynamicTexture();
+    pbuffer[0]->makeCurrent();
+	texId[0] = pbuffer[0]->generateDynamicTexture();
 
-    makeCurrent();
+    pbuffer[1]->makeCurrent();
+	texId[1] = pbuffer[1]->generateDynamicTexture();
 
+	makeCurrent();
 
-
-    eyeTextureGL[0].OGL.TexId = texId; //fbo->texture();
-    eyeTextureGL[1].OGL.TexId = texId; //fbo->texture();
+    eyeTextureGL[0].OGL.TexId = texId[0]; //fbo->texture();
+    eyeTextureGL[1].OGL.TexId = texId[1]; //fbo->texture();
 
     // The actual RT size may be different due to HW limits.
-    renderTargetSize.w = fbo->size().width();
-    renderTargetSize.h = fbo->size().height();
+    //renderTargetSize.w = fbo->size().width();
+    //renderTargetSize.h = fbo->size().height();
     //--------------------------------------------------------------------------
+
+	renderTargetSize[0].w = pbuffer[0]->size().width();
+	renderTargetSize[0].h = pbuffer[0]->size().height();
+	renderTargetSize[1].w = pbuffer[1]->size().width();
+	renderTargetSize[1].h = pbuffer[1]->size().height();
+
 
      const char* version = (const char*)glGetString(GL_VERSION);
      std::cout << "GL_VERSION: " << version << std::endl;
@@ -197,22 +194,21 @@ void repo::gui::RepoOculus::initializeOVR()
         std::cout << "HMD resolution: " << resolution.w << " x " << resolution.h << std::endl;
     }
 
-
-
-
     //--------------------------------------------------------------------------
     // Configure Stereo settings.
     ovrSizei recommendedTex0Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Left, hmd->DefaultEyeFov[0], 1.0f);
     ovrSizei recommendedTex1Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Right, hmd->DefaultEyeFov[1], 1.0f);
 
-    renderTargetSize.w = (recommendedTex0Size.w + recommendedTex1Size.w)/2;
-    renderTargetSize.h = qMax(recommendedTex0Size.h, recommendedTex1Size.h);
+    renderTargetSize[0].w = recommendedTex0Size.w;
+    renderTargetSize[0].h = qMax(recommendedTex0Size.h, recommendedTex1Size.h);
+
+	renderTargetSize[1].w = recommendedTex1Size.h;
+	renderTargetSize[1].h = renderTargetSize[0].h;
 
     //--------------------------------------------------------------------------
     // Initialize eye rendering information.
     // The viewport sizes are re-computed in case RenderTargetSize changed due to HW limitations.
     ovrFovPort eyesFov[2] = { hmd->DefaultEyeFov[0], hmd->DefaultEyeFov[1] } ;
-
 
     //--------------------------------------------------------------------------
     // Rendering parameters
@@ -220,16 +216,16 @@ void repo::gui::RepoOculus::initializeOVR()
 
     // Left eye
     eyeTextureGL[0].OGL.Header.API = ovrRenderAPI_OpenGL;
-    eyeTextureGL[0].OGL.Header.TextureSize = renderTargetSize;
+    eyeTextureGL[0].OGL.Header.TextureSize = renderTargetSize[0];
     eyeTextureGL[0].OGL.Header.RenderViewport.Pos = OVR::Vector2i(0,0);
-    eyeTextureGL[0].OGL.Header.RenderViewport.Size = OVR::Sizei(renderTargetSize.w, renderTargetSize.h);
-
+    eyeTextureGL[0].OGL.Header.RenderViewport.Size = OVR::Sizei(renderTargetSize[0].w, renderTargetSize[0].h);
 
     // Right eye
-    eyeTextureGL[1] = eyeTextureGL[0];
+    eyeTextureGL[1].OGL.Header.API = ovrRenderAPI_OpenGL;
+    eyeTextureGL[1].OGL.Header.TextureSize = renderTargetSize[1];
     eyeTextureGL[1].OGL.Header.RenderViewport.Pos = OVR::Vector2i(0,0); //OVR::Vector2i((renderTargetSize.w + 1) / 2, 0);
-    eyeTextureGL[1].OGL.Header.RenderViewport.Size = eyeTextureGL[0].OGL.Header.RenderViewport.Size;
-    //eyeTextureGL[1].OGL.TexId = fbo->texture();
+    eyeTextureGL[1].OGL.Header.RenderViewport.Size = OVR::Sizei(renderTargetSize[1].w, renderTargetSize[1].h);
+	//eyeTextureGL[1].OGL.TexId = fbo->texture();
 
 
     //--------------------------------------------------------------------------
@@ -239,8 +235,13 @@ void repo::gui::RepoOculus::initializeOVR()
     cfg.OGL.Header.API = ovrRenderAPI_OpenGL;
     cfg.OGL.Header.RTSize = OVR::Sizei(hmd->Resolution.w, hmd->Resolution.h);
     cfg.OGL.Header.Multisample = backBufferMultisample;
-    cfg.OGL.Window = reinterpret_cast<HWND>(winId());
-    cfg.OGL.DC = wglGetCurrentDC();
+	#if defined(Q_OS_LINUX)
+		cfg.OGL.Disp = QX11Info::display();
+		cfg.OGL.Win  = (Window)(winId());
+	#elif defined(Q_OS_WIN)
+		cfg.OGL.Window = reinterpret_cast<HWND>(winId());
+		cfg.OGL.DC = wglGetCurrentDC();
+	#endif
 
 //	void *winHandle = QGuiApplication::platformNativeInterface()->nativeResourceForWindow(QByteArrayLiteral("handle"), w);
 //	#if defined(Q_OS_LINUX)
@@ -310,7 +311,8 @@ void repo::gui::RepoOculus::initializeOVR()
     //--------------------------------------------------------------------------
     // TESTER Texture
 
-    QImage img(":/images/3drepo-bg.png");
+	std::cout << " Loading image ... " << std::endl;
+    QImage img("/home/tscully/3drepo/3drepogui/3drepo-bg.bmp");
       if(img.isNull()){
         qDebug() << "Failed loading image";
       }
@@ -391,8 +393,8 @@ void repo::gui::RepoOculus::wheelEvent(QWheelEvent *e)
 
 void repo::gui::RepoOculus::paintGL()
 {
-    static ovrPosef eyeRenderPose[2];
-    static ovrTrackingState hmdState;
+	const int ms(1000/60);
+	QTimer::singleShot(ms, this, SLOT(update()));
 
     try
     {
@@ -434,31 +436,40 @@ void repo::gui::RepoOculus::paintGL()
 //        makeCurrent();
 //        fbo->bind();
 
+        for (int eyeIndex = 0; eyeIndex < ovrEye_Count; ++eyeIndex)
+        {
+
+            //makeCurrent();
+
+            ovrEyeType eye = hmd->EyeRenderOrder[eyeIndex];
 
 
-        pbuffer->makeCurrent();
-        pbuffer->bindToDynamicTexture(texId);
+			pbuffer[eye]->makeCurrent();
+			//pbuffer->bindToDynamicTexture(texId);
 
-        resizeGL(fbo->width(), fbo->height());
+			//resizeGL(fbo->width(), fbo->height());
 
-        // Render scene
-        paintGLC();
+			//if (eye == 1)
+			//updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
 
-        QImage tester = pbuffer->toImage();
-        tester.save("pbuffer.jpg");
+			// Render scene
+			paintGLC(eye);
 
-
-
-        pbuffer->releaseFromDynamicTexture();
-
-       // pbuffer->updateDynamicTexture(eyeTextureGL[0].OGL.TexId);
-
-        //fbo->release();
-        makeCurrent();
-        resizeGL(width(), height());
+			//QImage tester = pbuffer->toImage();
+			//tester.save("pbuffer.jpg");
 
 
 
+			//pbuffer->releaseFromDynamicTexture();
+
+			pbuffer[eye]->updateDynamicTexture(eyeTextureGL[eye].OGL.TexId);
+
+			//fbo->release();
+			makeCurrent();
+			resizeGL(width(), height());
+
+
+		}
 
 
 //        glPopAttrib();
@@ -663,7 +674,7 @@ void repo::gui::RepoOculus::paintGL()
     */
 }
 
-void repo::gui::RepoOculus::paintGLC()
+void repo::gui::RepoOculus::paintGLC(int eye)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
     glcViewport.setDistMinAndMax(glcWorld.boundingBox());
@@ -673,15 +684,42 @@ void repo::gui::RepoOculus::paintGLC()
     //glLoadIdentity();
 
     glcLight.glExecute();
+
+	//printOvrMatrix(glcViewport.cameraHandle()->modelViewMatrix().getData());
     //updateCam(eyeRenderDesc[eye], glcViewport.cameraHandle());
-    glcViewport.glExecuteCam();
-    glcViewport.useClipPlane(true);
+   //ovrVector3f WorldEyePos = eyeRenderDesc[eye].HmdToEyeViewOffset;
+
+	//ovrVector3f ViewAdjust = eyeRenderDesc[eye].ViewAdjust;
+
+	//glcViewport.cameraHandle()->translate(GLC_Vector3d(ViewAdjust.x, ViewAdjust.y, ViewAdjust.z));
+
+	ovrVector3f WorldEyePos = eyeRenderPose[eye].Position;
+
+	GLC_Matrix4x4 mv = glcViewport.cameraHandle()->modelViewMatrix();
+	GLC_Matrix4x4 trans(WorldEyePos.x,-WorldEyePos.y,-WorldEyePos.z);
+	GLC_Matrix4x4 orient(&(OVR::Matrix4f(eyeRenderPose[eye].Orientation).M[0][0]));
+
+	GLC_Matrix4x4 newMV = (trans * orient).inverted() * mv;
+
+	//printf("%f %f %f\n", WorldEyePos.x, WorldEyePos.y, WorldEyePos.z);
+/*
+	glcViewport.cameraHandle()->translate(GLC_Vector3d(WorldEyePos.x, WorldEyePos.y, WorldEyePos.z));
+	GLC_Matrix4x4 orient(&(OVR::Matrix4f(eyeRenderPose[eye].Orientation).M[0][0]));
+
+	//glMultMatrixf(&(OVR::Matrix4f(eyeRenderPose[eye].Orientation).M[0][0]));
+
+	glcViewport.cameraHandle()->move(orient.inverted());
+	glcViewport.glExecuteCam();
+*/
+	GLC_Context::current()->glcMultMatrix(newMV);
+	//glMultMatrix4f(&(eyeRenderPose[eye].translation[0][0])));
+	glcViewport.useClipPlane(true);
 
     glcWorld.render(0, glc::ShadingFlag);
     glcMoverController.drawActiveMoverRep();
 
-    QImage image = fbo->toImage();
-    image.save("test.jpg");
+    //QImage image = fbo->toImage();
+    //image.save("test.jpg");
 
 }
 
