@@ -18,6 +18,7 @@
 #include "repo_workerfetchrevision.h"
 //------------------------------------------------------------------------------
 #include "graph/repo_node_revision.h"
+#include "graph/repo_node_abstract.h"
 #include "graph/repo_graph_history.h"
 //------------------------------------------------------------------------------
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
@@ -133,7 +134,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
             // TODO: fetch references, build subscenes, attach to the main graph
             // instead of references.
 
-            std::vector<RepoNodeAbstract *> references = repoGraphScene->getReferences();
+            std::vector<core::RepoNodeAbstract *> references = repoGraphScene->getReferences();
             jobsCount += references.size();
             std::cerr << "Ref count: " << references.size() << std::endl;
 
