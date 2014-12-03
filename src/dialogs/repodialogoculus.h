@@ -35,17 +35,18 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-
+//! Settings dialog for Oculus Rift rendering.
 class RepoDialogOculus : public QDialog
 {
     Q_OBJECT
 
 public:
 
-    explicit RepoDialogOculus(const RepoGLCWidget *glcWidget, QWidget *parent);
+    RepoDialogOculus(const RepoGLCWidget *glcWidget, QWidget *parent);
 
     ~RepoDialogOculus();
 
+    //! Shows the dialog and starts the Oculus Rift rendering if clicked OK.
     int exec();
 
 private:

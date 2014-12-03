@@ -55,12 +55,14 @@ repo::gui::RepoDialogOculus::~RepoDialogOculus()
     delete ui;
 }
 
-
 int repo::gui::RepoDialogOculus::exec()
 {
     int result;
     if (result = QDialog::exec())
     {
+        // TODO: put Oculus initialisation into a separate thread as it blocks the
+        // whole GUI at the moment.
+        QApplication::setOverrideCursor(Qt::WaitCursor);
         QMainWindow *parent = (QMainWindow*) this->parent();
         QMainWindow *oculusWindow = new QMainWindow((QWidget *) this->parent());
         oculusWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -79,7 +81,6 @@ int repo::gui::RepoDialogOculus::exec()
         oculusWindow->showFullScreen();
         oculusWindow->update();
 
-
         //----------------------------------------------------------------------
         // Create Oculus widget
         RepoOculus *oculusWidget = new RepoOculus(
@@ -90,6 +91,7 @@ int repo::gui::RepoDialogOculus::exec()
 
         QObject::connect(oculusWidget, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setCentralWidget(oculusWidget);
+        QApplication::restoreOverrideCursor();
     }
     return result;
 }
