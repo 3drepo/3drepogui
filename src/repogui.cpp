@@ -29,13 +29,14 @@
 #include "repogui.h"
 #include "ui_repogui.h"
 #include "widgets/repo_widgetrepository.h"
+#include "widgets/repo_textbrowser.h"
 #include "workers/repo_workercommit.h"
 #include "dialogs/repo_dialogcommit.h"
-#include "primitives/repo_fontawesome.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
+#include "primitives/repo_fontawesome.h"
+#include "oculus/repo_oculus.h"
 
-#include "widgets/repo_textbrowser.h"
 
 
 //------------------------------------------------------------------------------
@@ -456,7 +457,32 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
 
 void repo::gui::RepoGUI::oculus()
 {
-    ui->mdiArea->activeSubWindowToOculus();
+    RepoGLCWidget *activeSubWidget = ui->mdiArea->activeSubWidget<RepoGLCWidget*>();
+    if (activeSubWidget)
+    {
+        QMainWindow *oculusWindow = new QMainWindow(this);
+        oculusWindow->setAttribute(Qt::WA_DeleteOnClose);
+        oculusWindow->setFocusPolicy(Qt::StrongFocus);
+        oculusWindow->show();
+
+        //----------------------------------------------------------------------
+        // Disable double buffering
+        RepoOculus *oculusWidget = new RepoOculus(
+                    oculusWindow,
+                    RepoOculus::singleBufferFormat(),
+                    activeSubWidget->windowTitle());
+        oculusWidget->setGLCWorld(activeSubWidget->getGLCWorld());
+        oculusWindow->setCentralWidget(oculusWidget);
+
+        QRect screenres = QApplication::desktop()->screenGeometry(2);
+        oculusWindow->move(QPoint(screenres.x(), screenres.y()));
+        oculusWindow->showFullScreen();
+
+    }
+
+
+
+    //ui->mdiArea->activeSubWindowToOculus();
 }
 
 void repo::gui::RepoGUI::openFile()

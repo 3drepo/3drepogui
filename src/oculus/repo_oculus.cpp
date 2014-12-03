@@ -102,6 +102,13 @@ repo::gui::RepoOculus::~RepoOculus()
     delete fbo;
 }
 
+QGLFormat repo::gui::RepoOculus::singleBufferFormat()
+{
+    QGLFormat format;
+    format.setDoubleBuffer(false);
+    return format;
+}
+
 //------------------------------------------------------------------------------
 //
 // Protected
@@ -110,7 +117,8 @@ repo::gui::RepoOculus::~RepoOculus()
 
 void repo::gui::RepoOculus::initializeGL()
 {
-    glcViewport.cameraHandle()->setDefaultUpVector(glc::Y_AXIS);
+    glc::Y_AXIS;
+    glcViewport.cameraHandle()->setDefaultUpVector(GLC_Vector3d(-1.0, -1.0, 0.0)); //glc::Y_AXIS);
     glcViewport.initGl();
 
     glEnable(GL_DEPTH_TEST);
@@ -273,7 +281,7 @@ void repo::gui::RepoOculus::initializeOVR()
     if(isRenderOVR && !ovrHmd_ConfigureRendering(
                 hmd,
                 &cfg.Config,
-                0, //ovrDistortionCap_NoRestore, // | ovrDistortionCap_Chromatic, // | ovrDistortionCap_TimeWarp,
+                ovrDistortionCap_Chromatic, //ovrDistortionCap_NoRestore, // | ovrDistortionCap_TimeWarp,
                 eyesFov,
                 eyeRenderDesc))
     {

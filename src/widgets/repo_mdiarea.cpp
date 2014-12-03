@@ -243,10 +243,10 @@ repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()
 
         //----------------------------------------------------------------------
         // Disable double buffering
-        QGLFormat format;
-        format.setDoubleBuffer(false);
-
-        RepoOculus *oculus = new RepoOculus(repoSubWindow, format, oldWidget->windowTitle());
+        RepoOculus *oculus = new RepoOculus(
+                    repoSubWindow,
+                    RepoOculus::singleBufferFormat(),
+                    oldWidget->windowTitle());
         oculus->setGLCWorld(oldWidget->getGLCWorld());
 
         repoSubWindow->setWidget(oculus);

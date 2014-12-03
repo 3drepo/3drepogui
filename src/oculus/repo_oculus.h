@@ -65,6 +65,9 @@ public :
 
     void setGLCWorld(GLC_World);
 
+    //! Returns a default format with double buffering disabled.
+    static QGLFormat singleBufferFormat();
+
 protected :
 
     void initializeGL();
