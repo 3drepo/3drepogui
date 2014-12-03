@@ -460,15 +460,15 @@ void repo::gui::RepoGUI::oculus()
 {
 
     RepoGLCWidget *activeSubWidget = ui->mdiArea->activeSubWidget<RepoGLCWidget*>();
-    if (activeSubWidget)
+    if (!activeSubWidget)
+        std::cout << "A 3D window has to be open." << std::endl;
+    else
     {
         RepoDialogOculus oculusDialog(activeSubWidget, this);
         oculusDialog.exec();
+        //ui->mdiArea->activeSubWindowToOculus();
     }
 
-
-
-    //ui->mdiArea->activeSubWindowToOculus();
 }
 
 void repo::gui::RepoGUI::openFile()

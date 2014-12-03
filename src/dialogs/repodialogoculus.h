@@ -42,7 +42,7 @@ class RepoDialogOculus : public QDialog
 
 public:
 
-    explicit RepoDialogOculus(const RepoGLCWidget *glcWidget, QWidget *parent = 0);
+    explicit RepoDialogOculus(const RepoGLCWidget *glcWidget, QWidget *parent);
 
     ~RepoDialogOculus();
 

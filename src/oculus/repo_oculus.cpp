@@ -60,7 +60,7 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, cons
 
     setAttribute(Qt::WA_DeleteOnClose);
     setFocusPolicy(Qt::StrongFocus);
-    setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_eye));
+    setWindowIcon(getIcon());
     setMouseTracking(true);
     setWindowTitle(windowTitle);
 
@@ -107,6 +107,11 @@ QGLFormat repo::gui::RepoOculus::singleBufferFormat()
     QGLFormat format;
     format.setDoubleBuffer(false);
     return format;
+}
+
+QIcon repo::gui::RepoOculus::getIcon()
+{
+    return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_eye);
 }
 
 //------------------------------------------------------------------------------
@@ -339,12 +344,17 @@ void repo::gui::RepoOculus::initializeOVR()
 
 void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
 {
+    ovrHmd_DismissHSWDisplay(hmd);
     switch(e->key())
     {
         case Qt::Key_R :
             glcViewport.cameraHandle()->setIsoView();
             glcViewport.reframe(glcWorld.boundingBox());
             updateGL();
+            break;
+        case Qt::Key_F11 :
+        case Qt::Key_Escape :
+            this->deleteLater();
             break;
     }
 }
@@ -353,7 +363,6 @@ void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
 
 void repo::gui::RepoOculus::mousePressEvent(QMouseEvent *e)
 {
-
     ovrHmd_DismissHSWDisplay(hmd);
     switch (e->button())
     {

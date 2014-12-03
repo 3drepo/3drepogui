@@ -30,6 +30,8 @@ repo::gui::RepoDialogOculus::RepoDialogOculus(
     , glcWidget(glcWidget)
 {
     ui->setupUi(this);
+    setWindowTitle(tr("Oculus Rift Settings"));
+    setWindowIcon(RepoOculus::getIcon());
 
     const QDesktopWidget *desktop = QApplication::desktop();
     for (int i = 0; i < desktop->screenCount(); ++i)
@@ -59,10 +61,24 @@ int repo::gui::RepoDialogOculus::exec()
     int result;
     if (result = QDialog::exec())
     {
+        QMainWindow *parent = (QMainWindow*) this->parent();
         QMainWindow *oculusWindow = new QMainWindow((QWidget *) this->parent());
         oculusWindow->setAttribute(Qt::WA_DeleteOnClose);
+        oculusWindow->setWindowTitle(glcWidget->windowTitle());
+        oculusWindow->setWindowIcon(RepoOculus::getIcon());
+        QObject::connect(parent, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setFocusPolicy(Qt::StrongFocus);
+
+        //----------------------------------------------------------------------
+        // Move to selected screen
+        int selectedScreen = ui->monitorComboBox->currentIndex() + 1;
+        QRect screenres = QApplication::desktop()->screenGeometry(selectedScreen);
+        oculusWindow->move(QPoint(screenres.x(), screenres.y()));
         oculusWindow->show();
+        oculusWindow->showMaximized();
+        oculusWindow->showFullScreen();
+        oculusWindow->update();
+
 
         //----------------------------------------------------------------------
         // Create Oculus widget
@@ -71,19 +87,9 @@ int repo::gui::RepoDialogOculus::exec()
                     RepoOculus::singleBufferFormat(),
                     glcWidget->windowTitle());
         oculusWidget->setGLCWorld(glcWidget->getGLCWorld());
+
+        QObject::connect(oculusWidget, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setCentralWidget(oculusWidget);
-
-        //----------------------------------------------------------------------
-        // Move to selected screen
-        int selectedScreen = ui->monitorComboBox->currentIndex() + 1;
-
-        std::cout << "Selected screen index: " << selectedScreen << std::endl;
-
-
-        QRect screenres = QApplication::desktop()->screenGeometry(selectedScreen);
-        oculusWindow->move(QPoint(screenres.x(), screenres.y()));
-
-        oculusWindow->showFullScreen();
     }
     return result;
 }
