@@ -337,6 +337,18 @@ void repo::gui::RepoOculus::initializeOVR()
 
 }
 
+void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
+{
+    switch(e->key())
+    {
+        case Qt::Key_R :
+            glcViewport.cameraHandle()->setIsoView();
+            glcViewport.reframe(glcWorld.boundingBox());
+            updateGL();
+            break;
+    }
+}
+
 
 
 void repo::gui::RepoOculus::mousePressEvent(QMouseEvent *e)
