@@ -92,7 +92,7 @@ public :
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
 
-    RepoMdiSubWindow *addOculus();
+    RepoMdiSubWindow *activeSubWindowToOculus();
 
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 

@@ -76,7 +76,7 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, cons
     connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
     connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(updateGL()));
 
-    glcViewport.setBackgroundColor(Qt::red);
+    glcViewport.setBackgroundColor(Qt::white);
     glcLight.setPosition(1.0, 1.0, 1.0);
 
     //--------------------------------------------------------------------------
@@ -445,7 +445,10 @@ void repo::gui::RepoOculus::paintGL()
 
 
 			pbuffer[eye]->makeCurrent();
-			//pbuffer->bindToDynamicTexture(texId);
+
+            #ifdef defined(Q_OS_WIN)
+                pbuffer[eye]->bindToDynamicTexture(texId[eye]);
+            #endif
 
 			//resizeGL(fbo->width(), fbo->height());
 
@@ -460,9 +463,14 @@ void repo::gui::RepoOculus::paintGL()
 
 
 
-			//pbuffer->releaseFromDynamicTexture();
 
-			pbuffer[eye]->updateDynamicTexture(eyeTextureGL[eye].OGL.TexId);
+            // See http://qt-project.org/doc/qt-5/qglpixelbuffer.html#bindToDynamicTexture
+            // for the explanation of linux vs windows directives.
+            #if defined(Q_OS_LINUX)
+                pbuffer[eye]->updateDynamicTexture(eyeTextureGL[eye].OGL.TexId);
+            #elif defined(Q_OS_WIN)
+                pbuffer[eye]->releaseFromDynamicTexture();
+            #endif
 
 			//fbo->release();
 			makeCurrent();
@@ -676,7 +684,11 @@ void repo::gui::RepoOculus::paintGL()
 
 void repo::gui::RepoOculus::paintGLC(int eye)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
+    glClearColor(1,1,1,1);
+    glEnable(GL_LIGHTING);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// | GL_STENCIL_BUFFER_BIT | GL_ACCUM_BUFFER_BIT);
+
     glcViewport.setDistMinAndMax(glcWorld.boundingBox());
 
     glcWorld.collection()->updateInstanceViewableState();

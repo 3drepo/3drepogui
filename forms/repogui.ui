@@ -414,6 +414,9 @@
    <property name="text">
     <string>Oculus</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+O</string>
+   </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

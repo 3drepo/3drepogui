@@ -231,19 +231,30 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
 
 
-repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::addOculus()
+repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()
 {
+    RepoMdiSubWindow* repoSubWindow = activeSubWindow();    
+    RepoGLCWidget* oldWidget = repoSubWindow->widget<RepoGLCWidget*>();
 
-    RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
+    if (!oldWidget)
+        repoSubWindow = NULL;
+    else
+    {
 
-    RepoOculus *oculus = new RepoOculus();
+        //----------------------------------------------------------------------
+        // Disable double buffering
+        QGLFormat format;
+        format.setDoubleBuffer(false);
 
-    repoSubWindow->setWidget(oculus);
-    QMdiArea::addSubWindow(repoSubWindow);
-    repoSubWindow->show();
+        RepoOculus *oculus = new RepoOculus(repoSubWindow, format, oldWidget->windowTitle());
+        oculus->setGLCWorld(oldWidget->getGLCWorld());
 
-    this->update();
-    this->repaint();
+        repoSubWindow->setWidget(oculus);
+        repoSubWindow->show();
+
+        this->update();
+        this->repaint();
+    }
     return repoSubWindow;
 }
 

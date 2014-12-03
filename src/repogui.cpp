@@ -456,7 +456,7 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
 
 void repo::gui::RepoGUI::oculus()
 {
-    ui->mdiArea->addOculus();
+    ui->mdiArea->activeSubWindowToOculus();
 }
 
 void repo::gui::RepoGUI::openFile()
