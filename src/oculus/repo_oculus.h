@@ -68,6 +68,9 @@ public :
     //! Returns a default format with double buffering disabled.
     static QGLFormat singleBufferFormat();
 
+    //! Retruns the icon associated with Oculus widget.
+    static QIcon getIcon();
+
 protected :
 
     void initializeGL();

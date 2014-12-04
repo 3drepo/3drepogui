@@ -18,6 +18,7 @@
 #include "repo_workerfetchrevision.h"
 //------------------------------------------------------------------------------
 #include "graph/repo_node_revision.h"
+#include "graph/repo_node_abstract.h"
 #include "graph/repo_graph_history.h"
 //------------------------------------------------------------------------------
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
@@ -52,7 +53,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 	{
 		mongo.reauthenticate(database);
 
-		//-------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Fetch data from DB
 		std::vector<mongo::BSONObj> data;
 
@@ -60,7 +61,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 		// and reconstruct meshes later so as to give visual feedback to the user immediatelly
 		// (eg as meshes popping up in XML3DRepo)
 
-		//---------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// First load revision object 
 		// a) by its SID if head revision (latest according to timestamp)
 		// b) by its UID if not head revision
@@ -81,9 +82,9 @@ void repo::gui::RepoWorkerFetchRevision::run()
 				idString, 
 				fieldsToReturn);
 		mongo::BSONArray array = mongo::BSONArray(bson.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		emit progress(done++, jobsCount);
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		int fieldsCount = array.nFields();
 		if (fieldsCount > 0)
 		{
@@ -110,9 +111,9 @@ void repo::gui::RepoWorkerFetchRevision::run()
 		{
             mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
 		}
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		emit progress(done++, jobsCount);
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Convert to Repo scene graph
 		if (!cancelled)
 		{
@@ -120,7 +121,31 @@ void repo::gui::RepoWorkerFetchRevision::run()
 			emit progress(done++, jobsCount);
 		}
 
-		//---------------------------------------------------------------------
+
+
+        //----------------------------------------------------------------------
+        //
+        // FEDERATION
+        //
+        //----------------------------------------------------------------------
+        // Fetch references if any
+        if (repoGraphScene->hasReferences())
+        {
+            // TODO: fetch references, build subscenes, attach to the main graph
+            // instead of references.
+
+            std::vector<core::RepoNodeAbstract *> references = repoGraphScene->getReferences();
+            jobsCount += references.size();
+            std::cerr << "Ref count: " << references.size() << std::endl;
+
+
+            emit progress(done++, jobsCount);
+
+        }
+
+
+
+        //----------------------------------------------------------------------
 		// Convert to Assimp
 		// TODO: code in direct conversion from RepoSceneGraph to GLC_World
 		// to avoid intermediary Assimp aiScene conversion!
@@ -131,7 +156,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 			emit progress(done++, jobsCount);
 		}
 
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Convert raw textures into QImages
 		std::map<std::string, QImage> namedTextures;
 		std::vector<repo::core::RepoNodeTexture*> textures = repoGraphScene->getTextures();
@@ -144,15 +169,15 @@ void repo::gui::RepoWorkerFetchRevision::run()
 		}
 		emit progress(done++, jobsCount);
 
-		//---------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// GLC World conversion
 		if (!cancelled)
 			glcWorld = repo::gui::RepoTranscoderAssimp::toGLCWorld(scene, namedTextures);
 	}
 
-	//-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	emit progress(jobsCount, jobsCount);
-	//-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	// Done
 	emit finished(repoGraphScene, glcWorld);
 	emit RepoWorkerAbstract::finished();
