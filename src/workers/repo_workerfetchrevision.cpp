@@ -15,12 +15,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//------------------------------------------------------------------------------
+// GUI
 #include "repo_workerfetchrevision.h"
 //------------------------------------------------------------------------------
-#include "graph/repo_node_revision.h"
-#include "graph/repo_node_abstract.h"
-#include "graph/repo_graph_history.h"
+// Core
+#include <RepoNodeAbstract>
+#include <RepoNodeRevision>
+#include <RepoNodeReference>
+#include <RepoGraphHistory>
+#include <RepoTranscoderString>
 //------------------------------------------------------------------------------
+
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
     const repo::core::MongoClientWrapper &mongo,
 	const QString& database,
@@ -38,11 +44,11 @@ void repo::gui::RepoWorkerFetchRevision::run()
 {
 	//-------------------------------------------------------------------------
 	// Start
-	int jobsCount = 6;
-	int done = 0;
+    jobsCount = 3;
+    done = 0;
 	emit progress(0, 0); // undetermined (moving) progress bar
 
-	core::RepoGraphScene* repoGraphScene;
+    core::RepoGraphScene* masterSceneGraph = NULL;
 	GLC_World glcWorld;
 
 	if (!cancelled && !mongo.reconnect())
@@ -51,98 +57,11 @@ void repo::gui::RepoWorkerFetchRevision::run()
     }
 	else
 	{
-		mongo.reauthenticate(database);
-
-        //----------------------------------------------------------------------
-		// Fetch data from DB
-		std::vector<mongo::BSONObj> data;
-
-		// TODO: fetch transformations first to build the scene
-		// and reconstruct meshes later so as to give visual feedback to the user immediatelly
-		// (eg as meshes popping up in XML3DRepo)
-
-        //----------------------------------------------------------------------
-		// First load revision object 
-		// a) by its SID if head revision (latest according to timestamp)
-		// b) by its UID if not head revision
-		std::list<std::string> fieldsToReturn;
-		fieldsToReturn.push_back(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS);
-		
-		std::string idString = id.toString().toStdString();
-		mongo::BSONObj bson = headRevision 
-			? mongo.findOneBySharedID(
-				database, 
-				REPO_COLLECTION_HISTORY, 
-				idString, 
-				REPO_NODE_LABEL_TIMESTAMP, 
-				fieldsToReturn)
-			: mongo.findOneByUniqueID(
-				database, 
-				REPO_COLLECTION_HISTORY, 
-				idString, 
-				fieldsToReturn);
-		mongo::BSONArray array = mongo::BSONArray(bson.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
-        //----------------------------------------------------------------------
-		emit progress(done++, jobsCount);
-        //----------------------------------------------------------------------
-		int fieldsCount = array.nFields();
-		if (fieldsCount > 0)
-		{
-			jobsCount += fieldsCount;
-			unsigned long long retrieved = 0;
-			std::auto_ptr<mongo::DBClientCursor> cursor;		
-			do
-			{
-				for (; !cancelled && cursor.get() && cursor->more(); ++retrieved)
-				{
-					data.push_back(cursor->nextSafe().copy());	
-					emit progress(done++, jobsCount);
-				}
-				if (!cancelled)
-					cursor = mongo.findAllByUniqueIDs(
-						database, 
-						REPO_COLLECTION_SCENE, 
-						array, 
-						retrieved);		
-			}
-			while (!cancelled && cursor.get() && cursor->more());
-		}
-		else
-		{
-            mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
-		}
-        //----------------------------------------------------------------------
-		emit progress(done++, jobsCount);
-        //----------------------------------------------------------------------
-		// Convert to Repo scene graph
-		if (!cancelled)
-		{
-			repoGraphScene = new core::RepoGraphScene(data);
-			emit progress(done++, jobsCount);
-		}
-
-
-
-        //----------------------------------------------------------------------
-        //
-        // FEDERATION
-        //
-        //----------------------------------------------------------------------
-        // Fetch references if any
-        if (repoGraphScene->hasReferences())
-        {
-            // TODO: fetch references, build subscenes, attach to the main graph
-            // instead of references.
-
-            std::vector<core::RepoNodeAbstract *> references = repoGraphScene->getReferences();
-            jobsCount += references.size();
-            std::cerr << "Ref count: " << references.size() << std::endl;
-
-
-            emit progress(done++, jobsCount);
-
-        }
-
+        fetchSceneRecursively(
+            database,
+            id.toString().toStdString(),
+            headRevision,
+            masterSceneGraph);
 
 
         //----------------------------------------------------------------------
@@ -150,16 +69,16 @@ void repo::gui::RepoWorkerFetchRevision::run()
 		// TODO: code in direct conversion from RepoSceneGraph to GLC_World
 		// to avoid intermediary Assimp aiScene conversion!
 		aiScene* scene = new aiScene();
-		if (!cancelled)
+        if (!cancelled && masterSceneGraph)
 		{
-			repoGraphScene->toAssimp(scene);
+            masterSceneGraph->toAssimp(scene);
 			emit progress(done++, jobsCount);
 		}
 
         //----------------------------------------------------------------------
 		// Convert raw textures into QImages
 		std::map<std::string, QImage> namedTextures;
-		std::vector<repo::core::RepoNodeTexture*> textures = repoGraphScene->getTextures();
+        std::vector<repo::core::RepoNodeTexture*> textures = masterSceneGraph->getTextures();
 		for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
 		{
 			repo::core::RepoNodeTexture* repoTex = textures[i];
@@ -179,6 +98,131 @@ void repo::gui::RepoWorkerFetchRevision::run()
 	emit progress(jobsCount, jobsCount);
     //--------------------------------------------------------------------------
 	// Done
-	emit finished(repoGraphScene, glcWorld);
+    emit finished(masterSceneGraph, glcWorld);
 	emit RepoWorkerAbstract::finished();
+}
+
+void repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
+        const std::string &database,
+        const std::string &uuid,
+        bool isHeadRevision,
+        core::RepoGraphScene *masterSceneGraph)
+{
+    jobsCount += 4;
+
+    mongo.reauthenticate(database);
+    //----------------------------------------------------------------------
+    // Fetch data from DB
+    std::vector<mongo::BSONObj> data;
+    // TODO: fetch transformations first to build the scene
+    // and reconstruct meshes later so as to give visual feedback to the user immediatelly
+    // (eg as meshes popping up in XML3DRepo)
+
+    //----------------------------------------------------------------------
+    // First load revision object
+    // a) by its SID if head revision (latest according to timestamp)
+    // b) by its UID if not head revision
+    std::list<std::string> fieldsToReturn;
+    fieldsToReturn.push_back(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS);
+
+
+    // TODO: make this adhere to the revision history graph so that it does not
+    // rely on timestamps!
+    mongo::BSONObj bson = isHeadRevision
+        ? mongo.findOneBySharedID(
+            database,
+            REPO_COLLECTION_HISTORY,
+            uuid,
+            REPO_NODE_LABEL_TIMESTAMP,
+            fieldsToReturn)
+        : mongo.findOneByUniqueID(
+            database,
+            REPO_COLLECTION_HISTORY,
+            uuid,
+            fieldsToReturn);
+    mongo::BSONArray array = mongo::BSONArray(bson.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
+    //----------------------------------------------------------------------
+    emit progress(done++, jobsCount);
+    //----------------------------------------------------------------------
+    int fieldsCount = array.nFields();
+    if (!cancelled && fieldsCount > 0)
+    {
+        jobsCount += fieldsCount;
+        unsigned long long retrieved = 0;
+        std::auto_ptr<mongo::DBClientCursor> cursor;
+        do
+        {
+            for (; !cancelled && cursor.get() && cursor->more(); ++retrieved)
+            {
+                data.push_back(cursor->nextSafe().copy());
+                emit progress(done++, jobsCount);
+            }
+            if (!cancelled)
+                cursor = mongo.findAllByUniqueIDs(
+                    database,
+                    REPO_COLLECTION_SCENE,
+                    array,
+                    retrieved);
+        }
+        while (!cancelled && cursor.get() && cursor->more());
+    }
+    else
+    {
+        mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
+    }
+    //----------------------------------------------------------------------
+    emit progress(done++, jobsCount);
+    //----------------------------------------------------------------------
+    // Convert to Repo scene graph
+
+
+    std::vector<core::RepoNodeAbstract *> references;
+    if (!cancelled)
+    {
+        core::RepoGraphScene *childSceneGraph = new core::RepoGraphScene(data);
+        emit progress(done++, jobsCount);
+
+        //----------------------------------------------------------------------
+        if (!cancelled && childSceneGraph)
+        {
+            references = childSceneGraph->getReferences();
+            if (masterSceneGraph)
+            {
+                // Append child scene graph to the master graph
+                //masterSceneGraph->append(childSceneGraph, NULL); // TODO: add ref.
+
+                // Copying of pointers done, delete the remaining empty object.
+                delete childSceneGraph;
+            }
+            else
+            {
+                // Create scene graph
+                masterSceneGraph = childSceneGraph;
+            }
+            jobsCount += references.size();
+        }
+        emit progress(done++, jobsCount);
+    }
+
+
+    //--------------------------------------------------------------------------
+    //
+    // FEDERATION
+    //
+    //--------------------------------------------------------------------------
+    // Fetch references if any
+    for (unsigned int i = 0; !cancelled && i < references.size(); ++i)
+    {
+        core::RepoNodeReference *reference = (core::RepoNodeReference *) references[i];
+
+        // TODO: modify mongowrapper to take into account reference owner and project!
+
+        // Recursion
+        std::string refUuuid = core::RepoTranscoderString::toString(reference->getUniqueID());
+
+        fetchSceneRecursively(reference->getProject(), refUuuid, !reference->getIsUniqueID(), masterSceneGraph );
+
+
+        emit progress(done++, jobsCount);
+    }
 }

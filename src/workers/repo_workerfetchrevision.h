@@ -71,6 +71,12 @@ signals :
 
 private :
 
+    void fetchSceneRecursively(
+            const std::string &database,
+            const std::string &uuid,
+            bool isHeadRevision,
+            core::RepoGraphScene *masterSceneGraph);
+
 	//! Client connection
 	repo::core::MongoClientWrapper mongo;
 
@@ -82,6 +88,12 @@ private :
 
 	//! True if to fetch head revision from a branch by SID, false if to fetch specific revision by UID.
 	bool headRevision;
+
+    //! Number of jobs to be completed.
+    int jobsCount;
+
+    //! Number of jobs already done.
+    int done;
 
 }; // end class
 

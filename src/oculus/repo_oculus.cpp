@@ -389,6 +389,7 @@ void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
     switch(e->key())
     {
         case Qt::Key_R :
+        {
 			std::cout << " You pressed the R key " << std::endl;
             glcViewport.cameraHandle()->setIsoView();
             glcViewport.reframe(glcWorld.boundingBox());
@@ -401,7 +402,8 @@ void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
 			glcViewport.cameraHandle()->move(newMV);
 
 			//updateGL();
-            break;
+        }
+        break;
         case Qt::Key_F11 :
         case Qt::Key_Escape :
             this->deleteLater();
