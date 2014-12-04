@@ -21,6 +21,7 @@
 #include <QOpenGLContext>
 #include <GLC_ContextManager>
 
+#include <cmath>
 
 #if defined(Q_OS_LINUX)
 	#include <X11/X.h>
@@ -64,25 +65,30 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, cons
     setMouseTracking(true);
     setWindowTitle(windowTitle);
 
-    //--------------------------------------------------------------------------
+	//--------------------------------------------------------------------------
+    // Oculus settings
+    initializeOVR();
+
+	//--------------------------------------------------------------------------
     // GLC settings
     QColor repColor;
     repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0); // Red colour
+    glcViewport.setBackgroundColor(Qt::white);
+    glcLight.setPosition(1.0, 1.0, 1.0);
+
+	glcViewport.setViewAngle(eyeFov[0]);
+	glcViewport.forceAspectRatio(aspectRatio);
+
     glcMoverController = GLC_Factory::instance()->createDefaultMoverController(
         repColor, &glcViewport);
 
 
     // Connect slots
     connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(updateGL()));
-    connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(updateGL()));
+    //connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(updateGL()));
 
     glcViewport.setBackgroundColor(Qt::white);
     glcLight.setPosition(1.0, 1.0, 1.0);
-
-    //--------------------------------------------------------------------------
-    // Oculus settings
-    initializeOVR();
-
 
     setAutoBufferSwap(false);
    // resizeGL(400,400);
@@ -118,8 +124,17 @@ QGLFormat repo::gui::RepoOculus::singleBufferFormat()
 void repo::gui::RepoOculus::initializeGL()
 {
     glc::Y_AXIS;
-    glcViewport.cameraHandle()->setDefaultUpVector(GLC_Vector3d(-1.0, -1.0, 0.0)); //glc::Y_AXIS);
+    glcViewport.cameraHandle()->setDefaultUpVector(glc::Y_AXIS);
+	//glc::Y_AXIS);
     glcViewport.initGl();
+
+	// Enable VBOs and other settings.
+	GLC_State::setVboUsage(true);
+	GLC_State::setDefaultOctreeDepth(10);
+	GLC_State::setPixelCullingUsage(true);
+	GLC_State::setFrustumCullingUsage(true);
+	GLC_State::setSpacePartionningUsage(true);
+	GLC_State::setCacheUsage(true);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -202,21 +217,46 @@ void repo::gui::RepoOculus::initializeOVR()
         std::cout << "HMD resolution: " << resolution.w << " x " << resolution.h << std::endl;
     }
 
+
+	ovrFovPort fovLeft  = hmd->DefaultEyeFov[ovrEye_Left];
+	ovrFovPort fovRight = hmd->DefaultEyeFov[ovrEye_Right];
+
+	ovrFovPort fovMax;
+	fovMax.UpTan = qMax(fovLeft.UpTan, fovRight.UpTan);
+	fovMax.DownTan = qMax(fovLeft.DownTan, fovRight.DownTan);
+	fovMax.LeftTan = qMax(fovLeft.LeftTan, fovRight.LeftTan);
+	fovMax.RightTan = qMax(fovLeft.RightTan, fovRight.RightTan);
+
+	float combinedTanHalfFovHorizontal = qMax(fovMax.LeftTan, fovMax.RightTan);
+	float combinedTanHalfFovVertical = qMax ( fovMax.UpTan, fovMax.DownTan );
+
+	ovrFovPort fovBoth;
+	fovBoth.LeftTan = fovBoth.RightTan = combinedTanHalfFovHorizontal;
+	fovBoth.UpTan = fovBoth.DownTan = combinedTanHalfFovVertical;
+
     //--------------------------------------------------------------------------
     // Configure Stereo settings.
-    ovrSizei recommendedTex0Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Left, hmd->DefaultEyeFov[0], 1.0f);
-    ovrSizei recommendedTex1Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Right, hmd->DefaultEyeFov[1], 1.0f);
+    ovrSizei recommendedTex0Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Left, fovBoth, 1.0f);
+    ovrSizei recommendedTex1Size = ovrHmd_GetFovTextureSize(hmd, ovrEye_Right, fovBoth, 1.0f);
 
     renderTargetSize[0].w = recommendedTex0Size.w;
     renderTargetSize[0].h = qMax(recommendedTex0Size.h, recommendedTex1Size.h);
 
-	renderTargetSize[1].w = recommendedTex1Size.h;
+	renderTargetSize[1].w = recommendedTex1Size.w;
 	renderTargetSize[1].h = renderTargetSize[0].h;
+
+
+	float horizontalFullFovInDegrees = (2.0f * atanf ( combinedTanHalfFovHorizontal)) * (180.0 / 3.14159265);
+
+	eyeFov[0] = horizontalFullFovInDegrees;
+	eyeFov[1] = horizontalFullFovInDegrees;
+
+	aspectRatio = combinedTanHalfFovHorizontal / combinedTanHalfFovVertical;
 
     //--------------------------------------------------------------------------
     // Initialize eye rendering information.
     // The viewport sizes are re-computed in case RenderTargetSize changed due to HW limitations.
-    ovrFovPort eyesFov[2] = { hmd->DefaultEyeFov[0], hmd->DefaultEyeFov[1] } ;
+    ovrFovPort eyesFov[2] = { fovBoth, fovBoth } ;
 
     //--------------------------------------------------------------------------
     // Rendering parameters
@@ -319,6 +359,7 @@ void repo::gui::RepoOculus::initializeOVR()
     //--------------------------------------------------------------------------
     // TESTER Texture
 
+	/*
 	std::cout << " Loading image ... " << std::endl;
     QImage img("/home/tscully/3drepo/3drepogui/3drepo-bg.bmp");
       if(img.isNull()){
@@ -334,7 +375,7 @@ void repo::gui::RepoOculus::initializeOVR()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
       Q_ASSERT(!glGetError());
-
+	*/
 }
 
 void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
@@ -342,9 +383,18 @@ void repo::gui::RepoOculus::keyPressEvent(QKeyEvent *e)
     switch(e->key())
     {
         case Qt::Key_R :
+			std::cout << " You pressed the R key " << std::endl;
             glcViewport.cameraHandle()->setIsoView();
             glcViewport.reframe(glcWorld.boundingBox());
-            updateGL();
+
+			ovrVector3f WorldEyePos = eyeRenderPose[0].Position;
+			GLC_Matrix4x4 trans(WorldEyePos.x,WorldEyePos.y,WorldEyePos.z);
+			GLC_Matrix4x4 orient(&(OVR::Matrix4f(eyeRenderPose[0].Orientation).M[0][0]));
+
+			GLC_Matrix4x4 newMV = (orient * trans).inverted();
+			glcViewport.cameraHandle()->move(newMV);
+
+			//updateGL();
             break;
     }
 }
@@ -362,21 +412,21 @@ void repo::gui::RepoOculus::mousePressEvent(QMouseEvent *e)
             glcMoverController.setActiveMover(
                 GLC_MoverController::TrackBall,
                 GLC_UserInput(e->x(), e->y()));
-            updateGL();
+            //updateGL();
             break;
         case (Qt::LeftButton):
             this->setCursor(Qt::SizeAllCursor);
             glcMoverController.setActiveMover(
                 GLC_MoverController::Pan,
                 GLC_UserInput(e->x(), e->y()));
-            updateGL();
+            //updateGL();
             break;
         case (Qt::MidButton):
             this->setCursor(Qt::CrossCursor);
             glcMoverController.setActiveMover(
                 GLC_MoverController::Fly,
                 GLC_UserInput(e->x(), e->y()));
-            updateGL();
+            //updateGL();
             break;
     }
     QGLWidget::mousePressEvent(e);
@@ -413,7 +463,7 @@ void repo::gui::RepoOculus::wheelEvent(QWheelEvent *e)
 
 void repo::gui::RepoOculus::paintGL()
 {
-	const int ms(1000/60);
+	const int ms(1000/75);
 	QTimer::singleShot(ms, this, SLOT(update()));
 
     try
@@ -728,10 +778,10 @@ void repo::gui::RepoOculus::paintGLC(int eye)
 	ovrVector3f WorldEyePos = eyeRenderPose[eye].Position;
 
 	GLC_Matrix4x4 mv = glcViewport.cameraHandle()->modelViewMatrix();
-	GLC_Matrix4x4 trans(WorldEyePos.x,-WorldEyePos.y,-WorldEyePos.z);
+	GLC_Matrix4x4 trans(WorldEyePos.x,WorldEyePos.y,WorldEyePos.z);
 	GLC_Matrix4x4 orient(&(OVR::Matrix4f(eyeRenderPose[eye].Orientation).M[0][0]));
 
-	GLC_Matrix4x4 newMV = (trans * orient).inverted() * mv;
+	GLC_Matrix4x4 newMV = orient * trans * mv;
 
 	//printf("%f %f %f\n", WorldEyePos.x, WorldEyePos.y, WorldEyePos.z);
 /*
@@ -747,6 +797,10 @@ void repo::gui::RepoOculus::paintGLC(int eye)
 	//glMultMatrix4f(&(eyeRenderPose[eye].translation[0][0])));
 	glcViewport.useClipPlane(true);
 
+	glcViewport.setViewAngle(eyeFov[0]);
+	//glcViewport.forceAspectRatio(aspectRatio);
+
+	resizeGL(renderTargetSize[0].w, renderTargetSize[0].w / aspectRatio);
     glcWorld.render(0, glc::ShadingFlag);
     glcMoverController.drawActiveMoverRep();
 

@@ -117,7 +117,6 @@ private :
     //! The navigation controller of the scene (arc ball, fly etc).
     GLC_MoverController glcMoverController;
 
-
     ovrHmd hmd;
 
 
@@ -134,6 +133,9 @@ private :
    // QGLFramebufferObject *fbo;
 
     bool isRenderOVR;
+
+	double eyeFov[2];
+	float aspectRatio;
 
     ovrPosef eyeRenderPose[2];
     ovrTrackingState hmdState;
