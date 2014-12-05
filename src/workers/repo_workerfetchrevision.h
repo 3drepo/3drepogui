@@ -71,11 +71,11 @@ signals :
 
 private :
 
-    void fetchSceneRecursively(
-            const std::string &database,
+    core::RepoGraphScene *fetchSceneRecursively(const std::string &database,
             const std::string &uuid,
             bool isHeadRevision,
-            core::RepoGraphScene *masterSceneGraph);
+            core::RepoGraphScene *masterSceneGraph,
+            core::RepoNodeReference *referenceNode);
 
 	//! Client connection
 	repo::core::MongoClientWrapper mongo;
