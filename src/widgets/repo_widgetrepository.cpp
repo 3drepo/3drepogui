@@ -19,8 +19,9 @@
 
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::RepoWidgetRepository)
+    : QWidget(parent)
+    , ui(new Ui::RepoWidgetRepository)
+    , databaseRowCounter(0)
 {
     ui->setupUi(this);
     //--------------------------------------------------------------------------
@@ -95,13 +96,18 @@ bool repo::gui::RepoWidgetRepository::cancelAllThreads()
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::fetchDatabases(const repo::core::MongoClientWrapper& mongo)
+void repo::gui::RepoWidgetRepository::fetchDatabases(
+        const repo::core::MongoClientWrapper& mongo)
 {
     //--------------------------------------------------------------------------
 	// Cancel any previously running threads.
 	if (cancelAllThreads())
 	{
 		this->mongo = mongo;
+
+        // TODO: be careful when adding multiple mongo connections. This counter
+        // won't work with more than one async addCollection call.
+        databaseRowCounter = 0;
 
         std::cout << "Fetching databases..." << std::endl;
 				
@@ -122,6 +128,10 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(const repo::core::MongoClie
 		QObject::connect(
 			worker, &RepoWorkerDatabases::databaseFetched,
 			this, &RepoWidgetRepository::addDatabase);
+
+        QObject::connect(
+                    worker, &RepoWorkerDatabases::databaseFinished,
+                    this, &RepoWidgetRepository::incrementDatabaseRow);
 
 		QObject::connect(
 			worker, &RepoWorkerDatabases::collectionFetched,
@@ -227,7 +237,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 
     //--------------------------------------------------------------------------
 	// Append to the bottom most child (host)
-	if (QStandardItem * host = databasesModel->invisibleRootItem()->child(
+    if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
 			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
 		host->appendRow(row);	
 }
@@ -239,33 +249,33 @@ void repo::gui::RepoWidgetRepository::addCollection(
 	unsigned long long count, 
 	unsigned long long size)
 {
-	if (QStandardItem * host = databasesModel->invisibleRootItem()->child(
+    if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
 		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
 	{
         //----------------------------------------------------------------------
 		// Append to the bottom most database
-		QList<QStandardItem *> row;	
+        QList<QStandardItem * > row;
 		row.append(createItem(collection));
 		row.at(0)->setIcon(getIcon(collection));
 
         row.append(createItem(toLocaleString(count), count, Qt::AlignRight));
         row.append(createItem(toFileSize(size), size, Qt::AlignRight));
-		if (QStandardItem * database = host->child(host->rowCount()-1, RepoDatabasesColumns::NAME))
+        if (QStandardItem *database = host->child(databaseRowCounter, RepoDatabasesColumns::NAME))
 			database->appendRow(row);
 
         //----------------------------------------------------------------------
 		// Increase count and size on the bottom most database
-		if (QStandardItem * databaseCount = host->child(host->rowCount()-1, RepoDatabasesColumns::COUNT))
+        if (QStandardItem *databaseCount = host->child(databaseRowCounter, RepoDatabasesColumns::COUNT))
 			setItemCount(databaseCount, databaseCount->data().toULongLong() + count);
-		if (QStandardItem * databaseSize = host->child(host->rowCount()-1, RepoDatabasesColumns::SIZE))
+        if (QStandardItem *databaseSize = host->child(databaseRowCounter, RepoDatabasesColumns::SIZE))
 			setItemSize(databaseSize, databaseSize->data().toULongLong() + size);
 		
         //----------------------------------------------------------------------
 		// Increase count and size on the bottom most host
-		if (QStandardItem * hostCount = databasesModel->invisibleRootItem()->child(
+        if (QStandardItem *hostCount = databasesModel->invisibleRootItem()->child(
 			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::COUNT))
 			setItemCount(hostCount, hostCount->data().toULongLong() + count);	
-		if (QStandardItem * hostSize = databasesModel->invisibleRootItem()->child(
+        if (QStandardItem *hostSize = databasesModel->invisibleRootItem()->child(
 			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::SIZE))
 			setItemSize(hostSize, hostSize->data().toULongLong() + size);		
 	}

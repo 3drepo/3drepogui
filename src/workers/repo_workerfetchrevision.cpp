@@ -109,7 +109,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
         core::RepoGraphScene *masterSceneGraph,
         core::RepoNodeReference *referenceNode)
 {
-    std::cout << "Fetching: " << database << ":" << uuid << std::endl;
+    std::cout << "Fetching: " << database << " " << uuid << std::endl;
     jobsCount += 4;
 
     mongo.reauthenticate(database);
@@ -203,6 +203,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
                 delete childSceneGraph;
             }
             jobsCount += references.size();
+            std::cout << "Found " << references.size() << " references" << std::endl;
         }
         emit progress(done++, jobsCount);
     }

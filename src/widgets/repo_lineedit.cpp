@@ -62,6 +62,6 @@ repo::gui::RepoLineEdit::~RepoLineEdit()
 	bool on = !text.isEmpty();
 	clearButton->setVisible(on);
 	clearButton->setEnabled(on);
-    QString color = on ? "#fff2cc" : "#fff"; // TODO: move colours to settings
-    this->setStyleSheet("background-color: " + color);
+//    QString color = on ? "#fff2cc" : "#fff"; // TODO: move colours to settings
+//    this->setStyleSheet("background-color: " + color);
  }

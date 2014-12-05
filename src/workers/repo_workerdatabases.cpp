@@ -55,35 +55,48 @@ void repo::gui::RepoWorkerDatabases::run()
 		std::list<std::string> databases = mongo.getDbs();
 
         //----------------------------------------------------------------------
-        databases.sort(&repo::gui::RepoWorkerDatabases::caseInsensitiveStringCompare);
+        databases.sort(&RepoWorkerDatabases::caseInsensitiveStringCompare);
 
         //----------------------------------------------------------------------
-        jobsCount = (int) databases.size();
+        jobsCount = (int) databases.size() * 2;
         emit progressRangeChanged(0, jobsCount);
 
-		int counter = 0;
-        //----------------------------------------------------------------------
 
+        //----------------------------------------------------------------------
+        // Populate databases
+        int counter = 0;
+        for (std::list<std::string>::const_iterator dbIterator = databases.begin();
+            !cancelled && dbIterator != databases.end();
+            ++dbIterator)
+        {
+            const std::string database = *dbIterator;
+            emit databaseFetched(QString::fromStdString(database));
+            emit progressValueChanged(counter++);
+        }
+
+        //----------------------------------------------------------------------
+        // Populate collections with sizes
 		for (std::list<std::string>::const_iterator dbIterator = databases.begin(); 
 			!cancelled && dbIterator != databases.end(); 
 			++dbIterator) 
 		{
 			const std::string database = *dbIterator;
-			emit databaseFetched(QString::fromStdString(database));
+            //emit databaseFetched(QString::fromStdString(database));
             //------------------------------------------------------------------
-			// For each collection within the database (if not cancelled)
-			std::list<std::string> collections = mongo.getCollections(database);	
-			for (std::list<std::string>::const_iterator colIterator = collections.begin(); 
-				!cancelled && colIterator != collections.end(); 
-				++colIterator) 
-			{
-				const std::string collection = *colIterator;			
-				const unsigned long long count = mongo.countItemsInCollection(collection);
-				const unsigned long long size = mongo.getCollectionSize(collection);
-				emit collectionFetched(
-					QString::fromStdString(mongo.nsGetCollection(collection)), 
-					count, size);
-			}
+            // For each collection within the database (if not cancelled)
+            std::list<std::string> collections = mongo.getCollections(database);
+            for (std::list<std::string>::const_iterator colIterator = collections.begin();
+                !cancelled && colIterator != collections.end();
+                ++colIterator)
+            {
+                const std::string collection = *colIterator;
+                const unsigned long long count = mongo.countItemsInCollection(collection);
+                const unsigned long long size = mongo.getCollectionSize(collection);
+                emit collectionFetched(
+                    QString::fromStdString(mongo.nsGetCollection(collection)),
+                    count, size);
+            }
+            emit databaseFinished(QString::fromStdString(database));
             //------------------------------------------------------------------
 			emit progressValueChanged(counter++);
 		}

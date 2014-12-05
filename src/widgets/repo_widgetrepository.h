@@ -116,12 +116,17 @@ public slots :
 	//! Removes all items from the collection model.
 	void clearCollectionModel();
 
+    //! Changes the tab based on an index value.
 	void changeTab(int index);
 
     //! Copies selected collection cell to clipboard.
 	void copySelectedCollectionCellToClipboard();
 
-    void expandAllCollectionRecords() { ui->collectionTreeView->expandAll(); }
+    //! Expands all collection records.
+    inline void expandAllCollectionRecords() { ui->collectionTreeView->expandAll(); }
+
+    //! Increments the current database row.
+    inline void incrementDatabaseRow() { databaseRowCounter++; }
 
 public :
 
@@ -240,6 +245,8 @@ private :
 
 	//! TODO: improve (should enable multiple DB connections at once)
     core::MongoClientWrapper mongo;
+
+    int databaseRowCounter;
 };
 
 } // end namespace gui
