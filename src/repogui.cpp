@@ -35,6 +35,7 @@
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
 #include "dialogs/repodialogoculus.h"
+#include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
 #include "oculus/repo_oculus.h"
 
@@ -136,7 +137,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 
     //--------------------------------------------------------------------------
     //
-    // OpenGL
+    // Rendering
     //
     //--------------------------------------------------------------------------
     // Link
@@ -152,6 +153,14 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_eye));
 
+    //--------------------------------------------------------------------------
+    //
+    // Tools
+    //
+    //--------------------------------------------------------------------------
+    // User Management...
+    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
+    ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
 
 
 
@@ -499,6 +508,13 @@ void repo::gui::RepoGUI::openSupportEmail() const
                 QUrl("mailto:" + email +
                      "?subject=" + subject +
                      "&body=" + body));
+}
+
+void repo::gui::RepoGUI::openUserManager() const
+{
+
+    RepoDialogUserManager um;
+    um.exec();
 }
 
 void repo::gui::RepoGUI::refresh()

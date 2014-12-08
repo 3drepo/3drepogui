@@ -53,7 +53,8 @@ HEADERS  += src/repogui.h \
             src/primitives/repo_glccamera.h \
             src/conversion/repo_transcoder_assimp.h \
             src/oculus/repo_oculus.h \
-            src/dialogs/repodialogoculus.h
+            src/dialogs/repodialogoculus.h \
+            src/dialogs/repodialogusermanager.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -78,14 +79,16 @@ SOURCES += src/main.cpp\
            src/primitives/repo_glccamera.cpp \
            src/conversion/repo_transcoder_assimp.cpp \
            src/oculus/repo_oculus.cpp \
-           src/dialogs/repodialogoculus.cpp
+           src/dialogs/repodialogoculus.cpp \
+           src/dialogs/repodialogusermanager.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
             forms/repo_dialogcommit.ui \
             forms/repo_dialoghistory.ui \
             forms/repo_widgetrepository.ui \
-            forms/repodialogoculus.ui
+            forms/repodialogoculus.ui \
+            forms/repodialogusermanager.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

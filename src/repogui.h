@@ -94,6 +94,9 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
+    //! Opens user management dialog box.
+    void openUserManager() const;
+
     //! Refreshes currently connected database.
     void refresh();
 

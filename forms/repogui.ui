@@ -53,7 +53,6 @@
     <addaction name="actionSwitch"/>
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
-    <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
     <addaction name="actionDrop"/>
    </widget>
@@ -76,9 +75,10 @@
    </widget>
    <widget class="QMenu" name="menuOpenGL">
     <property name="title">
-     <string>OpenGL</string>
+     <string>Rendering</string>
     </property>
     <addaction name="actionLink"/>
+    <addaction name="separator"/>
     <addaction name="actionOculus"/>
     <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
@@ -87,9 +87,20 @@
     <addaction name="separator"/>
     <addaction name="actionAuto_Camera"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionUserManager"/>
+    <addaction name="separator"/>
+    <addaction name="actionDiff"/>
+    <addaction name="separator"/>
+    <addaction name="actionOptions"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRepository"/>
    <addaction name="menuOpenGL"/>
+   <addaction name="menuTools"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -217,6 +228,9 @@
    </widget>
   </widget>
   <action name="actionAbout_3D_Repo_GUI">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>About 3D Repo GUI</string>
    </property>
@@ -294,6 +308,9 @@
    <property name="text">
     <string>Connect...</string>
    </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
   </action>
   <action name="actionRefresh">
    <property name="enabled">
@@ -363,8 +380,11 @@
    </property>
   </action>
   <action name="actionMaximize">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
-    <string>Maximize</string>
+    <string>Tile</string>
    </property>
   </action>
   <action name="actionScene_Graph">
@@ -409,6 +429,9 @@
    <property name="text">
     <string>Link</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+L</string>
+   </property>
   </action>
   <action name="actionOculus">
    <property name="text">
@@ -416,6 +439,27 @@
    </property>
    <property name="shortcut">
     <string>Alt+O</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Options...</string>
+   </property>
+  </action>
+  <action name="actionDiff">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>3D Diff...</string>
+   </property>
+  </action>
+  <action name="actionUserManager">
+   <property name="text">
+    <string>User Manager...</string>
    </property>
   </action>
  </widget>

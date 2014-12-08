@@ -106,6 +106,8 @@ repo::gui::RepoDialogHistory::~RepoDialogHistory()
 	delete historyProxy;
 	delete historyModel;
 	delete revisionModel;
+
+    delete ui;
 }
 
 bool repo::gui::RepoDialogHistory::cancelAllThreads()

@@ -105,10 +105,6 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(
 	{
 		this->mongo = mongo;
 
-        // TODO: be careful when adding multiple mongo connections. This counter
-        // won't work with more than one async addCollection call.
-        databaseRowCounter = 0;
-
         std::cout << "Fetching databases..." << std::endl;
 				
         //----------------------------------------------------------------------
@@ -223,6 +219,10 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
     ui->databasesTreeView->expand(
 		databasesProxyModel->mapFromSource(databasesModel->indexFromItem(hostItem)));
 	//hostItem->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_hdd_o));
+
+    // TODO: be careful when adding multiple mongo connections. This counter
+    // won't work with more than one async addCollection call.
+    databaseRowCounter = 0;
 }
 
 //------------------------------------------------------------------------------
