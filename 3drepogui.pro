@@ -49,6 +49,7 @@ HEADERS  += src/repogui.h \
             src/workers/repo_workercommit.h \
             src/workers/repo_workerfetchrevision.h \
             src/workers/repo_workerhistory.h \
+            src/workers/repo_workerusers.h \
             src/primitives/repo_sortfilterproxymodel.h \
             src/primitives/repo_glccamera.h \
             src/conversion/repo_transcoder_assimp.h \
@@ -75,6 +76,7 @@ SOURCES += src/main.cpp\
            src/workers/repo_worker_assimp.cpp \
            src/workers/repo_workerfetchrevision.cpp \
            src/workers/repo_workerhistory.cpp \
+           src/workers/repo_workerusers.cpp \
            src/primitives/repo_sortfilterproxymodel.cpp \
            src/primitives/repo_glccamera.cpp \
            src/conversion/repo_transcoder_assimp.cpp \

@@ -18,10 +18,14 @@
 #include "repodialogusermanager.h"
 #include "ui_repodialogusermanager.h"
 #include "../primitives/repo_fontawesome.h"
+#include "../workers/repo_workerusers.h"
 
-repo::gui::RepoDialogUserManager::RepoDialogUserManager(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::RepoDialogUserManager)
+repo::gui::RepoDialogUserManager::RepoDialogUserManager(
+        const core::MongoClientWrapper& mongo,
+        QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::RepoDialogUserManager)
+    , mongo(mongo)
 {
     ui->setupUi(this);
     this->setWindowIcon(getIcon());
@@ -65,10 +69,28 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(QWidget *parent) :
     usersProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     usersProxy->setSourceModel(usersModel);
     //--------------------------------------------------------------------------
-    ui->usersTreeView->setModel(usersModel);
-    ui->usersTreeView->sortByColumn(RepoUsersColumns::USERNAME);
+    ui->usersTreeView->setModel(usersProxy);
+    ui->usersTreeView->sortByColumn(RepoUsersColumns::USERNAME, Qt::SortOrder::AscendingOrder);
     //--------------------------------------------------------------------------
     clearUsersModel();
+
+    //--------------------------------------------------------------------------
+    // Connect filtering text input to the filtering proxy model
+    QObject::connect(
+        ui->filterLineEdit, &QLineEdit::textChanged,
+        usersProxy, &QSortFilterProxyModel::setFilterFixedString);
+    //--------------------------------------------------------------------------
+    QObject::connect(
+        ui->refreshPushButton, &QPushButton::pressed,
+        this, &RepoDialogUserManager::refresh);
+
+    QObject::connect(
+        usersProxy, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoDialogUserManager::updateUsersCount);
+
+    QObject::connect(
+        usersProxy, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoDialogUserManager::updateUsersCount);
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
@@ -79,6 +101,24 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     delete usersProxy;
 
     delete ui;
+}
+
+void repo::gui::RepoDialogUserManager::addUser(
+        QVariant username,
+        QVariant password,
+        QVariant firstName,
+        QVariant lastName,
+        QVariant email)
+{
+    QList<QStandardItem *> row;
+    //--------------------------------------------------------------------------
+    row.append(createItem(username));
+    row.append(createItem(password));
+    row.append(createItem(firstName));
+    row.append(createItem(lastName));
+    row.append(createItem(email));
+    //--------------------------------------------------------------------------
+    usersModel->invisibleRootItem()->appendRow(row);
 }
 
 bool repo::gui::RepoDialogUserManager::cancelAllThreads()
@@ -104,7 +144,6 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::EMAIL);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
-    ui->usersCountLabel->setText(tr("Showing %1 of %2").arg(0).arg(0));
 
 }
 
@@ -115,25 +154,40 @@ QIcon repo::gui::RepoDialogUserManager::getIcon()
 
 void repo::gui::RepoDialogUserManager::refresh()
 {
-//	if (!database.isEmpty() && cancelAllThreads())
-//	{
-//		RepoWorkerHistory* worker = new RepoWorkerHistory(mongo, database);
-//		worker->setAutoDelete(true);
+    if (cancelAllThreads())
+    {
+        RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
+        worker->setAutoDelete(true);
 
-//		// Direct connection ensures cancel signal is processed ASAP
-//		QObject::connect(
-//			this, &RepoDialogHistory::cancel,
-//			worker, &RepoWorkerHistory::cancel, Qt::DirectConnection);
+        // Direct connection ensures cancel signal is processed ASAP
+        QObject::connect(
+            this, &RepoDialogUserManager::cancel,
+            worker, &RepoWorkerUsers::cancel, Qt::DirectConnection);
 
-//		QObject::connect(
-//			worker, &RepoWorkerHistory::revisionFetched,
-//			this, &RepoDialogHistory::addRevision);//, Qt::BlockingQueuedConnection);
+        QObject::connect(
+            worker, &RepoWorkerUsers::userFetched,
+            this, &RepoDialogUserManager::addUser);
 
-//        //----------------------------------------------------------------------
-//		// Clear any previous entries : the collection model
-//		clearHistoryModel();
+        //----------------------------------------------------------------------
+        // Clear any previous entries : the collection model
+        clearUsersModel();
 
-//        //----------------------------------------------------------------------
-//		threadPool.start(worker);
-//	}
+        //----------------------------------------------------------------------
+        threadPool.start(worker);
+    }
+}
+
+void repo::gui::RepoDialogUserManager::updateUsersCount() const
+{
+    ui->usersCountLabel->setText(tr("Showing %1 of %2").arg(usersProxy->rowCount()).arg(usersModel->rowCount()));
+}
+
+QStandardItem *repo::gui::RepoDialogUserManager::createItem(QVariant& data)
+{
+    QStandardItem* item = new QStandardItem(data.toString());
+    item->setEditable(false);
+    item->setToolTip(data.toString());
+    item->setData(data);
+
+    return item;
 }

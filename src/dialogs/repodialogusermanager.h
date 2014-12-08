@@ -18,11 +18,17 @@
 #ifndef REPO_DIALOG_USER_MANAGER_H
 #define REPO_DIALOG_USER_MANAGER_H
 
+//------------------------------------------------------------------------------
+// Qt
 #include <QDialog>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QThreadPool>
-
+//------------------------------------------------------------------------------
+// Core
+#include <RepoWrapperMongo>
+//------------------------------------------------------------------------------
+#include "../workers/repo_workerusers.h"
 namespace Ui {
 class RepoDialogUserManager;
 }
@@ -39,7 +45,9 @@ class RepoDialogUserManager : public QDialog
 
 public:
 
-    explicit RepoDialogUserManager(QWidget *parent = 0);
+    explicit RepoDialogUserManager(
+            const core::MongoClientWrapper &mongo,
+            QWidget *parent = 0);
     ~RepoDialogUserManager();
 
     //! Clears the users model.
@@ -55,6 +63,14 @@ signals :
 
 public slots:
 
+    //! Adds user to the list of users
+    void addUser(
+            QVariant username,
+            QVariant password,
+            QVariant firstName,
+            QVariant lastName,
+            QVariant email);
+
     //! Cancels all running threads and waits for their completion.
     bool cancelAllThreads();
 
@@ -64,9 +80,15 @@ public slots:
     //! Refreshes the current list of users by fetching from a database.
     void refresh();
 
-private:
+    //! Sets the number of users shown in the "Showing x of y" label.
+    void updateUsersCount() const;
 
-    Ui::RepoDialogUserManager *ui;
+private :
+
+    QStandardItem *createItem(QVariant& data);
+
+
+private:
 
     //! Model of the users table.
     QStandardItemModel *usersModel;
@@ -76,6 +98,12 @@ private:
 
     //! Threadpool for this object only.
     QThreadPool threadPool;
+
+    //! Mongo connector.
+    core::MongoClientWrapper mongo;
+
+    //! Ui var.
+    Ui::RepoDialogUserManager *ui;
 };
 
 } // end namespace gui
