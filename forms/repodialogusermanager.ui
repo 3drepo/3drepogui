@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>467</width>
-    <height>491</height>
+    <width>449</width>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,9 @@
       </item>
       <item>
        <widget class="QTreeView" name="usersTreeView">
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
@@ -149,7 +152,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="userProfileGroupBox">
         <property name="title">
          <string>User Profile</string>
         </property>
@@ -214,12 +217,12 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="usernameLabel">
+             <widget class="QLabel" name="emailLabel">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
               <property name="text">
-               <string>Username</string>
+               <string>Email</string>
               </property>
              </widget>
             </item>
@@ -290,6 +293,15 @@
                   <property name="lineWidth">
                    <number>0</number>
                   </property>
+                  <property name="alternatingRowColors">
+                   <bool>true</bool>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::ExtendedSelection</enum>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -315,6 +327,15 @@
                  <widget class="QTreeView" name="databaseRolesTreeView">
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="alternatingRowColors">
+                   <bool>true</bool>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::ExtendedSelection</enum>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>

@@ -45,9 +45,9 @@ class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-
-
     enum RepoUsersColumns { ACTIVE, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL };
+
+    enum RepoProjectsColumns { OWNER, PROJECT };
 
 public:
 
@@ -58,6 +58,9 @@ public:
 
     //! Clears the users model.
     void clearUsersModel();
+
+    //! Clears the projects model.
+    void clearProjectsModel();
 
     //! Returns icon associated with this dialog.
     static QIcon getIcon();
@@ -93,6 +96,9 @@ private :
 
 
 private:
+
+    //! Model of the users table.
+    QStandardItemModel *projectsModel;
 
     //! Model of the users table.
     QStandardItemModel *usersModel;

@@ -28,31 +28,27 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     , mongo(mongo)
 {
     ui->setupUi(this);
-
     //--------------------------------------------------------------------------
     // Icons
-
     this->setWindowIcon(getIcon());
-
     ui->addUserPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_plus,
                                        QColor(Qt::darkGreen)));
     ui->deleteUserPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_minus,
                                        QColor(Qt::darkRed)));
-
     ui->addPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_plus,
                                        QColor(Qt::darkGreen)));
     ui->deletePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_minus,
                                        QColor(Qt::darkRed)));
-
     ui->picturePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
 
     //--------------------------------------------------------------------------
+    // Users
     usersModel = new QStandardItemModel(this);
     usersModel->setColumnCount(6);
     usersModel->setHeaderData(
@@ -80,17 +76,29 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 Qt::Horizontal,
                 tr("Email"));
 
-    //--------------------------------------------------------------------------
     usersProxy = new QSortFilterProxyModel(this);
     usersProxy->setFilterKeyColumn(-1); // filter all columns
     usersProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
     usersProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     usersProxy->setSourceModel(usersModel);
-    //--------------------------------------------------------------------------
     ui->usersTreeView->setModel(usersProxy);
     ui->usersTreeView->sortByColumn(RepoUsersColumns::USERNAME, Qt::SortOrder::AscendingOrder);
-    //--------------------------------------------------------------------------
     clearUsersModel();
+
+    //--------------------------------------------------------------------------
+    // Projects
+    projectsModel = new QStandardItemModel(this);
+    projectsModel->setColumnCount(2);
+    projectsModel->setHeaderData(
+                RepoProjectsColumns::OWNER,
+                Qt::Horizontal,
+                tr("Owner"));
+    projectsModel->setHeaderData(
+                RepoProjectsColumns::PROJECT,
+                Qt::Horizontal,
+                tr("Project"));
+    ui->projectsTreeView->setModel(projectsModel);
+    ui->projectsTreeView->sortByColumn(RepoProjectsColumns::OWNER, Qt::SortOrder::AscendingOrder);
 
     //--------------------------------------------------------------------------
     // Connect filtering text input to the filtering proxy model
@@ -122,6 +130,8 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     delete usersModel;
     delete usersProxy;
 
+    delete projectsModel;
+
     delete ui;
 }
 
@@ -129,17 +139,18 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
-
     // User object itself
     QVariant var;
-    var.setValue(user);
+//    core::RepoUser userCopy(user.copy());
+    var.setValue(user.copy());
 
     QStandardItem *item = new QStandardItem();
     item->setData(var);
+    item->setEnabled(true);
     item->setCheckable(true);
     item->setCheckState(Qt::Checked);
     item->setTristate(false);
-    item->setEditable(true);
+    item->setEditable(false);
     row.append(item);
 
     // Username
@@ -175,8 +186,6 @@ int repo::gui::RepoDialogUserManager::exec()
 {
     refresh();
     int result = QDialog::exec();
-    std::cout << "Result " << result << std::endl;
-
     return result;
 }
 
@@ -192,7 +201,13 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::EMAIL);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
+}
 
+void repo::gui::RepoDialogUserManager::clearProjectsModel()
+{
+    projectsModel->removeRows(0, projectsModel->rowCount());
+    ui->emailLabel->setText("");
+    ui->nameLabel->setText("");
 }
 
 QIcon repo::gui::RepoDialogUserManager::getIcon()
@@ -217,8 +232,9 @@ void repo::gui::RepoDialogUserManager::refresh()
             this, &RepoDialogUserManager::addUser);
 
         //----------------------------------------------------------------------
-        // Clear any previous entries : the collection model
+        // Clear any previous entries
         clearUsersModel();
+        clearProjectsModel();
 
         //----------------------------------------------------------------------
         threadPool.start(worker);
@@ -226,8 +242,7 @@ void repo::gui::RepoDialogUserManager::refresh()
         ui->picturePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                            RepoFontAwesome::fa_user,
                                            QColor(Qt::gray)));
-        ui->usernameLabel->setText("");
-        ui->nameLabel->setText("");
+
     }
 }
 
@@ -236,23 +251,41 @@ void  repo::gui::RepoDialogUserManager::select(
         const QItemSelection &selected,
         const QItemSelection &)
 {
+    clearProjectsModel();
     QModelIndexList list = selected.indexes();
-
     for (int i = 0; i < list.size(); ++i)
     {
         QModelIndex selectedIndex = list[i];
-        QVariant value = ui->usersTreeView->model()->data(selectedIndex);
-        switch (i)
+        QString text = selectedIndex.data().toString();
+        switch (selectedIndex.column())
         {
-            case RepoUsersColumns::USERNAME :
-                ui->usernameLabel->setText(value.toString());
+            case RepoUsersColumns::ACTIVE :
+                {
+                    core::RepoUser user = selectedIndex.data(Qt::UserRole+1).value<core::RepoUser>();
+
+                    std::vector<std::pair<std::string, std::string> > projects = user.getProjects();
+                    for (unsigned int i = 0; i < projects.size(); ++i)
+                    {
+                        QList<QStandardItem *> row;
+                        row.append(createItem(QString::fromStdString(projects[i].first)));
+                        row.append(createItem(QString::fromStdString(projects[i].second)));
+                        projectsModel->invisibleRootItem()->appendRow(row);
+                    }
+                }
                 break;
-            case RepoUsersColumns::FIRST_NAME :
-                ui->nameLabel->setText(value.toString());
-                break;
-            case RepoUsersColumns::LAST_NAME :
-              ui->nameLabel->setText(ui->nameLabel->text() + " " + value.toString());
-              break;
+        case RepoUsersColumns::USERNAME :
+        case RepoUsersColumns::FIRST_NAME :
+            if (!text.isEmpty())
+                ui->nameLabel->setText(text);
+            break;
+        case RepoUsersColumns::LAST_NAME :
+            if (!text.isEmpty())
+                ui->nameLabel->setText(ui->nameLabel->text() + " " + text);
+          break;
+        case RepoUsersColumns::EMAIL :
+            if (!text.isEmpty())
+                ui->emailLabel->setText(text);
+            break;
         }
 
 
