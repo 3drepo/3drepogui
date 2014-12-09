@@ -28,19 +28,37 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     , mongo(mongo)
 {
     ui->setupUi(this);
+
+    //--------------------------------------------------------------------------
+    // Icons
+
     this->setWindowIcon(getIcon());
 
-    ui->addUserToolButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+    ui->addUserPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_plus,
                                        QColor(Qt::darkGreen)));
-
-    ui->deleteUserToolButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+    ui->deleteUserPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_minus,
                                        QColor(Qt::darkRed)));
 
+    ui->addPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+                                       RepoFontAwesome::fa_plus,
+                                       QColor(Qt::darkGreen)));
+    ui->deletePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+                                       RepoFontAwesome::fa_minus,
+                                       QColor(Qt::darkRed)));
+
+    ui->picturePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+                                       RepoFontAwesome::fa_user,
+                                       QColor(Qt::gray)));
+
     //--------------------------------------------------------------------------
     usersModel = new QStandardItemModel(this);
-    usersModel->setColumnCount(5);
+    usersModel->setColumnCount(6);
+    usersModel->setHeaderData(
+                RepoUsersColumns::ACTIVE,
+                Qt::Horizontal,
+                tr("Active"));
     usersModel->setHeaderData(
                 RepoUsersColumns::USERNAME,
                 Qt::Horizontal,
@@ -79,7 +97,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     QObject::connect(
         ui->filterLineEdit, &QLineEdit::textChanged,
         usersProxy, &QSortFilterProxyModel::setFilterFixedString);
-    //--------------------------------------------------------------------------
+
     QObject::connect(
         ui->refreshPushButton, &QPushButton::pressed,
         this, &RepoDialogUserManager::refresh);
@@ -91,6 +109,10 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     QObject::connect(
         usersProxy, &QSortFilterProxyModel::rowsRemoved,
         this, &RepoDialogUserManager::updateUsersCount);
+
+    QObject::connect(
+        ui->usersTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
+        this, &RepoDialogUserManager::select);
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
@@ -103,20 +125,42 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     delete ui;
 }
 
-void repo::gui::RepoDialogUserManager::addUser(
-        QVariant username,
-        QVariant password,
-        QVariant firstName,
-        QVariant lastName,
-        QVariant email)
+void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
-    row.append(createItem(username));
-    row.append(createItem(password));
-    row.append(createItem(firstName));
-    row.append(createItem(lastName));
-    row.append(createItem(email));
+
+    // User object itself
+    QVariant var;
+    var.setValue(user);
+
+    QStandardItem *item = new QStandardItem();
+    item->setData(var);
+    item->setCheckable(true);
+    item->setCheckState(Qt::Checked);
+    item->setTristate(false);
+    item->setEditable(true);
+    row.append(item);
+
+    // Username
+    row.append(createItem(QString::fromStdString(user.getUsername())));
+
+    // Password
+    QString passwordAsBullets;
+    for (int i = 0; i < user.getPassword().size(); ++i)
+        passwordAsBullets += QChar(0x2022);
+    item = createItem(passwordAsBullets);
+    item->setData(QVariant(QString::fromStdString(user.getPassword())));
+    row.append(item);
+
+    // First Name
+    row.append(createItem(QString::fromStdString(user.getFirstName())));
+
+    // Last Name
+    row.append(createItem(QString::fromStdString(user.getLastName())));
+
+    // Email
+    row.append(createItem(QString::fromStdString(user.getEmail())));
     //--------------------------------------------------------------------------
     usersModel->invisibleRootItem()->appendRow(row);
 }
@@ -130,13 +174,17 @@ bool repo::gui::RepoDialogUserManager::cancelAllThreads()
 int repo::gui::RepoDialogUserManager::exec()
 {
     refresh();
-    return QDialog::exec();
+    int result = QDialog::exec();
+    std::cout << "Result " << result << std::endl;
+
+    return result;
 }
 
 void repo::gui::RepoDialogUserManager::clearUsersModel()
 {
     usersModel->removeRows(0, usersModel->rowCount());
     //--------------------------------------------------------------------------
+    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::ACTIVE);
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::USERNAME);
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::PASSWORD);
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::FIRST_NAME);
@@ -174,6 +222,40 @@ void repo::gui::RepoDialogUserManager::refresh()
 
         //----------------------------------------------------------------------
         threadPool.start(worker);
+
+        ui->picturePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
+                                           RepoFontAwesome::fa_user,
+                                           QColor(Qt::gray)));
+        ui->usernameLabel->setText("");
+        ui->nameLabel->setText("");
+    }
+}
+
+//! Selects the data from the given item.
+void  repo::gui::RepoDialogUserManager::select(
+        const QItemSelection &selected,
+        const QItemSelection &)
+{
+    QModelIndexList list = selected.indexes();
+
+    for (int i = 0; i < list.size(); ++i)
+    {
+        QModelIndex selectedIndex = list[i];
+        QVariant value = ui->usersTreeView->model()->data(selectedIndex);
+        switch (i)
+        {
+            case RepoUsersColumns::USERNAME :
+                ui->usernameLabel->setText(value.toString());
+                break;
+            case RepoUsersColumns::FIRST_NAME :
+                ui->nameLabel->setText(value.toString());
+                break;
+            case RepoUsersColumns::LAST_NAME :
+              ui->nameLabel->setText(ui->nameLabel->text() + " " + value.toString());
+              break;
+        }
+
+
     }
 }
 
@@ -182,12 +264,10 @@ void repo::gui::RepoDialogUserManager::updateUsersCount() const
     ui->usersCountLabel->setText(tr("Showing %1 of %2").arg(usersProxy->rowCount()).arg(usersModel->rowCount()));
 }
 
-QStandardItem *repo::gui::RepoDialogUserManager::createItem(QVariant& data)
+QStandardItem *repo::gui::RepoDialogUserManager::createItem(const QString &data)
 {
-    QStandardItem* item = new QStandardItem(data.toString());
-    item->setEditable(false);
-    item->setToolTip(data.toString());
-    item->setData(data);
-
+    QStandardItem* item = new QStandardItem(data);
+    item->setEditable(true);
+    item->setToolTip(data);
     return item;
 }

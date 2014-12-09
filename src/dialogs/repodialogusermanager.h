@@ -24,9 +24,12 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QThreadPool>
+#include <QItemSelection>
 //------------------------------------------------------------------------------
 // Core
 #include <RepoWrapperMongo>
+#include <RepoUser>
+
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerusers.h"
 namespace Ui {
@@ -36,12 +39,15 @@ class RepoDialogUserManager;
 namespace repo {
 namespace gui {
 
+Q_DECLARE_METATYPE(repo::core::RepoUser)
 
 class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-    enum RepoUsersColumns { USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL };
+
+
+    enum RepoUsersColumns { ACTIVE, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL };
 
 public:
 
@@ -64,12 +70,7 @@ signals :
 public slots:
 
     //! Adds user to the list of users
-    void addUser(
-            QVariant username,
-            QVariant password,
-            QVariant firstName,
-            QVariant lastName,
-            QVariant email);
+    void addUser(const core::RepoUser &user);
 
     //! Cancels all running threads and waits for their completion.
     bool cancelAllThreads();
@@ -80,12 +81,15 @@ public slots:
     //! Refreshes the current list of users by fetching from a database.
     void refresh();
 
+    //! Selects the data from the given item.
+    void select(const QItemSelection &selected, const QItemSelection &);
+
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;
 
 private :
 
-    QStandardItem *createItem(QVariant& data);
+    QStandardItem *createItem(const QString& data);
 
 
 private:

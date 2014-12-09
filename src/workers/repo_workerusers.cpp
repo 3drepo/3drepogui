@@ -26,7 +26,9 @@ repo::gui::RepoWorkerUsers::RepoWorkerUsers(
     const QString &database)
     : mongo(mongo)
     , database(database.toStdString())
-{}
+{
+    qRegisterMetaType<core::RepoUser>("core::RepoUser");
+}
 
 //------------------------------------------------------------------------------
 
@@ -53,13 +55,7 @@ void repo::gui::RepoWorkerUsers::run()
             for (; !cancelled && cursor.get() && cursor->more(); ++skip)
             {
                 core::RepoUser user(cursor->nextSafe());
-                //--------------------------------------------------------------
-                emit userFetched(
-                            QString::fromStdString(user.getUsername()),
-                            QString::fromStdString(user.getPassword()),
-                            QString::fromStdString(user.getFirstName()),
-                            QString::fromStdString(user.getLastName()),
-                            QString::fromStdString(user.getEmail()));
+                emit userFetched(user);
             }
             if (!cancelled)
                 cursor = mongo.listAllTailable(

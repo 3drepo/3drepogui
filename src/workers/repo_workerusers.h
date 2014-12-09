@@ -20,6 +20,7 @@
 //-----------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoUser>
 
 //-----------------------------------------------------------------------------
 // Repo GUI
@@ -46,11 +47,7 @@ public :
 
 signals :
 
-    void userFetched(QVariant username,
-                     QVariant password,
-                     QVariant firstName,
-                     QVariant lastName,
-                     QVariant email);
+    void userFetched(const core::RepoUser &user);
 
 public slots :
 
