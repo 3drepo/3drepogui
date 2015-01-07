@@ -31,9 +31,12 @@
 #include <RepoUser>
 
 //------------------------------------------------------------------------------
+// GUI
 #include "../workers/repo_workerusers.h"
+#include "repodialoguser.h"
+
 namespace Ui {
-class RepoDialogUserManager;
+    class RepoDialogUserManager;
 }
 
 namespace repo {
@@ -86,6 +89,9 @@ public slots:
 
     //! Selects the data from the given item.
     void select(const QItemSelection &selected, const QItemSelection &);
+
+    //! Double click on the tree view
+    void selectUser(const QModelIndex &);
 
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;

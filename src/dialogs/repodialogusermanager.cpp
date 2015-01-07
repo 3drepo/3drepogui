@@ -121,6 +121,9 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     QObject::connect(
         ui->usersTreeView->selectionModel(), &QItemSelectionModel::selectionChanged,
         this, &RepoDialogUserManager::select);
+
+    QObject::connect(ui->usersTreeView, SIGNAL(doubleClicked(const QModelIndex &)),
+                     this, SLOT(selectUser(const QModelIndex &)));
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
@@ -141,8 +144,7 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     //--------------------------------------------------------------------------
     // User object itself
     QVariant var;
-//    core::RepoUser userCopy(user.copy());
-    var.setValue(user.copy());
+    var.setValue(user);
 
     QStandardItem *item = new QStandardItem();
     item->setData(var);
@@ -291,6 +293,13 @@ void  repo::gui::RepoDialogUserManager::select(
 
     }
 }
+
+void repo::gui::RepoDialogUserManager::selectUser(const QModelIndex &)
+{
+    RepoDialogUser d(this);
+    d.exec();
+}
+
 
 void repo::gui::RepoDialogUserManager::updateUsersCount() const
 {

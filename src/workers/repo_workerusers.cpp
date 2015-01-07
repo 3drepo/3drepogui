@@ -55,7 +55,7 @@ void repo::gui::RepoWorkerUsers::run()
             for (; !cancelled && cursor.get() && cursor->more(); ++skip)
             {
                 core::RepoUser user(cursor->nextSafe());
-                emit userFetched(user);
+                emit userFetched(user.copy());
             }
             if (!cancelled)
                 cursor = mongo.listAllTailable(
