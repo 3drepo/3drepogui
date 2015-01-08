@@ -56,7 +56,8 @@ HEADERS  += src/repogui.h \
             src/oculus/repo_oculus.h \
             src/dialogs/repodialogoculus.h \
             src/dialogs/repodialogusermanager.h \
-            src/dialogs/repodialoguser.h
+            src/dialogs/repodialoguser.h \
+    src/primitives/repocomboboxeditor.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -84,7 +85,8 @@ SOURCES += src/main.cpp\
            src/oculus/repo_oculus.cpp \
            src/dialogs/repodialogoculus.cpp \
            src/dialogs/repodialogusermanager.cpp \
-           src/dialogs/repodialoguser.cpp
+           src/dialogs/repodialoguser.cpp \
+    src/primitives/repocomboboxeditor.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

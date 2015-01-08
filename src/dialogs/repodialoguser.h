@@ -19,10 +19,17 @@
 #ifndef REPO_DIALOG_USER_H
 #define REPO_DIALOG_USER_H
 
+//------------------------------------------------------------------------------
+// Qt
 #include <QDialog>
+#include <QStandardItemModel>
+
+//------------------------------------------------------------------------------
+// Core
+#include <RepoUser>
 
 namespace Ui {
-class RepoDialogUser;
+    class RepoDialogUser;
 }
 
 namespace repo {
@@ -32,11 +39,30 @@ class RepoDialogUser : public QDialog
 {
     Q_OBJECT
 
+    enum RepoProjectsColumns { OWNER, PROJECT };
+
 public:
-    explicit RepoDialogUser(QWidget *parent = 0);
+    explicit RepoDialogUser(core::RepoUser user, QWidget *parent = 0);
+
     ~RepoDialogUser();
 
+    static QIcon getIcon();
+
+    static void populateModel(
+        QStandardItemModel *model,
+        const std::vector<std::pair<std::string, std::string> > &data);
+
 private:
+
+    core::RepoUser user;
+
+    //! Model of the projects table.
+    QStandardItemModel *projectsModel;
+
+    //! Model of the roles table.
+    QStandardItemModel *rolesModel;
+
+    //! Ui var.
     Ui::RepoDialogUser *ui;
 };
 

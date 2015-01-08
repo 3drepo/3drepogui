@@ -48,9 +48,7 @@ class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-    enum RepoUsersColumns { ACTIVE, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL };
-
-    enum RepoProjectsColumns { OWNER, PROJECT };
+    enum RepoUsersColumns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
 
 public:
 
@@ -62,9 +60,6 @@ public:
     //! Clears the users model.
     void clearUsersModel();
 
-    //! Clears the projects model.
-    void clearProjectsModel();
-
     //! Returns icon associated with this dialog.
     static QIcon getIcon();
 
@@ -75,7 +70,7 @@ signals :
 
 public slots:
 
-    //! Adds user to the list of users
+    //! Adds user to the list of users.
     void addUser(const core::RepoUser &user);
 
     //! Cancels all running threads and waits for their completion.
@@ -84,14 +79,17 @@ public slots:
     //! Forces refresh.
     int exec();
 
+    //! Opens up an empty user profile dialog and submits the user if accepted.
+    void newUser();
+
     //! Refreshes the current list of users by fetching from a database.
     void refresh();
 
     //! Selects the data from the given item.
     void select(const QItemSelection &selected, const QItemSelection &);
 
-    //! Double click on the tree view
-    void selectUser(const QModelIndex &);
+    //! Updates existing selected user.
+    void updateSelectedUser(const QModelIndex &index);
 
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;
@@ -100,11 +98,16 @@ private :
 
     QStandardItem *createItem(const QString& data);
 
+    QStandardItem *createItem(const QVariant &);
+
 
 private:
 
-    //! Model of the users table.
-    QStandardItemModel *projectsModel;
+    //! Add user button.
+    QPushButton *addUserPushButton;
+
+    //! Delete user button.
+    QPushButton *deleteUserPushButton;
 
     //! Model of the users table.
     QStandardItemModel *usersModel;
