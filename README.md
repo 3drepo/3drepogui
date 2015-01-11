@@ -25,4 +25,31 @@ See also [http://qt-project.org/wiki/Compiling-ICU-with-MSVC](http://qt-project.
 
 ### Oculus
 
-Download and instal Oculus Runtime for Windows. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
+Download and install Oculus Runtime for Windows. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
+
+## Compiling on Mac
+
+These instructions are for OSX Yosemite.
+
+### Qt
+
+Download and install Qt with an explicit OpenGL support.
+
+Navigate to where you installed Qt using finder.
+Go to the subdirectory 5.3/clang_64/mkspecs directory.
+Open the file called qdevice.pri with a text editor
+Change the line !host_build:QMAKE_MAC_SDK = macosx10.8 to !host_build:QMAKE_MAC_SDK = macosx10.9
+Save the file and restart Qt Creator.
+
+### GLC Lib
+
+On Mac you will need to compile GLC Lib separately. To do so, navigate to the submodule directly, and run the following command:
+
+```
+qmake -recursive
+make -j8
+```
+
+### Oculus
+
+Download and install Oculus Runtime for Mac. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.

@@ -17,8 +17,19 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS += 3drepocore \
-           GLC_lib/src/src.pro
+win32 {
+	SUBDIRS += 	3drepocore \
+           		GLC_lib/src/src.pro
+}
+
+unix:!macx {
+	SUBDIRS += 	3drepocore \
+           		GLC_lib/src/src.pro
+}
+
+macx: {
+    SUBDIRS += 3drepocore
+}
 
 
 
