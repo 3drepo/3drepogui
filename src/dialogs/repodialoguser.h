@@ -42,7 +42,10 @@ class RepoDialogUser : public QDialog
     enum RepoProjectsColumns { OWNER, PROJECT };
 
 public:
-    explicit RepoDialogUser(core::RepoUser user, QWidget *parent = 0);
+    explicit RepoDialogUser(
+            core::RepoUser user,
+            const std::list<std::string> &databaseList,
+            QWidget *parent = 0);
 
     ~RepoDialogUser();
 
@@ -54,6 +57,10 @@ public:
 
 private:
 
+    //! List of available databases.
+    std::list<std::string> databaseList;
+
+    //! User to be created or modified.
     core::RepoUser user;
 
     //! Model of the projects table.

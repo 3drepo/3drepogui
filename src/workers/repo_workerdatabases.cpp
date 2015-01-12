@@ -21,9 +21,6 @@
 #include <string>
 #include <cctype>
 
-#if defined(_WIN32) || defined(_WIN64)
-  #define strcasecmp _stricmp
-#endif
 
 repo::gui::RepoWorkerDatabases::RepoWorkerDatabases(const repo::core::MongoClientWrapper& mongo)
 	: RepoWorkerAbstract()
@@ -53,9 +50,6 @@ void repo::gui::RepoWorkerDatabases::run()
         //----------------------------------------------------------------------
 		// For each database (if not cancelled)
 		std::list<std::string> databases = mongo.getDbs();
-
-        //----------------------------------------------------------------------
-        databases.sort(&RepoWorkerDatabases::caseInsensitiveStringCompare);
 
         //----------------------------------------------------------------------
         jobsCount = (int) databases.size() * 2;
@@ -106,9 +100,4 @@ void repo::gui::RepoWorkerDatabases::run()
 	emit RepoWorkerAbstract::finished();
 }
 
-bool repo::gui::RepoWorkerDatabases::caseInsensitiveStringCompare(
-        const std::string& s1,
-        const std::string& s2)
-{
-    return strcasecmp(s1.c_str(), s2.c_str()) <= 0;
-}
+

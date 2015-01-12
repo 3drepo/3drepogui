@@ -49,6 +49,8 @@ signals :
 
     void userFetched(const core::RepoUser &user);
 
+    void databasesFetched(const std::list<std::string> &databases);
+
 public slots :
 
     void run();

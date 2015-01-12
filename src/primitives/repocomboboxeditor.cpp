@@ -17,13 +17,25 @@
 
 #include "repocomboboxeditor.h"
 
-repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(QWidget *parent) :
-    QComboBox(parent)
+repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(
+        const std::list<std::string> &list,
+        QWidget *parent)
+    : QComboBox(parent)
+    , list(list)
 {
-    populateList();
+    std::list<std::string>::iterator it = this->list.begin();
+    for (int i = 0; it != this->list.end(); ++it, ++i)
+    {
+        QColor color("red");
+        insertItem(i, QString::fromStdString(*it));
+        setItemData(i, color, Qt::DecorationRole);
+    }
 }
 
-repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor();
+repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor()
+{
+
+}
 
 QColor repo::gui::RepoComboBoxEditor::color() const
 {
@@ -35,16 +47,12 @@ void repo::gui::RepoComboBoxEditor::setColor(QColor color)
    setCurrentIndex(findData(color, int(Qt::DecorationRole)));
 }
 
-void repo::gui::RepoComboBoxEditor::populateList()
+QWidget * repo::gui::RepoComboBoxEditor::createWidget(QWidget * parent) const
 {
-   QStringList colorNames = QColor::colorNames();
-
-   for (int i = 0; i < colorNames.size(); ++i) {
-       QColor color(colorNames[i]);
-
-       insertItem(i, colorNames[i]);
-       setItemData(i, color, Qt::DecorationRole);
-   }
+    return new RepoComboBoxEditor(list, parent);
 }
 
-
+QByteArray repo::gui::RepoComboBoxEditor::valuePropertyName() const
+{
+    return QByteArray();
+}

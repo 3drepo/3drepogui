@@ -73,6 +73,9 @@ public slots:
     //! Adds user to the list of users.
     void addUser(const core::RepoUser &user);
 
+    //! Adds a fresh list of databases.
+    void addDatabases(const std::list<std::string> &);
+
     //! Cancels all running threads and waits for their completion.
     bool cancelAllThreads();
 
@@ -108,6 +111,12 @@ private:
 
     //! Delete user button.
     QPushButton *deleteUserPushButton;
+
+    //! Edit user button.
+    QPushButton *editUserPushButton;
+
+    //! List of databases updated upon each refresh
+    std::list<std::string> databaseList;
 
     //! Model of the users table.
     QStandardItemModel *usersModel;

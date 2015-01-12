@@ -66,10 +66,6 @@ signals:
     //! Emitted when a single database processing is finished
     void databaseFinished(const QString &dbName);
 
-public :
-
-    static bool caseInsensitiveStringCompare(const std::string& s1, const std::string& s2);
-
 private :
 
 	//! Database connector.

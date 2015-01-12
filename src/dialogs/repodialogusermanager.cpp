@@ -33,10 +33,13 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
 
     addUserPushButton = new QPushButton(tr("&Add"));
     ui->buttonBox->addButton(addUserPushButton, QDialogButtonBox::ActionRole);
-
     QObject::connect(
         addUserPushButton, &QPushButton::pressed,
                 this, &RepoDialogUserManager::newUser);
+
+    editUserPushButton = new QPushButton(tr("&Edit"));
+    ui->buttonBox->addButton(editUserPushButton, QDialogButtonBox::ActionRole);
+
 
     deleteUserPushButton = new QPushButton(tr("&Delete"));
     ui->buttonBox->addButton(deleteUserPushButton, QDialogButtonBox::ActionRole);
@@ -117,6 +120,7 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     delete usersProxy;
     delete addUserPushButton;
     delete deleteUserPushButton;
+    delete editUserPushButton;
     delete ui;
 }
 
@@ -168,6 +172,12 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     usersModel->invisibleRootItem()->appendRow(row);
 }
 
+void repo::gui::RepoDialogUserManager::addDatabases(const std::list<std::string> &list)
+{
+    databaseList.clear();
+    databaseList = list;
+}
+
 bool repo::gui::RepoDialogUserManager::cancelAllThreads()
 {
     emit cancel();
@@ -195,6 +205,7 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
     deleteUserPushButton->setEnabled(false);
+    editUserPushButton->setEnabled(false);
 }
 
 QIcon repo::gui::RepoDialogUserManager::getIcon()
@@ -204,7 +215,7 @@ QIcon repo::gui::RepoDialogUserManager::getIcon()
 
 void repo::gui::RepoDialogUserManager::newUser()
 {
-    RepoDialogUser userDialog(core::RepoUser(), this);
+    RepoDialogUser userDialog(core::RepoUser(), databaseList, this);
     if (QDialog::Accepted == userDialog.exec())
     {
         // Submit a new user
@@ -232,6 +243,11 @@ void repo::gui::RepoDialogUserManager::refresh()
             worker, &RepoWorkerUsers::userFetched,
             this, &RepoDialogUserManager::addUser);
 
+        QObject::connect(
+            worker, &RepoWorkerUsers::databasesFetched,
+            this, &RepoDialogUserManager::addDatabases);
+
+
         //----------------------------------------------------------------------
         // Clear any previous entries
         clearUsersModel();        
@@ -247,6 +263,7 @@ void  repo::gui::RepoDialogUserManager::select(
         const QItemSelection &)
 {
     deleteUserPushButton->setEnabled(true);
+    editUserPushButton->setEnabled(true);
 //    clearProjectsModel();
 //    QModelIndexList list = selected.indexes();
 //    for (int i = 0; i < list.size(); ++i)
@@ -292,7 +309,7 @@ void repo::gui::RepoDialogUserManager::updateSelectedUser(const QModelIndex &ind
 {
     QModelIndex userIndex = index.sibling(index.row(),RepoUsersColumns::ACTIVE);
     core::RepoUser user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
-    RepoDialogUser userDialog(user, this);
+    RepoDialogUser userDialog(user, databaseList, this);
     if (QDialog::Rejected == userDialog.exec())
     {
         std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;

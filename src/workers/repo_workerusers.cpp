@@ -28,6 +28,7 @@ repo::gui::RepoWorkerUsers::RepoWorkerUsers(
     , database(database.toStdString())
 {
     qRegisterMetaType<core::RepoUser>("core::RepoUser");
+    qRegisterMetaType<std::list<std::string> >("std::list<std::string>");
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +46,6 @@ void repo::gui::RepoWorkerUsers::run()
         mongo.reauthenticate(database);
 
         std::list<std::string> fields; // projection, emtpy at the moment
-
         //----------------------------------------------------------------------
         // Retrieves all BSON objects until finished or cancelled.
         unsigned long long skip = 0;
@@ -67,6 +67,12 @@ void repo::gui::RepoWorkerUsers::run()
                     skip);
         }
         while (!cancelled && cursor.get() && cursor->more());
+
+
+        //----------------------------------------------------------------------
+        // Get list of databases
+        std::list<std::string> databases = mongo.getDbs();
+        emit databasesFetched(databases);
     }
     //--------------------------------------------------------------------------
     emit RepoWorkerAbstract::finished();

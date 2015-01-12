@@ -25,12 +25,17 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QComboBox>
+#include <QItemDelegate>
 #include <QItemEditorFactory>
 #include <QStandardItemEditorCreator>
 
-repo::gui::RepoDialogUser::RepoDialogUser(core::RepoUser user, QWidget *parent)
+repo::gui::RepoDialogUser::RepoDialogUser(
+        core::RepoUser user,
+        const std::list<std::string> &databaseList,
+        QWidget *parent)
     : QDialog(parent)
     , user(user)
+    , databaseList(databaseList)
     , ui(new Ui::RepoDialogUser)
 {
     ui->setupUi(this);
@@ -53,14 +58,20 @@ repo::gui::RepoDialogUser::RepoDialogUser(core::RepoUser user, QWidget *parent)
 
 
 
-    // Magic
-    QItemEditorFactory *factory = new QItemEditorFactory;
-    QItemEditorCreatorBase *colorListCreator =
-        new QStandardItemEditorCreator<RepoComboBoxEditor>();
-    factory->registerEditor(QVariant::Color, colorListCreator);
-    QItemEditorFactory::setDefaultFactory(factory);
+    // Enable drop down selectors for editing delegate
+    // See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
+    QItemEditorFactory *factory = new QItemEditorFactory();
 
+//    QItemEditorCreatorBase *itemListCreator =
+//        new QStandardItemEditorCreator<RepoComboBoxEditor>();
 
+    QItemEditorCreatorBase * myCombo = new RepoComboBoxEditor(databaseList);
+    factory->registerEditor(QVariant::Color, myCombo);
+    //QItemEditorFactory::setDefaultFactory(factory);
+
+    QItemDelegate *delegate = new QItemDelegate();
+    delegate->setItemEditorFactory(factory);
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, delegate);
 
 
     //--------------------------------------------------------------------------
@@ -150,16 +161,12 @@ repo::gui::RepoDialogUser::RepoDialogUser(core::RepoUser user, QWidget *parent)
 
         }
     }
-
-
 }
 
 repo::gui::RepoDialogUser::~RepoDialogUser()
 {
     delete projectsModel;
-
     delete rolesModel;
-
     delete ui;
 }
 
@@ -176,7 +183,10 @@ void repo::gui::RepoDialogUser::populateModel(
     {
         QList<QStandardItem *> row;
         row.append(new QStandardItem(QString::fromStdString(data[i].first)));
-        row.append(new QStandardItem(QString::fromStdString(data[i].second)));
+
+        QStandardItem *item = new QStandardItem();//QString::fromStdString(data[i].second));
+        item->setData(QColor("springgreen"), Qt::DisplayRole);
+        row.append(item);
         model->invisibleRootItem()->appendRow(row);
 
        // model->setData(model->index(i, 0), new QComboBox());

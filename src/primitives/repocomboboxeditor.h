@@ -19,21 +19,29 @@
 #ifndef REPO_COMBO_BOX_EDITOR_H
 #define REPO_COMBO_BOX_EDITOR_H
 
-#include <QComboBox>
 
+//------------------------------------------------------------------------------
+// Qt
+#include <QWidget>
+#include <QByteArray>
+#include <QComboBox>
+#include <QList>
+#include <QString>
+#include <QItemEditorCreatorBase>
 
 namespace repo {
 namespace gui {
 
 
-class RepoComboBoxEditor : public QComboBox
+// See http://doc-snapshot.qt-project.org/qt5-5.4/qitemeditorcreatorbase.html
+class RepoComboBoxEditor : public QComboBox, public QItemEditorCreatorBase
 {
     Q_OBJECT
 
     Q_PROPERTY(QColor color READ color WRITE setColor USER true)
 
 public:
-    explicit RepoComboBoxEditor(QWidget *parent = 0);
+    explicit RepoComboBoxEditor(const std::list<std::string> &list, QWidget *parent = 0);
 
     ~RepoComboBoxEditor();
 
@@ -41,9 +49,16 @@ public:
     QColor color() const;
     void setColor(QColor c);
 
-private:
-    void populateList();
+    //! Returns an editor widget with the given parent.
+    QWidget * createWidget(QWidget * parent) const;
 
+    //! Returns empty QByteArray.
+    QByteArray valuePropertyName() const;
+
+private:
+
+    //! List of items to be displayed.
+    std::list<std::string> list;
 };
 
 } // end namespace gui
