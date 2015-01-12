@@ -31,19 +31,9 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     //--------------------------------------------------------------------------
     this->setWindowIcon(getIcon());
 
-    addUserPushButton = new QPushButton(tr("&Add"));
-    ui->buttonBox->addButton(addUserPushButton, QDialogButtonBox::ActionRole);
     QObject::connect(
-        addUserPushButton, &QPushButton::pressed,
+        ui->addUserPushButton, &QPushButton::pressed,
                 this, &RepoDialogUserManager::newUser);
-
-    editUserPushButton = new QPushButton(tr("&Edit"));
-    ui->buttonBox->addButton(editUserPushButton, QDialogButtonBox::ActionRole);
-
-
-    deleteUserPushButton = new QPushButton(tr("&Delete"));
-    ui->buttonBox->addButton(deleteUserPushButton, QDialogButtonBox::ActionRole);
-
 
     //--------------------------------------------------------------------------
     // Users
@@ -118,9 +108,6 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     cancelAllThreads();
     delete usersModel;
     delete usersProxy;
-    delete addUserPushButton;
-    delete deleteUserPushButton;
-    delete editUserPushButton;
     delete ui;
 }
 
@@ -204,8 +191,8 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::ROLES);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
-    deleteUserPushButton->setEnabled(false);
-    editUserPushButton->setEnabled(false);
+    ui->deleteUserPushButton->setEnabled(false);
+    ui->editUserPushButton->setEnabled(false);
 }
 
 QIcon repo::gui::RepoDialogUserManager::getIcon()
@@ -262,8 +249,8 @@ void  repo::gui::RepoDialogUserManager::select(
         const QItemSelection &selected,
         const QItemSelection &)
 {
-    deleteUserPushButton->setEnabled(true);
-    editUserPushButton->setEnabled(true);
+    ui->deleteUserPushButton->setEnabled(true);
+    ui->editUserPushButton->setEnabled(true);
 //    clearProjectsModel();
 //    QModelIndexList list = selected.indexes();
 //    for (int i = 0; i < list.size(); ++i)

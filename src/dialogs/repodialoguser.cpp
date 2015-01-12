@@ -46,20 +46,16 @@ repo::gui::RepoDialogUser::RepoDialogUser(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
 
+    databasesDelegate = new RepoComboBoxDelegate(databaseList);
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, databasesDelegate);
 
-    // Enable drop down selectors for editing delegate
-    // See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
-    QItemEditorFactory *factory = new QItemEditorFactory();
-    RepoComboBoxEditor *myCombo = new RepoComboBoxEditor(databaseList);
-    factory->registerEditor(QVariant::String, myCombo);
-    QItemDelegate *delegate = new QItemDelegate();
-    delegate->setItemEditorFactory(factory);    
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, delegate);
 
-    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, delegate);
-    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, delegate);
 
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, delegate);
+
+    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, databasesDelegate);
+    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, databasesDelegate);
+
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, databasesDelegate);
 
     //--------------------------------------------------------------------------
     // Projects
@@ -133,6 +129,7 @@ repo::gui::RepoDialogUser::~RepoDialogUser()
 {
     delete projectsModel;
     delete rolesModel;
+    delete databasesDelegate;
     delete ui;
 }
 

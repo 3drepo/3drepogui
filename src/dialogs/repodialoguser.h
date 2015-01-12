@@ -36,6 +36,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repocomboboxeditor.h"
+#include "../primitives/repocomboboxdelegate.h"
 
 namespace Ui {
     class RepoDialogUser;
@@ -82,7 +83,7 @@ private:
     //! Ui var.
     Ui::RepoDialogUser *ui;
 
-    QList<std::tuple<QItemEditorFactory *, RepoComboBoxEditor *, QItemDelegate *> > delegates;
+    RepoComboBoxDelegate *databasesDelegate;
 };
 
 } // end namespace gui

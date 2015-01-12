@@ -106,15 +106,6 @@ private :
 
 private:
 
-    //! Add user button.
-    QPushButton *addUserPushButton;
-
-    //! Delete user button.
-    QPushButton *deleteUserPushButton;
-
-    //! Edit user button.
-    QPushButton *editUserPushButton;
-
     //! List of databases updated upon each refresh
     std::list<std::string> databaseList;
 
