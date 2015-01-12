@@ -71,7 +71,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
     QItemDelegate *delegate = new QItemDelegate();
     delegate->setItemEditorFactory(factory);
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, delegate);
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, delegate);
 
 
     //--------------------------------------------------------------------------
