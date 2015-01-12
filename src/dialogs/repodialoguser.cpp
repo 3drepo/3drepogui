@@ -20,14 +20,8 @@
 #include "repodialoguser.h"
 #include "ui_repodialoguser.h"
 #include "../primitives/repo_fontawesome.h"
-#include "../primitives/repocomboboxeditor.h"
 
-//------------------------------------------------------------------------------
-// Qt
-#include <QComboBox>
-#include <QItemDelegate>
-#include <QItemEditorFactory>
-#include <QStandardItemEditorCreator>
+
 
 repo::gui::RepoDialogUser::RepoDialogUser(
         core::RepoUser user,
@@ -53,26 +47,19 @@ repo::gui::RepoDialogUser::RepoDialogUser(
                                        QColor(Qt::gray)));
 
 
-
-
-
-
-
     // Enable drop down selectors for editing delegate
     // See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
     QItemEditorFactory *factory = new QItemEditorFactory();
-
-//    QItemEditorCreatorBase *itemListCreator =
-//        new QStandardItemEditorCreator<RepoComboBoxEditor>();
-
-    QItemEditorCreatorBase * myCombo = new RepoComboBoxEditor(databaseList);
-    factory->registerEditor(QVariant::Color, myCombo);
-    //QItemEditorFactory::setDefaultFactory(factory);
-
+    RepoComboBoxEditor *myCombo = new RepoComboBoxEditor(databaseList);
+    factory->registerEditor(QVariant::String, myCombo);
     QItemDelegate *delegate = new QItemDelegate();
-    delegate->setItemEditorFactory(factory);
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, delegate);
+    delegate->setItemEditorFactory(factory);    
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, delegate);
 
+    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, delegate);
+    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, delegate);
+
+    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, delegate);
 
     //--------------------------------------------------------------------------
     // Projects
@@ -125,41 +112,20 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
         this->populateModel(rolesModel, roles);
 
-
-
-
-        QList<QTreeWidgetItem *> items;
         for (unsigned int i = 0; i < roles.size(); ++i)
         {
-
-
             QStringList list;
             list.append(QString::fromStdString(roles[i].first));
             list.append(QString::fromStdString(roles[i].second));
 
-            QTreeWidgetItem *item = new QTreeWidgetItem((QTreeWidget*)0, list);
-            ui->rolesTreeWidget->insertTopLevelItem(0, item);
-
-
-
-
-
-            QComboBox *databaseComboBox = new QComboBox();
-            databaseComboBox->addItem(QString::fromStdString(roles[i].first));
-            databaseComboBox->addItem("admin");
-            databaseComboBox->addItem("test");
-            ui->rolesTreeWidget->setItemWidget(item, 0, databaseComboBox);
-
-
-            QComboBox *roleComboBox = new QComboBox();
-            roleComboBox->addItem(QString::fromStdString(roles[i].second));
-            roleComboBox->addItem("admin");
-            roleComboBox->addItem("test");
-            ui->rolesTreeWidget->setItemWidget(item, 1, roleComboBox);
-
-
-
+            QTreeWidgetItem *item = new QTreeWidgetItem(ui->rolesTreeWidget, list);
+            item->setData(0, Qt::DecorationRole, QString::fromStdString(roles[i].first));
+            item->setData(1, Qt::DecorationRole, QString::fromStdString(roles[i].second));
+            item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+            ui->rolesTreeWidget->addTopLevelItem(item);
         }
+
+
     }
 }
 
@@ -184,12 +150,10 @@ void repo::gui::RepoDialogUser::populateModel(
         QList<QStandardItem *> row;
         row.append(new QStandardItem(QString::fromStdString(data[i].first)));
 
-        QStandardItem *item = new QStandardItem();//QString::fromStdString(data[i].second));
-        item->setData(QColor("springgreen"), Qt::DisplayRole);
+        QStandardItem *item = new QStandardItem(QString::fromStdString(data[i].second));
+        item->setData(QString::fromStdString(data[i].second), Qt::DecorationRole);
         row.append(item);
         model->invisibleRootItem()->appendRow(row);
-
-       // model->setData(model->index(i, 0), new QComboBox());
     }
 }
 

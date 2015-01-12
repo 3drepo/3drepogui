@@ -38,7 +38,7 @@ class RepoComboBoxEditor : public QComboBox, public QItemEditorCreatorBase
 {
     Q_OBJECT
 
-    Q_PROPERTY(QColor color READ color WRITE setColor USER true)
+    Q_PROPERTY(QString value READ value WRITE setValue USER true)
 
 public:
     explicit RepoComboBoxEditor(const std::list<std::string> &list, QWidget *parent = 0);
@@ -46,8 +46,8 @@ public:
     ~RepoComboBoxEditor();
 
 public:
-    QColor color() const;
-    void setColor(QColor c);
+    QString value() const;
+    void setValue(QString value);
 
     //! Returns an editor widget with the given parent.
     QWidget * createWidget(QWidget * parent) const;

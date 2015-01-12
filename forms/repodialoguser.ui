@@ -217,11 +217,17 @@
          <property name="lineWidth">
           <number>0</number>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AllEditTriggers</set>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectItems</enum>
+         </property>
          <property name="rootIsDecorated">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="sortingEnabled">
           <bool>true</bool>
@@ -261,13 +267,19 @@
          <property name="lineWidth">
           <number>0</number>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::AllEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
          <property name="rootIsDecorated">
           <bool>false</bool>
          </property>
-         <property name="sortingEnabled">
+         <property name="animated">
           <bool>true</bool>
          </property>
-         <property name="animated">
+         <property name="allColumnsShowFocus">
           <bool>true</bool>
          </property>
          <column>
@@ -277,7 +289,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Role</string>
+           <string>Roles</string>
           </property>
          </column>
         </widget>

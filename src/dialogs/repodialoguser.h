@@ -23,10 +23,19 @@
 // Qt
 #include <QDialog>
 #include <QStandardItemModel>
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QItemEditorFactory>
+#include <QStandardItemEditorCreator>
+
 
 //------------------------------------------------------------------------------
 // Core
 #include <RepoUser>
+
+//------------------------------------------------------------------------------
+// GUI
+#include "../primitives/repocomboboxeditor.h"
 
 namespace Ui {
     class RepoDialogUser;
@@ -40,6 +49,7 @@ class RepoDialogUser : public QDialog
     Q_OBJECT
 
     enum RepoProjectsColumns { OWNER, PROJECT };
+    enum RepoRolesColumns { DATABASE, ROLE };
 
 public:
     explicit RepoDialogUser(
@@ -71,6 +81,8 @@ private:
 
     //! Ui var.
     Ui::RepoDialogUser *ui;
+
+    QList<std::tuple<QItemEditorFactory *, RepoComboBoxEditor *, QItemDelegate *> > delegates;
 };
 
 } // end namespace gui

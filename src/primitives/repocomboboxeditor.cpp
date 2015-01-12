@@ -26,9 +26,9 @@ repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(
     std::list<std::string>::iterator it = this->list.begin();
     for (int i = 0; it != this->list.end(); ++it, ++i)
     {
-        QColor color("red");
+      //  QColor color("red");
         insertItem(i, QString::fromStdString(*it));
-        setItemData(i, color, Qt::DecorationRole);
+        setItemData(i, QString::fromStdString(*it), Qt::DecorationRole);
     }
 }
 
@@ -37,14 +37,14 @@ repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor()
 
 }
 
-QColor repo::gui::RepoComboBoxEditor::color() const
+QString repo::gui::RepoComboBoxEditor::value() const
 {
-   return qvariant_cast<QColor>(itemData(currentIndex(), Qt::DecorationRole));
+   return qvariant_cast<QString>(itemData(currentIndex(), Qt::DecorationRole));
 }
 
-void repo::gui::RepoComboBoxEditor::setColor(QColor color)
+void repo::gui::RepoComboBoxEditor::setValue(QString value)
 {
-   setCurrentIndex(findData(color, int(Qt::DecorationRole)));
+   setCurrentIndex(findData(value, int(Qt::DecorationRole)));
 }
 
 QWidget * repo::gui::RepoComboBoxEditor::createWidget(QWidget * parent) const
