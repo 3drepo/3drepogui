@@ -43,6 +43,9 @@ public :
 
     ~RepoComboBoxDelegate();
 
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+                           const QModelIndex &index) const;
+
 private :
 
     //! Standard item editor factory.

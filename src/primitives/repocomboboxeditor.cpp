@@ -16,6 +16,7 @@
  */
 
 #include "repocomboboxeditor.h"
+#include <iostream>
 
 repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(
         const std::list<std::string> &list,
@@ -26,7 +27,6 @@ repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(
     std::list<std::string>::iterator it = this->list.begin();
     for (int i = 0; it != this->list.end(); ++it, ++i)
     {
-      //  QColor color("red");
         insertItem(i, QString::fromStdString(*it));
         setItemData(i, QString::fromStdString(*it), Qt::DecorationRole);
     }

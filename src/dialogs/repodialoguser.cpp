@@ -21,7 +21,7 @@
 #include "ui_repodialoguser.h"
 #include "../primitives/repo_fontawesome.h"
 
-
+#include <RepoWrapperMongo>
 
 repo::gui::RepoDialogUser::RepoDialogUser(
         core::RepoUser user,
@@ -48,13 +48,6 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
     databasesDelegate = new RepoComboBoxDelegate(databaseList);
     ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, databasesDelegate);
-
-
-
-
-    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, databasesDelegate);
-    ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, databasesDelegate);
-
     ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, databasesDelegate);
 
     //--------------------------------------------------------------------------
@@ -73,21 +66,6 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     ui->projectsTreeView->sortByColumn(RepoProjectsColumns::OWNER, Qt::SortOrder::AscendingOrder);
 
     //--------------------------------------------------------------------------
-    // DB Roles
-    rolesModel = new QStandardItemModel(this);
-    rolesModel->setColumnCount(2);
-    rolesModel->setHeaderData(
-                RepoProjectsColumns::OWNER,
-                Qt::Horizontal,
-                tr("Database"));
-    rolesModel->setHeaderData(
-                RepoProjectsColumns::PROJECT,
-                Qt::Horizontal,
-                tr("Role"));
-    //ui->rolesTreeView->setModel(rolesModel);
-    //ui->rolesTreeView->sortByColumn(RepoProjectsColumns::OWNER, Qt::SortOrder::AscendingOrder);
-
-    //--------------------------------------------------------------------------
     // Populate user data
     if (!user.isEmpty())
     {
@@ -103,11 +81,14 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         std::vector<std::pair<std::string, std::string> > projects = user.getProjects();
         this->populateModel(projectsModel, projects);
 
+
+
         //----------------------------------------------------------------------
         // DB Roles
         std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
-        this->populateModel(rolesModel, roles);
 
+
+        adminDatabaseRolesDelegate = new RepoComboBoxDelegate(core::MongoClientWrapper::ADMIN_DATABASE_ROLES);
         for (unsigned int i = 0; i < roles.size(); ++i)
         {
             QStringList list;
@@ -119,7 +100,12 @@ repo::gui::RepoDialogUser::RepoDialogUser(
             item->setData(1, Qt::DecorationRole, QString::fromStdString(roles[i].second));
             item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
             ui->rolesTreeWidget->addTopLevelItem(item);
+
+            ui->rolesTreeWidget->setItemDelegateForRow(i, adminDatabaseRolesDelegate);
         }
+        //ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, databasesDelegate);
+        //ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, adminDatabaseRolesDelegate);
+
 
 
     }
@@ -128,8 +114,8 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 repo::gui::RepoDialogUser::~RepoDialogUser()
 {
     delete projectsModel;
-    delete rolesModel;
     delete databasesDelegate;
+    delete adminDatabaseRolesDelegate;
     delete ui;
 }
 

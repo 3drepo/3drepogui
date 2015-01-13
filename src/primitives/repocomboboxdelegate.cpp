@@ -31,3 +31,19 @@ repo::gui::RepoComboBoxDelegate::~RepoComboBoxDelegate()
     delete comboBoxEditor;
     //delete factory;
 }
+
+
+void repo::gui::RepoComboBoxDelegate::paint(
+        QPainter *painter, const QStyleOptionViewItem &option,
+                       const QModelIndex &index) const
+{
+    if (1 == index.column())
+    {
+
+        this->paint();
+        // ohh it's my column
+        // better do something creative
+    }
+    else // it's just a common column. Live it in default way
+        QItemDelegate::paint(painter, option, index);
+}

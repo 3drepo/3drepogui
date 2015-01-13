@@ -77,13 +77,14 @@ private:
     //! Model of the projects table.
     QStandardItemModel *projectsModel;
 
-    //! Model of the roles table.
-    QStandardItemModel *rolesModel;
-
     //! Ui var.
     Ui::RepoDialogUser *ui;
 
     RepoComboBoxDelegate *databasesDelegate;
+
+    RepoComboBoxDelegate *anyDatabaseRolesDelegate;
+
+    RepoComboBoxDelegate *adminDatabaseRolesDelegate;
 };
 
 } // end namespace gui
