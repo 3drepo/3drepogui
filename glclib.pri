@@ -17,7 +17,8 @@
 # GLC Lib
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib2
-else:unix: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
+else:unix:!macx: LIBS += -L$$OUT_PWD/submodules/GLC_lib/src/ -lGLC_lib
+else:macx: LIBS += -L$$PWD/submodules/GLC_lib/src/ -lGLC_lib
 
 INCLUDEPATH += $$PWD/submodules/GLC_lib/src
 DEPENDPATH += $$PWD/submodules/GLC_lib/src

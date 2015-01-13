@@ -17,7 +17,9 @@
 # Oculus Rift LibOVR
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/submodules/LibOVR/Lib/x64/VS2013/ -llibovr64
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/submodules/LibOVR/Lib/x64/VS2013/ -llibovr64d
-else:unix: LIBS += -L$$PWD/submodules/LibOVR/Lib -lXrandr -lovr
+else:unix:!macx: LIBS += -L$$PWD/submodules/LibOVR/Lib -lXrandr -lovr
+else:macx:CONFIG(release, debug|release) LIBS += -L$$PWD/submodules/LibOVR/Lib/Mac/Release -lovr -framework IOKit -framework Cocoa
+else:macx:CONFIG(debug, debug|release) LIBS += -L$$PWD/submodules/LibOVR/Lib/Mac/Debug -lovr -framework IOKit -framework Cocoa
 
 INCLUDEPATH += $$PWD/submodules/LibOVR/Src \
                $$PWD/submodules/LibOVR/Include

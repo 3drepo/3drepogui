@@ -187,7 +187,7 @@ void repo::gui::RepoGLCWidget::initializeGL()
 	initializeShaders();
 
 	// FPS time (t0) in milliseconds
-	fpsTimeZero = (double)GetTickCount();
+    fpsTimeZero = std::chrono::steady_clock::now();
 }
 
 void repo::gui::RepoGLCWidget::initializeShaders()
@@ -356,12 +356,12 @@ void repo::gui::RepoGLCWidget::paintInfo()
     //--------------------------------------------------------------------------
 	// FPS calculations
 	fpsCounter++;
-	double t1 = (double)GetTickCount();
-	double elapsedTime = (t1 - fpsTimeZero)/1000;
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+    double elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(now - fpsTimeZero).count();
 	if (elapsedTime > 1) {
 		fps = (float)fpsCounter / elapsedTime;
 		fpsCounter = 0;
-		fpsTimeZero = t1;
+        fpsTimeZero = now;
 	}
 
     //--------------------------------------------------------------------------

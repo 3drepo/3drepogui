@@ -20,7 +20,7 @@ include(oculus.pri)
 #-------------------------------------------------------------------------------
 
 QT += core gui opengl openglextensions #gui-private
-unix:QT += x11extras
+unix:!macx:QT += x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

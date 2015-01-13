@@ -39,10 +39,10 @@ namespace Ui {
     class RepoDialogUserManager;
 }
 
+Q_DECLARE_METATYPE(repo::core::RepoUser)
+
 namespace repo {
 namespace gui {
-
-Q_DECLARE_METATYPE(repo::core::RepoUser)
 
 class RepoDialogUserManager : public QDialog
 {

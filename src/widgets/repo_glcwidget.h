@@ -23,6 +23,8 @@
 // Core
 #include "graph/repo_graph_scene.h"
 
+#include <ctime>
+#include <chrono>
 //------------------------------------------------------------------------------
 #include <QGLWidget>
 //------------------------------------------------------------------------------
@@ -328,7 +330,7 @@ protected :
 	unsigned int fpsCounter;
 
 	//! Previously recorded time for fps calculation.
-	double fpsTimeZero;
+    std::chrono::steady_clock::time_point fpsTimeZero;
 
 	//! Number of frames rendered per second.
 	float fps;
