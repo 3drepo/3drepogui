@@ -239,6 +239,11 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="groupsTab">
+      <attribute name="title">
+       <string>Groups</string>
+      </attribute>
+     </widget>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
        <string>Roles</string>
