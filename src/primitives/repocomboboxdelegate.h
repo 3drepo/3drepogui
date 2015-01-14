@@ -39,21 +39,18 @@ class RepoComboBoxDelegate : public QItemDelegate
 
 public :
 
-    RepoComboBoxDelegate(const std::list<std::string> &list);
+    //! A list of combo box entries per column.
+    RepoComboBoxDelegate(
+        const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists);
 
     ~RepoComboBoxDelegate();
 
-    void paint(QPainter *painter, const QStyleOptionViewItem &option,
-                           const QModelIndex &index) const;
+    QWidget *createEditor(QWidget * parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
 
 private :
 
-    //! Standard item editor factory.
-    QItemEditorFactory *factory;
-
-    //! Custom combo box editor.
-    RepoComboBoxEditor *comboBoxEditor;
-
+    //! Standard item factories list per column
+    QList<QItemEditorFactory *> factories;
 };
 
 } // end namespace gui

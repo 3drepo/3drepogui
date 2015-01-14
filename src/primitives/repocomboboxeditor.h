@@ -41,7 +41,10 @@ class RepoComboBoxEditor : public QComboBox, public QItemEditorCreatorBase
     Q_PROPERTY(QString value READ value WRITE setValue USER true)
 
 public:
-    explicit RepoComboBoxEditor(const std::list<std::string> &list, QWidget *parent = 0);
+
+    typedef QList<std::list<std::string> > SeparatedEntries;
+
+    explicit RepoComboBoxEditor(const SeparatedEntries &entries, QWidget *parent = 0);
 
     ~RepoComboBoxEditor();
 
@@ -57,8 +60,8 @@ public:
 
 private:
 
-    //! List of items to be displayed.
-    std::list<std::string> list;
+    //! List of lists of items to be displayed in combo box (separated by a line).
+    SeparatedEntries entries;
 };
 
 } // end namespace gui

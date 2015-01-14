@@ -18,24 +18,29 @@
 #include "repocomboboxeditor.h"
 #include <iostream>
 
-repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(
-        const std::list<std::string> &list,
+repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entries,
         QWidget *parent)
     : QComboBox(parent)
-    , list(list)
-{
-    std::list<std::string>::iterator it = this->list.begin();
-    for (int i = 0; it != this->list.end(); ++it, ++i)
+    , entries(entries)
+{ 
+    int separatorCounter = 0;
+    for (int j = 0; j < this->entries.size(); ++j)
     {
-        insertItem(i, QString::fromStdString(*it));
-        setItemData(i, QString::fromStdString(*it), Qt::DecorationRole);
+        std::list<std::string> l = this->entries[j];
+        std::list<std::string>::iterator it = l.begin();
+        for (int i = separatorCounter; it != l.end(); ++it, ++i)
+        {
+            QString str = QString::fromStdString(*it);
+            insertItem(i, str);
+            setItemData(i, str, Qt::DecorationRole);
+        }
+        separatorCounter += l.size();
+        if (this->entries.size() - 1 != j)
+            insertSeparator(separatorCounter);
     }
 }
 
-repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor()
-{
-
-}
+repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor() {}
 
 QString repo::gui::RepoComboBoxEditor::value() const
 {
@@ -49,7 +54,7 @@ void repo::gui::RepoComboBoxEditor::setValue(QString value)
 
 QWidget * repo::gui::RepoComboBoxEditor::createWidget(QWidget * parent) const
 {
-    return new RepoComboBoxEditor(list, parent);
+    return new RepoComboBoxEditor(entries, parent);
 }
 
 QByteArray repo::gui::RepoComboBoxEditor::valuePropertyName() const

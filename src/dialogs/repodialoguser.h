@@ -27,6 +27,7 @@
 #include <QItemDelegate>
 #include <QItemEditorFactory>
 #include <QStandardItemEditorCreator>
+#include <QTreeWidgetItem>
 
 
 //------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ class RepoDialogUser : public QDialog
     Q_OBJECT
 
     enum RepoProjectsColumns { OWNER, PROJECT };
-    enum RepoRolesColumns { DATABASE, ROLE };
+    enum RolesColumns { DATABASE, ROLE };
 
 public:
     explicit RepoDialogUser(
@@ -65,6 +66,10 @@ public:
     static void populateModel(
         QStandardItemModel *model,
         const std::vector<std::pair<std::string, std::string> > &data);
+
+public slots :
+
+    void rolesItemChanged(QTreeWidgetItem * current, int column);
 
 private:
 
@@ -82,9 +87,9 @@ private:
 
     RepoComboBoxDelegate *databasesDelegate;
 
-    RepoComboBoxDelegate *anyDatabaseRolesDelegate;
+    RepoComboBoxDelegate *anyDBRolesDelegate;
 
-    RepoComboBoxDelegate *adminDatabaseRolesDelegate;
+    RepoComboBoxDelegate *adminDBRolesDelegate;
 };
 
 } // end namespace gui

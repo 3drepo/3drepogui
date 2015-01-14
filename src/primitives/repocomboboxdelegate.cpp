@@ -18,32 +18,39 @@
 #include "repocomboboxdelegate.h"
 
 repo::gui::RepoComboBoxDelegate::RepoComboBoxDelegate(
-        const std::list<std::string> &list)
+         const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists)
 {
-    factory = new QItemEditorFactory();
-    comboBoxEditor = new RepoComboBoxEditor(list);
-    factory->registerEditor(QVariant::String, comboBoxEditor);
-    this->setItemEditorFactory(factory);
+    for (unsigned int i = 0; i < comboBoxLists.size(); ++i)
+    {
+        QItemEditorFactory *factory = new QItemEditorFactory();
+        factory->registerEditor(QVariant::String, new RepoComboBoxEditor(comboBoxLists[i]));
+        factories.append(factory);
+    }
 }
 
 repo::gui::RepoComboBoxDelegate::~RepoComboBoxDelegate()
 {
-    delete comboBoxEditor;
-    //delete factory;
+    for (unsigned int i = 0; i < factories.size(); ++i)
+    {
+        if (factories[i])
+        {
+            delete factories[i];
+            factories[i] = 0;
+        }
+    }
 }
 
-
-void repo::gui::RepoComboBoxDelegate::paint(
-        QPainter *painter, const QStyleOptionViewItem &option,
-                       const QModelIndex &index) const
+QWidget * repo::gui::RepoComboBoxDelegate::createEditor(
+        QWidget *parent,
+        const QStyleOptionViewItem &,
+        const QModelIndex &index) const
 {
-//    if (1 == index.column())
-//    {
-
-//        this->paint();
-//        // ohh it's my column
-//        // better do something creative
-//    }
-//    else // it's just a common column. Live it in default way
-        QItemDelegate::paint(painter, option, index);
+    QWidget *widget = 0;
+    if (index.isValid() && index.column() < factories.size())
+    {
+        widget = factories[index.column()]->createEditor(index.data(Qt::EditRole).userType(), parent);
+        if (widget)
+            widget->setFocusPolicy(Qt::WheelFocus);
+    }
+    return widget;
 }

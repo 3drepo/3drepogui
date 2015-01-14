@@ -33,22 +33,19 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     , ui(new Ui::RepoDialogUser)
 {
     ui->setupUi(this);
-
     setWindowIcon(getIcon());
 
-//    ui->addPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
-//                                       RepoFontAwesome::fa_plus,
-//                                       QColor(Qt::darkGreen)));
-//    ui->deletePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
-//                                       RepoFontAwesome::fa_minus,
-//                                       QColor(Qt::darkRed)));
+
+    QObject::connect(
+        ui->rolesTreeWidget, &QTreeWidget::itemChanged,
+        this, &RepoDialogUser::rolesItemChanged);
     ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
 
-    databasesDelegate = new RepoComboBoxDelegate(databaseList);
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, databasesDelegate);
-    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, databasesDelegate);
+//    databasesDelegate = new RepoComboBoxDelegate(databaseList);
+//    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::OWNER, databasesDelegate);
+//    ui->projectsTreeView->setItemDelegateForColumn(RepoProjectsColumns::PROJECT, databasesDelegate);
 
     //--------------------------------------------------------------------------
     // Projects
@@ -87,8 +84,34 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         // DB Roles
         std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
 
+//        std::list<std::string> adminRoles = core::MongoClientWrapper::ADMIN_DATABASE_ROLES;
+//        adminRoles.insert(adminRoles.end(), core::MongoClientWrapper::DATABASE_ROLES.begin(), core::MongoClientWrapper::DATABASE_ROLES.end());
 
-        adminDatabaseRolesDelegate = new RepoComboBoxDelegate(core::MongoClientWrapper::ADMIN_DATABASE_ROLES);
+
+        RepoComboBoxEditor::SeparatedEntries dbEntries;
+        dbEntries << databaseList;
+
+
+        RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
+        dbRoleEntries << core::MongoClientWrapper::ANY_DATABASE_ROLES;
+
+        //----------------------------------------------------------------------
+        // Any DB Roles
+        QList<RepoComboBoxEditor::SeparatedEntries> anyDBRolesLists;
+        anyDBRolesLists << dbEntries << dbRoleEntries;
+        anyDBRolesDelegate = new RepoComboBoxDelegate(anyDBRolesLists);
+
+        //----------------------------------------------------------------------
+        // Admin DB Roles (any roles + admin only roles)
+        dbRoleEntries << core::MongoClientWrapper::ADMIN_ONLY_DATABASE_ROLES;
+        QList<RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
+        adminDBRolesLists << dbEntries << dbRoleEntries;
+        adminDBRolesDelegate = new RepoComboBoxDelegate(adminDBRolesLists);
+
+
+
+        //----------------------------------------------------------------------
+        // Populate DB Roles
         for (unsigned int i = 0; i < roles.size(); ++i)
         {
             QStringList list;
@@ -101,21 +124,16 @@ repo::gui::RepoDialogUser::RepoDialogUser(
             item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
             ui->rolesTreeWidget->addTopLevelItem(item);
 
-            ui->rolesTreeWidget->setItemDelegateForRow(i, adminDatabaseRolesDelegate);
+            if (core::MongoClientWrapper::ADMIN_DATABASE == roles[i].first)
+                ui->rolesTreeWidget->setItemDelegateForRow(i, adminDBRolesDelegate);
+            else
+                ui->rolesTreeWidget->setItemDelegateForRow(i, anyDBRolesDelegate);
         }
-        //ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::DATABASE, databasesDelegate);
-        //ui->rolesTreeWidget->setItemDelegateForColumn(RepoRolesColumns::ROLE, adminDatabaseRolesDelegate);
-
-
-
     }
 }
 
 repo::gui::RepoDialogUser::~RepoDialogUser()
 {
-    delete projectsModel;
-    delete databasesDelegate;
-    delete adminDatabaseRolesDelegate;
     delete ui;
 }
 
@@ -137,6 +155,19 @@ void repo::gui::RepoDialogUser::populateModel(
         item->setData(QString::fromStdString(data[i].second), Qt::DecorationRole);
         row.append(item);
         model->invisibleRootItem()->appendRow(row);
+    }
+}
+
+void repo::gui::RepoDialogUser::rolesItemChanged(QTreeWidgetItem *current, int column)
+{
+    if (current && RolesColumns::DATABASE == column)
+    {
+        int row = ui->rolesTreeWidget->indexOfTopLevelItem(current);
+        if (core::MongoClientWrapper::ADMIN_DATABASE == current->data(column, Qt::EditRole).toString().toStdString())
+            ui->rolesTreeWidget->setItemDelegateForRow(row, adminDBRolesDelegate);
+        else
+            ui->rolesTreeWidget->setItemDelegateForRow(row, anyDBRolesDelegate);
+
     }
 }
 
