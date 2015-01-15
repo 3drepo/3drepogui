@@ -48,7 +48,7 @@ class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-    enum RepoUsersColumns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
+    enum Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
 
 public:
 
@@ -82,6 +82,15 @@ public slots:
     //! Forces refresh.
     int exec();
 
+    //! Updates selected user.
+    void editUser();
+
+    //! Updates user based on model index.
+    void editUser(const QModelIndex &index);
+
+    //! Shows editing dialog for a given user.
+    void editUser(const core::RepoUser &user);
+
     //! Opens up an empty user profile dialog and submits the user if accepted.
     void newUser();
 
@@ -89,10 +98,7 @@ public slots:
     void refresh();
 
     //! Selects the data from the given item.
-    void select(const QItemSelection &selected, const QItemSelection &);
-
-    //! Updates existing selected user.
-    void updateSelectedUser(const QModelIndex &index);
+    void select(const QItemSelection &, const QItemSelection &);
 
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;

@@ -53,6 +53,8 @@ class RepoDialogUser : public QDialog
     enum RepoProjectsColumns { OWNER, PROJECT };
     enum RolesColumns { DATABASE, ROLE };
 
+    enum Tabs { PROJECTS, GROUPS, ROLES };
+
 public:
     explicit RepoDialogUser(
             core::RepoUser user,
@@ -60,6 +62,12 @@ public:
             QWidget *parent = 0);
 
     ~RepoDialogUser();
+
+    //! Adds Access Rights item depending on the currently selected tab.
+    void addItem();
+
+    //! Adds a DB Role pair to the Roles table.
+    void addRole(int i, const std::pair<std::string, std::string> &role);
 
     static QIcon getIcon();
 

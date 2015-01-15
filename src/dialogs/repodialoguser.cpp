@@ -34,11 +34,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 {
     ui->setupUi(this);
     setWindowIcon(getIcon());
-
-
-    QObject::connect(
-        ui->rolesTreeWidget, &QTreeWidget::itemChanged,
-        this, &RepoDialogUser::rolesItemChanged);
+    //--------------------------------------------------------------------------
     ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
@@ -82,7 +78,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
         //----------------------------------------------------------------------
         // DB Roles
-        std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
+
 
 //        std::list<std::string> adminRoles = core::MongoClientWrapper::ADMIN_DATABASE_ROLES;
 //        adminRoles.insert(adminRoles.end(), core::MongoClientWrapper::DATABASE_ROLES.begin(), core::MongoClientWrapper::DATABASE_ROLES.end());
@@ -112,29 +108,62 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
         //----------------------------------------------------------------------
         // Populate DB Roles
+        std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
         for (unsigned int i = 0; i < roles.size(); ++i)
         {
-            QStringList list;
-            list.append(QString::fromStdString(roles[i].first));
-            list.append(QString::fromStdString(roles[i].second));
-
-            QTreeWidgetItem *item = new QTreeWidgetItem(ui->rolesTreeWidget, list);
-            item->setData(0, Qt::DecorationRole, QString::fromStdString(roles[i].first));
-            item->setData(1, Qt::DecorationRole, QString::fromStdString(roles[i].second));
-            item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-            ui->rolesTreeWidget->addTopLevelItem(item);
-
-            if (core::MongoClientWrapper::ADMIN_DATABASE == roles[i].first)
-                ui->rolesTreeWidget->setItemDelegateForRow(i, adminDBRolesDelegate);
-            else
-                ui->rolesTreeWidget->setItemDelegateForRow(i, anyDBRolesDelegate);
+            addRole(i, roles[i]);
         }
     }
+
+    //--------------------------------------------------------------------------
+    // Connections
+
+    QObject::connect(
+        ui->rolesTreeWidget, &QTreeWidget::itemChanged,
+        this, &RepoDialogUser::rolesItemChanged);
+
+    QObject::connect(
+        ui->addPushButton, &QPushButton::pressed,
+        this, &RepoDialogUser::addItem);
+
 }
 
 repo::gui::RepoDialogUser::~RepoDialogUser()
 {
     delete ui;
+}
+
+void repo::gui::RepoDialogUser::addItem()
+{
+   switch(ui->accessRightsTabWidget->currentIndex())
+   {
+       case Tabs::ROLES :
+       ui->rolesTreeWidget->addTopLevelItem(new QTreeWidgetItem());
+       addRole(ui->rolesTreeWidget->topLevelItemCount(), std::make_pair<std::string, std::string>("",""));
+       break;
+   }
+}
+
+
+void repo::gui::RepoDialogUser::addRole(int i, const std::pair<std::string, std::string> &role)
+{
+    QStringList list;
+    list.append(QString::fromStdString(role.first));
+    list.append(QString::fromStdString(role.second));
+
+    QTreeWidgetItem *item = new QTreeWidgetItem(ui->rolesTreeWidget, list);
+    item->setData(0, Qt::DecorationRole, QString::fromStdString(role.first));
+    item->setData(1, Qt::DecorationRole, QString::fromStdString(role.second));
+    item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+    //ui->rolesTreeWidget->addTopLevelItem(item);
+    ui->rolesTreeWidget->insertTopLevelItem(i, item);
+
+
+
+    if (core::MongoClientWrapper::ADMIN_DATABASE == role.first)
+        ui->rolesTreeWidget->setItemDelegateForRow(i, adminDBRolesDelegate);
+    else
+        ui->rolesTreeWidget->setItemDelegateForRow(i, anyDBRolesDelegate);
 }
 
 QIcon repo::gui::RepoDialogUser::getIcon()

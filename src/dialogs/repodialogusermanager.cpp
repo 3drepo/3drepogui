@@ -28,48 +28,44 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     , mongo(mongo)
 {
     ui->setupUi(this);
-    //--------------------------------------------------------------------------
     setWindowIcon(getIcon());
+
+    //--------------------------------------------------------------------------
+    // Add DB connections to selector
     ui->comboBox->addItem(
                 RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
                 QString::fromStdString(mongo.getHostAndPort()));
-
-    //--------------------------------------------------------------------------
-
-    QObject::connect(
-        ui->addUserPushButton, &QPushButton::pressed,
-                this, &RepoDialogUserManager::newUser);
 
     //--------------------------------------------------------------------------
     // Users
     usersModel = new QStandardItemModel(this);
     usersModel->setColumnCount(7);
     usersModel->setHeaderData(
-                RepoUsersColumns::ACTIVE,
+                Columns::ACTIVE,
                 Qt::Horizontal,
                 tr("Active"));
     usersModel->setHeaderData(
-                RepoUsersColumns::USERNAME,
+                Columns::USERNAME,
                 Qt::Horizontal,
                 tr("Username"));
     usersModel->setHeaderData(
-                RepoUsersColumns::FIRST_NAME,
+                Columns::FIRST_NAME,
                 Qt::Horizontal,
                 tr("First Name"));
     usersModel->setHeaderData(
-                RepoUsersColumns::LAST_NAME,
+                Columns::LAST_NAME,
                 Qt::Horizontal,
                 tr("Last Name"));
     usersModel->setHeaderData(
-                RepoUsersColumns::EMAIL,
+                Columns::EMAIL,
                 Qt::Horizontal,
                 tr("Email"));
     usersModel->setHeaderData(
-                RepoUsersColumns::PROJECTS,
+                Columns::PROJECTS,
                 Qt::Horizontal,
                 tr("Projects"));
     usersModel->setHeaderData(
-                RepoUsersColumns::ROLES,
+                Columns::ROLES,
                 Qt::Horizontal,
                 tr("Roles"));
 
@@ -79,7 +75,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     usersProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     usersProxy->setSourceModel(usersModel);
     ui->usersTreeView->setModel(usersProxy);
-    ui->usersTreeView->sortByColumn(RepoUsersColumns::USERNAME, Qt::SortOrder::AscendingOrder);
+    ui->usersTreeView->sortByColumn(Columns::USERNAME, Qt::SortOrder::AscendingOrder);
     clearUsersModel();
 
     //--------------------------------------------------------------------------
@@ -105,7 +101,14 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
         this, &RepoDialogUserManager::select);
 
     QObject::connect(ui->usersTreeView, SIGNAL(doubleClicked(const QModelIndex &)),
-                     this, SLOT(updateSelectedUser(const QModelIndex &)));
+                     this, SLOT(editUser(const QModelIndex &)));
+
+    QObject::connect(
+        ui->addUserPushButton, &QPushButton::pressed,
+                this, &RepoDialogUserManager::newUser);
+
+    QObject::connect(ui->editUserPushButton, SIGNAL(pressed()),
+                     this, SLOT(editUser()));
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
@@ -179,21 +182,49 @@ bool repo::gui::RepoDialogUserManager::cancelAllThreads()
 int repo::gui::RepoDialogUserManager::exec()
 {
     refresh();
-    int result = QDialog::exec();
-    return result;
+    return QDialog::exec();
+}
+
+void repo::gui::RepoDialogUserManager::editUser()
+{
+    editUser(ui->usersTreeView->selectionModel()->currentIndex());
+}
+
+void repo::gui::RepoDialogUserManager::editUser(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        QModelIndex userIndex = index.sibling(index.row(),Columns::ACTIVE);
+        core::RepoUser user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
+        editUser(user);
+    }
+}
+
+void repo::gui::RepoDialogUserManager::editUser(const core::RepoUser &user)
+{
+    RepoDialogUser userDialog(user, databaseList, this);
+    if (QDialog::Rejected == userDialog.exec())
+    {
+        std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        // Update existing user
+        refresh();
+    }
 }
 
 void repo::gui::RepoDialogUserManager::clearUsersModel()
 {
     usersModel->removeRows(0, usersModel->rowCount());
     //--------------------------------------------------------------------------
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::ACTIVE);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::USERNAME);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::FIRST_NAME);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::LAST_NAME);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::EMAIL);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::PROJECTS);
-    ui->usersTreeView->resizeColumnToContents(RepoUsersColumns::ROLES);
+    ui->usersTreeView->resizeColumnToContents(Columns::ACTIVE);
+    ui->usersTreeView->resizeColumnToContents(Columns::USERNAME);
+    ui->usersTreeView->resizeColumnToContents(Columns::FIRST_NAME);
+    ui->usersTreeView->resizeColumnToContents(Columns::LAST_NAME);
+    ui->usersTreeView->resizeColumnToContents(Columns::EMAIL);
+    ui->usersTreeView->resizeColumnToContents(Columns::PROJECTS);
+    ui->usersTreeView->resizeColumnToContents(Columns::ROLES);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
     ui->deleteUserPushButton->setEnabled(false);
@@ -251,7 +282,7 @@ void repo::gui::RepoDialogUserManager::refresh()
 
 //! Selects the data from the given item.
 void  repo::gui::RepoDialogUserManager::select(
-        const QItemSelection &selected,
+        const QItemSelection &,
         const QItemSelection &)
 {
     ui->deleteUserPushButton->setEnabled(true);
@@ -296,23 +327,6 @@ void  repo::gui::RepoDialogUserManager::select(
 
 //    }
 }
-
-void repo::gui::RepoDialogUserManager::updateSelectedUser(const QModelIndex &index)
-{
-    QModelIndex userIndex = index.sibling(index.row(),RepoUsersColumns::ACTIVE);
-    core::RepoUser user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
-    RepoDialogUser userDialog(user, databaseList, this);
-    if (QDialog::Rejected == userDialog.exec())
-    {
-        std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
-    }
-    else // QDialog::Accepted
-    {
-        // Update existing user
-        refresh();
-    }
-}
-
 
 void repo::gui::RepoDialogUserManager::updateUsersCount() const
 {
