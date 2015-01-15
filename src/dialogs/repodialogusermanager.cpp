@@ -29,7 +29,12 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
 {
     ui->setupUi(this);
     //--------------------------------------------------------------------------
-    this->setWindowIcon(getIcon());
+    setWindowIcon(getIcon());
+    ui->comboBox->addItem(
+                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
+                QString::fromStdString(mongo.getHostAndPort()));
+
+    //--------------------------------------------------------------------------
 
     QObject::connect(
         ui->addUserPushButton, &QPushButton::pressed,

@@ -23,20 +23,22 @@ repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entrie
     : QComboBox(parent)
     , entries(entries)
 { 
-    int separatorCounter = 0;
+    int index = 0;
     for (int j = 0; j < this->entries.size(); ++j)
     {
         std::list<std::string> l = this->entries[j];
         std::list<std::string>::iterator it = l.begin();
-        for (int i = separatorCounter; it != l.end(); ++it, ++i)
+        for (int i = index; it != l.end(); ++it, ++i)
         {
             QString str = QString::fromStdString(*it);
             insertItem(i, str);
             setItemData(i, str, Qt::DecorationRole);
         }
-        separatorCounter += l.size();
-        if (this->entries.size() - 1 != j)
-            insertSeparator(separatorCounter);
+
+        if (index != 0)
+            insertSeparator(index);
+
+        index += l.size();
     }
 }
 
