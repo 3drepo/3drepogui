@@ -63,17 +63,20 @@ public:
 
     ~RepoDialogUser();
 
-    //! Adds Access Rights item depending on the currently selected tab.
+    //! Adds Access Rights item depending on the selected tab.
     void addItem();
 
     //! Adds a DB Role pair to the Roles table.
-    void addRole(int i, const std::pair<std::string, std::string> &role);
+    QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &role);
 
     static QIcon getIcon();
 
     static void populateModel(
         QStandardItemModel *model,
         const std::vector<std::pair<std::string, std::string> > &data);
+
+    //! Removes currently selected Access Rights item depending on the selected tab.
+    void removeItem();
 
 public slots :
 

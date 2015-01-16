@@ -18,11 +18,15 @@
 #include "repocomboboxeditor.h"
 #include <iostream>
 
+#include <QStylePainter>
+
 repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entries,
         QWidget *parent)
     : QComboBox(parent)
     , entries(entries)
 { 
+    this->setDuplicatesEnabled(true);
+
     int index = 0;
     for (int j = 0; j < this->entries.size(); ++j)
     {

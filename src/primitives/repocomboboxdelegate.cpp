@@ -54,3 +54,5 @@ QWidget * repo::gui::RepoComboBoxDelegate::createEditor(
     }
     return widget;
 }
+
+

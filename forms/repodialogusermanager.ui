@@ -192,16 +192,16 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="refreshPushButton">
-        <property name="text">
-         <string>Refresh</string>
+       <widget class="QComboBox" name="comboBox">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
-        <property name="enabled">
-         <bool>false</bool>
+       <widget class="QPushButton" name="refreshPushButton">
+        <property name="text">
+         <string>Refresh</string>
         </property>
        </widget>
       </item>
