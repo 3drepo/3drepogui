@@ -59,6 +59,7 @@ public:
     explicit RepoDialogUser(
             core::RepoUser user,
             const std::list<std::string> &databaseList,
+            const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
 
     ~RepoDialogUser();
@@ -83,9 +84,6 @@ public slots :
     void rolesItemChanged(QTreeWidgetItem * current, int column);
 
 private:
-
-    //! List of available databases.
-    std::list<std::string> databaseList;
 
     //! User to be created or modified.
     core::RepoUser user;

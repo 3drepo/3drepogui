@@ -31,10 +31,10 @@
 repo::gui::RepoDialogUser::RepoDialogUser(
         core::RepoUser user,
         const std::list<std::string> &databaseList,
+        const std::list<std::string> &customRolesList,
         QWidget *parent)
     : QDialog(parent)
     , user(user)
-    , databaseList(databaseList)
     , ui(new Ui::RepoDialogUser)
 {
     ui->setupUi(this);
@@ -93,8 +93,9 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         dbEntries << databaseList;
 
 
+        // TODO: sort alphabetically customRolesList
         RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
-        dbRoleEntries << core::MongoClientWrapper::ANY_DATABASE_ROLES;
+        dbRoleEntries << customRolesList << core::MongoClientWrapper::ANY_DATABASE_ROLES;
 
         //----------------------------------------------------------------------
         // Any DB Roles

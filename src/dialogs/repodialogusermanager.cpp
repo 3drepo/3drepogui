@@ -119,6 +119,18 @@ repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
     delete ui;
 }
 
+void repo::gui::RepoDialogUserManager::addCustomRoles(const std::list<std::string> &list)
+{
+    customRolesList.clear();
+    customRolesList = list;
+}
+
+void repo::gui::RepoDialogUserManager::addDatabases(const std::list<std::string> &list)
+{
+    databaseList.clear();
+    databaseList = list;
+}
+
 void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
 {
     QList<QStandardItem *> row;
@@ -167,11 +179,6 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     usersModel->invisibleRootItem()->appendRow(row);
 }
 
-void repo::gui::RepoDialogUserManager::addDatabases(const std::list<std::string> &list)
-{
-    databaseList.clear();
-    databaseList = list;
-}
 
 bool repo::gui::RepoDialogUserManager::cancelAllThreads()
 {
@@ -202,7 +209,7 @@ void repo::gui::RepoDialogUserManager::editUser(const QModelIndex &index)
 
 void repo::gui::RepoDialogUserManager::editUser(const core::RepoUser &user)
 {
-    RepoDialogUser userDialog(user, databaseList, this);
+    RepoDialogUser userDialog(user, databaseList, customRolesList, this);
     if (QDialog::Rejected == userDialog.exec())
     {
         std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
@@ -238,7 +245,7 @@ QIcon repo::gui::RepoDialogUserManager::getIcon()
 
 void repo::gui::RepoDialogUserManager::newUser()
 {
-    RepoDialogUser userDialog(core::RepoUser(), databaseList, this);
+    RepoDialogUser userDialog(core::RepoUser(), databaseList, customRolesList, this);
     if (QDialog::Accepted == userDialog.exec())
     {
         // Submit a new user

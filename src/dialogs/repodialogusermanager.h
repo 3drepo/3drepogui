@@ -70,11 +70,14 @@ signals :
 
 public slots:
 
-    //! Adds user to the list of users.
-    void addUser(const core::RepoUser &user);
+    //! Adds a fresh list of custom roles.
+    void addCustomRoles(const std::list<std::string> &);
 
     //! Adds a fresh list of databases.
     void addDatabases(const std::list<std::string> &);
+
+    //! Adds user to the list of users.
+    void addUser(const core::RepoUser &user);
 
     //! Cancels all running threads and waits for their completion.
     bool cancelAllThreads();
@@ -112,7 +115,10 @@ private :
 
 private:
 
-    //! List of databases updated upon each refresh
+    //! List of custom roles updated upon each refresh.
+    std::list<std::string> customRolesList;
+
+    //! List of databases updated upon each refresh.
     std::list<std::string> databaseList;
 
     //! Model of the users table.

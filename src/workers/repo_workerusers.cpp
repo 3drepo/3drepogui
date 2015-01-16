@@ -18,7 +18,9 @@
 #include "repo_workerusers.h"
 //------------------------------------------------------------------------------
 // Core
+#include <RepoCoreGlobal>
 #include <RepoUser>
+#include <RepoRole>
 
 //------------------------------------------------------------------------------
 repo::gui::RepoWorkerUsers::RepoWorkerUsers(
@@ -45,10 +47,13 @@ void repo::gui::RepoWorkerUsers::run()
     {
         mongo.reauthenticate(database);
 
+        //----------------------------------------------------------------------
         std::list<std::string> fields; // projection, emtpy at the moment
+        unsigned long long skip = 0;
+
         //----------------------------------------------------------------------
         // Retrieves all BSON objects until finished or cancelled.
-        unsigned long long skip = 0;
+
         std::auto_ptr<mongo::DBClientCursor> cursor;
         do
         {
@@ -60,7 +65,7 @@ void repo::gui::RepoWorkerUsers::run()
             if (!cancelled)
                 cursor = mongo.listAllTailable(
                     database,
-                    "system.users", // TODO: get strings from mongo itself
+                    REPO_SYSTEM_USERS,
                     fields,
                     "user",
                     -1,
@@ -73,6 +78,32 @@ void repo::gui::RepoWorkerUsers::run()
         // Get list of databases
         std::list<std::string> databases = mongo.getDbs();
         emit databasesFetched(databases);
+
+        //----------------------------------------------------------------------
+        // Retrieves all BSON objects until finished or cancelled.
+        std::list<std::string> roles;
+        fields.clear();
+        fields.push_back(REPO_LABEL_ROLE);
+        skip = 0;
+        do
+        {
+            for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+            {
+                core::RepoRole role(cursor->nextSafe());
+                roles.push_back(role.getName());
+            }
+            if (!cancelled)
+                cursor = mongo.listAllTailable(
+                    database,
+                    REPO_SYSTEM_ROLES,
+                    fields,
+                    REPO_LABEL_ROLE,
+                    -1,
+                    skip);
+        }
+        while (!cancelled && cursor.get() && cursor->more());
+        emit customRolesFetched(roles);
+
     }
     //--------------------------------------------------------------------------
     emit RepoWorkerAbstract::finished();

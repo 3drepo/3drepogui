@@ -51,6 +51,9 @@ signals :
 
     void databasesFetched(const std::list<std::string> &databases);
 
+    //! Emitted when custom roles are fetched.
+    void customRolesFetched(const std::list<std::string> &customRoles);
+
 public slots :
 
     void run();
