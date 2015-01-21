@@ -53,23 +53,41 @@ class RepoDialogUser : public QDialog
     enum RepoProjectsColumns { OWNER, PROJECT };
     enum RolesColumns { DATABASE, ROLE };
 
+    //! Access rights tabs.
     enum Tabs { PROJECTS, GROUPS, ROLES };
 
 public:
+
+    //! Explicit constructor.
     explicit RepoDialogUser(
             core::RepoUser user,
             const std::list<std::string> &databaseList,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
 
+    //! Destructor.
     ~RepoDialogUser();
 
+public slots:
+
     //! Adds Access Rights item depending on the selected tab.
-    void addItem();
+    QTreeWidgetItem *addItem();
+
+    //! Adds specific item pair to a given parent tree widget.
+    QTreeWidgetItem *addItem(
+            const std::pair<std::string, std::string> &pair,
+            QTreeWidget *parent,
+            const QHash<QString, RepoComboBoxDelegate** > &delegates);
+
+    //! Adds a DB Project pair to the Projects table.
+    QTreeWidgetItem *addProject(const std::pair<std::string, std::string> &project);
 
     //! Adds a DB Role pair to the Roles table.
-    QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &role);
+    QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &role);    
 
+public :
+
+    //! Returns the icon for this dialog.
     static QIcon getIcon();
 
     static void populateModel(
@@ -81,6 +99,7 @@ public:
 
 public slots :
 
+    //! Sets the appropriate delegate if the database column on the role item has changed.
     void rolesItemChanged(QTreeWidgetItem * current, int column);
 
 private:
@@ -88,17 +107,14 @@ private:
     //! User to be created or modified.
     core::RepoUser user;
 
-    //! Model of the projects table.
-    QStandardItemModel *projectsModel;
-
     //! Ui var.
     Ui::RepoDialogUser *ui;
 
-    RepoComboBoxDelegate *databasesDelegate;
+    //! Lookup table for projects delegates by database name.
+    QHash<QString, RepoComboBoxDelegate** > projectsDelegates;
 
-    RepoComboBoxDelegate *anyDBRolesDelegate;
-
-    RepoComboBoxDelegate *adminDBRolesDelegate;
+    //! Lookup table for roles delegates by database name.
+    QHash<QString, RepoComboBoxDelegate** > rolesDelegates;
 };
 
 } // end namespace gui

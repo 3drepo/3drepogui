@@ -193,7 +193,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>2</number>
+         <number>0</number>
         </property>
         <property name="documentMode">
          <bool>false</bool>
@@ -225,7 +225,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QTreeView" name="projectsTreeView">
+           <widget class="QTreeWidget" name="projectsTreeWidget">
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
@@ -238,18 +238,19 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
-            </property>
             <property name="rootIsDecorated">
              <bool>false</bool>
             </property>
-            <property name="sortingEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
+            <column>
+             <property name="text">
+              <string>Database</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Project</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>
@@ -278,6 +279,9 @@
             </property>
             <property name="lineWidth">
              <number>0</number>
+            </property>
+            <property name="editTriggers">
+             <set>QAbstractItemView::AllEditTriggers</set>
             </property>
             <column>
              <property name="text">

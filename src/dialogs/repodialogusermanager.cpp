@@ -123,6 +123,7 @@ void repo::gui::RepoDialogUserManager::addCustomRoles(const std::list<std::strin
 {
     customRolesList.clear();
     customRolesList = list;
+    customRolesList.sort(core::MongoClientWrapper::caseInsensitiveStringCompare);
 }
 
 void repo::gui::RepoDialogUserManager::addDatabases(const std::list<std::string> &list)
@@ -277,6 +278,9 @@ void repo::gui::RepoDialogUserManager::refresh()
             worker, &RepoWorkerUsers::databasesFetched,
             this, &RepoDialogUserManager::addDatabases);
 
+        QObject::connect(
+            worker, &RepoWorkerUsers::customRolesFetched,
+            this, &RepoDialogUserManager::addCustomRoles);
 
         //----------------------------------------------------------------------
         // Clear any previous entries
