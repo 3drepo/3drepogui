@@ -29,7 +29,7 @@
 namespace repo {
 namespace gui {
 
-//! Worker class to that fetches individual revisions from given Mongo client.
+//! Worker class to that fetches individual users from given Mongo client.
 class RepoWorkerUsers : public RepoWorkerAbstract
 {
 
@@ -47,12 +47,14 @@ public :
 
 signals :
 
-    void userFetched(const core::RepoUser &user);
+    //! Emitted when user is fetched.
+    void userFetched(const core::RepoUser &);
 
-    void databasesFetched(const std::list<std::string> &databases);
+    //! Emitted when all databases with associated projects are fetched.
+    void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
 
     //! Emitted when custom roles are fetched.
-    void customRolesFetched(const std::list<std::string> &customRoles);
+    void customRolesFetched(const std::list<std::string> &);
 
 public slots :
 

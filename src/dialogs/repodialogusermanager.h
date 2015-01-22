@@ -73,8 +73,8 @@ public slots:
     //! Adds a fresh list of custom roles.
     void addCustomRoles(const std::list<std::string> &);
 
-    //! Adds a fresh list of databases.
-    void addDatabases(const std::list<std::string> &);
+    //! Adds a fresh mapping of databases with their associated projects.
+    void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
 
     //! Adds user to the list of users.
     void addUser(const core::RepoUser &user);
@@ -91,17 +91,14 @@ public slots:
     //! Updates user based on model index.
     void editUser(const QModelIndex &index);
 
-    //! Shows editing dialog for a given user.
-    void editUser(const core::RepoUser &user);
-
-    //! Opens up an empty user profile dialog and submits the user if accepted.
-    void newUser();
-
     //! Refreshes the current list of users by fetching from a database.
     void refresh();
 
     //! Selects the data from the given item.
     void select(const QItemSelection &, const QItemSelection &);
+
+    //! Shows the user dialog and saves edits to the database.
+    void showUserDialog(const core::RepoUser &user = core::RepoUser());
 
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;
@@ -118,8 +115,8 @@ private:
     //! List of custom roles updated upon each refresh.
     std::list<std::string> customRolesList;
 
-    //! List of databases updated upon each refresh.
-    std::list<std::string> databaseList;
+    //! Mapping of databases to their associated projects.
+    std::map<std::string, std::list<std::string> > databasesWithProjects;
 
     //! Model of the users table.
     QStandardItemModel *usersModel;

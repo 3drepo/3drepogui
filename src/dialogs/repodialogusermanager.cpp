@@ -104,8 +104,8 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                      this, SLOT(editUser(const QModelIndex &)));
 
     QObject::connect(
-        ui->addUserPushButton, &QPushButton::pressed,
-                this, &RepoDialogUserManager::newUser);
+        ui->addUserPushButton, SIGNAL(pressed()),
+                this, SLOT(showUserDialog()));
 
     QObject::connect(ui->editUserPushButton, SIGNAL(pressed()),
                      this, SLOT(editUser()));
@@ -126,10 +126,11 @@ void repo::gui::RepoDialogUserManager::addCustomRoles(const std::list<std::strin
     customRolesList.sort(core::MongoClientWrapper::caseInsensitiveStringCompare);
 }
 
-void repo::gui::RepoDialogUserManager::addDatabases(const std::list<std::string> &list)
+void repo::gui::RepoDialogUserManager::addDatabasesWithProjects(
+        const std::map<std::string, std::list<std::string> > &mapping)
 {
-    databaseList.clear();
-    databaseList = list;
+    databasesWithProjects.clear();
+    databasesWithProjects = mapping;
 }
 
 void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
@@ -204,21 +205,7 @@ void repo::gui::RepoDialogUserManager::editUser(const QModelIndex &index)
     {
         QModelIndex userIndex = index.sibling(index.row(),Columns::ACTIVE);
         core::RepoUser user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
-        editUser(user);
-    }
-}
-
-void repo::gui::RepoDialogUserManager::editUser(const core::RepoUser &user)
-{
-    RepoDialogUser userDialog(user, databaseList, customRolesList, this);
-    if (QDialog::Rejected == userDialog.exec())
-    {
-        std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
-    }
-    else // QDialog::Accepted
-    {
-        // Update existing user
-        refresh();
+        showUserDialog(user);
     }
 }
 
@@ -244,20 +231,6 @@ QIcon repo::gui::RepoDialogUserManager::getIcon()
    return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_users);
 }
 
-void repo::gui::RepoDialogUserManager::newUser()
-{
-    RepoDialogUser userDialog(core::RepoUser(), databaseList, customRolesList, this);
-    if (QDialog::Accepted == userDialog.exec())
-    {
-        // Submit a new user
-        refresh();
-    }
-    else // QDialog::Rejected
-    {
-
-    }
-}
-
 void repo::gui::RepoDialogUserManager::refresh()
 {
     if (cancelAllThreads())
@@ -275,8 +248,8 @@ void repo::gui::RepoDialogUserManager::refresh()
             this, &RepoDialogUserManager::addUser);
 
         QObject::connect(
-            worker, &RepoWorkerUsers::databasesFetched,
-            this, &RepoDialogUserManager::addDatabases);
+            worker, &RepoWorkerUsers::databasesWithProjectsFetched,
+            this, &RepoDialogUserManager::addDatabasesWithProjects);
 
         QObject::connect(
             worker, &RepoWorkerUsers::customRolesFetched,
@@ -292,51 +265,26 @@ void repo::gui::RepoDialogUserManager::refresh()
 }
 
 //! Selects the data from the given item.
-void  repo::gui::RepoDialogUserManager::select(
+void repo::gui::RepoDialogUserManager::select(
         const QItemSelection &,
         const QItemSelection &)
 {
     ui->deleteUserPushButton->setEnabled(true);
     ui->editUserPushButton->setEnabled(true);
-//    clearProjectsModel();
-//    QModelIndexList list = selected.indexes();
-//    for (int i = 0; i < list.size(); ++i)
-//    {
-//        QModelIndex selectedIndex = list[i];
-//        QString text = selectedIndex.data().toString();
-//        switch (selectedIndex.column())
-//        {
-//            case RepoUsersColumns::ACTIVE :
-//                {
-//                    core::RepoUser user = selectedIndex.data(Qt::UserRole+1).value<core::RepoUser>();
+}
 
-//                    std::vector<std::pair<std::string, std::string> > projects = user.getProjects();
-//                    for (unsigned int i = 0; i < projects.size(); ++i)
-//                    {
-//                        QList<QStandardItem *> row;
-//                        row.append(createItem(QString::fromStdString(projects[i].first)));
-//                        row.append(createItem(QString::fromStdString(projects[i].second)));
-//                        projectsModel->invisibleRootItem()->appendRow(row);
-//                    }
-//                }
-//                break;
-//        case RepoUsersColumns::USERNAME :
-//        case RepoUsersColumns::FIRST_NAME :
-//            if (!text.isEmpty())
-//                ui->nameLabel->setText(text);
-//            break;
-//        case RepoUsersColumns::LAST_NAME :
-//            if (!text.isEmpty())
-//                ui->nameLabel->setText(ui->nameLabel->text() + " " + text);
-//          break;
-//        case RepoUsersColumns::EMAIL :
-//            if (!text.isEmpty())
-//                ui->emailLabel->setText(text);
-//            break;
-//        }
-
-
-//    }
+void repo::gui::RepoDialogUserManager::showUserDialog(const core::RepoUser &user)
+{
+    RepoDialogUser userDialog(user, databasesWithProjects, customRolesList, this);
+    if (QDialog::Rejected == userDialog.exec())
+    {
+        std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        // Update existing user
+        refresh();
+    }
 }
 
 void repo::gui::RepoDialogUserManager::updateUsersCount() const

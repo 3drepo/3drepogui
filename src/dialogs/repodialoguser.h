@@ -50,8 +50,7 @@ class RepoDialogUser : public QDialog
 {
     Q_OBJECT
 
-    enum RepoProjectsColumns { OWNER, PROJECT };
-    enum RolesColumns { DATABASE, ROLE };
+    enum Columns { DATABASE, VALUE };
 
     //! Access rights tabs.
     enum Tabs { PROJECTS, GROUPS, ROLES };
@@ -59,9 +58,8 @@ class RepoDialogUser : public QDialog
 public:
 
     //! Explicit constructor.
-    explicit RepoDialogUser(
-            core::RepoUser user,
-            const std::list<std::string> &databaseList,
+    explicit RepoDialogUser(core::RepoUser user,
+            const std::map<string, std::list<string> > &databasesWithProjects,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
 
@@ -70,6 +68,9 @@ public:
 
 public slots:
 
+    //! Adds a DB Group pair to the Groups table.
+    QTreeWidgetItem *addGroup(const std::pair<std::string, std::string> &);
+
     //! Adds Access Rights item depending on the selected tab.
     QTreeWidgetItem *addItem();
 
@@ -77,30 +78,27 @@ public slots:
     QTreeWidgetItem *addItem(
             const std::pair<std::string, std::string> &pair,
             QTreeWidget *parent,
-            const QHash<QString, RepoComboBoxDelegate** > &delegates);
+            const QHash<QString, RepoComboBoxDelegate* > &delegates);
 
     //! Adds a DB Project pair to the Projects table.
-    QTreeWidgetItem *addProject(const std::pair<std::string, std::string> &project);
+    QTreeWidgetItem *addProject(const std::pair<std::string, std::string> &);
 
     //! Adds a DB Role pair to the Roles table.
-    QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &role);    
+    QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &);
+
+    //! Sets the appropriate delegate if the database column on the project item has changed.
+    void updateProjectsDelegate(QTreeWidgetItem * current, int column);
+
+    //! Sets the appropriate delegate if the database column on the role item has changed.
+    void updateRolesDelegate(QTreeWidgetItem * current, int column);
 
 public :
 
     //! Returns the icon for this dialog.
     static QIcon getIcon();
 
-    static void populateModel(
-        QStandardItemModel *model,
-        const std::vector<std::pair<std::string, std::string> > &data);
-
     //! Removes currently selected Access Rights item depending on the selected tab.
     void removeItem();
-
-public slots :
-
-    //! Sets the appropriate delegate if the database column on the role item has changed.
-    void rolesItemChanged(QTreeWidgetItem * current, int column);
 
 private:
 
@@ -111,10 +109,13 @@ private:
     Ui::RepoDialogUser *ui;
 
     //! Lookup table for projects delegates by database name.
-    QHash<QString, RepoComboBoxDelegate** > projectsDelegates;
+    QHash<QString, RepoComboBoxDelegate* > groupsDelegates;
+
+    //! Lookup table for projects delegates by database name.
+    QHash<QString, RepoComboBoxDelegate* > projectsDelegates;
 
     //! Lookup table for roles delegates by database name.
-    QHash<QString, RepoComboBoxDelegate** > rolesDelegates;
+    QHash<QString, RepoComboBoxDelegate* > rolesDelegates;
 };
 
 } // end namespace gui

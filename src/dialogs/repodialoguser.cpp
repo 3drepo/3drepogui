@@ -18,7 +18,7 @@
 
 //------------------------------------------------------------------------------
 // Qt
-#include <QTimer>
+#include <QMap>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -30,7 +30,7 @@
 
 repo::gui::RepoDialogUser::RepoDialogUser(
         core::RepoUser user,
-        const std::list<std::string> &databaseList,
+        const std::map<std::string, std::list<std::string> > &databasesWithProjects,
         const std::list<std::string> &customRolesList,
         QWidget *parent)
     : QDialog(parent)
@@ -46,6 +46,56 @@ repo::gui::RepoDialogUser::RepoDialogUser(
                                        QColor(Qt::gray)));
 
     //--------------------------------------------------------------------------
+    // Databases
+    QMap<std::string, std::list<std::string> > databasesMapping(databasesWithProjects);
+    std::list<std::string> databases = databasesMapping.keys().toStdList();
+    databases.sort(core::MongoClientWrapper::caseInsensitiveStringCompare);
+
+    //--------------------------------------------------------------------------
+    // DB Roles
+    RepoComboBoxEditor::SeparatedEntries dbEntries;
+    dbEntries << databases;
+    RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
+    dbRoleEntries << customRolesList << core::MongoClientWrapper::ANY_DATABASE_ROLES;
+
+    //--------------------------------------------------------------------------
+    // Any DB Roles
+    QList<RepoComboBoxEditor::SeparatedEntries> anyDBRolesLists;
+    anyDBRolesLists << dbEntries << dbRoleEntries;
+
+    //--------------------------------------------------------------------------
+    // Admin DB Roles (any roles + admin only roles)
+    dbRoleEntries << core::MongoClientWrapper::ADMIN_ONLY_DATABASE_ROLES;
+    QList<RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
+    adminDBRolesLists << dbEntries << dbRoleEntries;
+
+    //--------------------------------------------------------------------------
+    // Populate Delegates
+    for (std::list<std::string>::const_iterator it = databases.begin();
+         it != databases.end(); ++it)
+    {
+        std::string database = *it;
+        QString qDatabase = QString::fromStdString(database);
+
+        //----------------------------------------------------------------------
+        // Projects delegate
+        std::list<std::string> projects = databasesWithProjects.find(database)->second;
+        RepoComboBoxEditor::SeparatedEntries projectsEntries;
+        projectsEntries << projects;
+        QList<RepoComboBoxEditor::SeparatedEntries> projectsLists;
+        projectsLists << dbEntries << projectsEntries;
+        projectsDelegates.insert(qDatabase, new RepoComboBoxDelegate(projectsLists));
+
+        //----------------------------------------------------------------------
+        // Roles delegate
+        RepoComboBoxDelegate *rolesDelegate =
+            (core::MongoClientWrapper::ADMIN_DATABASE == database)
+             ? new RepoComboBoxDelegate(adminDBRolesLists)
+             : new RepoComboBoxDelegate(anyDBRolesLists);
+        rolesDelegates.insert(qDatabase, rolesDelegate);
+    }
+
+    //--------------------------------------------------------------------------
     // Populate user data
     if (!user.isEmpty())
     {
@@ -55,45 +105,6 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
         ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
         ui->emailLineEdit->setText(QString::fromStdString(user.getEmail()));
-
-
-
-
-
-        //----------------------------------------------------------------------
-        // DB Roles
-        RepoComboBoxEditor::SeparatedEntries dbEntries;
-        dbEntries << databaseList;
-
-        RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
-        dbRoleEntries << customRolesList << core::MongoClientWrapper::ANY_DATABASE_ROLES;
-
-        //----------------------------------------------------------------------
-        // Any DB Roles
-        QList<RepoComboBoxEditor::SeparatedEntries> anyDBRolesLists;
-        anyDBRolesLists << dbEntries << dbRoleEntries;
-        RepoComboBoxDelegate *anyDBRolesDelegate = new RepoComboBoxDelegate(anyDBRolesLists);
-        //----------------------------------------------------------------------
-        // Admin DB Roles (any roles + admin only roles)
-        dbRoleEntries << core::MongoClientWrapper::ADMIN_ONLY_DATABASE_ROLES;
-        QList<RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
-        adminDBRolesLists << dbEntries << dbRoleEntries;
-        RepoComboBoxDelegate *adminDBRolesDelegate = new RepoComboBoxDelegate(adminDBRolesLists);
-
-
-        //----------------------------------------------------------------------
-        // Populate Delegates
-        for (std::list<std::string>::const_iterator it = databaseList.begin();
-             it != databaseList.end(); ++it)
-        {
-            std::string database = *it;
-            std::cerr <<database << std::endl;
-            RepoComboBoxDelegate *delegate =
-                (core::MongoClientWrapper::ADMIN_DATABASE == database)
-                 ? adminDBRolesDelegate
-                 : anyDBRolesDelegate;
-            rolesDelegates.insert(QString::fromStdString(database), &delegate);
-        }
 
         //----------------------------------------------------------------------
         // Projects
@@ -112,8 +123,12 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     // Connections
 
     QObject::connect(
+        ui->projectsTreeWidget, &QTreeWidget::itemChanged,
+        this, &RepoDialogUser::updateProjectsDelegate);
+
+    QObject::connect(
         ui->rolesTreeWidget, &QTreeWidget::itemChanged,
-        this, &RepoDialogUser::rolesItemChanged);
+        this, &RepoDialogUser::updateRolesDelegate);
 
     QObject::connect(
         ui->addPushButton, SIGNAL(pressed()),
@@ -130,31 +145,54 @@ repo::gui::RepoDialogUser::~RepoDialogUser()
     delete ui;
 
     //--------------------------------------------------------------------------
-    // Dealocate shared pointers
-//    projectsDelegates.clear();
-//    rolesDelegates.clear();
+    // Dealocate pointers
+    QListIterator<QString> i(rolesDelegates.keys());
+    while (i.hasNext())
+    {
+        QString database = i.next();
+        delete projectsDelegates.take(database);
+        delete rolesDelegates.take(database);
+
+    }
 }
+
+QTreeWidgetItem * repo::gui::RepoDialogUser::addGroup(
+        const std::pair<std::string, std::string> &group)
+{
+    QTreeWidgetItem *item = addItem(
+                group,
+                ui->groupsTreeWidget,
+                groupsDelegates);
+    ui->groupsTreeWidget->scrollToItem(item);
+    ui->groupsTreeWidget->setCurrentItem(item, Columns::DATABASE);
+    return item;
+}
+
 
 QTreeWidgetItem * repo::gui::RepoDialogUser::addItem()
 {
-   std::string admin = core::MongoClientWrapper::ADMIN_DATABASE;
-   QTreeWidgetItem * item = 0;
-   switch(ui->accessRightsTabWidget->currentIndex())
-   {
-        case Tabs::ROLES :
-            item = addRole(std::make_pair<std::string, std::string>(""+admin,""));
-            ui->rolesTreeWidget->scrollToItem(item);
-            ui->rolesTreeWidget->setCurrentItem(item, RolesColumns::DATABASE);
+    std::string admin = core::MongoClientWrapper::ADMIN_DATABASE;
+    QTreeWidgetItem * item = 0;
+    std::pair<std::string, std::string> emptyPair = std::make_pair(""+admin,"");
+    switch(ui->accessRightsTabWidget->currentIndex())
+    {
+    case Tabs::PROJECTS :
+       item = addProject(emptyPair);
+       break;
+    case Tabs::GROUPS :
+        item = addGroup(emptyPair);
         break;
-   }
-
-   return item;
+    case Tabs::ROLES :
+        item = addRole(emptyPair);
+        break;
+    }
+    return item;
 }
 
 QTreeWidgetItem * repo::gui::RepoDialogUser::addItem(
     const std::pair<std::string, std::string> &pair,
     QTreeWidget *parent,
-    const QHash<QString, RepoComboBoxDelegate** > &delegates)
+    const QHash<QString, RepoComboBoxDelegate* > &delegates)
 {
     QStringList list;
     list.append(QString::fromStdString(pair.first));
@@ -169,30 +207,34 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addItem(
     QString database = QString::fromStdString(pair.first);
     if (delegates.contains(database))
     {
-        RepoComboBoxDelegate** delegate = delegates.value(database);
-        parent->setItemDelegateForRow(parent->topLevelItemCount() - 1, *delegate );
+        RepoComboBoxDelegate* delegate = delegates.value(database);
+        parent->setItemDelegateForRow(parent->topLevelItemCount() - 1, delegate );
     }
     return item;
 }
 
-
-
 QTreeWidgetItem * repo::gui::RepoDialogUser::addProject(
         const std::pair<std::string, std::string> &project)
 {
-    return addItem(
+    QTreeWidgetItem *item = addItem(
                 project,
                 ui->projectsTreeWidget,
                 projectsDelegates);
+    ui->projectsTreeWidget->scrollToItem(item);
+    ui->projectsTreeWidget->setCurrentItem(item, Columns::DATABASE);
+    return item;
 }
 
 QTreeWidgetItem * repo::gui::RepoDialogUser::addRole(
         const std::pair<std::string, std::string> &role)
 {    
-    return addItem(
+    QTreeWidgetItem * item = addItem(
                 role,
                 ui->rolesTreeWidget,
                 rolesDelegates);
+    ui->rolesTreeWidget->scrollToItem(item);
+    ui->rolesTreeWidget->setCurrentItem(item, Columns::DATABASE);
+    return item;
 }
 
 QIcon repo::gui::RepoDialogUser::getIcon()
@@ -200,46 +242,51 @@ QIcon repo::gui::RepoDialogUser::getIcon()
    return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_user);
 }
 
-void repo::gui::RepoDialogUser::populateModel(
-        QStandardItemModel *model,
-        const std::vector<std::pair<std::string, std::string> > &data)
-{
-    for (unsigned int i = 0; i < data.size(); ++i)
-    {
-        QList<QStandardItem *> row;
-        row.append(new QStandardItem(QString::fromStdString(data[i].first)));
-
-        QStandardItem *item = new QStandardItem(QString::fromStdString(data[i].second));
-        item->setData(QString::fromStdString(data[i].second), Qt::DecorationRole);
-        row.append(item);
-        model->invisibleRootItem()->appendRow(row);
-    }
-}
-
 void repo::gui::RepoDialogUser::removeItem()
 {
     QTreeWidgetItem *item = 0;
     switch(ui->accessRightsTabWidget->currentIndex())
     {
-         case Tabs::ROLES :
-             item = ui->rolesTreeWidget->currentItem();
-             if (item)
-                delete item;
-         break;
+    case Tabs::PROJECTS :
+        item = ui->projectsTreeWidget->currentItem();
+        break;
+    case Tabs::GROUPS :
+        item = ui->groupsTreeWidget->currentItem();
+        break;
+    case Tabs::ROLES :
+        item = ui->rolesTreeWidget->currentItem();
+        break;
+    }
+    if (item)
+       delete item;
+}
+
+void repo::gui::RepoDialogUser::updateProjectsDelegate(QTreeWidgetItem *current, int column)
+{
+    if (current && Columns::DATABASE == column)
+    {
+        int row = ui->projectsTreeWidget->indexOfTopLevelItem(current);
+        QString database = current->data(column, Qt::EditRole).toString();
+        if (projectsDelegates.contains(database))
+        {
+            RepoComboBoxDelegate* delegate = projectsDelegates.value(database);
+            ui->projectsTreeWidget->setItemDelegateForRow(row, delegate);
+        }
+        ui->projectsTreeWidget->setCurrentItem(current, Columns::VALUE);
     }
 }
 
-void repo::gui::RepoDialogUser::rolesItemChanged(QTreeWidgetItem *current, int column)
+void repo::gui::RepoDialogUser::updateRolesDelegate(QTreeWidgetItem *current, int column)
 {
-    if (current && RolesColumns::DATABASE == column)
+    if (current && Columns::DATABASE == column)
     {
         int row = ui->rolesTreeWidget->indexOfTopLevelItem(current);        
         QString database = current->data(column, Qt::EditRole).toString();
         if (rolesDelegates.contains(database))
         {
-            RepoComboBoxDelegate** delegate = rolesDelegates.value(database);
-            ui->rolesTreeWidget->setItemDelegateForRow(row, *delegate);
+            RepoComboBoxDelegate* delegate = rolesDelegates.value(database);
+            ui->rolesTreeWidget->setItemDelegateForRow(row, delegate);
         }
-        ui->rolesTreeWidget->setCurrentItem(current, RolesColumns::ROLE);
+        ui->rolesTreeWidget->setCurrentItem(current, Columns::VALUE);
     }
 }

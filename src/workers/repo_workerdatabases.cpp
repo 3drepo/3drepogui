@@ -49,7 +49,7 @@ void repo::gui::RepoWorkerDatabases::run()
 		emit hostFetched(QString::fromStdString(mongo.getUsernameAtHostAndPort()));			
         //----------------------------------------------------------------------
 		// For each database (if not cancelled)
-		std::list<std::string> databases = mongo.getDbs();
+		std::list<std::string> databases = mongo.getDatabases();
 
         //----------------------------------------------------------------------
         jobsCount = (int) databases.size() * 2;

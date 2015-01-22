@@ -31,6 +31,7 @@ repo::gui::RepoWorkerUsers::RepoWorkerUsers(
 {
     qRegisterMetaType<core::RepoUser>("core::RepoUser");
     qRegisterMetaType<std::list<std::string> >("std::list<std::string>");
+    qRegisterMetaType<std::map<std::string, std::list<std::string> > >("std::map<std::string, std::list<std::string> >");
 }
 
 //------------------------------------------------------------------------------
@@ -48,39 +49,17 @@ void repo::gui::RepoWorkerUsers::run()
         mongo.reauthenticate(database);
 
         //----------------------------------------------------------------------
+        // Get mapping of databases with their associated projects.
+        std::map<std::string, std::list<std::string> > databasesWithProjects = mongo.getDatabasesWithProjects();
+        emit databasesWithProjectsFetched(databasesWithProjects);
+
+        //----------------------------------------------------------------------
+        std::auto_ptr<mongo::DBClientCursor> cursor;
         std::list<std::string> fields; // projection, emtpy at the moment
         unsigned long long skip = 0;
 
         //----------------------------------------------------------------------
-        // Retrieves all BSON objects until finished or cancelled.
-
-        std::auto_ptr<mongo::DBClientCursor> cursor;
-        do
-        {
-            for (; !cancelled && cursor.get() && cursor->more(); ++skip)
-            {
-                core::RepoUser user(cursor->nextSafe());
-                emit userFetched(user.copy());
-            }
-            if (!cancelled)
-                cursor = mongo.listAllTailable(
-                    database,
-                    REPO_SYSTEM_USERS,
-                    fields,
-                    "user",
-                    -1,
-                    skip);
-        }
-        while (!cancelled && cursor.get() && cursor->more());
-
-
-        //----------------------------------------------------------------------
-        // Get list of databases
-        std::list<std::string> databases = mongo.getDbs();
-        emit databasesFetched(databases);
-
-        //----------------------------------------------------------------------
-        // Retrieves all BSON objects until finished or cancelled.
+        // Get custom roles
         std::list<std::string> roles;
         fields.clear();
         fields.push_back(REPO_LABEL_ROLE);
@@ -103,6 +82,28 @@ void repo::gui::RepoWorkerUsers::run()
         }
         while (!cancelled && cursor.get() && cursor->more());
         emit customRolesFetched(roles);
+
+        //----------------------------------------------------------------------
+        // Get users
+        fields.clear();
+        skip = 0;
+        do
+        {
+            for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+            {
+                core::RepoUser user(cursor->nextSafe());
+                emit userFetched(user.copy());
+            }
+            if (!cancelled)
+                cursor = mongo.listAllTailable(
+                    database,
+                    REPO_SYSTEM_USERS,
+                    fields,
+                    "user",
+                    -1,
+                    skip);
+        }
+        while (!cancelled && cursor.get() && cursor->more());
 
     }
     //--------------------------------------------------------------------------
