@@ -53,6 +53,8 @@ HEADERS  += src/repogui.h \
             src/primitives/repo_sortfilterproxymodel.h \
             src/primitives/repo_glccamera.h \
             src/conversion/repo_transcoder_assimp.h \
+            src/conversion/repo_transcoder_graph_scene.h \
+            src/conversion/repo_transcoder_helpers.h \
             src/oculus/repo_oculus.h \
             src/dialogs/repodialogoculus.h \
             src/dialogs/repodialogusermanager.h \
@@ -81,6 +83,8 @@ SOURCES += src/main.cpp\
            src/primitives/repo_sortfilterproxymodel.cpp \
            src/primitives/repo_glccamera.cpp \
            src/conversion/repo_transcoder_assimp.cpp \
+           src/conversion/repo_transcoder_graph_scene.cpp \
+           src/conversion/repo_transcoder_helpers.cpp \
            src/oculus/repo_oculus.cpp \
            src/dialogs/repodialogoculus.cpp \
            src/dialogs/repodialogusermanager.cpp \

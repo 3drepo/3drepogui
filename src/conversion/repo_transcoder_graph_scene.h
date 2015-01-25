@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_TRANSCODER_ASSIMP_H
-#define REPO_TRANSCODER_ASSIMP_H
+#ifndef REPO_TRANSCODER_GRAPH_SCENE_H
+#define REPO_TRANSCODER_GRAPH_SCENE_H
 
 #include <string>
 //------------------------------------------------------------------------------
@@ -35,20 +35,21 @@
 #include "geometry/glc_mesh.h"
 #include "sceneGraph/glc_structoccurence.h"
 #include "maths/glc_geomtools.h"
+#include <RepoGraphScene>
 //------------------------------------------------------------------------------
 namespace repo {
 namespace gui {
 
 /*!
- * Creates GLC_World instance out of Assimp scene.
+ * Creates GLC_World instance out of Repo Graph scene
  */
-class RepoTranscoderAssimp
+class RepoTranscoderGraphScene
 {
 public:
 
 	//! Creates a world instance of a given scene.
 	static GLC_World toGLCWorld(
-		const aiScene *,
+        const core::RepoGraphScene *,
 		const std::map<std::string, QImage> &,
 		const std::string & namePrefix = "");
 
@@ -59,49 +60,27 @@ public:
 	 * the entire scene graph.
 	 */
 	static GLC_StructOccurence* createOccurrenceFromNode(
-		const aiScene * scene, 
-		const aiNode * node,
-		const QVector<GLC_3DRep*> &glcMeshes,
-		const QHash<const QString, GLC_3DRep*> &glcCameras);
-
-    //--------------------------------------------------------------------------
-    //
-    // Static helpers
-    //
-    //--------------------------------------------------------------------------
+        const core::RepoGraphScene* scene,
+        const core::RepoNodeAbstract* node,
+        const std::map<boost::uuids::uuid, GLC_3DRep*>& glcMeshes,
+        const QHash<const QString, GLC_3DRep*> &glcCameras);
 
     /*!
-     * Returns a GLC Material given an Assimp material and a fileName map of
+     * Returns a GLC Material given a RepoNodeAbstract node and a fileName map of
      * textures.
      */
-    static GLC_Material * toGLCMaterial(const aiMaterial *, const QHash<QString, GLC_Texture>&);
+    static GLC_Material * toGLCMaterial(core::RepoNodeAbstract*, const QHash<QString, GLC_Texture>&);
 
-    //! Returns a GLC 3DRep given an Assimp mesh and a vector of GLC Materials.
-    static GLC_3DRep* toGLCMesh(const aiMesh *, const QVector<GLC_Material*> &,
+    //! Returns a GLC 3DRep given a RepoNodeAbstract and a vector of GLC Materials.
+    static GLC_3DRep* toGLCMesh(core::RepoNodeAbstract*, const QVector<GLC_Material*> &,
         const std::string &namePrefix);
 
-    //! Returns a GLC Mesh given an Assimp camera.
-    static GLC_3DRep* toGLCCamera(const aiCamera *);
-
-    //--------------------------------------------------------------------------
-	//
-	// World management
-	//
-    //--------------------------------------------------------------------------
-	//! Copies meshes from a to b.
-	//static void copyGLCWorld(const GLC_World& a, GLC_World &b);
-
-	//! Replicates the meshes as new objects.
-	//static GLC_StructOccurence * deepCopyOccurence(const GLC_StructOccurence * occurence);
-
-private:
-
-	//! GLC instance Hash table
-	//QHash<const unsigned int, GLC_StructInstance*> m_StructInstanceHash;
+    //! Returns a GLC Mesh given a RepoNodeAbstract
+    static GLC_3DRep* toGLCCamera(core::RepoNodeAbstract*);
 
 }; // end class
 
 } // end namespace gui
 } // end namespace repo
 
-#endif // end REPO_TRANSCODER_ASSIMP_H
+#endif // end REPO_TRANSCODER_GRAPH_SCENE_H
