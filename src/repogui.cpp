@@ -513,7 +513,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
 void repo::gui::RepoGUI::openUserManager() const
 {
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    RepoDialogUserManager um(mongo, (QWidget*) this);
+    RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
     um.exec();
 }
 

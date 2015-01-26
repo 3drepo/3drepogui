@@ -54,6 +54,7 @@ public:
 
     explicit RepoDialogUserManager(
             const core::MongoClientWrapper &mongo,
+            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
             QWidget *parent = 0);
     ~RepoDialogUserManager();
 
@@ -91,8 +92,17 @@ public slots:
     //! Updates user based on model index.
     void editUser(const QModelIndex &index);
 
+    //! Returns a currently selected user if any.
+    core::RepoUser getUser();
+
+    //! Returns a user specified by the model index.
+    core::RepoUser getUser(const QModelIndex &index);
+
     //! Refreshes the current list of users by fetching from a database.
-    void refresh();
+    void refresh(const core::RepoBSON &command = core::RepoBSON());
+
+    //! Drops user from the database.
+    void removeUser();
 
     //! Selects the data from the given item.
     void select(const QItemSelection &, const QItemSelection &);
@@ -105,7 +115,7 @@ public slots:
 
 private :
 
-    QStandardItem *createItem(const QString& data);
+    QStandardItem *createItem(const QString &);
 
     QStandardItem *createItem(const QVariant &);
 
@@ -129,6 +139,9 @@ private:
 
     //! Mongo connector.
     core::MongoClientWrapper mongo;
+
+    //! Database the users are being set on.
+    std::string database;
 
     //! Ui var.
     Ui::RepoDialogUserManager *ui;

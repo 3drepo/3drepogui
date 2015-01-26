@@ -86,6 +86,32 @@ public slots:
     //! Adds a DB Role pair to the Roles table.
     QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &);
 
+    //--------------------------------------------------------------------------
+    //
+    // Getters
+    //
+    //--------------------------------------------------------------------------
+
+    //! Returns a list of groups as db, role pairs.
+    std::list<std::pair<std::string, std::string> > getGroups() const;
+
+    //! Returns a list of items as db, value pairs from given tree widget.
+    std::list<std::pair<std::string, std::string> > getItems(QTreeWidget *) const;
+
+    //! Returns password currently set in the dialog.
+    std::string getPassword() const;
+
+    //! Returns a list of projects as db, role pairs.
+    std::list<std::pair<std::string, std::string> > getProjects() const;
+
+    //! Returns a list of roles as db, role pairs.
+    std::list<std::pair<std::string, std::string> > getRoles() const;
+
+    //! Returns username currently set in the dialog.
+    std::string getUsername() const;
+
+    //--------------------------------------------------------------------------
+
     //! Sets the appropriate delegate if the database column on the project item has changed.
     void updateProjectsDelegate(QTreeWidgetItem * current, int column);
 
@@ -94,10 +120,16 @@ public slots:
 
 public :
 
+    //! Saves user values if save is pressed, does nothing otherwise.
+    int exec();
+
     //! Returns the icon for this dialog.
     static QIcon getIcon();
 
-    //! Removes currently selected Access Rights item depending on the selected tab.
+    //! Returns the user.
+    core::RepoUser getUser() const { return user; }
+
+    //! Removes currently selected Access Rights item depending on the active tab.
     void removeItem();
 
 private:

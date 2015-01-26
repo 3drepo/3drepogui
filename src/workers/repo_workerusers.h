@@ -40,7 +40,8 @@ public :
     //! Default worker constructor.
     RepoWorkerUsers(
         const core::MongoClientWrapper &mongo,
-        const QString &database = QString::fromStdString(core::MongoClientWrapper::ADMIN_DATABASE));
+        const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+        const core::RepoBSON &command = core::RepoBSON());
 
     //! Default empty destructor.
     ~RepoWorkerUsers();
@@ -67,6 +68,9 @@ private :
 
     //! Database name.
     std::string database;
+
+   //! User to be create or updated in the database.
+   core::RepoBSON command;
 
 }; // end class
 

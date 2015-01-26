@@ -23,11 +23,12 @@
 #include <RepoRole>
 
 //------------------------------------------------------------------------------
-repo::gui::RepoWorkerUsers::RepoWorkerUsers(
-    const repo::core::MongoClientWrapper &mongo,
-    const QString &database)
+repo::gui::RepoWorkerUsers::RepoWorkerUsers(const repo::core::MongoClientWrapper &mongo,
+    const std::string &database,
+    const core::RepoBSON &command)
     : mongo(mongo)
-    , database(database.toStdString())
+    , database(database)
+    , command(command)
 {
     qRegisterMetaType<core::RepoUser>("core::RepoUser");
     qRegisterMetaType<std::list<std::string> >("std::list<std::string>");
@@ -47,6 +48,9 @@ void repo::gui::RepoWorkerUsers::run()
     else
     {
         mongo.reauthenticate(database);
+
+        if (command.isOk())
+            mongo.runCommand(database, command);
 
         //----------------------------------------------------------------------
         // Get mapping of databases with their associated projects.

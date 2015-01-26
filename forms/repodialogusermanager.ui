@@ -122,7 +122,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="deleteUserPushButton">
+          <widget class="QPushButton" name="removeUserPushButton">
            <property name="text">
             <string>Remove</string>
            </property>

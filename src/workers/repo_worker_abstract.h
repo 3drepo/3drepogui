@@ -68,10 +68,12 @@ public slots:
 	//! Processes the work.
 	virtual void run() = 0;
 
-	/*! Sets the cancel flag to indicate that the run() method should exist as soon as possible.
-		All subclasses need to regularly check the cancelled flag accordingly. When connecting 
-		signal to this slot, always us Qt::DirectConnection to force exit as soon as possible.
-	*/
+    /*!
+     * Sets the cancel flag to indicate that the run() method should exist as
+     * soon as possible. All subclasses need to regularly check the cancelled
+     * flag accordingly. When connecting signal to this slot, always use
+     * Qt::DirectConnection to force exit as soon as possible.
+     */
 	virtual void cancel();
  
 signals:

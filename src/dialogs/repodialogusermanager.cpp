@@ -15,6 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+#include <QMessageBox>
 #include "repodialogusermanager.h"
 #include "ui_repodialogusermanager.h"
 #include "../primitives/repo_fontawesome.h"
@@ -22,10 +24,12 @@
 
 repo::gui::RepoDialogUserManager::RepoDialogUserManager(
         const core::MongoClientWrapper& mongo,
+        const std::string &database,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoDialogUserManager)
     , mongo(mongo)
+    , database(database)
 {
     ui->setupUi(this);
     setWindowIcon(getIcon());
@@ -85,8 +89,8 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
         usersProxy, &QSortFilterProxyModel::setFilterFixedString);
 
     QObject::connect(
-        ui->refreshPushButton, &QPushButton::pressed,
-        this, &RepoDialogUserManager::refresh);
+        ui->refreshPushButton, SIGNAL(pressed()),
+        this, SLOT(refresh()));
 
     QObject::connect(
         usersProxy, &QSortFilterProxyModel::rowsInserted,
@@ -106,6 +110,10 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     QObject::connect(
         ui->addUserPushButton, SIGNAL(pressed()),
                 this, SLOT(showUserDialog()));
+
+    QObject::connect(
+        ui->removeUserPushButton, SIGNAL(pressed()),
+                this, SLOT(removeUser()));
 
     QObject::connect(ui->editUserPushButton, SIGNAL(pressed()),
                      this, SLOT(editUser()));
@@ -172,10 +180,10 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     row.append(createItem(QString::fromStdString(user.getEmail())));
 
     // Projects count
-    row.append(createItem(user.getProjects().size()));
+    row.append(createItem(user.getProjectsList().size()));
 
     // Roles count
-    row.append(createItem(user.getRoles().size()));
+    row.append(createItem(user.getRolesList().size()));
 
     //--------------------------------------------------------------------------
     usersModel->invisibleRootItem()->appendRow(row);
@@ -196,17 +204,28 @@ int repo::gui::RepoDialogUserManager::exec()
 
 void repo::gui::RepoDialogUserManager::editUser()
 {
-    editUser(ui->usersTreeView->selectionModel()->currentIndex());
+    showUserDialog(getUser());
 }
 
 void repo::gui::RepoDialogUserManager::editUser(const QModelIndex &index)
 {
+    showUserDialog(getUser(index));
+}
+
+repo::core::RepoUser repo::gui::RepoDialogUserManager::getUser()
+{
+    return getUser(ui->usersTreeView->selectionModel()->currentIndex());
+}
+
+repo::core::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex &index)
+{
+    core::RepoUser user;
     if (index.isValid())
     {
-        QModelIndex userIndex = index.sibling(index.row(),Columns::ACTIVE);
-        core::RepoUser user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
-        showUserDialog(user);
+        QModelIndex userIndex = index.sibling(index.row(), Columns::ACTIVE);
+        user = userIndex.data(Qt::UserRole+1).value<core::RepoUser>();
     }
+    return user;
 }
 
 void repo::gui::RepoDialogUserManager::clearUsersModel()
@@ -222,7 +241,7 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->usersTreeView->resizeColumnToContents(Columns::ROLES);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
-    ui->deleteUserPushButton->setEnabled(false);
+    ui->removeUserPushButton->setEnabled(false);
     ui->editUserPushButton->setEnabled(false);
 }
 
@@ -231,11 +250,11 @@ QIcon repo::gui::RepoDialogUserManager::getIcon()
    return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_users);
 }
 
-void repo::gui::RepoDialogUserManager::refresh()
+void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
 {
     if (cancelAllThreads())
     {
-        RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
+        RepoWorkerUsers* worker = new RepoWorkerUsers(mongo, database, command);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP
@@ -264,12 +283,28 @@ void repo::gui::RepoDialogUserManager::refresh()
     }
 }
 
+void repo::gui::RepoDialogUserManager::removeUser()
+{
+    core::RepoUser user = getUser();
+
+//    switch (QMessageBox::warning(this,
+//        "Remove user?",
+//        "Are you sure you want to drop '" + user.getUsername() + "' user?",
+//        "&Yes",
+//        "&No"))
+//    {
+//        case 0: // yes
+            refresh(user.dropUser());
+//            break;
+//    }
+}
+
 //! Selects the data from the given item.
 void repo::gui::RepoDialogUserManager::select(
         const QItemSelection &,
         const QItemSelection &)
 {
-    ui->deleteUserPushButton->setEnabled(true);
+    ui->removeUserPushButton->setEnabled(true);
     ui->editUserPushButton->setEnabled(true);
 }
 
@@ -282,8 +317,8 @@ void repo::gui::RepoDialogUserManager::showUserDialog(const core::RepoUser &user
     }
     else // QDialog::Accepted
     {
-        // Update existing user
-        refresh();
+        // Create or update user
+        refresh(userDialog.getUser().createUser());
     }
 }
 
@@ -294,7 +329,7 @@ void repo::gui::RepoDialogUserManager::updateUsersCount() const
 
 QStandardItem *repo::gui::RepoDialogUserManager::createItem(const QString &data)
 {
-    QStandardItem* item = new QStandardItem(data);
+    QStandardItem *item = new QStandardItem(data);
     item->setEditable(false);
     item->setToolTip(data);
     return item;

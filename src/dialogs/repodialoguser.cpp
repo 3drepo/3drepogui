@@ -100,7 +100,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     if (!user.isEmpty())
     {
         ui->usernameLineEdit->setText(QString::fromStdString(user.getUsername()));
-        ui->usernameLineEdit->setEnabled(false);
+       // ui->usernameLineEdit->setEnabled(false);
         ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
         ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
         ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
@@ -108,15 +108,17 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
         //----------------------------------------------------------------------
         // Projects
-        std::vector<std::pair<std::string, std::string> > projects = user.getProjects();
-        for (unsigned int i = 0; i < projects.size(); ++i)
-            addProject(projects[i]);
+        std::list<std::pair<std::string, std::string> > projects = user.getProjectsList();
+        for (std::list<std::pair<std::string, std::string> >::iterator i = projects.begin();
+             i != projects.end(); ++i)
+            addProject(*i);
 
         //----------------------------------------------------------------------
         // Populate Roles
-        std::vector<std::pair<std::string, std::string> > roles = user.getRoles();
-        for (unsigned int i = 0; i < roles.size(); ++i)
-            addRole(roles[i]);
+        std::list<std::pair<std::string, std::string> > roles = user.getRolesList();
+        for (std::list<std::pair<std::string, std::string> >::iterator i = roles.begin();
+              i != roles.end(); ++i)
+            addRole(*i);
     }
 
     //--------------------------------------------------------------------------
@@ -261,6 +263,46 @@ void repo::gui::RepoDialogUser::removeItem()
        delete item;
 }
 
+std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getGroups() const
+{
+    return getItems(ui->groupsTreeWidget);
+}
+
+std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getItems(QTreeWidget *widget) const
+{
+    std::list<std::pair<std::string, std::string> > list;
+    for (int i = 0; i < widget->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem *item = widget->topLevelItem(i);
+        std::string database = item->data(Columns::DATABASE, Qt::EditRole).toString().toStdString();
+        std::string value = item->data(Columns::VALUE, Qt::EditRole).toString().toStdString();
+
+        std::cerr << database << ", " << value << std::endl;
+        list.push_back(std::make_pair(database, value));
+    }
+    return list;
+}
+
+std::string repo::gui::RepoDialogUser::getPassword() const
+{
+    return ui->passwordLineEdit->text().toStdString();
+}
+
+std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getProjects() const
+{
+    return getItems(ui->projectsTreeWidget);
+}
+
+std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getRoles() const
+{
+    return getItems(ui->rolesTreeWidget);
+}
+
+std::string repo::gui::RepoDialogUser::getUsername() const
+{
+    return ui->usernameLineEdit->text().toStdString();
+}
+
 void repo::gui::RepoDialogUser::updateProjectsDelegate(QTreeWidgetItem *current, int column)
 {
     if (current && Columns::DATABASE == column)
@@ -289,4 +331,24 @@ void repo::gui::RepoDialogUser::updateRolesDelegate(QTreeWidgetItem *current, in
         }
         ui->rolesTreeWidget->setCurrentItem(current, Columns::VALUE);
     }
+}
+
+int repo::gui::RepoDialogUser::exec()
+{
+    int ret = QDialog::exec();
+
+    if (QDialog::Accepted == ret)
+    {
+        ui->firstNameLineEdit->text();
+        ui->lastNameLineEdit->text();
+        ui->emailLineEdit->text();
+
+        // TODO: make sure the password has changed since the last edit.
+        user = core::RepoUser(
+                    getUsername(),
+                    getPassword(),
+                    getProjects(),
+                    getRoles());
+    }
+    return ret;
 }
