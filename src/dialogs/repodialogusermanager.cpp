@@ -43,7 +43,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     //--------------------------------------------------------------------------
     // Users
     usersModel = new QStandardItemModel(this);
-    usersModel->setColumnCount(7);
+    usersModel->setColumnCount(8);
     usersModel->setHeaderData(
                 Columns::ACTIVE,
                 Qt::Horizontal,
@@ -68,6 +68,10 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 Columns::PROJECTS,
                 Qt::Horizontal,
                 tr("Projects"));
+    usersModel->setHeaderData(
+                Columns::GROUPS,
+                Qt::Horizontal,
+                tr("Groups"));
     usersModel->setHeaderData(
                 Columns::ROLES,
                 Qt::Horizontal,
@@ -161,14 +165,14 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     // Username
     row.append(createItem(QString::fromStdString(user.getUsername())));
 
-    // Password
-//    QString passwordAsBullets;
-//    for (int i = 0; i < user.getPassword().size(); ++i)
-//        passwordAsBullets += QChar(0x2022);
+    //Password
+    //QString passwordAsBullets;
+    //for (int i = 0; i < user.getPassword().size(); ++i)
+    //passwordAsBullets += QChar(0x2022);
     //item = createItem(passwordAsBullets);
     //item->setData(QVariant(QString::fromStdString(user.getPassword())));
-//    item = createItem(QString::fromStdString(user.getPassword()));
-//    row.append(item);
+    //item = createItem(QString::fromStdString(user.getPassword()));
+    //row.append(item);
 
     // First Name
     row.append(createItem(QString::fromStdString(user.getFirstName())));
@@ -181,6 +185,9 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
 
     // Projects count
     row.append(createItem(user.getProjectsList().size()));
+
+    // TODO: fill in groups
+    row.append(createItem(QVariant(0)));
 
     // Roles count
     row.append(createItem(user.getRolesList().size()));
@@ -238,6 +245,7 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->usersTreeView->resizeColumnToContents(Columns::LAST_NAME);
     ui->usersTreeView->resizeColumnToContents(Columns::EMAIL);
     ui->usersTreeView->resizeColumnToContents(Columns::PROJECTS);
+    ui->usersTreeView->resizeColumnToContents(Columns::GROUPS);
     ui->usersTreeView->resizeColumnToContents(Columns::ROLES);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
@@ -274,29 +282,45 @@ void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
             worker, &RepoWorkerUsers::customRolesFetched,
             this, &RepoDialogUserManager::addCustomRoles);
 
+        QObject::connect(
+            worker, &RepoWorkerUsers::finished,
+            ui->progressBar, &QProgressBar::hide);
+
+        QObject::connect(
+            worker, &RepoWorkerUsers::progressRangeChanged,
+            ui->progressBar, &QProgressBar::setRange);
+
+        QObject::connect(
+            worker, &RepoWorkerUsers::progressValueChanged,
+            ui->progressBar, &QProgressBar::setValue);
+
         //----------------------------------------------------------------------
         // Clear any previous entries
         clearUsersModel();        
 
         //----------------------------------------------------------------------
+        ui->progressBar->show();
         threadPool.start(worker);
     }
 }
 
 void repo::gui::RepoDialogUserManager::removeUser()
 {
-    core::RepoUser user = getUser();
-
-//    switch (QMessageBox::warning(this,
-//        "Remove user?",
-//        "Are you sure you want to drop '" + user.getUsername() + "' user?",
-//        "&Yes",
-//        "&No"))
-//    {
-//        case 0: // yes
-            refresh(user.dropUser());
-//            break;
-//    }
+    core::RepoUser user = this->getUser();
+    switch(QMessageBox::warning(this,
+        tr("Remove user?"),
+        tr("Are you sure you want to remove '") + QString::fromStdString(user.getUsername())  + tr("' user?"),
+        tr("&Yes"),
+        tr("&No"),
+        QString::null, 1, 1))
+        {
+            case 0: // yes
+                refresh(user.dropUser());
+                break;
+            case 1: // no
+                std::cout << tr("Remove user warning box cancelled by user.").toStdString() << std::endl;
+                break;
+        }
 }
 
 //! Selects the data from the given item.
@@ -318,7 +342,7 @@ void repo::gui::RepoDialogUserManager::showUserDialog(const core::RepoUser &user
     else // QDialog::Accepted
     {
         // Create or update user
-        refresh(userDialog.getUser().createUser());
+        refresh(userDialog.getCommand());
     }
 }
 

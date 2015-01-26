@@ -86,11 +86,30 @@ public slots:
     //! Adds a DB Role pair to the Roles table.
     QTreeWidgetItem *addRole(const std::pair<std::string, std::string> &);
 
+
+    //--------------------------------------------------------------------------
+
+    //! Sets the appropriate delegate if the database column on the project item has changed.
+    void updateProjectsDelegate(QTreeWidgetItem * current, int column);
+
+    //! Sets the appropriate delegate if the database column on the role item has changed.
+    void updateRolesDelegate(QTreeWidgetItem * current, int column);
+
+    //! Opens up file dialog to load an image.
+    void openImageFileDialog();
+
+public :
     //--------------------------------------------------------------------------
     //
     // Getters
     //
     //--------------------------------------------------------------------------
+
+    //! Returns the email currently set in the dialog if any.
+    std::string getEmail() const;
+
+    //! Returns the first name currently set in the dialog if any.
+    std::string getFirstName() const;
 
     //! Returns a list of groups as db, role pairs.
     std::list<std::pair<std::string, std::string> > getGroups() const;
@@ -98,7 +117,13 @@ public slots:
     //! Returns a list of items as db, value pairs from given tree widget.
     std::list<std::pair<std::string, std::string> > getItems(QTreeWidget *) const;
 
-    //! Returns password currently set in the dialog.
+    //! Returns the last name currently set in the dialog if any.
+    std::string getLastName() const;
+
+    /*!
+     * Returns password currently set in the dialog if it has changed. Returns
+     * empty string otherwise.
+     */
     std::string getPassword() const;
 
     //! Returns a list of projects as db, role pairs.
@@ -110,35 +135,20 @@ public slots:
     //! Returns username currently set in the dialog.
     std::string getUsername() const;
 
-    //--------------------------------------------------------------------------
 
-    //! Sets the appropriate delegate if the database column on the project item has changed.
-    void updateProjectsDelegate(QTreeWidgetItem * current, int column);
-
-    //! Sets the appropriate delegate if the database column on the role item has changed.
-    void updateRolesDelegate(QTreeWidgetItem * current, int column);
-
-public :
-
-    //! Saves user values if save is pressed, does nothing otherwise.
-    int exec();
+    //! Returns the user action command to be used with db.runCommand().
+    core::RepoBSON getCommand() const;
 
     //! Returns the icon for this dialog.
     static QIcon getIcon();
-
-    //! Returns the user.
-    core::RepoUser getUser() const { return user; }
 
     //! Removes currently selected Access Rights item depending on the active tab.
     void removeItem();
 
 private:
 
-    //! User to be created or modified.
-    core::RepoUser user;
-
-    //! Ui var.
-    Ui::RepoDialogUser *ui;
+    //! Email regular expression validator.
+    QRegExpValidator *emailValidator;
 
     //! Lookup table for projects delegates by database name.
     QHash<QString, RepoComboBoxDelegate* > groupsDelegates;
@@ -148,6 +158,12 @@ private:
 
     //! Lookup table for roles delegates by database name.
     QHash<QString, RepoComboBoxDelegate* > rolesDelegates;
+
+    //! User to be created or modified.
+    core::RepoUser user;
+
+    //! Ui var.
+    Ui::RepoDialogUser *ui;
 };
 
 } // end namespace gui

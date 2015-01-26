@@ -36,8 +36,7 @@ repo::gui::RepoWorkerDatabases::~RepoWorkerDatabases() {}
 void repo::gui::RepoWorkerDatabases::run()
 {	
     int jobsCount = 0;
-	// undetermined (moving) progress bar
-	emit progressRangeChanged(0, 0);
+    emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 	emit progressValueChanged(0);
 
 	if (!cancelled && !mongo.reconnect())

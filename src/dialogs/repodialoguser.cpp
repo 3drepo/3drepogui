@@ -16,9 +16,16 @@
  */
 
 
+#include <fstream>
+#include <iostream>
+
 //------------------------------------------------------------------------------
 // Qt
 #include <QMap>
+#include <QRegExpValidator>
+#include <QFileDialog>
+#include <QBuffer>
+#include <QImageReader>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -26,7 +33,11 @@
 #include "ui_repodialoguser.h"
 #include "../primitives/repo_fontawesome.h"
 
+//------------------------------------------------------------------------------
+// Core
 #include <RepoWrapperMongo>
+
+//------------------------------------------------------------------------------
 
 repo::gui::RepoDialogUser::RepoDialogUser(
         core::RepoUser user,
@@ -99,12 +110,13 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     // Populate user data
     if (!user.isEmpty())
     {
-        ui->usernameLineEdit->setText(QString::fromStdString(user.getUsername()));
-       // ui->usernameLineEdit->setEnabled(false);
+        ui->usernameLineEdit->setText(QString::fromStdString(user.getUsername()));      
         ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
         ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
         ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
         ui->emailLineEdit->setText(QString::fromStdString(user.getEmail()));
+
+        ui->credentialsGroupBox->setChecked(false);
 
         //----------------------------------------------------------------------
         // Projects
@@ -140,11 +152,23 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         ui->removePushButton, &QPushButton::pressed,
         this, &RepoDialogUser::removeItem);
 
+    QObject::connect(
+        ui->avatarPushButton, &QPushButton::pressed,
+        this, &RepoDialogUser::openImageFileDialog);
+
+    //--------------------------------------------------------------------------
+    // Regular expression validator for email
+    // See http://www.regular-expressions.info/email.html
+    QRegExp emailRegularExpression("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$", Qt::CaseInsensitive);
+    emailValidator = new QRegExpValidator(emailRegularExpression);
+    ui->emailLineEdit->setValidator(emailValidator);
+
 }
 
 repo::gui::RepoDialogUser::~RepoDialogUser()
 {
     delete ui;
+    delete emailValidator;
 
     //--------------------------------------------------------------------------
     // Dealocate pointers
@@ -263,6 +287,16 @@ void repo::gui::RepoDialogUser::removeItem()
        delete item;
 }
 
+std::string repo::gui::RepoDialogUser::getEmail() const
+{
+    return ui->emailLineEdit->text().toStdString();
+}
+
+std::string repo::gui::RepoDialogUser::getFirstName() const
+{
+    return ui->firstNameLineEdit->text().toStdString();
+}
+
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getGroups() const
 {
     return getItems(ui->groupsTreeWidget);
@@ -283,9 +317,15 @@ std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getIt
     return list;
 }
 
+std::string repo::gui::RepoDialogUser::getLastName() const
+{
+    return ui->lastNameLineEdit->text().toStdString();
+}
+
 std::string repo::gui::RepoDialogUser::getPassword() const
 {
-    return ui->passwordLineEdit->text().toStdString();
+    std::string currentPassword = ui->passwordLineEdit->text().toStdString();
+    return currentPassword != user.getPassword() ? currentPassword : "";
 }
 
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getProjects() const
@@ -303,7 +343,8 @@ std::string repo::gui::RepoDialogUser::getUsername() const
     return ui->usernameLineEdit->text().toStdString();
 }
 
-void repo::gui::RepoDialogUser::updateProjectsDelegate(QTreeWidgetItem *current, int column)
+void repo::gui::RepoDialogUser::updateProjectsDelegate(
+        QTreeWidgetItem *current, int column)
 {
     if (current && Columns::DATABASE == column)
     {
@@ -318,7 +359,8 @@ void repo::gui::RepoDialogUser::updateProjectsDelegate(QTreeWidgetItem *current,
     }
 }
 
-void repo::gui::RepoDialogUser::updateRolesDelegate(QTreeWidgetItem *current, int column)
+void repo::gui::RepoDialogUser::updateRolesDelegate(
+        QTreeWidgetItem *current, int column)
 {
     if (current && Columns::DATABASE == column)
     {
@@ -333,22 +375,58 @@ void repo::gui::RepoDialogUser::updateRolesDelegate(QTreeWidgetItem *current, in
     }
 }
 
-int repo::gui::RepoDialogUser::exec()
+void repo::gui::RepoDialogUser::openImageFileDialog()
 {
-    int ret = QDialog::exec();
+    QImageReader::supportedImageFormats();
 
-    if (QDialog::Accepted == ret)
+    QString filePath = QFileDialog::getOpenFileName(
+        this,
+        tr("Open Image"),
+        QString::null,
+        tr("Image Files (*.jpg *.png)"));
+
+    if (!filePath.isEmpty())
     {
-        ui->firstNameLineEdit->text();
-        ui->lastNameLineEdit->text();
-        ui->emailLineEdit->text();
+        QImage image(filePath); //icon.pixmap(100,100).toImage());
+        if (image.isNull())
+        {
+            QMessageBox::information(this, tr("Image Viewer"),
+                                     tr("Cannot load %1.").arg(fileName));
+        }
+        else
+        {
 
-        // TODO: make sure the password has changed since the last edit.
-        user = core::RepoUser(
-                    getUsername(),
-                    getPassword(),
-                    getProjects(),
-                    getRoles());
+
+            QByteArray byteArray;
+            QBuffer buffer(&byteArray);
+            buffer.open(QIODevice::WriteOnly);
+            image.save(&buffer, "PNG"); // writes image into ba in PNG format
+
+
+            QImage image2 = QImage::fromData((unsigned char*) byteArray.constData(), byteArray.size());
+
+
+            ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image2)));
+        }
     }
-    return ret;
+}
+
+repo::core::RepoBSON repo::gui::RepoDialogUser::getCommand() const
+{
+    // TODO: validate fields are set correctly including
+    // non-empty selections in projects, groups and roles
+
+    // TODO: make sure the password has changed since the last edit.
+    core::RepoUser newUser = core::RepoUser(
+                getUsername(),
+                getPassword(),
+                getFirstName(),
+                getLastName(),
+                getEmail(),
+                getProjects(),
+                getRoles());
+
+    return newUser.getUsername() != user.getUsername()
+            ? newUser.createUser()
+            : newUser.updateUser();
 }

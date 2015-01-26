@@ -48,7 +48,7 @@ class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-    enum Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
+    enum Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, GROUPS, ROLES };
 
 public:
 

@@ -43,19 +43,28 @@ repo::gui::RepoWorkerUsers::~RepoWorkerUsers() {}
 
 void repo::gui::RepoWorkerUsers::run()
 {
+    int jobsCount = 3;
+    int jobsDone = 0;
+    emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
+
     if (!mongo.reconnect())
         std::cerr << tr("Connection failed").toStdString() << std::endl;
     else
     {
         mongo.reauthenticate(database);
 
+        //----------------------------------------------------------------------
+        // Execute command (such as drop or update user) if any
         if (command.isOk())
             mongo.runCommand(database, command);
 
         //----------------------------------------------------------------------
         // Get mapping of databases with their associated projects.
+        // This is long running job!
         std::map<std::string, std::list<std::string> > databasesWithProjects = mongo.getDatabasesWithProjects();
         emit databasesWithProjectsFetched(databasesWithProjects);
+        emit progressRangeChanged(0, jobsCount);
+        emit progressValueChanged(jobsDone++);
 
         //----------------------------------------------------------------------
         std::auto_ptr<mongo::DBClientCursor> cursor;
@@ -86,6 +95,7 @@ void repo::gui::RepoWorkerUsers::run()
         }
         while (!cancelled && cursor.get() && cursor->more());
         emit customRolesFetched(roles);
+        emit progressValueChanged(jobsDone++);
 
         //----------------------------------------------------------------------
         // Get users
@@ -108,9 +118,11 @@ void repo::gui::RepoWorkerUsers::run()
                     skip);
         }
         while (!cancelled && cursor.get() && cursor->more());
+        emit progressValueChanged(jobsDone++);
 
     }
     //--------------------------------------------------------------------------
+    emit progressValueChanged(jobsCount);
     emit RepoWorkerAbstract::finished();
 }
 
