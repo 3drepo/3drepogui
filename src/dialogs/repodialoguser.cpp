@@ -26,6 +26,7 @@
 #include <QFileDialog>
 #include <QBuffer>
 #include <QImageReader>
+#include <QMessageBox>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -55,6 +56,15 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
+
+    if (user.isOk())
+    {
+        core::RepoImage avatarImage = user.getAvatar();
+
+        std::cerr << avatarImage.toString() << std::endl;
+        avatarImage.getData();
+        setAvatar(avatarImage);
+    }
 
     //--------------------------------------------------------------------------
     // Databases
@@ -390,23 +400,12 @@ void repo::gui::RepoDialogUser::openImageFileDialog()
         QImage image(filePath); //icon.pixmap(100,100).toImage());
         if (image.isNull())
         {
-            QMessageBox::information(this, tr("Image Viewer"),
-                                     tr("Cannot load %1.").arg(fileName));
+            QMessageBox::information(this, tr("Avatar"),
+                                     tr("Cannot load %1.").arg(filePath));
         }
         else
         {
-
-
-            QByteArray byteArray;
-            QBuffer buffer(&byteArray);
-            buffer.open(QIODevice::WriteOnly);
-            image.save(&buffer, "PNG"); // writes image into ba in PNG format
-
-
-            QImage image2 = QImage::fromData((unsigned char*) byteArray.constData(), byteArray.size());
-
-
-            ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image2)));
+            setAvatar(image);
         }
     }
 }
@@ -424,9 +423,31 @@ repo::core::RepoBSON repo::gui::RepoDialogUser::getCommand() const
                 getLastName(),
                 getEmail(),
                 getProjects(),
-                getRoles());
+                getRoles(),
+                avatar);
 
     return newUser.getUsername() != user.getUsername()
             ? newUser.createUser()
             : newUser.updateUser();
+}
+
+void repo::gui::RepoDialogUser::setAvatar(const core::RepoImage &image)
+{
+    if (image.isOk())
+    {
+        std::vector<char> data = image.getData();
+        setAvatar(QImage::fromData( (unsigned char*) &(data.at(0)), data.size()));
+    }
+}
+
+void repo::gui::RepoDialogUser::setAvatar(const QImage &image)
+{
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "PNG"); // writes image in PNG format
+    std::vector<char> imageBytes((unsigned char*) byteArray.constData(), (unsigned char*) byteArray.constData() + byteArray.size());
+    this->avatar = core::RepoImage(imageBytes, image.width(), image.height(), REPO_MEDIA_TYPE_PNG);
+
+    ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
 }

@@ -33,6 +33,7 @@
 //------------------------------------------------------------------------------
 // Core
 #include <RepoUser>
+#include <RepoImage>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -98,6 +99,9 @@ public slots:
     //! Opens up file dialog to load an image.
     void openImageFileDialog();
 
+    //! Removes currently selected Access Rights item depending on the active tab.
+    void removeItem();
+
 public :
     //--------------------------------------------------------------------------
     //
@@ -142,8 +146,18 @@ public :
     //! Returns the icon for this dialog.
     static QIcon getIcon();
 
-    //! Removes currently selected Access Rights item depending on the active tab.
-    void removeItem();
+
+    //--------------------------------------------------------------------------
+    //
+    // Setters
+    //
+    //--------------------------------------------------------------------------
+
+    //! Sets the avatar icon with the give image.
+    void setAvatar(const core::RepoImage &image);
+
+    //! Sets the avatar icon with the given image.
+    void setAvatar(const QImage &image);
 
 private:
 
@@ -161,6 +175,9 @@ private:
 
     //! User to be created or modified.
     core::RepoUser user;
+
+    //! User avatar (profile picture).
+    core::RepoImage avatar;
 
     //! Ui var.
     Ui::RepoDialogUser *ui;
