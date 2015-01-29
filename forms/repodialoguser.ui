@@ -337,6 +337,9 @@
           </property>
           <item>
            <widget class="QTreeWidget" name="groupsTreeWidget">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>

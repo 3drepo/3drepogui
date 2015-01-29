@@ -75,11 +75,18 @@ public slots:
     //! Adds Access Rights item depending on the selected tab.
     QTreeWidgetItem *addItem();
 
+    //! Adds Access Rights item depending on the specified Tab.
+    QTreeWidgetItem *addItem(enum Tabs tab,
+                             const std::pair<std::string, std::string> &pair);
+
     //! Adds specific item pair to a given parent tree widget.
     QTreeWidgetItem *addItem(
             const std::pair<std::string, std::string> &pair,
             QTreeWidget *parent,
             const QHash<QString, RepoComboBoxDelegate* > &delegates);
+
+    //! Adds items from a given list to a given tab tree.
+    void addItems(enum Tabs tab, const std::list<std::pair<std::string, std::string> > &list);
 
     //! Adds a DB Project pair to the Projects table.
     QTreeWidgetItem *addProject(const std::pair<std::string, std::string> &);

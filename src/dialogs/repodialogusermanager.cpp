@@ -186,8 +186,8 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     // Projects count
     row.append(createItem(user.getProjectsList().size()));
 
-    // TODO: fill in groups
-    row.append(createItem(QVariant(0)));
+    // Groups count
+    row.append(createItem(user.getGroupsList().size()));
 
     // Roles count
     row.append(createItem(user.getRolesList().size()));
