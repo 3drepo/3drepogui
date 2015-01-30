@@ -47,80 +47,90 @@ void repo::gui::RepoWorkerUsers::run()
     int jobsDone = 0;
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
-    if (!mongo.reconnect())
-        std::cerr << tr("Connection failed").toStdString() << std::endl;
-    else
+    try
     {
-        mongo.reauthenticate(database);
-
-        //----------------------------------------------------------------------
-        // Execute command (such as drop or update user) if any
-        if (command.isOk())
-            mongo.runCommand(database, command);
-
-        //----------------------------------------------------------------------
-        // Get mapping of databases with their associated projects.
-        // This is long running job!
-        std::map<std::string, std::list<std::string> > databasesWithProjects = mongo.getDatabasesWithProjects();
-        emit databasesWithProjectsFetched(databasesWithProjects);
-        emit progressRangeChanged(0, jobsCount);
-        emit progressValueChanged(jobsDone++);
-
-        //----------------------------------------------------------------------
-        std::auto_ptr<mongo::DBClientCursor> cursor;
-        std::list<std::string> fields; // projection, emtpy at the moment
-        unsigned long long skip = 0;
-
-        //----------------------------------------------------------------------
-        // Get custom roles
-        std::list<std::string> roles;
-        fields.clear();
-        fields.push_back(REPO_LABEL_ROLE);
-        skip = 0;
-        do
+        if (!cancelled && !mongo.reconnect())
+            std::cerr << tr("Connection failed").toStdString() << std::endl;
+        else
         {
-            for (; !cancelled && cursor.get() && cursor->more(); ++skip)
-            {
-                core::RepoRole role(cursor->nextSafe());
-                roles.push_back(role.getName());
-            }
-            if (!cancelled)
-                cursor = mongo.listAllTailable(
-                    database,
-                    REPO_SYSTEM_ROLES,
-                    fields,
-                    REPO_LABEL_ROLE,
-                    -1,
-                    skip);
-        }
-        while (!cancelled && cursor.get() && cursor->more());
-        emit customRolesFetched(roles);
-        emit progressValueChanged(jobsDone++);
 
-        //----------------------------------------------------------------------
-        // Get users
-        fields.clear();
-        skip = 0;
-        do
-        {
-            for (; !cancelled && cursor.get() && cursor->more(); ++skip)
-            {
-                core::RepoUser user(cursor->nextSafe());
-                emit userFetched(user.copy());
-            }
-            if (!cancelled)
-                cursor = mongo.listAllTailable(
-                    database,
-                    REPO_SYSTEM_USERS,
-                    fields,
-                    "user",
-                    -1,
-                    skip);
-        }
-        while (!cancelled && cursor.get() && cursor->more());
-        emit progressValueChanged(jobsDone++);
+            mongo.reauthenticate();
 
+            //------------------------------------------------------------------
+            // Execute command (such as drop or update user) if any
+            if (command.isOk())
+                mongo.runCommand(database, command);
+
+            //------------------------------------------------------------------
+            // Get mapping of databases with their associated projects.
+            // This is long running job!
+            std::list<std::string> databases = mongo.getDatabases();
+            std::map<std::string, std::list<std::string> > databasesWithProjects =
+                    mongo.getDatabasesWithProjects(databases);
+            emit databasesWithProjectsFetched(databasesWithProjects);
+            emit progressRangeChanged(0, jobsCount);
+            emit progressValueChanged(jobsDone++);
+
+            //------------------------------------------------------------------
+            std::auto_ptr<mongo::DBClientCursor> cursor;
+            std::list<std::string> fields; // projection, emtpy at the moment
+            unsigned long long skip = 0;
+            //------------------------------------------------------------------
+            // Get custom roles
+            std::list<std::string> roles;
+            fields.clear();
+            fields.push_back(REPO_LABEL_ROLE);
+            skip = 0;
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+                {
+                    core::RepoRole role(cursor->nextSafe());
+                    roles.push_back(role.getName());
+                }
+                if (!cancelled)
+                    cursor = mongo.listAllTailable(
+                        database,
+                        REPO_SYSTEM_ROLES,
+                        fields,
+                        REPO_LABEL_ROLE,
+                        -1,
+                        skip);
+
+            }
+            while (!cancelled && !cursor->isDead() && cursor.get() && cursor->more());
+            emit customRolesFetched(roles);
+            emit progressValueChanged(jobsDone++);
+
+            //------------------------------------------------------------------
+            // Get users
+            fields.clear();
+            skip = 0;
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+                {
+                    core::RepoUser user(cursor->nextSafe());
+                    emit userFetched(user.copy());
+                }
+                if (!cancelled)
+                    cursor = mongo.listAllTailable(
+                        database,
+                        REPO_SYSTEM_USERS,
+                        fields,
+                        "user",
+                        -1,
+                        skip);
+            }
+            while (!cancelled && cursor.get() && cursor->more());
+            emit progressValueChanged(jobsDone++);
+        }
     }
+    catch(std::exception &e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
     //--------------------------------------------------------------------------
     emit progressValueChanged(jobsCount);
     emit RepoWorkerAbstract::finished();

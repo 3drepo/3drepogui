@@ -334,6 +334,11 @@ void repo::gui::RepoGUI::connect()
             }
             ui->widgetRepository->fetchDatabases(mongo);
 
+//            RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
+//              QThreadPool      threadPool;
+//              threadPool.start(worker);
+
+
             //-----------------------------------------------------------------
             // enable buttons
             ui->actionRefresh->setEnabled(true);
