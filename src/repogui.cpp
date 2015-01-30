@@ -38,7 +38,7 @@
 #include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
 #include "oculus/repo_oculus.h"
-
+#include "dialogs/repodialogsettings.h"
 
 
 //------------------------------------------------------------------------------
@@ -161,6 +161,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     // User Management...
     QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
     ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
+
+    // Options
+    QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
+
 
 
 
@@ -493,6 +497,12 @@ void repo::gui::RepoGUI::openFile()
         QString::null,
         repo::core::AssimpWrapper::getImportFormats().c_str());
     loadFiles(filePaths);
+}
+
+void repo::gui::RepoGUI::openSettings() const
+{
+    RepoDialogSettings settingsDialog((QWidget*) this);
+    settingsDialog.exec();
 }
 
 void repo::gui::RepoGUI::openSupportEmail() const

@@ -59,8 +59,9 @@ HEADERS  += src/repogui.h \
             src/dialogs/repodialogoculus.h \
             src/dialogs/repodialogusermanager.h \
             src/dialogs/repodialoguser.h \
-    src/primitives/repocomboboxeditor.h \
-    src/primitives/repocomboboxdelegate.h
+            src/primitives/repocomboboxeditor.h \
+            src/primitives/repocomboboxdelegate.h \
+            src/dialogs/repodialogsettings.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -91,8 +92,9 @@ SOURCES += src/main.cpp\
            src/dialogs/repodialogoculus.cpp \
            src/dialogs/repodialogusermanager.cpp \
            src/dialogs/repodialoguser.cpp \
-    src/primitives/repocomboboxeditor.cpp \
-    src/primitives/repocomboboxdelegate.cpp
+           src/primitives/repocomboboxeditor.cpp \
+           src/primitives/repocomboboxdelegate.cpp \
+           src/dialogs/repodialogsettings.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -101,7 +103,8 @@ FORMS    += forms/repogui.ui \
             forms/repo_widgetrepository.ui \
             forms/repodialogoculus.ui \
             forms/repodialogusermanager.ui \
-            forms/repodialoguser.ui
+            forms/repodialoguser.ui \
+            forms/repodialogsettings.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

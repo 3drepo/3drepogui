@@ -91,6 +91,9 @@ public slots:
     //! Opens a file dialog.
     void openFile();
 
+    //! Opens settings dialog.
+    void openSettings() const;
+
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 

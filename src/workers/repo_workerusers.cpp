@@ -98,7 +98,7 @@ void repo::gui::RepoWorkerUsers::run()
                         skip);
 
             }
-            while (!cancelled && !cursor->isDead() && cursor.get() && cursor->more());
+            while (!cancelled && cursor.get() && cursor->more());
             emit customRolesFetched(roles);
             emit progressValueChanged(jobsDone++);
 
