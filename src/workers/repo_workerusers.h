@@ -29,7 +29,7 @@
 namespace repo {
 namespace gui {
 
-//! Worker class to that fetches individual revisions from given Mongo client.
+//! Worker class to that fetches individual users from given Mongo client.
 class RepoWorkerUsers : public RepoWorkerAbstract
 {
 
@@ -40,14 +40,22 @@ public :
     //! Default worker constructor.
     RepoWorkerUsers(
         const core::MongoClientWrapper &mongo,
-        const QString &database = QString::fromStdString(core::MongoClientWrapper::ADMIN_DATABASE));
+        const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+        const core::RepoBSON &command = core::RepoBSON());
 
     //! Default empty destructor.
     ~RepoWorkerUsers();
 
 signals :
 
-    void userFetched(const core::RepoUser &user);
+    //! Emitted when user is fetched.
+    void userFetched(const core::RepoUser &);
+
+    //! Emitted when all databases with associated projects are fetched.
+    void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
+
+    //! Emitted when custom roles are fetched.
+    void customRolesFetched(const std::list<std::string> &);
 
 public slots :
 
@@ -60,6 +68,9 @@ private :
 
     //! Database name.
     std::string database;
+
+   //! User to be create or updated in the database.
+   core::RepoBSON command;
 
 }; // end class
 

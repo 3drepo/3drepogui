@@ -43,6 +43,9 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <property name="documentMode">
+      <bool>false</bool>
+     </property>
      <widget class="QWidget" name="databasesTab">
       <attribute name="title">
        <string>Databases</string>
@@ -200,7 +203,7 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>repo_lineedit.h</header>
+   <header>../widgets/repo_lineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

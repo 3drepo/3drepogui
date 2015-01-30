@@ -334,6 +334,11 @@ void repo::gui::RepoGUI::connect()
             }
             ui->widgetRepository->fetchDatabases(mongo);
 
+//            RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
+//              QThreadPool      threadPool;
+//              threadPool.start(worker);
+
+
             //-----------------------------------------------------------------
             // enable buttons
             ui->actionRefresh->setEnabled(true);
@@ -513,7 +518,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
 void repo::gui::RepoGUI::openUserManager() const
 {
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    RepoDialogUserManager um(mongo, (QWidget*) this);
+    RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
     um.exec();
 }
 

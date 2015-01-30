@@ -21,9 +21,6 @@
 #include <string>
 #include <cctype>
 
-#if defined(_WIN32) || defined(_WIN64)
-  #define strcasecmp _stricmp
-#endif
 
 repo::gui::RepoWorkerDatabases::RepoWorkerDatabases(const repo::core::MongoClientWrapper& mongo)
 	: RepoWorkerAbstract()
@@ -39,8 +36,7 @@ repo::gui::RepoWorkerDatabases::~RepoWorkerDatabases() {}
 void repo::gui::RepoWorkerDatabases::run()
 {	
     int jobsCount = 0;
-	// undetermined (moving) progress bar
-	emit progressRangeChanged(0, 0);
+    emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 	emit progressValueChanged(0);
 
 	if (!cancelled && !mongo.reconnect())
@@ -52,10 +48,7 @@ void repo::gui::RepoWorkerDatabases::run()
 		emit hostFetched(QString::fromStdString(mongo.getUsernameAtHostAndPort()));			
         //----------------------------------------------------------------------
 		// For each database (if not cancelled)
-        std::list<std::string> databases = mongo.getDatabases();
-
-        //----------------------------------------------------------------------
-        databases.sort(&RepoWorkerDatabases::caseInsensitiveStringCompare);
+		std::list<std::string> databases = mongo.getDatabases();
 
         //----------------------------------------------------------------------
         jobsCount = (int) databases.size() * 2;
@@ -106,9 +99,4 @@ void repo::gui::RepoWorkerDatabases::run()
 	emit RepoWorkerAbstract::finished();
 }
 
-bool repo::gui::RepoWorkerDatabases::caseInsensitiveStringCompare(
-        const std::string& s1,
-        const std::string& s2)
-{
-    return strcasecmp(s1.c_str(), s2.c_str()) <= 0;
-}
+

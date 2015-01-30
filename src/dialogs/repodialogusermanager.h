@@ -48,22 +48,18 @@ class RepoDialogUserManager : public QDialog
 {
     Q_OBJECT
 
-    enum RepoUsersColumns { ACTIVE, USERNAME, PASSWORD, FIRST_NAME, LAST_NAME, EMAIL };
-
-    enum RepoProjectsColumns { OWNER, PROJECT };
+    enum Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, GROUPS, ROLES };
 
 public:
 
     explicit RepoDialogUserManager(
             const core::MongoClientWrapper &mongo,
+            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
             QWidget *parent = 0);
     ~RepoDialogUserManager();
 
     //! Clears the users model.
     void clearUsersModel();
-
-    //! Clears the projects model.
-    void clearProjectsModel();
 
     //! Returns icon associated with this dialog.
     static QIcon getIcon();
@@ -75,7 +71,13 @@ signals :
 
 public slots:
 
-    //! Adds user to the list of users
+    //! Adds a fresh list of custom roles.
+    void addCustomRoles(const std::list<std::string> &);
+
+    //! Adds a fresh mapping of databases with their associated projects.
+    void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
+
+    //! Adds user to the list of users.
     void addUser(const core::RepoUser &user);
 
     //! Cancels all running threads and waits for their completion.
@@ -84,27 +86,47 @@ public slots:
     //! Forces refresh.
     int exec();
 
+    //! Updates selected user.
+    void editUser();
+
+    //! Updates user based on model index.
+    void editUser(const QModelIndex &index);
+
+    //! Returns a currently selected user if any.
+    core::RepoUser getUser();
+
+    //! Returns a user specified by the model index.
+    core::RepoUser getUser(const QModelIndex &index);
+
     //! Refreshes the current list of users by fetching from a database.
-    void refresh();
+    void refresh(const core::RepoBSON &command = core::RepoBSON());
+
+    //! Drops user from the database.
+    void removeUser();
 
     //! Selects the data from the given item.
-    void select(const QItemSelection &selected, const QItemSelection &);
+    void select(const QItemSelection &, const QItemSelection &);
 
-    //! Double click on the tree view
-    void selectUser(const QModelIndex &);
+    //! Shows the user dialog and saves edits to the database.
+    void showUserDialog(const core::RepoUser &user = core::RepoUser());
 
     //! Sets the number of users shown in the "Showing x of y" label.
     void updateUsersCount() const;
 
 private :
 
-    QStandardItem *createItem(const QString& data);
+    QStandardItem *createItem(const QString &);
+
+    QStandardItem *createItem(const QVariant &);
 
 
 private:
 
-    //! Model of the users table.
-    QStandardItemModel *projectsModel;
+    //! List of custom roles updated upon each refresh.
+    std::list<std::string> customRolesList;
+
+    //! Mapping of databases to their associated projects.
+    std::map<std::string, std::list<std::string> > databasesWithProjects;
 
     //! Model of the users table.
     QStandardItemModel *usersModel;
@@ -117,6 +139,9 @@ private:
 
     //! Mongo connector.
     core::MongoClientWrapper mongo;
+
+    //! Database the users are being set on.
+    std::string database;
 
     //! Ui var.
     Ui::RepoDialogUserManager *ui;
