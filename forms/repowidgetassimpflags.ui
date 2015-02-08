@@ -279,14 +279,14 @@
              <number>0</number>
             </property>
             <item row="1" column="0">
-             <widget class="QRadioButton" name="radioButton">
+             <widget class="QRadioButton" name="generateNormalsSmoothRadioButton">
               <property name="text">
                <string>Smooth:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="doubleSpinBox">
+             <widget class="QDoubleSpinBox" name="generateNormalsSmoothDoubleSpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -422,14 +422,14 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="checkBox_19">
+             <widget class="QCheckBox" name="improveCacheLocalityCheckBox">
               <property name="text">
                <string>Improve Cache Locality:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBox_4">
+             <widget class="QSpinBox" name="improveCacheLocalitySpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -491,14 +491,14 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="checkBox_18">
+             <widget class="QCheckBox" name="limitBoneWeightsCheckBox">
               <property name="text">
                <string>Limit Bone Weights:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="spinBox_3">
+             <widget class="QSpinBox" name="limitBoneWeightsSpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -1038,14 +1038,14 @@
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <widget class="QCheckBox" name="checkBox_32">
+             <widget class="QCheckBox" name="splitByBoneCountCheckBox">
               <property name="text">
                <string>Splilt by Bone Count:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBox_5">
+             <widget class="QSpinBox" name="splitByBoneCountSpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>

@@ -24,6 +24,18 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     ui(new Ui::RepoWidgetAssimpFlags)
 {
     ui->setupUi(this);
+
+    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
+                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
+                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
+                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
+                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
 }
 
 repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
