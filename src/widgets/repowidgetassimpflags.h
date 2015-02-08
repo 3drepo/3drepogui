@@ -16,21 +16,25 @@
  */
 
 
-#include "repodialogsettings.h"
-#include "ui_repodialogsettings.h"
+#ifndef REPO_WIDGET_ASSIMP_FLAGS_H
+#define REPO_WIDGET_ASSIMP_FLAGS_H
 
-#include "widgets/repowidgetassimpflags.h"
+#include <QWidget>
 
-RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::RepoDialogSettings)
-{
-    ui->setupUi(this);
-
-    ui->tabWidget->addTab(new RepoWidgetAssimpFlags(), tr("Assimp"));
+namespace Ui {
+class RepoWidgetAssimpFlags;
 }
 
-RepoDialogSettings::~RepoDialogSettings()
+class RepoWidgetAssimpFlags : public QWidget
 {
-    delete ui;
-}
+    Q_OBJECT
+
+public:
+    explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
+    ~RepoWidgetAssimpFlags();
+
+private:
+    Ui::RepoWidgetAssimpFlags *ui;
+};
+
+#endif // REPO_WIDGET_ASSIMP_FLAGS_H
