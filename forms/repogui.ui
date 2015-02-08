@@ -446,7 +446,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Options...</string>
+    <string>Settings...</string>
    </property>
   </action>
   <action name="actionDiff">
