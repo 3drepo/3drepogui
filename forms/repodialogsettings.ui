@@ -43,6 +43,12 @@
       </property>
       <item>
        <widget class="repo::gui::RepoLineEdit" name="lineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -61,7 +67,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Label</string>
+         <string>Importer</string>
         </property>
        </widget>
       </item>
@@ -94,6 +100,12 @@
       </property>
       <item>
        <widget class="QListView" name="optionsListView">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -104,6 +116,9 @@
       </item>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
         <widget class="QWidget" name="assimpPage">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
@@ -120,15 +135,30 @@
           </property>
           <item>
            <widget class="QTabWidget" name="tabWidget">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
             <widget class="QWidget" name="tab">
              <attribute name="title">
-              <string>Tab 1</string>
+              <string>Assimp</string>
              </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_2">
-             <attribute name="title">
-              <string>Tab 2</string>
-             </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="repo::gui::RepoWidgetAssimpFlags" name="widget" native="true"/>
+              </item>
+             </layout>
             </widget>
            </widget>
           </item>
@@ -157,6 +187,12 @@
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
    <header>../widgets/repo_lineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoWidgetAssimpFlags</class>
+   <extends>QWidget</extends>
+   <header>../widgets/repowidgetassimpflags.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

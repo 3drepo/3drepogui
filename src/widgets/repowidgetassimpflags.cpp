@@ -19,14 +19,14 @@
 #include "repowidgetassimpflags.h"
 #include "ui_repowidgetassimpflags.h"
 
-RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
+repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RepoWidgetAssimpFlags)
 {
     ui->setupUi(this);
 }
 
-RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
+repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
 {
     delete ui;
 }

@@ -21,16 +21,14 @@
 
 #include "widgets/repowidgetassimpflags.h"
 
-RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
+repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RepoDialogSettings)
 {
     ui->setupUi(this);
-
-    ui->tabWidget->addTab(new RepoWidgetAssimpFlags(), tr("Assimp"));
 }
 
-RepoDialogSettings::~RepoDialogSettings()
+repo::gui::RepoDialogSettings::~RepoDialogSettings()
 {
     delete ui;
 }

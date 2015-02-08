@@ -22,8 +22,11 @@
 #include <QDialog>
 
 namespace Ui {
-class RepoDialogSettings;
+    class RepoDialogSettings;
 }
+
+namespace repo {
+namespace gui {
 
 class RepoDialogSettings : public QDialog
 {
@@ -36,5 +39,8 @@ public:
 private:
     Ui::RepoDialogSettings *ui;
 };
+
+} // end namespace gui
+} // end namespace repo
 
 #endif // REPODIALOGSETTINGS_H

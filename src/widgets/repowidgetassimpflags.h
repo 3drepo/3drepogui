@@ -25,6 +25,9 @@ namespace Ui {
 class RepoWidgetAssimpFlags;
 }
 
+namespace repo {
+namespace gui {
+
 class RepoWidgetAssimpFlags : public QWidget
 {
     Q_OBJECT
@@ -36,5 +39,8 @@ public:
 private:
     Ui::RepoWidgetAssimpFlags *ui;
 };
+
+} // end namespace gui
+} // end namespace repo
 
 #endif // REPO_WIDGET_ASSIMP_FLAGS_H
