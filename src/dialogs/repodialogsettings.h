@@ -33,8 +33,16 @@ class RepoDialogSettings : public QDialog
     Q_OBJECT
 
 public:
+
     explicit RepoDialogSettings(QWidget *parent = 0);
+
     ~RepoDialogSettings();
+
+public slots :
+
+
+    //! Applies all of the currently selected settings.
+    void apply();
 
 private:
     Ui::RepoDialogSettings *ui;

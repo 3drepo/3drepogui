@@ -26,9 +26,20 @@ repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
     ui(new Ui::RepoDialogSettings)
 {
     ui->setupUi(this);
+
+    QObject::connect((const QObject*) (ui->buttonBox->button(QDialogButtonBox::Apply)),
+                     SIGNAL(clicked()), this, SLOT(apply()));
+
+    QObject::connect((const QObject*) (ui->buttonBox->button(QDialogButtonBox::Ok)),
+                     SIGNAL(clicked()), this, SLOT(apply()));
 }
 
 repo::gui::RepoDialogSettings::~RepoDialogSettings()
 {
     delete ui;
+}
+
+void repo::gui::RepoDialogSettings::apply()
+{
+    ui->assimpFlagsWidget->apply();
 }

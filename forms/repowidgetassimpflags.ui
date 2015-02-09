@@ -69,28 +69,28 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QCheckBox" name="checkBox">
+          <widget class="QCheckBox" name="calculateTangentSpaceCheckBox">
            <property name="text">
             <string>Calculate Tangent Space</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_26">
+          <widget class="QCheckBox" name="convertToUVCoordinatesCheckBox">
            <property name="text">
             <string>Convert to UV Coordinates</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_25">
+          <widget class="QCheckBox" name="degeneratesToPointsLinesCheckBox">
            <property name="text">
             <string>Degenerates to Points/Lines</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_10">
+          <widget class="QGroupBox" name="deboneGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -117,7 +117,7 @@
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_6">
+             <widget class="QLabel" name="deboneThresholdLabel">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -130,7 +130,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+             <widget class="QDoubleSpinBox" name="deboneThresholdDoubleSpinBox">
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
@@ -152,7 +152,7 @@
              </widget>
             </item>
             <item row="1" column="0" colspan="2">
-             <widget class="QCheckBox" name="checkBox_33">
+             <widget class="QCheckBox" name="deboneIfAndOnlyIfCheckBox">
               <property name="text">
                <string>Only if All</string>
               </property>
@@ -162,14 +162,14 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_28">
+          <widget class="QCheckBox" name="findInstancesCheckBox">
            <property name="text">
             <string>Find Instances</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_9">
+          <widget class="QGroupBox" name="findInvalidDataGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -202,14 +202,14 @@
              <number>0</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_4">
+             <widget class="QLabel" name="findInvalidDataAnimationAccuracyLabel">
               <property name="text">
                <string>Animation Accuracy:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+             <widget class="QDoubleSpinBox" name="findInvalidDataAnimationAccuracyDoubleSpinBox">
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
@@ -225,7 +225,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_20">
+          <widget class="QCheckBox" name="fixInfacingNormalsCheckBox">
            <property name="text">
             <string>Fix Infacing Normals</string>
            </property>
@@ -235,21 +235,21 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_30">
+          <widget class="QCheckBox" name="flipUVCoordinatesCheckBox">
            <property name="text">
             <string>Flip UV Coordinates</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_31">
+          <widget class="QCheckBox" name="flipWindingOrderCheckBox">
            <property name="text">
             <string>Flip Winding Order</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_4">
+          <widget class="QGroupBox" name="generateNormalsGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -323,7 +323,7 @@
              </widget>
             </item>
             <item row="0" column="0">
-             <widget class="QRadioButton" name="radioButton_2">
+             <widget class="QRadioButton" name="generateNormalsFlatRadioButton">
               <property name="text">
                <string>Flat</string>
               </property>
@@ -451,7 +451,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_2">
+          <widget class="QCheckBox" name="joinIdenticalVerticesCheckBox">
            <property name="text">
             <string>Join Identical Vertices</string>
            </property>
@@ -526,28 +526,28 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_4">
+          <widget class="QCheckBox" name="makeLeftHandedCheckBox">
            <property name="text">
             <string>Make Left Handed</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_29">
+          <widget class="QCheckBox" name="optimizeMeshesCheckBox">
            <property name="text">
             <string>Optimize Meshes</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_27">
+          <widget class="QCheckBox" name="preTransformUVCoordinatesCheckBox">
            <property name="text">
             <string>Pre-transform UV Coordinates</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_5">
+          <widget class="QGroupBox" name="preTransformVerticesGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -571,7 +571,7 @@
              <number>6</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="checkBox_16">
+             <widget class="QCheckBox" name="preTransformVerticesNormalizeCheckBox">
               <property name="text">
                <string>Normalize to [-1,1]</string>
               </property>
@@ -581,7 +581,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="removeComponentsGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -608,77 +608,77 @@
              <number>6</number>
             </property>
             <item row="0" column="0">
-             <widget class="QCheckBox" name="checkBox_11">
+             <widget class="QCheckBox" name="removeComponentsAnimationsCheckBox">
               <property name="text">
                <string>Animations</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QCheckBox" name="checkBox_7">
+             <widget class="QCheckBox" name="removeComponentsBiTangentsCheckBox">
               <property name="text">
                <string>Bi/Tangents</string>
               </property>
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QCheckBox" name="checkBox_10">
+             <widget class="QCheckBox" name="removeComponentsBoneWeightsCheckBox">
               <property name="text">
                <string>Bone Weights</string>
               </property>
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QCheckBox" name="checkBox_8">
+             <widget class="QCheckBox" name="removeComponentsColorsCheckBox">
               <property name="text">
                <string>Colors</string>
               </property>
              </widget>
             </item>
             <item row="4" column="0">
-             <widget class="QCheckBox" name="checkBox_14">
+             <widget class="QCheckBox" name="removeComponentsCamerasCheckBox">
               <property name="text">
                <string>Cameras</string>
               </property>
              </widget>
             </item>
             <item row="5" column="0">
-             <widget class="QCheckBox" name="checkBox_13">
+             <widget class="QCheckBox" name="removeComponentsLightsCheckBox">
               <property name="text">
                <string>Lights</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QCheckBox" name="checkBox_3">
+             <widget class="QCheckBox" name="removeComponentsMaterialsCheckBox">
               <property name="text">
                <string>Materials</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QCheckBox" name="checkBox_15">
+             <widget class="QCheckBox" name="removeComponentsMeshesCheckBox">
               <property name="text">
                <string>Meshes</string>
               </property>
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QCheckBox" name="checkBox_6">
+             <widget class="QCheckBox" name="removeComponentsNormalsCheckBox">
               <property name="text">
                <string>Normals</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QCheckBox" name="checkBox_12">
+             <widget class="QCheckBox" name="removeComponentsTexturesCheckBox">
               <property name="text">
                <string>Textures</string>
               </property>
              </widget>
             </item>
             <item row="4" column="1">
-             <widget class="QCheckBox" name="checkBox_9">
+             <widget class="QCheckBox" name="removeComponentsTextureCoordinatesCheckBox">
               <property name="text">
                <string>UV Coords</string>
               </property>
@@ -744,7 +744,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QGroupBox" name="groupBox_6">
+          <widget class="QGroupBox" name="removeMaterialsGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -774,14 +774,14 @@
              <number>6</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="removeMaterialsSkipLabel">
               <property name="text">
                <string>Skip:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_2">
+             <widget class="QLineEdit" name="removeMaterialsSkipLineEdit">
               <property name="placeholderText">
                <string>Space-separated</string>
               </property>
@@ -791,7 +791,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_8">
+          <widget class="QGroupBox" name="removeNodesGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -821,14 +821,14 @@
              <number>6</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label_5">
+             <widget class="QLabel" name="removeNodesSkipLabel">
               <property name="text">
                <string>Skip:</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit">
+             <widget class="QLineEdit" name="removeNodesSkipLineEdit">
               <property name="placeholderText">
                <string>Space-separated</string>
               </property>
@@ -838,7 +838,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_7">
+          <widget class="QGroupBox" name="sortAndRemoveGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -865,7 +865,7 @@
              <number>6</number>
             </property>
             <item row="0" column="0">
-             <widget class="QCheckBox" name="checkBox_21">
+             <widget class="QCheckBox" name="sortAndRemovePointsCheckBox">
               <property name="text">
                <string>Points</string>
               </property>
@@ -875,21 +875,21 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QCheckBox" name="checkBox_23">
+             <widget class="QCheckBox" name="sortAndRemoveTrianglesCheckBox">
               <property name="text">
                <string>Triangles</string>
               </property>
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QCheckBox" name="checkBox_24">
+             <widget class="QCheckBox" name="sortAndRemovePolygonsCheckBox">
               <property name="text">
                <string>Polygons</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QCheckBox" name="checkBox_22">
+             <widget class="QCheckBox" name="sortAndRemoveLinesCheckBox">
               <property name="text">
                <string>Lines</string>
               </property>
@@ -902,7 +902,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_3">
+          <widget class="QGroupBox" name="splitLargeMeshesGroupBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -935,7 +935,7 @@
              <number>6</number>
             </property>
             <item row="0" column="0">
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="splitLargeMeshesVertexLimitLabel">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -945,7 +945,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QSpinBox" name="spinBox">
+             <widget class="QSpinBox" name="splitLargeMeshesVertexLimitSpinBox">
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
@@ -967,14 +967,14 @@
              </widget>
             </item>
             <item row="1" column="0">
-             <widget class="QLabel" name="label_2">
+             <widget class="QLabel" name="splitLargeMeshesTriangleLimitLabel">
               <property name="text">
                <string>Triangle Limit:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QSpinBox" name="spinBox_2">
+             <widget class="QSpinBox" name="splitLargeMeshesTriangleLimitSpinBox">
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
@@ -1067,7 +1067,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_5">
+          <widget class="QCheckBox" name="triangulateCheckBox">
            <property name="text">
             <string>Triangulate</string>
            </property>
@@ -1077,7 +1077,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBox_17">
+          <widget class="QCheckBox" name="validateDataStructuresCheckBox">
            <property name="text">
             <string>Validate Data Structures</string>
            </property>
@@ -1106,7 +1106,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_7">
+    <widget class="QLabel" name="onlineDocumentationLabel">
      <property name="text">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;http://assimp.sourceforge.net/lib_html/postprocess_8h.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Online Documentation&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>

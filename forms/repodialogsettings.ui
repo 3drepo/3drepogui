@@ -156,7 +156,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="repo::gui::RepoWidgetAssimpFlags" name="widget" native="true"/>
+               <widget class="repo::gui::RepoWidgetAssimpFlags" name="assimpFlagsWidget" native="true"/>
               </item>
              </layout>
             </widget>
