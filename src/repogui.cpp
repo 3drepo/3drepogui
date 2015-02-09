@@ -39,6 +39,7 @@
 #include "primitives/repo_fontawesome.h"
 #include "oculus/repo_oculus.h"
 #include "dialogs/repodialogsettings.h"
+#include "widgets/repowidgetassimpflags.h"
 
 
 //------------------------------------------------------------------------------
@@ -446,8 +447,7 @@ void repo::gui::RepoGUI::loadFile(const QString &filePath)
         std::cout << "Loading " << fileName << " ..." << std::endl;
 
         // TODO: get assimp post processing flags from settings dialog box.
-        unsigned int postProcessingFlags = 0;
-        ui->mdiArea->addSubWindow(filePath, postProcessingFlags);
+        ui->mdiArea->addSubWindow(filePath, RepoWidgetAssimpFlags().getPostProcessingFlags());
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
 }

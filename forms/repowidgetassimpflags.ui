@@ -283,6 +283,9 @@
               <property name="text">
                <string>Smooth:</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item row="1" column="1">
@@ -328,7 +331,7 @@
                <string>Flat</string>
               </property>
               <property name="checked">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -934,16 +937,6 @@
             <property name="bottomMargin">
              <number>6</number>
             </property>
-            <item row="0" column="0">
-             <widget class="QLabel" name="splitLargeMeshesVertexLimitLabel">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="text">
-               <string>Vertex Limit:</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QSpinBox" name="splitLargeMeshesVertexLimitSpinBox">
               <property name="alignment">
@@ -992,6 +985,13 @@
               </property>
               <property name="value">
                <number>1000000</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="splitLargeMeshesVertexLimitLabel">
+              <property name="text">
+               <string>Vertex Limit:</string>
               </property>
              </widget>
             </item>

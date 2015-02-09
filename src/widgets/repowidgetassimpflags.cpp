@@ -37,6 +37,29 @@ const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FLIP_WINDING_ORDER
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS = "RepoWidgetAssimpFlags/generateNormals";
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_FLAT = "RepoWidgetAssimpFlags/generateNormalsFlat";
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_SMOOTH = "RepoWidgetAssimpFlags/generateNormalsSmooth";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_SMOOTH_CREASE_ANGLE = "RepoWidgetAssimpFlags/generateNormalsSmoothCreaseAngle";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_IMPROVE_CACHE_LOCALITY = "RepoWidgetAssimpFlags/improveCacheLocality";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_IMPROVE_CACHE_LOCALITY_VERTEX_CACHE_SIZE = "RepoWidgetAssimpFlags/improveCacheLocalityVertexCacheSize";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_JOIN_IDENTICAL_VERTICES = "RepoWidgetAssimpFlags/joinIdenticalVertices";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_LIMIT_BONE_WEIGHTS = "RepoWidgetAssimpFlags/limitBoneWeights";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_LIMIT_BONE_WEIGHTS_MAX_WEIGHTS = "RepoWidgetAssimpFlags/limitBoneWeightsMaxWeight";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_MAKE_LEFT_HANDED = "RepoWidgetAssimpFlags/makeLeftHanded";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_OPTIMIZE_MESHES = "RepoWidgetAssimpFlags/optimizeMeshes";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_UV_COORDINATES = "RepoWidgetAssimpFlags/preTransformUVCoordinates";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_VERTICES = "RepoWidgetAssimpFlags/preTransformVertices";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_VERTICES_NORMALIZE = "RepoWidgetAssimpFlags/preTransformVerticesNormalize";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS = "RepoWidgetAssimpFlags/removeComponents";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_ANIMATIONS = "RepoWidgetAssimpFlags/removeComponentsAnimations";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_BI_TANGENTS = "RepoWidgetAssimpFlags/removeComponentsBiTangents";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_BONE_WEIGHTS = "RepoWidgetAssimpFlags/removeComponentsBoneWeights";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_CAMERAS = "RepoWidgetAssimpFlags/removeComponentsCameras";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_COLORS = "RepoWidgetAssimpFlags/removeComponentsColors";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_LIGHTS = "RepoWidgetAssimpFlags/removeComponentsLights";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_MATERIALS = "RepoWidgetAssimpFlags/removeComponentsMaterials";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_MESHES = "RepoWidgetAssimpFlags/removeComponentsMeshes";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_NORMALS = "RepoWidgetAssimpFlags/removeComponentsNormals";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES = "RepoWidgetAssimpFlags/removeComponentsTextures";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES = "RepoWidgetAssimpFlags/removeComponentsTextureCoordinates";
 
 repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     QWidget(parent),
@@ -57,6 +80,9 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
                      ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
+                     this, SLOT(setCreaseAngleEnabled(bool)));
 
     //--------------------------------------------------------------------------
 
@@ -89,6 +115,42 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     ui->generateNormalsFlatRadioButton->setChecked(isGenerateNormalsFlatChecked());
 
     ui->generateNormalsSmoothRadioButton->setChecked(isGenerateNormalsSmoothChecked());
+
+    ui->generateNormalsSmoothDoubleSpinBox->setValue(getGenerateNormalsSmoothCreaseAngle());
+
+    ui->improveCacheLocalityCheckBox->setChecked(isImproveCacheLocalityChecked());
+
+    ui->improveCacheLocalitySpinBox->setValue(getImproveCacheLocalityVertexCacheSize());
+
+    ui->joinIdenticalVerticesCheckBox->setChecked(isJoinIdenticalVerticesChecked());
+
+    ui->limitBoneWeightsCheckBox->setChecked(isLimitBoneWeightsChecked());
+
+    ui->limitBoneWeightsSpinBox->setValue(getLimitBoneWeightsMaxWeight());
+
+    ui->makeLeftHandedCheckBox->setChecked(isMakeLeftHandedChecked());
+
+    ui->optimizeMeshesCheckBox->setChecked(isOptimizeMeshesChecked());
+
+    ui->preTransformUVCoordinatesCheckBox->setChecked(isPreTransformUVCoordinatesChecked());
+
+    ui->preTransformVerticesGroupBox->setChecked(isPreTransformVerticesChecked());
+
+    ui->preTransformVerticesNormalizeCheckBox->setChecked(isPreTransformVerticesNormalizeChecked());
+
+    ui->removeComponentsGroupBox->setChecked(isRemoveComponentsChecked());
+
+    ui->removeComponentsAnimationsCheckBox->setChecked(isRemoveComponentsAnimationsChecked());
+    ui->removeComponentsBiTangentsCheckBox->setChecked(isRemoveComponentsBiTangentsChecked());
+    ui->removeComponentsBoneWeightsCheckBox->setChecked(isRemoveComponentsBoneWeightsChecked());
+    ui->removeComponentsCamerasCheckBox->setChecked(isRemoveComponentsCamerasChecked());
+    ui->removeComponentsColorsCheckBox->setChecked(isRemoveComponentsColorsChecked());
+    ui->removeComponentsLightsCheckBox->setChecked(isRemoveComponentsLightsChecked());
+    ui->removeComponentsMaterialsCheckBox->setChecked(isRemoveComponentsMaterialsChecked());
+    ui->removeComponentsMeshesCheckBox->setChecked(isRemoveComponentsMeshesChecked());
+    ui->removeComponentsNormalsCheckBox->setChecked(isRemoveComponentsNormalsChecked());
+    ui->removeComponentsTexturesCheckBox->setChecked(isRemoveComponentsTexturesChecked());
+    ui->removeComponentsTextureCoordinatesCheckBox->setChecked(isRemoveComponentsTextureCoordinatesChecked());
 }
 
 repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
@@ -143,9 +205,82 @@ void repo::gui::RepoWidgetAssimpFlags::apply()
     settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_SMOOTH,
                       ui->generateNormalsSmoothRadioButton->isChecked());
 
-  //  settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_SMOOTH_CREASE_ANGLE)
+    settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_SMOOTH_CREASE_ANGLE,
+                      ui->generateNormalsSmoothDoubleSpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_IMPROVE_CACHE_LOCALITY,
+                      ui->improveCacheLocalityCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_IMPROVE_CACHE_LOCALITY_VERTEX_CACHE_SIZE,
+                      ui->improveCacheLocalitySpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_JOIN_IDENTICAL_VERTICES,
+                      ui->joinIdenticalVerticesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_LIMIT_BONE_WEIGHTS,
+                      ui->limitBoneWeightsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_LIMIT_BONE_WEIGHTS_MAX_WEIGHTS,
+                      ui->limitBoneWeightsSpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_MAKE_LEFT_HANDED,
+                      ui->makeLeftHandedCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_OPTIMIZE_MESHES,
+                      ui->optimizeMeshesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_UV_COORDINATES,
+                      ui->preTransformUVCoordinatesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_VERTICES,
+                      ui->preTransformVerticesGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_VERTICES_NORMALIZE,
+                      ui->preTransformVerticesNormalizeCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS,
+                      ui->removeComponentsGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_ANIMATIONS,
+                      ui->removeComponentsAnimationsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_BI_TANGENTS,
+                      ui->removeComponentsBiTangentsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_BONE_WEIGHTS,
+                      ui->removeComponentsBoneWeightsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_CAMERAS,
+                      ui->removeComponentsCamerasCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_COLORS,
+                      ui->removeComponentsColorsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_LIGHTS,
+                      ui->removeComponentsLightsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_MATERIALS,
+                      ui->removeComponentsMaterialsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_MESHES,
+                      ui->removeComponentsMeshesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_NORMALS,
+                      ui->removeComponentsNormalsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES,
+                      ui->removeComponentsTexturesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES,
+                      ui->removeComponentsTextureCoordinatesCheckBox->isChecked());
 }
 
+void repo::gui::RepoWidgetAssimpFlags::setCreaseAngleEnabled(bool on)
+{
+    ui->generateNormalsSmoothDoubleSpinBox->setEnabled(
+                on &&
+                ui->generateNormalsSmoothRadioButton->isChecked());
+}
 
 unsigned int repo::gui::RepoWidgetAssimpFlags::getPostProcessingFlags(
         unsigned int flag) const
@@ -188,40 +323,59 @@ unsigned int repo::gui::RepoWidgetAssimpFlags::getPostProcessingFlags(
     if (isGenerateNormalsChecked() && isGenerateNormalsSmoothChecked())
         flag |= aiProcess_GenSmoothNormals;
 
+    // Crease angle
 
-//    if (actionJoin_Identical_Vertices->isChecked())
-//        flag |= aiProcess_JoinIdenticalVertices;
-//    if (actionMake_Left_Handed->isChecked())
-//        flag |= aiProcess_MakeLeftHanded;
+    if (isImproveCacheLocalityChecked())
+        flag |= aiProcess_ImproveCacheLocality;
+
+    // Vertex cache size
+
+    if (isJoinIdenticalVerticesChecked())
+        flag |= aiProcess_JoinIdenticalVertices;
+
+    if (isLimitBoneWeightsChecked())
+        flag |= aiProcess_LimitBoneWeights;
+
+    // Max bone weights
+
+    if (isMakeLeftHandedChecked())
+        flag |= aiProcess_MakeLeftHanded;
+
+    if (isOptimizeMeshesChecked())
+        flag |= aiProcess_OptimizeMeshes;
+
+    if (isPreTransformUVCoordinatesChecked())
+        flag |= aiProcess_TransformUVCoords;
+
+    if (isPreTransformVerticesChecked())
+        flag |= aiProcess_PreTransformVertices;
+
+    // Normalize
+
+    if (isRemoveComponentsChecked())
+        flag |= aiProcess_RemoveComponent;
+
+    // !individual components!
+
+
 //    if (actionTriangulate->isChecked())
 //        flag |= aiProcess_Triangulate;
-//    if (actionRemove_Component->isChecked())
-//        flag |= aiProcess_RemoveComponent;
 //    if (actionGenerate_Normals->isChecked())
 //        flag |= aiProcess_GenNormals;
 //    if (actionGenerate_Smooth_Normals->isChecked())
 //        flag |= aiProcess_GenSmoothNormals;
 //    if (actionSplit_Large_Meshes->isChecked())
 //        flag |= aiProcess_SplitLargeMeshes;
-//    if (actionPre_transform_Vertices->isChecked())
-//        flag |= aiProcess_PreTransformVertices;
 //    if (actionLimit_Bone_Weights->isChecked())
 //        flag |= aiProcess_LimitBoneWeights;
 //    if (actionValidate_Data_Structure->isChecked())
 //        flag |= aiProcess_ValidateDataStructure;
-//    if (actionImprove_Cache_Locality->isChecked())
-//        flag |= aiProcess_ImproveCacheLocality;
 //    if (actionRemove_Redundant_Materials->isChecked())
 //        flag |= aiProcess_RemoveRedundantMaterials;
 //    if (actionSort_by_P_Type->isChecked())
 //        flag |= aiProcess_SortByPType;
 //    if (actionFind_Degenerates->isChecked())
 //        flag |= aiProcess_FindDegenerates;
-
-//    if (actionTransform_UV_Coordinates->isChecked())
-//        flag |= aiProcess_TransformUVCoords;
-//    if (actionFind_Instances->isChecked())
-//        flag |= aiProcess_OptimizeMeshes;
 //    if (actionOptimize_Graph->isChecked())
 //        flag |= aiProcess_OptimizeGraph;
 //    if (actionSplit_by_Bone_Count->isChecked())
