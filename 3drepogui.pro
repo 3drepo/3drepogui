@@ -62,7 +62,8 @@ HEADERS  += src/repogui.h \
             src/primitives/repocomboboxeditor.h \
             src/primitives/repocomboboxdelegate.h \
             src/dialogs/repodialogsettings.h \
-            src/widgets/repowidgetassimpflags.h
+            src/widgets/repowidgetassimpflags.h \
+    src/reposettings.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -96,7 +97,8 @@ SOURCES += src/main.cpp\
            src/primitives/repocomboboxeditor.cpp \
            src/primitives/repocomboboxdelegate.cpp \
            src/dialogs/repodialogsettings.cpp \
-           src/widgets/repowidgetassimpflags.cpp
+           src/widgets/repowidgetassimpflags.cpp \
+    src/reposettings.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

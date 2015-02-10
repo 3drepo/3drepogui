@@ -21,63 +21,6 @@
 
 //------------------------------------------------------------------------------
 
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_CALCULATE_TANGENT_SPACE = "RepoWidgetAssimpFlags/calculateTangentSpace";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_CONVERT_TO_UV_COORDINATES = "RepoWidgetAssimpFlags/convertToUVCoordinates";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_DEGENERATES_TO_POINTS_LINES = "RepoWidgetAssimpFlags/degeneratesToPoinstLines";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_DEBONE = "RepoWidgetAssimpFlags/debone";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_DEBONE_THRESHOLD = "RepoWidgetAssimpFlags/deboneThreshold";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_DEBONE_ONLY_IF_ALL = "RepoWidgetAssimpFlags/deboneOnlyIfAll";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FIND_INSTANCES = "RepoWidgetAssimpFlags/findInstances";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FIND_INAVLID_DATA = "RepoWidgetAssimpFlags/findInvalidData";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FIND_INAVLID_DATA_ANIMATION_ACCURACY = "RepoWidgetAssimpFlags/findInvalidDataAnimationAccuracy";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FIX_INFACING_NORMALS = "RepoWidgetAssimpFlags/fixInfacingNormals";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FLIP_UV_COORDINATES = "RepoWidgetAssimpFlags/flipUVCoordinates";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_FLIP_WINDING_ORDER = "RepoWidgetAssimpFlags/flipWindingOrder";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS = "RepoWidgetAssimpFlags/generateNormals";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_FLAT = "RepoWidgetAssimpFlags/generateNormalsFlat";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_SMOOTH = "RepoWidgetAssimpFlags/generateNormalsSmooth";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_GENERATE_NORMALS_SMOOTH_CREASE_ANGLE = "RepoWidgetAssimpFlags/generateNormalsSmoothCreaseAngle";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_IMPROVE_CACHE_LOCALITY = "RepoWidgetAssimpFlags/improveCacheLocality";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_IMPROVE_CACHE_LOCALITY_VERTEX_CACHE_SIZE = "RepoWidgetAssimpFlags/improveCacheLocalityVertexCacheSize";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_JOIN_IDENTICAL_VERTICES = "RepoWidgetAssimpFlags/joinIdenticalVertices";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_LIMIT_BONE_WEIGHTS = "RepoWidgetAssimpFlags/limitBoneWeights";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_LIMIT_BONE_WEIGHTS_MAX_WEIGHTS = "RepoWidgetAssimpFlags/limitBoneWeightsMaxWeight";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_MAKE_LEFT_HANDED = "RepoWidgetAssimpFlags/makeLeftHanded";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_OPTIMIZE_MESHES = "RepoWidgetAssimpFlags/optimizeMeshes";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_UV_COORDINATES = "RepoWidgetAssimpFlags/preTransformUVCoordinates";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_VERTICES = "RepoWidgetAssimpFlags/preTransformVertices";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_PRE_TRANSFORM_VERTICES_NORMALIZE = "RepoWidgetAssimpFlags/preTransformVerticesNormalize";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS = "RepoWidgetAssimpFlags/removeComponents";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_ANIMATIONS = "RepoWidgetAssimpFlags/removeComponentsAnimations";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_BI_TANGENTS = "RepoWidgetAssimpFlags/removeComponentsBiTangents";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_BONE_WEIGHTS = "RepoWidgetAssimpFlags/removeComponentsBoneWeights";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_CAMERAS = "RepoWidgetAssimpFlags/removeComponentsCameras";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_COLORS = "RepoWidgetAssimpFlags/removeComponentsColors";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_LIGHTS = "RepoWidgetAssimpFlags/removeComponentsLights";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_MATERIALS = "RepoWidgetAssimpFlags/removeComponentsMaterials";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_MESHES = "RepoWidgetAssimpFlags/removeComponentsMeshes";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_NORMALS = "RepoWidgetAssimpFlags/removeComponentsNormals";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES = "RepoWidgetAssimpFlags/removeComponentsTextures";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES = "RepoWidgetAssimpFlags/removeComponentsTextureCoordinates";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS = "RepoWidgetAssimpFlags/removeRedundantMaterials";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP = "RepoWidgetAssimpFlags/removeRedundantMaterialsSkip";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_NODES = "RepoWidgetAssimpFlags/removeRedundantNodes";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP = "RepoWidgetAssimpFlags/removeRedundantNodesSkip";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE = "RepoWidgetAssimpFlags/sortAndRemove";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_POINTS = "RepoWidgetAssimpFlags/sortAndRemovePoints";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_LINES = "RepoWidgetAssimpFlags/sortAndRemoveLines";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES = "RepoWidgetAssimpFlags/sortAndRemoveTriangles";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS = "RepoWidgetAssimpFlags/sortAndRemovePolygons";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_BY_BONE_COUNT = "RepoWidgetAssimpFlags/splitByBoneCount";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES = "RepoWidgetAssimpFlags/splitByBoneCountMaxBones";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES = "RepoWidgetAssimpFlags/splitLargeMeshes";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT = "RepoWidgetAssimpFlags/splitLargeMeshesTriangleLimit";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT = "RepoWidgetAssimpFlags/splitLargeMeshesVertexLimit";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_TRIANGULATE = "RepoWdigetAssimpFlags/triangulate";
-const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_VALIDATE_DATA_STRUCTURES = "RepoWidgetAssimpFlags/validateDataStructures";
-
-//------------------------------------------------------------------------------
-
 repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RepoWidgetAssimpFlags)
@@ -86,113 +29,113 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     //--------------------------------------------------------------------------
 
-    ui->calculateTangentSpaceCheckBox->setChecked(isCalculateTangentSpaceChecked());
+    ui->calculateTangentSpaceCheckBox->setChecked(settings.getCalculateTangentSpace());
 
-    ui->convertToUVCoordinatesCheckBox->setChecked(isConvertToUVCoordinatesChecked());
+    ui->convertToUVCoordinatesCheckBox->setChecked(settings.getConvertToUVCoordinates());
 
-    ui->degeneratesToPointsLinesCheckBox->setChecked(isDegeneratesToPointsLinesChecked());
+    ui->degeneratesToPointsLinesCheckBox->setChecked(settings.getDegeneratesToPointsLines());
 
-    ui->deboneGroupBox->setChecked(isDeboneChecked());
+    ui->deboneGroupBox->setChecked(settings.getDebone());
 
-    ui->deboneThresholdDoubleSpinBox->setValue(getDeboneThreshold());
+    ui->deboneThresholdDoubleSpinBox->setValue(settings.getDeboneThreshold());
 
-    ui->deboneIfAndOnlyIfCheckBox->setChecked(isDeboneOnlyIfAllChecked());
+    ui->deboneIfAndOnlyIfCheckBox->setChecked(settings.getDeboneOnlyIfAll());
 
-    ui->findInstancesCheckBox->setChecked(isFindInstancesChecked());
+    ui->findInstancesCheckBox->setChecked(settings.getFindInstances());
 
-    ui->findInvalidDataGroupBox->setChecked(isFindInvalidDataChecked());
+    ui->findInvalidDataGroupBox->setChecked(settings.getFindInvalidData());
 
-    ui->findInvalidDataAnimationAccuracyDoubleSpinBox->setValue(getFindInvalidDataAnimationAccuracy());
+    ui->findInvalidDataAnimationAccuracyDoubleSpinBox->setValue(settings.getFindInvalidDataAnimationAccuracy());
 
-    ui->fixInfacingNormalsCheckBox->setChecked(isFixInfacingNormalsChecked());
+    ui->fixInfacingNormalsCheckBox->setChecked(settings.getFixInfacingNormals());
 
-    ui->flipUVCoordinatesCheckBox->setChecked(isFlipUVCoordinatesChecked());
+    ui->flipUVCoordinatesCheckBox->setChecked(settings.getFlipUVCoordinates());
 
-    ui->flipWindingOrderCheckBox->setChecked(isFlipWindingOrderChecked());
+    ui->flipWindingOrderCheckBox->setChecked(settings.getFlipWindingOrder());
 
-    ui->generateNormalsGroupBox->setChecked(isGenerateNormalsChecked());
+    ui->generateNormalsGroupBox->setChecked(settings.getGenerateNormals());
 
-    ui->generateNormalsFlatRadioButton->setChecked(isGenerateNormalsFlatChecked());
+    ui->generateNormalsFlatRadioButton->setChecked(settings.getGenerateNormalsFlat());
 
-    ui->generateNormalsSmoothRadioButton->setChecked(isGenerateNormalsSmoothChecked());
+    ui->generateNormalsSmoothRadioButton->setChecked(settings.getGenerateNormalsSmooth());
 
-    ui->generateNormalsSmoothDoubleSpinBox->setValue(getGenerateNormalsSmoothCreaseAngle());
+    ui->generateNormalsSmoothDoubleSpinBox->setValue(settings.getGenerateNormalsSmoothCreaseAngle());
 
-    ui->improveCacheLocalityCheckBox->setChecked(isImproveCacheLocalityChecked());
+    ui->improveCacheLocalityCheckBox->setChecked(settings.getImproveCacheLocality());
 
-    ui->improveCacheLocalitySpinBox->setValue(getImproveCacheLocalityVertexCacheSize());
+    ui->improveCacheLocalitySpinBox->setValue(settings.getImproveCacheLocalityVertexCacheSize());
 
-    ui->joinIdenticalVerticesCheckBox->setChecked(isJoinIdenticalVerticesChecked());
+    ui->joinIdenticalVerticesCheckBox->setChecked(settings.getJoinIdenticalVertices());
 
-    ui->limitBoneWeightsCheckBox->setChecked(isLimitBoneWeightsChecked());
+    ui->limitBoneWeightsCheckBox->setChecked(settings.getLimitBoneWeights());
 
-    ui->limitBoneWeightsSpinBox->setValue(getLimitBoneWeightsMaxWeight());
+    ui->limitBoneWeightsSpinBox->setValue(settings.getLimitBoneWeightsMaxWeight());
 
-    ui->makeLeftHandedCheckBox->setChecked(isMakeLeftHandedChecked());
+    ui->makeLeftHandedCheckBox->setChecked(settings.getMakeLeftHanded());
 
-    ui->optimizeMeshesCheckBox->setChecked(isOptimizeMeshesChecked());
+    ui->optimizeMeshesCheckBox->setChecked(settings.getOptimizeMeshes());
 
-    ui->preTransformUVCoordinatesCheckBox->setChecked(isPreTransformUVCoordinatesChecked());
+    ui->preTransformUVCoordinatesCheckBox->setChecked(settings.getPreTransformUVCoordinates());
 
-    ui->preTransformVerticesGroupBox->setChecked(isPreTransformVerticesChecked());
+    ui->preTransformVerticesGroupBox->setChecked(settings.getPreTransformVertices());
 
-    ui->preTransformVerticesNormalizeCheckBox->setChecked(isPreTransformVerticesNormalizeChecked());
+    ui->preTransformVerticesNormalizeCheckBox->setChecked(settings.getPreTransformVerticesNormalize());
 
-    ui->removeComponentsGroupBox->setChecked(isRemoveComponentsChecked());
+    ui->removeComponentsGroupBox->setChecked(settings.getRemoveComponents());
 
-    ui->removeComponentsAnimationsCheckBox->setChecked(isRemoveComponentsAnimationsChecked());
+    ui->removeComponentsAnimationsCheckBox->setChecked(settings.getRemoveComponentsAnimations());
 
-    ui->removeComponentsBiTangentsCheckBox->setChecked(isRemoveComponentsBiTangentsChecked());
+    ui->removeComponentsBiTangentsCheckBox->setChecked(settings.getRemoveComponentsBiTangents());
 
-    ui->removeComponentsBoneWeightsCheckBox->setChecked(isRemoveComponentsBoneWeightsChecked());
+    ui->removeComponentsBoneWeightsCheckBox->setChecked(settings.getRemoveComponentsBoneWeights());
 
-    ui->removeComponentsCamerasCheckBox->setChecked(isRemoveComponentsCamerasChecked());
+    ui->removeComponentsCamerasCheckBox->setChecked(settings.getRemoveComponentsCameras());
 
-    ui->removeComponentsColorsCheckBox->setChecked(isRemoveComponentsColorsChecked());
+    ui->removeComponentsColorsCheckBox->setChecked(settings.getRemoveComponentsColors());
 
-    ui->removeComponentsLightsCheckBox->setChecked(isRemoveComponentsLightsChecked());
+    ui->removeComponentsLightsCheckBox->setChecked(settings.getRemoveComponentsLights());
 
-    ui->removeComponentsMaterialsCheckBox->setChecked(isRemoveComponentsMaterialsChecked());
+    ui->removeComponentsMaterialsCheckBox->setChecked(settings.getRemoveComponentsMaterials());
 
-    ui->removeComponentsMeshesCheckBox->setChecked(isRemoveComponentsMeshesChecked());
+    ui->removeComponentsMeshesCheckBox->setChecked(settings.getRemoveComponentsMeshes());
 
-    ui->removeComponentsNormalsCheckBox->setChecked(isRemoveComponentsNormalsChecked());
+    ui->removeComponentsNormalsCheckBox->setChecked(settings.getRemoveComponentsNormals());
 
-    ui->removeComponentsTexturesCheckBox->setChecked(isRemoveComponentsTexturesChecked());
+    ui->removeComponentsTexturesCheckBox->setChecked(settings.getRemoveComponentsTextures());
 
-    ui->removeComponentsTextureCoordinatesCheckBox->setChecked(isRemoveComponentsTextureCoordinatesChecked());
+    ui->removeComponentsTextureCoordinatesCheckBox->setChecked(settings.getRemoveComponentsTextureCoordinates());
 
-    ui->removeRedundantMaterialsGroupBox->setChecked(isRemoveRedundantMaterialsChecked());
+    ui->removeRedundantMaterialsGroupBox->setChecked(settings.getRemoveRedundantMaterials());
 
-    ui->removeRedundantMaterialsSkipLineEdit->setText(getRemoveRedundantMaterialsSkip());
+    ui->removeRedundantMaterialsSkipLineEdit->setText(settings.getRemoveRedundantMaterialsSkip());
 
-    ui->removeRedundantNodesGroupBox->setChecked(isRemoveRedundantNodesChecked());
+    ui->removeRedundantNodesGroupBox->setChecked(settings.getRemoveRedundantNodes());
 
-    ui->removeRedundantNodesSkipLineEdit->setText(getRemoveRedundantNodesSkip());
+    ui->removeRedundantNodesSkipLineEdit->setText(settings.getRemoveRedundantNodesSkip());
 
-    ui->sortAndRemoveGroupBox->setChecked(isSortAndRemoveChecked());
+    ui->sortAndRemoveGroupBox->setChecked(settings.getSortAndRemove());
 
-    ui->sortAndRemovePointsCheckBox->setChecked(isSortAndRemovePointsChecked());
+    ui->sortAndRemovePointsCheckBox->setChecked(settings.getSortAndRemovePoints());
 
-    ui->sortAndRemoveLinesCheckBox->setChecked(isSortAndRemoveLinesChecked());
+    ui->sortAndRemoveLinesCheckBox->setChecked(settings.getSortAndRemoveLines());
 
-    ui->sortAndRemoveTrianglesCheckBox->setChecked(isSortAndRemoveTrianglesChecked());
+    ui->sortAndRemoveTrianglesCheckBox->setChecked(settings.getSortAndRemoveTriangles());
 
-    ui->sortAndRemovePolygonsCheckBox->setChecked(isSortAndRemovePolygonsChecked());
+    ui->sortAndRemovePolygonsCheckBox->setChecked(settings.getSortAndRemovePolygons());
 
-    ui->splitByBoneCountCheckBox->setChecked(isSplitByBoneCountChecked());
+    ui->splitByBoneCountCheckBox->setChecked(settings.getSplitByBoneCount());
 
-    ui->splitByBoneCountSpinBox->setValue(getSplitByBoneCountMaxBones());
+    ui->splitByBoneCountSpinBox->setValue(settings.getSplitByBoneCountMaxBones());
 
-    ui->splitLargeMeshesGroupBox->setChecked(isSplitLargeMeshesChecked());
+    ui->splitLargeMeshesGroupBox->setChecked(settings.getSplitLargeMeshes());
 
-    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(getSplitLargeMeshesTriangleLimit());
+    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(settings.getSplitLargeMeshesTriangleLimit());
 
-    ui->splitLargeMeshesVertexLimitSpinBox->setValue(getSplitLargeMeshesVertexLimit());
+    ui->splitLargeMeshesVertexLimitSpinBox->setValue(settings.getSplitLargeMeshesVertexLimit());
 
-    ui->triangulateCheckBox->setChecked(isTriangulateChecked());
+    ui->triangulateCheckBox->setChecked(settings.getTriangulate());
 
-    ui->validateDataStructuresCheckBox->setChecked(isValidateDataStructuresChecked());
+    ui->validateDataStructuresCheckBox->setChecked(settings.getValidateDataStructures());
 
     //--------------------------------------------------------------------------
 
@@ -219,166 +162,149 @@ repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
 
 void repo::gui::RepoWidgetAssimpFlags::apply()
 {
-    settings.setValue(REPO_SETTINGS_CALCULATE_TANGENT_SPACE,
-                      ui->calculateTangentSpaceCheckBox->isChecked());
+    settings.setCalculateTangentSpace(ui->calculateTangentSpaceCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_CONVERT_TO_UV_COORDINATES,
-                      ui->convertToUVCoordinatesCheckBox->isChecked());
+    settings.setConvertToUVCoordinates(ui->convertToUVCoordinatesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_DEGENERATES_TO_POINTS_LINES,
-                      ui->degeneratesToPointsLinesCheckBox->isChecked());
+    settings.setDegeneratesToPointsLines(ui->degeneratesToPointsLinesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_DEBONE,
-                      ui->deboneGroupBox->isChecked());
+    settings.setDebone(ui->deboneGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_DEBONE_THRESHOLD,
-                      ui->deboneThresholdDoubleSpinBox->value());
+    settings.setDeboneThreshold(ui->deboneThresholdDoubleSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_DEBONE_ONLY_IF_ALL,
-                      ui->deboneIfAndOnlyIfCheckBox->isChecked());
+    settings.setDeboneOnlyIfAll(ui->deboneIfAndOnlyIfCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_FIND_INSTANCES,
-                      ui->findInstancesCheckBox->isChecked());
+    settings.setFindInstances(ui->findInstancesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_FIND_INAVLID_DATA,
-                      ui->findInvalidDataGroupBox->isChecked());
+    settings.setFindInvalidData(ui->findInvalidDataGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_FIND_INAVLID_DATA_ANIMATION_ACCURACY,
+    settings.setFindInvalidDataAnimationAccuracy(
                       ui->findInvalidDataAnimationAccuracyDoubleSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_FIX_INFACING_NORMALS,
-                      ui->fixInfacingNormalsCheckBox->isChecked());
+    settings.setFixInfacingNormals(ui->fixInfacingNormalsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_FLIP_UV_COORDINATES,
-                      ui->flipUVCoordinatesCheckBox->isChecked());
+    settings.setFlipUVCoordinates(ui->flipUVCoordinatesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_FLIP_WINDING_ORDER,
-                      ui->flipWindingOrderCheckBox->isChecked());
+    settings.setFlipWindingOrder(ui->flipWindingOrderCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_GENERATE_NORMALS,
-                      ui->generateNormalsGroupBox->isChecked());
+    settings.setGenerateNormals(ui->generateNormalsGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_FLAT,
-                      ui->generateNormalsFlatRadioButton->isChecked());
+    settings.setGenerateNormalsFlat(ui->generateNormalsFlatRadioButton->isChecked());
 
-    settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_SMOOTH,
-                      ui->generateNormalsSmoothRadioButton->isChecked());
+    settings.setGenerateNormalsSmooth(ui->generateNormalsSmoothRadioButton->isChecked());
 
-    settings.setValue(REPO_SETTINGS_GENERATE_NORMALS_SMOOTH_CREASE_ANGLE,
+    settings.setGenerateNormalsSmoothCreaseAngle(
                       ui->generateNormalsSmoothDoubleSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_IMPROVE_CACHE_LOCALITY,
-                      ui->improveCacheLocalityCheckBox->isChecked());
+    settings.setImproveCacheLocality(ui->improveCacheLocalityCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_IMPROVE_CACHE_LOCALITY_VERTEX_CACHE_SIZE,
+    settings.setImproveCacheLocalityCacheSize(
                       ui->improveCacheLocalitySpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_JOIN_IDENTICAL_VERTICES,
-                      ui->joinIdenticalVerticesCheckBox->isChecked());
+    settings.setJoinIdenticalVertices(ui->joinIdenticalVerticesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_LIMIT_BONE_WEIGHTS,
+    settings.setLimitBoneWeights(
                       ui->limitBoneWeightsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_LIMIT_BONE_WEIGHTS_MAX_WEIGHTS,
+    settings.setLimitBoneWeightsMaxWeights(
                       ui->limitBoneWeightsSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_MAKE_LEFT_HANDED,
+    settings.setMakeLeftHanded(
                       ui->makeLeftHandedCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_OPTIMIZE_MESHES,
+    settings.setOptimizeMeshes(
                       ui->optimizeMeshesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_UV_COORDINATES,
+    settings.setPreTransformUVCoordinates(
                       ui->preTransformUVCoordinatesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_VERTICES,
+    settings.setPreTransformVertices(
                       ui->preTransformVerticesGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_PRE_TRANSFORM_VERTICES_NORMALIZE,
+    settings.setPreTransforVerticesNormalize(
                       ui->preTransformVerticesNormalizeCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS,
+    settings.setRemoveComponents(
                       ui->removeComponentsGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_ANIMATIONS,
+    settings.setRemoveComponentsAnimations(
                       ui->removeComponentsAnimationsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_BI_TANGENTS,
+    settings.setRemoveComponentsBiTangents(
                       ui->removeComponentsBiTangentsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_BONE_WEIGHTS,
+    settings.setRemoveComponentsBoneWeights(
                       ui->removeComponentsBoneWeightsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_CAMERAS,
+    settings.setRemoveComponentsCameras(
                       ui->removeComponentsCamerasCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_COLORS,
+    settings.setRemoveComponentsColors(
                       ui->removeComponentsColorsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_LIGHTS,
+    settings.setRemoveComponentsLights(
                       ui->removeComponentsLightsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_MATERIALS,
+    settings.setRemoveComponentsMaterials(
                       ui->removeComponentsMaterialsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_MESHES,
+    settings.setRemoveComponentsMeshes(
                       ui->removeComponentsMeshesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_NORMALS,
+    settings.setRemoveComponentsNormals(
                       ui->removeComponentsNormalsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES,
-                      ui->removeComponentsTexturesCheckBox->isChecked());
-
-    settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES,
+    settings.setRemoveComponentsTextureCoordinates(
                       ui->removeComponentsTextureCoordinatesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS,
+    settings.setRemoveComponentsTextures(
+                      ui->removeComponentsTexturesCheckBox->isChecked());
+
+    settings.setRemoveRedundantMaterials(
                       ui->removeRedundantMaterialsGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP,
+    settings.setRemoveRedundantMaterialsSkip(
                       ui->removeRedundantMaterialsSkipLineEdit->text());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_NODES,
+    settings.setRemoveRedundantNodes(
                       ui->removeRedundantNodesGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP,
+    settings.setRemoveRedundantNodesSkip(
                       ui->removeRedundantNodesSkipLineEdit->text());
 
-    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE,
+    settings.setSortAndRemove(
                       ui->sortAndRemoveGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_POINTS,
-                      ui->sortAndRemovePointsCheckBox->isChecked());
-
-    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_LINES,
+    settings.setSortAndRemoveLines(
                       ui->sortAndRemoveLinesCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES,
-                      ui->sortAndRemoveTrianglesCheckBox->isChecked());
+    settings.setSortAndRemovePoints(
+                      ui->sortAndRemovePointsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS,
+    settings.setSortAndRemovePolygons(
                       ui->sortAndRemovePolygonsCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES,
+    settings.setSortAndRemoveTriangles(
+                      ui->sortAndRemoveTrianglesCheckBox->isChecked());
+
+    settings.setSplitLargeMeshes(
                       ui->splitLargeMeshesGroupBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT,
+    settings.setSplitLargeMeshesTriangleLimit(
                        ui->splitLargeMeshesTriangleLimitSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT,
+    settings.setSplitLargeMeshesVertexLimit(
                        ui->splitLargeMeshesVertexLimitSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_SPLIT_BY_BONE_COUNT,
+    settings.setSplitByBoneCount(
                       ui->splitByBoneCountCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES,
+    settings.setSplitByBoneCountMaxBones(
                       ui->splitByBoneCountSpinBox->value());
 
-    settings.setValue(REPO_SETTINGS_TRIANGULATE,
-                      ui->triangulateCheckBox->isChecked());
+    settings.setTriangulate(ui->triangulateCheckBox->isChecked());
 
-    settings.setValue(REPO_SETTINGS_VALIDATE_DATA_STRUCTURES,
+    settings.setValidateDataStructures(
                       ui->validateDataStructuresCheckBox->isChecked());
 }
 
@@ -389,112 +315,3 @@ void repo::gui::RepoWidgetAssimpFlags::setCreaseAngleEnabled(bool on)
                 ui->generateNormalsSmoothRadioButton->isChecked());
 }
 
-unsigned int repo::gui::RepoWidgetAssimpFlags::getPostProcessingFlags(
-        unsigned int flag) const
-{
-    if (isCalculateTangentSpaceChecked())
-        flag |= aiProcess_CalcTangentSpace;
-
-    if (isConvertToUVCoordinatesChecked())
-        flag |= aiProcess_GenUVCoords;
-
-    if (isDegeneratesToPointsLinesChecked())
-        flag |= aiProcess_FindDegenerates;
-
-    if (isDeboneChecked())
-        flag |= aiProcess_Debone;
-
-    // Debone threshold
-    // Debone only if all
-
-    if (isFindInstancesChecked())
-        flag |= aiProcess_FindInstances;
-
-    if (isFindInvalidDataChecked())
-        flag |= aiProcess_FindInvalidData;
-
-    // Animation accuracy
-
-    if (isFixInfacingNormalsChecked())
-        flag |= aiProcess_FixInfacingNormals;
-
-    if (isFlipUVCoordinatesChecked())
-        flag |= aiProcess_FlipUVs;
-
-    if (isFlipWindingOrderChecked())
-        flag |= aiProcess_FlipWindingOrder;
-
-    if (isGenerateNormalsChecked() && isGenerateNormalsFlatChecked())
-        flag |= aiProcess_GenNormals;
-
-    if (isGenerateNormalsChecked() && isGenerateNormalsSmoothChecked())
-        flag |= aiProcess_GenSmoothNormals;
-
-    // Crease angle
-
-    if (isImproveCacheLocalityChecked())
-        flag |= aiProcess_ImproveCacheLocality;
-
-    // Vertex cache size
-
-    if (isJoinIdenticalVerticesChecked())
-        flag |= aiProcess_JoinIdenticalVertices;
-
-    if (isLimitBoneWeightsChecked())
-        flag |= aiProcess_LimitBoneWeights;
-
-    // Max bone weights
-
-    if (isMakeLeftHandedChecked())
-        flag |= aiProcess_MakeLeftHanded;
-
-    if (isOptimizeMeshesChecked())
-        flag |= aiProcess_OptimizeMeshes;
-
-    if (isPreTransformUVCoordinatesChecked())
-        flag |= aiProcess_TransformUVCoords;
-
-    if (isPreTransformVerticesChecked())
-        flag |= aiProcess_PreTransformVertices;
-
-    // Normalize
-
-    if (isRemoveComponentsChecked())
-        flag |= aiProcess_RemoveComponent;
-
-    // !individual components!
-
-    if (isRemoveRedundantMaterialsChecked())
-        flag |= aiProcess_RemoveRedundantMaterials;
-
-    // Skip materials
-
-    if (isRemoveRedundantNodesChecked())
-        flag |= aiProcess_OptimizeGraph;
-
-    // Skip nodes
-
-    if (isSortAndRemoveChecked())
-        flag |= aiProcess_SortByPType;
-
-    // Remove types
-
-    if (isSplitByBoneCountChecked())
-        flag |= aiProcess_SplitByBoneCount;
-
-    // Max bones
-
-    if (isSplitLargeMeshesChecked())
-        flag |= aiProcess_SplitLargeMeshes;
-
-    // Vertex limit
-    // Triangle limit
-
-    if (isTriangulateChecked())
-        flag |= aiProcess_Triangulate;
-
-    if (isValidateDataStructuresChecked())
-        flag |= aiProcess_ValidateDataStructure;
-
-    return flag;
-}

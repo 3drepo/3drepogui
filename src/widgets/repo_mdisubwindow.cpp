@@ -80,7 +80,8 @@ void repo::gui::RepoMdiSubWindow::setWidgetFromFile(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath);
+    // Assimp flags is a memory leak TODO: fixme!
+    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, new RepoWidgetAssimpFlags());
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)), 
 		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));

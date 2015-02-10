@@ -23,6 +23,7 @@
 #include "repo_worker_abstract.h"
 #include "../conversion/repo_transcoder_assimp.h"
 #include "../widgets/repowidgetassimpflags.h"
+#include "../reposettings.h"
 //-----------------------------------------------------------------------------
 #include "assimpwrapper.h"
 #include "graph/repo_graph_scene.h"
@@ -49,7 +50,8 @@ public :
 	 *
 	 * \sa ~RepoWorkerAssimp(), process()
 	 */
-    RepoWorkerAssimp(const QString& fullPath);
+    RepoWorkerAssimp(const QString& fullPath,
+                     const RepoWidgetAssimpFlags *assimpFlagsWidget);
 
 	//! Default empty destructor.
 	~RepoWorkerAssimp();
@@ -84,8 +86,9 @@ private :
 	//! Full canonical path of the 3D file to be loaded.
 	const QString fullPath;
 
-	//! Assimp loading flags.
-    const RepoWidgetAssimpFlags assimpFlagsWidget;
+    const RepoWidgetAssimpFlags* assimpFlagsWidget;
+
+    RepoSettings settings;
  
 }; // end class
 

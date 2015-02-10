@@ -23,11 +23,11 @@
 #include <fstream>
 //------------------------------------------------------------------------------
 
-repo::gui::RepoWorkerAssimp::RepoWorkerAssimp(
-    const QString & fullPath)
+repo::gui::RepoWorkerAssimp::RepoWorkerAssimp(const QString & fullPath,
+                                              const RepoWidgetAssimpFlags* assimpFlagsWidget)
 : fullPath(fullPath)
-, RepoWorkerAbstract()
-{}
+, assimpFlagsWidget(assimpFlagsWidget)
+, RepoWorkerAbstract() {}
 
 repo::gui::RepoWorkerAssimp::~RepoWorkerAssimp() {}
 
@@ -181,13 +181,13 @@ void repo::gui::RepoWorkerAssimp::run()
 	assimpWrapper.importModel(
 		fileName, 
 		fullPath.toStdString(), 
-        assimpFlagsWidget.getPostProcessingFlags(),
-        assimpFlagsWidget.getSplitLargeMeshesTriangleLimit(),
-        assimpFlagsWidget.getSplitLargeMeshesVertexLimit(),
-        assimpFlagsWidget.isSortAndRemovePointsChecked(),
-        assimpFlagsWidget.isSortAndRemoveLinesChecked(),
-        assimpFlagsWidget.isSortAndRemoveTrianglesChecked(),
-        assimpFlagsWidget.isSortAndRemovePolygonsChecked());
+        settings.getAssimpPostProcessingFlags(),
+        settings.getSplitLargeMeshesTriangleLimit(),
+        settings.getSplitLargeMeshesVertexLimit(),
+        settings.getSortAndRemovePoints(),
+        settings.getSortAndRemoveLines(),
+        settings.getSortAndRemoveTriangles(),
+        settings.getSortAndRemovePolygons());
     const aiScene *assimpScene = assimpWrapper.getScene();
 	emit progress(1, jobsCount);
 	
