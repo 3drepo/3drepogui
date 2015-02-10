@@ -72,16 +72,16 @@ public :
 	//
     //--------------------------------------------------------------------------
 
-	void setWidget(const QString& windowTitle);
+    void setWidget(const QString& windowTitle);
 	
 	//! Asynchronously loads 3D file into a RepoGCLWidget.
 	/*!
 	 * Loads a 3D file from the given file path using Assimp via a separate
-	 * thread. During the duration of loading a progress bar is visible
-	 * counting the progress of individual processes and format conversions
+     * thread. During the loading a progress bar is visible counting the
+     * progress of individual processes and format conversions
 	 * from Assimp aiScene to GLC_World and RepoGraphScene.
 	 */
-	void setWidget(const QString& fullFilePath, const unsigned int pFlags);
+    void setWidgetFromFile(const QString& fullFilePath);
 
 	/*!
 	 * Sets the widget as the internal widget of this subwindow. The internal 

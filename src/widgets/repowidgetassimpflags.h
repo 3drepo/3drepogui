@@ -101,6 +101,47 @@ public :
     { return settings.value(REPO_SETTINGS_LIMIT_BONE_WEIGHTS_MAX_WEIGHTS,
                     AI_LMW_MAX_WEIGHTS).toInt(); }
 
+    /*!
+     * Returns a space-separated string of materials names to be skipped set in
+     * settings. Defaults to empty string.
+     */
+    QString getRemoveRedundantMaterialsSkip() const
+    { return settings.value(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP,
+                           "").toString(); }
+
+    /*!
+     * Returns a space-separated string of node names to be skipped set in
+     * settings. Defaults to empty string.
+     */
+    QString getRemoveRedundantNodesSkip() const
+    { return settings.value(REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP,
+                            "").toString(); }
+
+    /*!
+     * Returns a split by bones count max bones set in settings. Defaults to
+     * AI_SBBC_DEFAULT_MAX_BONES = 60.
+     */
+    int getSplitByBoneCountMaxBones() const
+    { return settings.value(REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES,
+                            AI_SBBC_DEFAULT_MAX_BONES).toInt(); }
+
+    /*!
+     * Returns a split large meshes triangle limit set in settings. Defaults to
+     * AI_SLM_DEFAULT_MAX_TRIANGLES = 1,000,000.
+     */
+    int getSplitLargeMeshesTriangleLimit() const
+    { return settings.value(REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT,
+                            AI_SLM_DEFAULT_MAX_TRIANGLES).toInt(); }
+
+    /*!
+     * Returns a split large meshes triangle limit set in settings. Defaults to
+     * AI_SLM_DEFAULT_MAX_VERTICES = 1,000,000.
+     */
+    int getSplitLargeMeshesVertexLimit() const
+    { return settings.value(REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT,
+                            AI_SLM_DEFAULT_MAX_VERTICES).toInt(); }
+
+
     //--------------------------------------------------------------------------
 
     /*!
@@ -337,6 +378,84 @@ public :
     bool isRemoveComponentsTextureCoordinatesChecked() const
     { return settings.value(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES, false).toBool(); }
 
+    /*!
+     * Returns true if remove redundant materials is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isRemoveRedundantMaterialsChecked() const
+    { return settings.value(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS, false).toBool(); }
+
+    /*!
+     * Returns true if remove redundant nodes is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isRemoveRedundantNodesChecked() const
+    { return settings.value(REPO_SETTINGS_REMOVE_REDUNDANT_NODES, false).toBool(); }
+
+    /*!
+     * Returns ture if sort and remove is checked in settings, false otherwise.
+     * Defaults to false.
+     */
+    bool isSortAndRemoveChecked() const
+    { return settings.value(REPO_SETTINGS_SORT_AND_REMOVE, false).toBool(); }
+
+    /*!
+     * Returns true if sort and remove points is checked in settings, false
+     * otherwise. Defaults to true.
+     */
+    bool isSortAndRemovePointsChecked() const
+    { return settings.value(REPO_SETTINGS_SORT_AND_REMOVE_POINTS, true).toBool(); }
+
+    /*!
+     * Returns true if sort and remove lines is checked in settings, false
+     * otherwise. Defaults to true.
+     */
+    bool isSortAndRemoveLinesChecked() const
+    { return settings.value(REPO_SETTINGS_SORT_AND_REMOVE_LINES, true).toBool(); }
+
+    /*!
+     * Returns true if sort and remove triangles is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isSortAndRemoveTrianglesChecked() const
+    { return settings.value(REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES, false).toBool(); }
+
+    /*!
+     * Returns true if sort and remove points is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isSortAndRemovePolygonsChecked() const
+    { return settings.value(REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS, false).toBool(); }
+
+
+    /*!
+     * Returns true if split by bone count is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isSplitByBoneCountChecked() const
+    { return settings.value(REPO_SETTINGS_SPLIT_BY_BONE_COUNT, false).toBool(); }
+
+    /*!
+     * Returns true if split large meshes is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isSplitLargeMeshesChecked() const
+    { return settings.value(REPO_SETTINGS_SPLIT_LARGE_MESHES, false).toBool(); }
+
+    /*!
+     * Returns true if triangulate is checked in settings, false otherwise.
+     * Defaults to true.
+     */
+    bool isTriangulateChecked() const
+    { return settings.value(REPO_SETTINGS_TRIANGULATE, true).toBool(); }
+
+    /*!
+     * Returns true if validate data structures is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool isValidateDataStructuresChecked() const
+    { return settings.value(REPO_SETTINGS_VALIDATE_DATA_STRUCTURES, false).toBool(); }
+
 public :
 
     static const QString REPO_SETTINGS_CALCULATE_TANGENT_SPACE;
@@ -414,6 +533,38 @@ public :
     static const QString REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES;
 
     static const QString REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES;
+
+    static const QString REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS;
+
+    static const QString REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP;
+
+    static const QString REPO_SETTINGS_REMOVE_REDUNDANT_NODES;
+
+    static const QString REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP;
+
+    static const QString REPO_SETTINGS_SORT_AND_REMOVE;
+
+    static const QString REPO_SETTINGS_SORT_AND_REMOVE_POINTS;
+
+    static const QString REPO_SETTINGS_SORT_AND_REMOVE_LINES;
+
+    static const QString REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES;
+
+    static const QString REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS;
+
+    static const QString REPO_SETTINGS_SPLIT_BY_BONE_COUNT;
+
+    static const QString REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES;
+
+    static const QString REPO_SETTINGS_SPLIT_LARGE_MESHES;
+
+    static const QString REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT;
+
+    static const QString REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT;
+
+    static const QString REPO_SETTINGS_TRIANGULATE;
+
+    static const QString REPO_SETTINGS_VALIDATE_DATA_STRUCTURES;
 
 private:
 

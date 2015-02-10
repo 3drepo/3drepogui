@@ -446,8 +446,7 @@ void repo::gui::RepoGUI::loadFile(const QString &filePath)
         string fileName = pathInfo.fileName().toStdString();
         std::cout << "Loading " << fileName << " ..." << std::endl;
 
-        // TODO: get assimp post processing flags from settings dialog box.
-        ui->mdiArea->addSubWindow(filePath, RepoWidgetAssimpFlags().getPostProcessingFlags());
+        ui->mdiArea->addSubWindow(filePath);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
 }

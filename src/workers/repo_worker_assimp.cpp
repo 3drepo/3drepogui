@@ -24,11 +24,10 @@
 //------------------------------------------------------------------------------
 
 repo::gui::RepoWorkerAssimp::RepoWorkerAssimp(
-	const QString & fullPath, 
-	const unsigned int & pFlags) 
+    const QString & fullPath)
 : fullPath(fullPath)
-, pFlags(pFlags)
-, RepoWorkerAbstract() {}
+, RepoWorkerAbstract()
+{}
 
 repo::gui::RepoWorkerAssimp::~RepoWorkerAssimp() {}
 
@@ -182,7 +181,13 @@ void repo::gui::RepoWorkerAssimp::run()
 	assimpWrapper.importModel(
 		fileName, 
 		fullPath.toStdString(), 
-		pFlags);
+        assimpFlagsWidget.getPostProcessingFlags(),
+        assimpFlagsWidget.getSplitLargeMeshesTriangleLimit(),
+        assimpFlagsWidget.getSplitLargeMeshesVertexLimit(),
+        assimpFlagsWidget.isSortAndRemovePointsChecked(),
+        assimpFlagsWidget.isSortAndRemoveLinesChecked(),
+        assimpFlagsWidget.isSortAndRemoveTrianglesChecked(),
+        assimpFlagsWidget.isSortAndRemovePolygonsChecked());
     const aiScene *assimpScene = assimpWrapper.getScene();
 	emit progress(1, jobsCount);
 	

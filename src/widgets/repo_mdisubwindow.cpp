@@ -73,15 +73,14 @@ void repo::gui::RepoMdiSubWindow::setWidget(const QString& windowTitle)
     setWindowIcon(this->widget()->windowIcon());
 }
 
-void repo::gui::RepoMdiSubWindow::setWidget(
-	const QString& filePath,
-	const unsigned int pFlags)
+void repo::gui::RepoMdiSubWindow::setWidgetFromFile(
+    const QString& filePath)
 {
     setWidget(new RepoGLCWidget(this, RepoWorkerAssimp::getFileName(filePath)));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, pFlags);
+    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath);
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)), 
 		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));

@@ -68,20 +68,20 @@ public :
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * using Assimp library from the given full file path.
 	 */
-    RepoMdiSubWindow *addSubWindow(const QString&, const unsigned int pFlags = 0);
+    RepoMdiSubWindow* addSubWindow(const QString&);
 
 	/*!
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * from the database given a database.
 	 */
-    RepoMdiSubWindow *addSubWindow(
+    RepoMdiSubWindow* addSubWindow(
 		const repo::core::MongoClientWrapper& mongo,
 		const QString& database,
 		const QUuid& id = QUuid(),
 		bool headRevision = true);
 
 	//! Adds a RepoGLCWidget subWindow.
-    RepoMdiSubWindow *addSubWindow(RepoGLCWidget *widget);
+    RepoMdiSubWindow* addSubWindow(RepoGLCWidget *widget);
 
 	/*!
 	 * Adds widget as a new subwindow to the MDI area. If windowFlags are 

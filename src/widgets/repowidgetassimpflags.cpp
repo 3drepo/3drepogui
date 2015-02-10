@@ -19,8 +19,7 @@
 #include "repowidgetassimpflags.h"
 #include "ui_repowidgetassimpflags.h"
 
-
-
+//------------------------------------------------------------------------------
 
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_CALCULATE_TANGENT_SPACE = "RepoWidgetAssimpFlags/calculateTangentSpace";
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_CONVERT_TO_UV_COORDINATES = "RepoWidgetAssimpFlags/convertToUVCoordinates";
@@ -60,29 +59,30 @@ const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_NORMALS = "RepoWidgetAssimpFlags/removeComponentsNormals";
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURES = "RepoWidgetAssimpFlags/removeComponentsTextures";
 const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES = "RepoWidgetAssimpFlags/removeComponentsTextureCoordinates";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS = "RepoWidgetAssimpFlags/removeRedundantMaterials";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP = "RepoWidgetAssimpFlags/removeRedundantMaterialsSkip";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_NODES = "RepoWidgetAssimpFlags/removeRedundantNodes";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP = "RepoWidgetAssimpFlags/removeRedundantNodesSkip";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE = "RepoWidgetAssimpFlags/sortAndRemove";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_POINTS = "RepoWidgetAssimpFlags/sortAndRemovePoints";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_LINES = "RepoWidgetAssimpFlags/sortAndRemoveLines";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES = "RepoWidgetAssimpFlags/sortAndRemoveTriangles";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS = "RepoWidgetAssimpFlags/sortAndRemovePolygons";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_BY_BONE_COUNT = "RepoWidgetAssimpFlags/splitByBoneCount";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES = "RepoWidgetAssimpFlags/splitByBoneCountMaxBones";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES = "RepoWidgetAssimpFlags/splitLargeMeshes";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT = "RepoWidgetAssimpFlags/splitLargeMeshesTriangleLimit";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT = "RepoWidgetAssimpFlags/splitLargeMeshesVertexLimit";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_TRIANGULATE = "RepoWdigetAssimpFlags/triangulate";
+const QString repo::gui::RepoWidgetAssimpFlags::REPO_SETTINGS_VALIDATE_DATA_STRUCTURES = "RepoWidgetAssimpFlags/validateDataStructures";
+
+//------------------------------------------------------------------------------
 
 repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RepoWidgetAssimpFlags)
 {
     ui->setupUi(this);
-
-    //--------------------------------------------------------------------------
-
-    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
-                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
-                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
-                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
-                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
-                     this, SLOT(setCreaseAngleEnabled(bool)));
 
     //--------------------------------------------------------------------------
 
@@ -141,16 +141,75 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     ui->removeComponentsGroupBox->setChecked(isRemoveComponentsChecked());
 
     ui->removeComponentsAnimationsCheckBox->setChecked(isRemoveComponentsAnimationsChecked());
+
     ui->removeComponentsBiTangentsCheckBox->setChecked(isRemoveComponentsBiTangentsChecked());
+
     ui->removeComponentsBoneWeightsCheckBox->setChecked(isRemoveComponentsBoneWeightsChecked());
+
     ui->removeComponentsCamerasCheckBox->setChecked(isRemoveComponentsCamerasChecked());
+
     ui->removeComponentsColorsCheckBox->setChecked(isRemoveComponentsColorsChecked());
+
     ui->removeComponentsLightsCheckBox->setChecked(isRemoveComponentsLightsChecked());
+
     ui->removeComponentsMaterialsCheckBox->setChecked(isRemoveComponentsMaterialsChecked());
+
     ui->removeComponentsMeshesCheckBox->setChecked(isRemoveComponentsMeshesChecked());
+
     ui->removeComponentsNormalsCheckBox->setChecked(isRemoveComponentsNormalsChecked());
+
     ui->removeComponentsTexturesCheckBox->setChecked(isRemoveComponentsTexturesChecked());
+
     ui->removeComponentsTextureCoordinatesCheckBox->setChecked(isRemoveComponentsTextureCoordinatesChecked());
+
+    ui->removeRedundantMaterialsGroupBox->setChecked(isRemoveRedundantMaterialsChecked());
+
+    ui->removeRedundantMaterialsSkipLineEdit->setText(getRemoveRedundantMaterialsSkip());
+
+    ui->removeRedundantNodesGroupBox->setChecked(isRemoveRedundantNodesChecked());
+
+    ui->removeRedundantNodesSkipLineEdit->setText(getRemoveRedundantNodesSkip());
+
+    ui->sortAndRemoveGroupBox->setChecked(isSortAndRemoveChecked());
+
+    ui->sortAndRemovePointsCheckBox->setChecked(isSortAndRemovePointsChecked());
+
+    ui->sortAndRemoveLinesCheckBox->setChecked(isSortAndRemoveLinesChecked());
+
+    ui->sortAndRemoveTrianglesCheckBox->setChecked(isSortAndRemoveTrianglesChecked());
+
+    ui->sortAndRemovePolygonsCheckBox->setChecked(isSortAndRemovePolygonsChecked());
+
+    ui->splitByBoneCountCheckBox->setChecked(isSplitByBoneCountChecked());
+
+    ui->splitByBoneCountSpinBox->setValue(getSplitByBoneCountMaxBones());
+
+    ui->splitLargeMeshesGroupBox->setChecked(isSplitLargeMeshesChecked());
+
+    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(getSplitLargeMeshesTriangleLimit());
+
+    ui->splitLargeMeshesVertexLimitSpinBox->setValue(getSplitLargeMeshesVertexLimit());
+
+    ui->triangulateCheckBox->setChecked(isTriangulateChecked());
+
+    ui->validateDataStructuresCheckBox->setChecked(isValidateDataStructuresChecked());
+
+    //--------------------------------------------------------------------------
+
+    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
+                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
+                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
+                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
+                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
+                     this, SLOT(setCreaseAngleEnabled(bool)));
 }
 
 repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
@@ -273,6 +332,54 @@ void repo::gui::RepoWidgetAssimpFlags::apply()
 
     settings.setValue(REPO_SETTINGS_REMOVE_COMPONENTS_TEXTURE_COORDINATES,
                       ui->removeComponentsTextureCoordinatesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS,
+                      ui->removeRedundantMaterialsGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_MATERIALS_SKIP,
+                      ui->removeRedundantMaterialsSkipLineEdit->text());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_NODES,
+                      ui->removeRedundantNodesGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_REMOVE_REDUNDANT_NODES_SKIP,
+                      ui->removeRedundantNodesSkipLineEdit->text());
+
+    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE,
+                      ui->sortAndRemoveGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_POINTS,
+                      ui->sortAndRemovePointsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_LINES,
+                      ui->sortAndRemoveLinesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_TRIANGLES,
+                      ui->sortAndRemoveTrianglesCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SORT_AND_REMOVE_POLYGONS,
+                      ui->sortAndRemovePolygonsCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES,
+                      ui->splitLargeMeshesGroupBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES_TRIANGLE_LIMIT,
+                       ui->splitLargeMeshesTriangleLimitSpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_SPLIT_LARGE_MESHES_VERTEX_LIMIT,
+                       ui->splitLargeMeshesVertexLimitSpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_SPLIT_BY_BONE_COUNT,
+                      ui->splitByBoneCountCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_SPLIT_BY_BONE_COUNT_MAX_BONES,
+                      ui->splitByBoneCountSpinBox->value());
+
+    settings.setValue(REPO_SETTINGS_TRIANGULATE,
+                      ui->triangulateCheckBox->isChecked());
+
+    settings.setValue(REPO_SETTINGS_VALIDATE_DATA_STRUCTURES,
+                      ui->validateDataStructuresCheckBox->isChecked());
 }
 
 void repo::gui::RepoWidgetAssimpFlags::setCreaseAngleEnabled(bool on)
@@ -357,29 +464,37 @@ unsigned int repo::gui::RepoWidgetAssimpFlags::getPostProcessingFlags(
 
     // !individual components!
 
+    if (isRemoveRedundantMaterialsChecked())
+        flag |= aiProcess_RemoveRedundantMaterials;
 
-//    if (actionTriangulate->isChecked())
-//        flag |= aiProcess_Triangulate;
-//    if (actionGenerate_Normals->isChecked())
-//        flag |= aiProcess_GenNormals;
-//    if (actionGenerate_Smooth_Normals->isChecked())
-//        flag |= aiProcess_GenSmoothNormals;
-//    if (actionSplit_Large_Meshes->isChecked())
-//        flag |= aiProcess_SplitLargeMeshes;
-//    if (actionLimit_Bone_Weights->isChecked())
-//        flag |= aiProcess_LimitBoneWeights;
-//    if (actionValidate_Data_Structure->isChecked())
-//        flag |= aiProcess_ValidateDataStructure;
-//    if (actionRemove_Redundant_Materials->isChecked())
-//        flag |= aiProcess_RemoveRedundantMaterials;
-//    if (actionSort_by_P_Type->isChecked())
-//        flag |= aiProcess_SortByPType;
-//    if (actionFind_Degenerates->isChecked())
-//        flag |= aiProcess_FindDegenerates;
-//    if (actionOptimize_Graph->isChecked())
-//        flag |= aiProcess_OptimizeGraph;
-//    if (actionSplit_by_Bone_Count->isChecked())
-//        flag |= aiProcess_SplitByBoneCount;
+    // Skip materials
+
+    if (isRemoveRedundantNodesChecked())
+        flag |= aiProcess_OptimizeGraph;
+
+    // Skip nodes
+
+    if (isSortAndRemoveChecked())
+        flag |= aiProcess_SortByPType;
+
+    // Remove types
+
+    if (isSplitByBoneCountChecked())
+        flag |= aiProcess_SplitByBoneCount;
+
+    // Max bones
+
+    if (isSplitLargeMeshesChecked())
+        flag |= aiProcess_SplitLargeMeshes;
+
+    // Vertex limit
+    // Triangle limit
+
+    if (isTriangulateChecked())
+        flag |= aiProcess_Triangulate;
+
+    if (isValidateDataStructuresChecked())
+        flag |= aiProcess_ValidateDataStructure;
 
     return flag;
 }

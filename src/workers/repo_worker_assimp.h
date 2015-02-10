@@ -22,6 +22,7 @@
 //-----------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
 #include "../conversion/repo_transcoder_assimp.h"
+#include "../widgets/repowidgetassimpflags.h"
 //-----------------------------------------------------------------------------
 #include "assimpwrapper.h"
 #include "graph/repo_graph_scene.h"
@@ -48,7 +49,7 @@ public :
 	 *
 	 * \sa ~RepoWorkerAssimp(), process()
 	 */
-	RepoWorkerAssimp(const QString& fullPath, const unsigned int& pFlags = 0);
+    RepoWorkerAssimp(const QString& fullPath);
 
 	//! Default empty destructor.
 	~RepoWorkerAssimp();
@@ -84,7 +85,7 @@ private :
 	const QString fullPath;
 
 	//! Assimp loading flags.
-	const unsigned int pFlags;
+    const RepoWidgetAssimpFlags assimpFlagsWidget;
  
 }; // end class
 
