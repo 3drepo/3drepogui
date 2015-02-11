@@ -184,13 +184,13 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     row.append(createItem(QString::fromStdString(user.getEmail())));
 
     // Projects count
-    row.append(createItem(user.getProjectsList().size()));
+    row.append(createItem((qulonglong)(user.getProjectsList().size())));
 
     // Groups count
-    row.append(createItem(user.getGroupsList().size()));
+    row.append(createItem((qulonglong)(user.getGroupsList().size())));
 
     // Roles count
-    row.append(createItem(user.getRolesList().size()));
+    row.append(createItem((qulonglong)(user.getRolesList().size())));
 
     //--------------------------------------------------------------------------
     usersModel->invisibleRootItem()->appendRow(row);
@@ -296,7 +296,7 @@ void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
 
         //----------------------------------------------------------------------
         // Clear any previous entries
-        clearUsersModel();        
+        clearUsersModel();
 
         //----------------------------------------------------------------------
         ui->progressBar->show();

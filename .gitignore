@@ -6,4 +6,6 @@ debug_me
 malehead.obj
 3drepogui
 libovr.a
+run
+*.log
 
