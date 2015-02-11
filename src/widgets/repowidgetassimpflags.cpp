@@ -31,6 +31,8 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     ui->calculateTangentSpaceCheckBox->setChecked(settings.getCalculateTangentSpace());
 
+    ui->calculateTangentSpaceDoubleSpinBox->setValue(settings.getCalculateTangentSpaceMaxSmoothingAngle());
+
     ui->convertToUVCoordinatesCheckBox->setChecked(settings.getConvertToUVCoordinates());
 
     ui->degeneratesToPointsLinesCheckBox->setChecked(settings.getDegeneratesToPointsLines());
@@ -139,6 +141,9 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     //--------------------------------------------------------------------------
 
+    QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
+                     ui->calculateTangentSpaceDoubleSpinBox, SLOT(setEnabled(bool)));
+
     QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
                      ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
 
@@ -163,6 +168,8 @@ repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
 void repo::gui::RepoWidgetAssimpFlags::apply()
 {
     settings.setCalculateTangentSpace(ui->calculateTangentSpaceCheckBox->isChecked());
+
+    settings.setCalculateTangentSpaceMaxSmoothingAngle(ui->calculateTangentSpaceDoubleSpinBox->value());
 
     settings.setConvertToUVCoordinates(ui->convertToUVCoordinatesCheckBox->isChecked());
 

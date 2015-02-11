@@ -51,6 +51,12 @@ public :
     { return value(CALCULATE_TANGENT_SPACE, false).toBool(); }
 
     /*!
+     * Returns the maximum smoothing angle for calc tangent space. Defaults to 45.
+     */
+    float getCalculateTangentSpaceMaxSmoothingAngle() const
+    { return value(CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE, 45.0f).toFloat(); }
+
+    /*!
      * Returns true if convert to UV coords is checked in settings, false
      * otherwise. Defaults to false.
      */
@@ -434,6 +440,9 @@ public :
     void setCalculateTangentSpace(bool on)
     { setValue(CALCULATE_TANGENT_SPACE, on); }
 
+    void setCalculateTangentSpaceMaxSmoothingAngle(float angle)
+    { setValue(CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE, angle); }
+
     //! Sets the convert to UV coordinates to settings.
     void setConvertToUVCoordinates(bool on)
     { setValue(CONVERT_TO_UV_COORDINATES, on); }
@@ -599,6 +608,8 @@ public :
 private :
 
     static const QString CALCULATE_TANGENT_SPACE;
+
+    static const QString CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE;
 
     static const QString CONVERT_TO_UV_COORDINATES;
 
