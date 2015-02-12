@@ -261,6 +261,7 @@ void repo::gui::RepoGUI::commit()
         QString dbName = path.completeBaseName();
         //dbName = dbName.mid(0, dbName.indexOf("_"));
         dbName.replace(".", "_");
+        dbName.replace(" ", "_");
         repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
 
         core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
