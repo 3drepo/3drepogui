@@ -51,10 +51,12 @@ public :
     { return value(CALCULATE_TANGENT_SPACE, false).toBool(); }
 
     /*!
-     * Returns the maximum smoothing angle for calc tangent space. Defaults to 45.
+     * Returns the maximum smoothing angle for calc tangent space. Defaults to
+     * 45.
      */
     float getCalculateTangentSpaceMaxSmoothingAngle() const
-    { return value(CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE, 45.0f).toFloat(); }
+    { return value(CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE,
+        core::AssimpWrapper::getDefaultCalculateTangentSpaceMaxSmoothingAngle()).toFloat(); }
 
     /*!
      * Returns true if convert to UV coords is checked in settings, false
@@ -82,7 +84,8 @@ public :
      * AI_DEBONE_THRESHOLD = 1.0f
      */
     float getDeboneThreshold() const
-    { return value(DEBONE_THRESHOLD, AI_DEBONE_THRESHOLD).toFloat(); }
+    { return value(DEBONE_THRESHOLD,
+        core::AssimpWrapper::getDefaultDeboneThreshold()).toFloat(); }
 
     /*!
      * Returns true if debone only if all is checked in settings, false
@@ -111,7 +114,8 @@ public :
      * See http://assimp.sourceforge.net/lib_html/config_8h.html#ad223c5e7e63d2937685cc704a181b950
      */
     float getFindInvalidDataAnimationAccuracy() const
-    { return value(FIND_INAVLID_DATA_ANIMATION_ACCURACY, 0).toFloat(); }
+    { return value(FIND_INAVLID_DATA_ANIMATION_ACCURACY,
+        core::AssimpWrapper::getDefaultFindInvalidDataAnimationAccuracy()).toFloat(); }
 
     /*!
      * Returns true if fix infacing normals is checked in settings, false
@@ -160,7 +164,8 @@ public :
      * Defaults to 175.0f.
      */
     float getGenerateNormalsSmoothCreaseAngle() const
-    { return value(GENERATE_NORMALS_SMOOTH_CREASE_ANGLE, 175.0).toFloat(); }
+    { return value(GENERATE_NORMALS_SMOOTH_CREASE_ANGLE,
+        core::AssimpWrapper::getDefaultGenerateSmoothNormalsCreaseAngle()).toFloat(); }
 
     /*!
      * Returns true if improve cache locality is checked in settings, false
@@ -175,7 +180,7 @@ public :
      */
     int getImproveCacheLocalityVertexCacheSize() const
     { return value(IMPROVE_CACHE_LOCALITY_VERTEX_CACHE_SIZE,
-                   PP_ICL_PTCACHE_SIZE).toInt(); }
+        core::AssimpWrapper::getDefaultImproveCacheLocalityVertexCacheSize()).toInt(); }
 
     /*!
      * Returns true if join identical vertices is checked in settings, false
@@ -196,7 +201,8 @@ public :
      * to AI_LMW_MAX_WEIGHTS = 4.
      */
     int getLimitBoneWeightsMaxWeight() const
-    { return value(LIMIT_BONE_WEIGHTS_MAX_WEIGHTS, AI_LMW_MAX_WEIGHTS).toInt(); }
+    { return value(LIMIT_BONE_WEIGHTS_MAX_WEIGHTS,
+        core::AssimpWrapper::getDefaultBoneWeightsMaxWeights()).toInt(); }
 
     /*!
      * Returns true if make left handed is checked in settings, false otherwise.
@@ -373,7 +379,6 @@ public :
     bool getSortAndRemovePolygons() const
     { return value(SORT_AND_REMOVE_POLYGONS, false).toBool(); }
 
-
     /*!
      * Returns true if sort and remove triangles is checked in settings, false
      * otherwise. Defaults to false.
@@ -394,7 +399,7 @@ public :
      */
     int getSplitByBoneCountMaxBones() const
     { return value(SPLIT_BY_BONE_COUNT_MAX_BONES,
-                   AI_SBBC_DEFAULT_MAX_BONES).toInt(); }
+        core::AssimpWrapper::getDefaultSplitByBoneCountMaxBones()).toInt(); }
 
     /*!
      * Returns true if split large meshes is checked in settings, false
@@ -409,7 +414,7 @@ public :
      */
     int getSplitLargeMeshesTriangleLimit() const
     { return value(SPLIT_LARGE_MESHES_TRIANGLE_LIMIT,
-                   AI_SLM_DEFAULT_MAX_TRIANGLES).toInt(); }
+        core::AssimpWrapper::getDefaultSplitLargeMeshesTriangleLimit()).toInt(); }
 
     /*!
      * Returns a split large meshes triangle limit set in settings. Defaults to
@@ -417,7 +422,7 @@ public :
      */
     int getSplitLargeMeshesVertexLimit() const
     { return value(SPLIT_LARGE_MESHES_VERTEX_LIMIT,
-                   AI_SLM_DEFAULT_MAX_VERTICES).toInt(); }
+                   core::AssimpWrapper::getDefaultSplitLargeMeshesVertexLimit()).toInt(); }
 
     /*!
      * Returns true if triangulate is checked in settings, false otherwise.

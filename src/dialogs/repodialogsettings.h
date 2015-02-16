@@ -20,6 +20,8 @@
 #define REPODIALOGSETTINGS_H
 
 #include <QDialog>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 
 namespace Ui {
     class RepoDialogSettings;
@@ -46,6 +48,11 @@ public slots :
 
 private:
     Ui::RepoDialogSettings *ui;
+
+    QStandardItemModel *optionsModel;
+
+    QSortFilterProxyModel *optionsProxy;
+
 };
 
 } // end namespace gui

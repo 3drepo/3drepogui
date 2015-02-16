@@ -262,6 +262,10 @@ void repo::gui::RepoGUI::commit()
         //dbName = dbName.mid(0, dbName.indexOf("_"));
         dbName.replace(".", "_");
         dbName.replace(" ", "_");
+
+        if (dbName.size() > 63) // MongoDB db name can only have fewer than 64 chars
+            dbName.resize(63);
+
         repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
 
         core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();

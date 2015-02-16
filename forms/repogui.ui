@@ -435,7 +435,7 @@
   </action>
   <action name="actionOculus">
    <property name="text">
-    <string>Oculus</string>
+    <string>Oculus VR</string>
    </property>
    <property name="shortcut">
     <string>Alt+O</string>
