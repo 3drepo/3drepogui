@@ -109,6 +109,9 @@ public slots:
     //! Saves open 3D window as a file.
     void saveAs();
 
+    //! Saves open 3D window as an image file (screenshot).
+    void saveScreenshot();
+
     //! Displays the popup context menu on the repositories widget collection view.
     void showCollectionContextMenuSlot(const QPoint &pos);
 
