@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Settings</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -23,7 +23,7 @@
       <enum>QFrame::NoFrame</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
+      <enum>QFrame::Raised</enum>
      </property>
      <property name="lineWidth">
       <number>0</number>
@@ -42,7 +42,13 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="repo::gui::RepoLineEdit" name="filterLineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -52,7 +58,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="optionsLabel">
         <property name="font">
          <font>
           <pointsize>10</pointsize>
@@ -61,7 +67,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Label</string>
+         <string>Importer</string>
         </property>
        </widget>
       </item>
@@ -93,16 +99,10 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QListWidget" name="listWidget">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
+       <widget class="QListView" name="optionsListView">
         <property name="minimumSize">
          <size>
-          <width>0</width>
+          <width>150</width>
           <height>0</height>
          </size>
         </property>
@@ -112,14 +112,35 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::AllEditTriggers</set>
+        </property>
+        <property name="tabKeyNavigation">
+         <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+        <property name="viewMode">
+         <enum>QListView::ListMode</enum>
+        </property>
+        <property name="selectionRectVisible">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
-        <widget class="QWidget" name="page">
+        <widget class="QWidget" name="assimpPage">
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
            <number>0</number>
@@ -135,24 +156,63 @@
           </property>
           <item>
            <widget class="QTabWidget" name="tabWidget">
-            <property name="usesScrollButtons">
-             <bool>true</bool>
+            <property name="currentIndex">
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tab">
              <attribute name="title">
-              <string>Tab 1</string>
+              <string>Assimp</string>
              </attribute>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="repo::gui::RepoWidgetAssimpFlags" name="assimpFlagsWidget" native="true"/>
+              </item>
+             </layout>
             </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="oculusPage">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QTabWidget" name="tabWidget_2">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
             <widget class="QWidget" name="tab_2">
              <attribute name="title">
-              <string>Tab 2</string>
+              <string>Oculus VR SDK</string>
              </attribute>
             </widget>
            </widget>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="page_2"/>
        </widget>
       </item>
      </layout>
@@ -170,6 +230,19 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>repo::gui::RepoLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>../widgets/repo_lineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoWidgetAssimpFlags</class>
+   <extends>QWidget</extends>
+   <header>../widgets/repowidgetassimpflags.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

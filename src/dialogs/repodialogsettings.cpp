@@ -18,15 +18,80 @@
 
 #include "repodialogsettings.h"
 #include "ui_repodialogsettings.h"
+#include "../primitives/repo_fontawesome.h"
 
-RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
+#include "widgets/repowidgetassimpflags.h"
+
+repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RepoDialogSettings)
 {
     ui->setupUi(this);
+
+    QObject::connect((const QObject*) (ui->buttonBox->button(QDialogButtonBox::Apply)),
+                     SIGNAL(clicked()), this, SLOT(apply()));
+
+    QObject::connect((const QObject*) (ui->buttonBox->button(QDialogButtonBox::Ok)),
+                     SIGNAL(clicked()), this, SLOT(apply()));
+
+    //--------------------------------------------------------------------------
+
+    optionsModel = new QStandardItemModel(this);
+    optionsProxy = new QSortFilterProxyModel(this);
+    optionsProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    optionsProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
+    optionsProxy->setSourceModel(optionsModel);
+
+    ui->optionsListView->setModel(optionsProxy);
+
+    //--------------------------------------------------------------------------
+    // Connect filtering text input to the filtering proxy model
+    QObject::connect(
+        ui->filterLineEdit, &QLineEdit::textChanged,
+        optionsProxy, &QSortFilterProxyModel::setFilterFixedString);
+
+    QList<QStandardItem *> options;
+
+    //--------------------------------------------------------------------------
+    // Importer
+    QStandardItem* item = new QStandardItem(tr("Importer"));
+    item->setEditable(false);
+    item->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_upload, QColor(Qt::darkGreen)));
+    options.append(item);
+
+    //--------------------------------------------------------------------------
+    // Oculus VR
+    item = new QStandardItem(tr("Oculus VR"));
+    item->setEditable(false);
+    item->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_eye, QColor(Qt::black)));
+    options.append(item);
+
+    optionsModel->appendColumn(options);
+
+    QObject::connect(ui->optionsListView, SIGNAL(activated(QModelIndex)),
+                     this, SLOT(changeOptionsPane(QModelIndex)));
+
+    QObject::connect(ui->optionsListView, SIGNAL(clicked(QModelIndex)),
+                     this, SLOT(changeOptionsPane(QModelIndex)));
 }
 
-RepoDialogSettings::~RepoDialogSettings()
+repo::gui::RepoDialogSettings::~RepoDialogSettings()
 {
     delete ui;
+    delete optionsModel;
+    delete optionsProxy;
+}
+
+void repo::gui::RepoDialogSettings::apply()
+{
+    ui->assimpFlagsWidget->apply();
+}
+
+void repo::gui::RepoDialogSettings::changeOptionsPane(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        ui->stackedWidget->setCurrentIndex(index.row());
+        ui->optionsLabel->setText(index.data().toString());
+    }
 }

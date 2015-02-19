@@ -93,9 +93,6 @@ repo::gui::RepoOculus::RepoOculus(QWidget *parent, const QGLFormat &format, cons
     setAutoBufferSwap(false);
    // resizeGL(400,400);
 
-
-
-
     std::cerr << "Double buffering on: " << (doubleBuffer() ? "true" : "false") << std::endl;
 }
 
@@ -206,13 +203,13 @@ void repo::gui::RepoOculus::initializeOVR()
     if (!hmd)
     {
         std::cerr << "Oculus Rift not detected." << std::endl;
-        hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
+        hmd = ovrHmd_CreateDebug(ovrHmd_DK2);
     }
     else if (hmd->ProductName[0] == '\0')
     {
         std::cerr << "Oculus Rift detected, display not enabled." << std::endl;
-        hmd = ovrHmd_CreateDebug(ovrHmd_DK1);
-    }\
+        hmd = ovrHmd_CreateDebug(ovrHmd_DK2);
+    }
 
     if (hmd)
     {

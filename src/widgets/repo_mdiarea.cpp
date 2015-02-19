@@ -159,12 +159,11 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 //
 //------------------------------------------------------------------------------
 
-repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	const QString& fullPath,
-	const unsigned int pFlags)
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
+    const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-	repoSubWindow->setWidget(fullPath, pFlags);
+    repoSubWindow->setWidgetFromFile(fullPath);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 

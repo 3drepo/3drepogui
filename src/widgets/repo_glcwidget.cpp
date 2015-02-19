@@ -724,8 +724,6 @@ QImage repo::gui::RepoGLCWidget::renderQImage(int w, int h)
 	QOpenGLFramebufferObject qfb(w,h,format);
 	qfb.bind();
 
-	
-
 	QImage image;
 	// If the frame buffer does not work then return an empty image
 	if(qfb.isValid())
