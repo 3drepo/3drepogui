@@ -68,6 +68,11 @@ repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
 
     optionsModel->appendColumn(options);
 
+    QObject::connect(ui->optionsListView, SIGNAL(activated(QModelIndex)),
+                     this, SLOT(changeOptionsPane(QModelIndex)));
+
+    QObject::connect(ui->optionsListView, SIGNAL(clicked(QModelIndex)),
+                     this, SLOT(changeOptionsPane(QModelIndex)));
 }
 
 repo::gui::RepoDialogSettings::~RepoDialogSettings()
@@ -80,4 +85,13 @@ repo::gui::RepoDialogSettings::~RepoDialogSettings()
 void repo::gui::RepoDialogSettings::apply()
 {
     ui->assimpFlagsWidget->apply();
+}
+
+void repo::gui::RepoDialogSettings::changeOptionsPane(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        ui->stackedWidget->setCurrentIndex(index.row());
+        ui->optionsLabel->setText(index.data().toString());
+    }
 }

@@ -112,8 +112,14 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::AllEditTriggers</set>
+        </property>
         <property name="tabKeyNavigation">
          <bool>true</bool>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
         </property>
         <property name="iconSize">
          <size>
@@ -132,7 +138,7 @@
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="assimpPage">
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -200,7 +206,7 @@
             </property>
             <widget class="QWidget" name="tab_2">
              <attribute name="title">
-              <string>Oculus VR Rendering</string>
+              <string>Oculus VR SDK</string>
              </attribute>
             </widget>
            </widget>
