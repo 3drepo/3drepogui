@@ -82,8 +82,8 @@ void repo::gui::RepoWorkerFetchRevision::run()
             for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
             {
                 repo::core::RepoNodeTexture* repoTex = textures[i];
-                const unsigned char* data = (unsigned char*) repoTex->getData();
-                QImage image = QImage::fromData(data, repoTex->getDataSize());
+                const unsigned char* data = (unsigned char*) repoTex->getRawData();
+                QImage image = QImage::fromData(data, repoTex->getRawDataSize());
                 namedTextures.insert(std::make_pair(repoTex->getName(), image));
             }
             emit progress(done++, jobsCount);

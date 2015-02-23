@@ -586,8 +586,8 @@ void repo::gui::RepoGUI::saveAs()
            for (size_t i = 0; i < textures.size(); ++i)
            {
                core::RepoNodeTexture *repoTex = textures[i];
-                const unsigned char *data = (unsigned char*) repoTex->getData();
-                QImage image = QImage::fromData(data, repoTex->getDataSize());
+                const unsigned char *data = (unsigned char*) repoTex->getRawData();
+                QImage image = QImage::fromData(data, repoTex->getRawDataSize());
                 QString filename = QString::fromStdString(repoTex->getName());
 
                 if (scene->HasTextures())
