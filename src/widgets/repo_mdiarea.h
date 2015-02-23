@@ -62,6 +62,9 @@ public slots :
 	 */
 	void maximizeSubWindows(WindowOrder order = CreationOrder);
 
+    //! Closes all subwindows that are not visible.
+    void closeHiddenSubWindows();
+
 public :
 
 	/*!

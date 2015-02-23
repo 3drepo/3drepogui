@@ -88,6 +88,9 @@ public slots:
     //! Opens an oculus rift rendering window.
     void oculus();
 
+    //! Opens a 3D Diff dialog.
+    void open3DDiff();
+
     //! Opens a file dialog.
     void openFile();
 
@@ -164,7 +167,7 @@ private:
 
 }; // end class
 
-} // end namespace core
+} // end namespace gui
 } // end namespace repo
 
 

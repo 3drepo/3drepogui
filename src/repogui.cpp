@@ -23,6 +23,8 @@
 // Core
 #include <RepoGraphHistory>
 #include <RepoLogger>
+#include <Repo3DDiff>
+#include <RepoNodeRevision>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -98,7 +100,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                      QApplication::instance(), SLOT(quit()));
     ui->actionExit->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_sign_out, QColor(Qt::darkRed)));
+                    RepoFontAwesome::fa_times, QColor(Qt::darkRed)));
 
 
     //--------------------------------------------------------------------------
@@ -166,6 +168,12 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     // User Management...
     QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
     ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
+
+
+    // 3D Diff...
+    QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
+    ui->action3D_Diff->setIcon(RepoFontAwesome::getInstance().getIcon(
+                                    RepoFontAwesome::fa_wrench));
 
     // Options
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -409,7 +417,7 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-const repo::gui::RepoGLCWidget * repo::gui::RepoGUI::getActiveWidget()
+const repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
 {
     RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
     if (!widget)
@@ -417,7 +425,7 @@ const repo::gui::RepoGLCWidget * repo::gui::RepoGUI::getActiveWidget()
     return widget;
 }
 
-const repo::core::RepoGraphScene *repo::gui::RepoGUI::getActiveScene()
+const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
 {
     const core::RepoGraphScene *scene = 0;
     if (const RepoGLCWidget *widget = getActiveWidget())
@@ -495,6 +503,24 @@ void repo::gui::RepoGUI::oculus()
         //ui->mdiArea->activeSubWindowToOculus();
     }
 
+}
+
+void repo::gui::RepoGUI::open3DDiff()
+{
+    ui->mdiArea->closeHiddenSubWindows();
+    if (ui->mdiArea->subWindowList().count() == 2)
+    {
+        RepoGLCWidget *oldScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
+        RepoGLCWidget *newScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
+
+        if (oldScene && newScene)
+        {
+            core::Repo3DDiff diff;
+            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
+        }
+    }
+    else
+        std::cerr << "Exactly 2 windows have to be open." << std::endl;
 }
 
 void repo::gui::RepoGUI::openFile()
@@ -663,7 +689,7 @@ void repo::gui::RepoGUI::saveScreenshot()
 void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
 {
     QMenu menu(ui->widgetRepository->getCollectionTreeView());
-    QAction *a = menu.addAction(
+    QAction* a = menu.addAction(
                 tr("Copy"),
                 ui->widgetRepository,
                 SLOT(copySelectedCollectionCellToClipboard()));

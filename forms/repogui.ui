@@ -93,7 +93,7 @@
     </property>
     <addaction name="actionUserManager"/>
     <addaction name="separator"/>
-    <addaction name="actionDiff"/>
+    <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
    </widget>
@@ -355,11 +355,6 @@
     <string>Commit...</string>
    </property>
   </action>
-  <action name="action3D_Diff">
-   <property name="text">
-    <string>3D Diff</string>
-   </property>
-  </action>
   <action name="actionDrop">
    <property name="enabled">
     <bool>false</bool>
@@ -449,9 +444,9 @@
     <string>Settings...</string>
    </property>
   </action>
-  <action name="actionDiff">
+  <action name="action3D_Diff">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>3D Diff...</string>

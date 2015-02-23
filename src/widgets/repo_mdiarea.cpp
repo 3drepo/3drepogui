@@ -134,7 +134,7 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 	{
         RepoMdiSubWindow *subWindow = *it;
         RepoGLCWidget *widget = subWindow->widget<RepoGLCWidget*>();
-        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshes();
+        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
         for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
              i < meshes.size(); ++i)
         {
@@ -151,6 +151,17 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 
 	this->update();
 	this->repaint();
+}
+
+void repo::gui::RepoMdiArea::closeHiddenSubWindows()
+{
+    QList<RepoMdiSubWindow*> subwindows = this->subWindowList();
+    for (int i = 0; i < subwindows.size(); ++i)
+    {
+        RepoMdiSubWindow* subwindow = subwindows[i];
+        if (!subwindow->isVisible())
+            subwindow->close();
+    }
 }
 
 //------------------------------------------------------------------------------
