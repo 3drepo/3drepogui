@@ -194,9 +194,18 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_arrows_alt));
 
+    // Maximize (Tile)
+    QObject::connect(ui->actionMaximize, SIGNAL(triggered()),
+                     ui->mdiArea, SLOT(maximizeSubWindows()));
+    ui->actionMaximize->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_th));
+
+
+
     // Panels
     QMenu *menuPanels = QMainWindow::createPopupMenu();
-    menuPanels->setTitle(QString("Panels"));
+    menuPanels->setTitle(tr("Side Panels"));
     menuPanels->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
     ui->menuWindow->addMenu(menuPanels);
 

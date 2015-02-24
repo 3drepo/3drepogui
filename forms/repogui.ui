@@ -376,10 +376,13 @@
   </action>
   <action name="actionMaximize">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Tile</string>
+    <string>Tile Windows</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionScene_Graph">
