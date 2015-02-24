@@ -64,18 +64,50 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
     if (!node->getName().empty())
         name = QString::fromStdString(node->getName());
     else
-        name = QString::fromStdString(core::MongoClientWrapper::uuidToString(node->getUniqueID()));
+        name = tr("<empty>"); //QString::fromStdString(core::MongoClientWrapper::uuidToString(node->getUniqueID()));
 
     QList<QStandardItem*> row;
 
     // Name
     QStandardItem* nameItem = new QStandardItem(name);
+    nameItem->setToolTip(name);
     nameItem->setEditable(false);
+    nameItem->setCheckable(true);
+    nameItem->setCheckState(Qt::Checked);
     row << nameItem;
 
     // Type
-    QStandardItem* typeItem = new QStandardItem(QString::fromStdString(node->getType()));
+    QString type = QString::fromStdString(node->getType());
+    if (REPO_NODE_TYPE_TRANSFORMATION == type)
+    {
+        const core::RepoNodeTransformation* transformation =
+                dynamic_cast<const core::RepoNodeTransformation*>(node);
+        if (transformation)
+        {
+            aiMatrix4x4 t = transformation->getMatrix();
+            QString nameTooltip =
+                    QString::number(t.a1) + ", " +
+                    QString::number(t.a2) + ", " +
+                    QString::number(t.a3) + ", " +
+                    QString::number(t.a4) + "\n" +
+                    QString::number(t.b1) + ", " +
+                    QString::number(t.b2) + ", " +
+                    QString::number(t.b3) + ", " +
+                    QString::number(t.b4) + "\n" +
+                    QString::number(t.c1) + ", " +
+                    QString::number(t.c2) + ", " +
+                    QString::number(t.c3) + ", " +
+                    QString::number(t.c4) + "\n" +
+                    QString::number(t.d1) + ", " +
+                    QString::number(t.d2) + ", " +
+                    QString::number(t.d3) + ", " +
+                    QString::number(t.d4);
+            nameItem->setToolTip(nameTooltip);
+        }
+    }
+    QStandardItem* typeItem = new QStandardItem(type);
     typeItem->setEditable(false);
+    typeItem->setToolTip(type);
     row << typeItem;
 
 
