@@ -205,7 +205,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 
     // Panels
     QMenu *menuPanels = QMainWindow::createPopupMenu();
-    menuPanels->setTitle(tr("Side Panels"));
+    menuPanels->setTitle(tr("Dock Widgets"));
     menuPanels->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
     ui->menuWindow->addMenu(menuPanels);
 
