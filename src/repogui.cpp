@@ -42,6 +42,7 @@
 #include "oculus/repo_oculus.h"
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
+#include "widgets/reposelectiontreedockwidget.h"
 
 
 //------------------------------------------------------------------------------
@@ -50,9 +51,10 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 
-repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::RepoGUI)
+repo::gui::RepoGUI::RepoGUI(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::RepoGUI)
+    , panelsMenu(0)
 {
     ui->setupUi(this);
     restoreSettings();
@@ -202,12 +204,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                     RepoFontAwesome::fa_th));
 
 
+    // Selection Tree (Scene Graph)
+    QObject::connect(ui->actionSelection_Tree, SIGNAL(triggered()),
+                     this, SLOT(addSelectionTree()));
 
     // Panels
-    QMenu *menuPanels = QMainWindow::createPopupMenu();
-    menuPanels->setTitle(tr("Dock Widgets"));
-    menuPanels->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
-    ui->menuWindow->addMenu(menuPanels);
+    panelsMenu = createPanelsMenu();
+    ui->menuWindow->addMenu(panelsMenu);
 
 
     //--------------------------------------------------------------------------
@@ -255,14 +258,39 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
+
+    if (panelsMenu)
+        delete panelsMenu;
 }
 
 
 //------------------------------------------------------------------------------
 //
-// Public
+// Public Slots
 //
 //------------------------------------------------------------------------------
+
+void repo::gui::RepoGUI::addSelectionTree()
+{
+    RepoGLCWidget *widget = getActiveWidget();
+    if (!widget)
+    {
+        std::cerr << "A window has to be selected" << std::endl;
+    }
+    else
+    {
+        RepoSelectionTreeDockWidget* dock =
+                new RepoSelectionTreeDockWidget(widget, this);
+        this->addDockWidget(Qt::RightDockWidgetArea, dock);
+
+        if (panelsMenu)
+            delete panelsMenu;
+        panelsMenu = createPanelsMenu();
+        ui->menuWindow->addMenu(panelsMenu);
+
+        dock->show();
+    }
+}
 
 void repo::gui::RepoGUI::commit()
 {
@@ -381,6 +409,14 @@ void repo::gui::RepoGUI::connect()
     }
 }
 
+QMenu* repo::gui::RepoGUI::createPanelsMenu()
+{
+    QMenu* panelsMenu = QMainWindow::createPopupMenu();
+    panelsMenu->setTitle(tr("Dock Widgets"));
+    panelsMenu->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
+    return panelsMenu;
+}
+
 void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
@@ -426,7 +462,7 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-const repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
+repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
 {
     RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
     if (!widget)
@@ -818,4 +854,3 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
 }
-

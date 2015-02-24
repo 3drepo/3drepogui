@@ -63,6 +63,8 @@
     <addaction name="actionFull_Screen"/>
     <addaction name="actionMaximize"/>
     <addaction name="separator"/>
+    <addaction name="actionSelection_Tree"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -458,6 +460,11 @@
   <action name="actionUserManager">
    <property name="text">
     <string>User Manager...</string>
+   </property>
+  </action>
+  <action name="actionSelection_Tree">
+   <property name="text">
+    <string>Selection Tree</string>
    </property>
   </action>
  </widget>

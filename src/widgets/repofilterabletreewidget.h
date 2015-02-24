@@ -38,10 +38,8 @@ class RepoFilterableTreeWidget : public QWidget
 
 public:
 
-    RepoFilterableTreeWidget(
-            const QList<QString>& headers,
-            QSortFilterProxyModel* proxy = new QSortFilterProxyModel(),
-            QWidget *parent = 0);
+    //! Constructs a default model (no headers) and default basic proxy.
+    RepoFilterableTreeWidget(QWidget *parent = 0);
 
     //! Constructor to remove the UI elements and tree models.
     ~RepoFilterableTreeWidget();
@@ -50,8 +48,11 @@ public:
 public slots:
 
     //! Adds a single row to the tree view.
-    addRow(const QList<QStandardItem*>& row)
+    void addTopLevelRow(const QList<QStandardItem*>& row)
     { model->invisibleRootItem()->appendRow(row); }
+
+    void addTopLevelRow(QStandardItem* item)
+    { model->invisibleRootItem()->appendRow(item); }
 
 public:
 
@@ -63,10 +64,18 @@ public:
     QSortFilterProxyModel* getProxyModel() const
     { return proxy; }
 
+    //! Returns progress bar.
     QProgressBar* getProgressBar() const;
+
+    //! Sets the headers on this model.
+    void setHeaders(const QList<QString>& headers);
+
+    //! Takes ownership of the given proxy pointer (and deletes memory appropriately).
+    void setProxyModel(QSortFilterProxyModel* proxy = new QSortFilterProxyModel());
 
 private:
 
+    //! UI var.
     Ui::RepoFilterableTreeWidget* ui;
 
     //! Default model for the databases.

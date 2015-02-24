@@ -18,48 +18,60 @@
 #include "repofilterabletreewidget.h"
 #include "ui_repofilterabletreewidget.h"
 
-repo::gui::RepoFilterableTreeWidget::RepoFilterableTreeWidget(
-        const QList<QString>& headers,
-        QSortFilterProxyModel *proxy,
-        QWidget *parent)
+repo::gui::RepoFilterableTreeWidget::RepoFilterableTreeWidget(QWidget *parent)
     : QWidget(parent)
-    , proxy(proxy)
     , ui(new Ui::RepoFilterableTreeWidget)
+    , model(0)
+    , proxy(0)
 {
     ui->setupUi(this);
 
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(this);
-    model->setColumnCount(headers.size());
-
-    for (unsigned int i = 0; i < headers.size(); ++i)
-        model->setHeaderData(i, Qt::Horizontal, headers[i]);
-
-    proxy->setDynamicSortFilter(true);
-    proxy->setFilterKeyColumn(-1); // filter all columns
-    proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSourceModel(model);
-
-    ui->treeView->setModel(proxy);
-
-    //--------------------------------------------------------------------------
-    QObject::connect(
-        ui->lineEdit, &QLineEdit::textChanged,
-        proxy, &QSortFilterProxyModel::setFilterFixedString);
-
-    //--------------------------------------------------------------------------
+    setProxyModel();
     ui->progressBar->hide();
 }
 
 repo::gui::RepoFilterableTreeWidget::~RepoFilterableTreeWidget()
 {
     delete ui;
-    delete model;
-    delete proxy;
+
+    if (model)
+        delete model;
+    model = 0;
+
+    if (proxy)
+        delete proxy;
+    proxy = 0;
 }
 
-QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar()
+QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar() const
 {
     return ui->progressBar;
+}
+
+void repo::gui::RepoFilterableTreeWidget::setHeaders(const QList<QString>& headers)
+{
+    model->setColumnCount(headers.size());
+    for (unsigned int i = 0; i < headers.size(); ++i)
+        model->setHeaderData(i, Qt::Horizontal, headers[i]);
+}
+
+void repo::gui::RepoFilterableTreeWidget::setProxyModel(QSortFilterProxyModel* proxy)
+{
+    if (this->proxy)
+        delete this->proxy;
+
+    this->proxy = proxy;
+    this->proxy->setDynamicSortFilter(true);
+    this->proxy->setFilterKeyColumn(-1); // filter all columns
+    this->proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    this->proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
+    this->proxy->setSourceModel(model);
+
+    ui->treeView->setModel(this->proxy);
+
+    QObject::connect(
+        ui->lineEdit, &QLineEdit::textChanged,
+        proxy, &QSortFilterProxyModel::setFilterFixedString);
 }

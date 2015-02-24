@@ -55,11 +55,15 @@ public:
 
 public slots:
 
+    void addSelectionTree();
+
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
     //! Shows a connection dialog and connects to the specified database.
     void connect();
+
+    QMenu* createPanelsMenu();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
@@ -68,7 +72,7 @@ public slots:
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
-    const RepoGLCWidget *getActiveWidget();
+    RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
     const core::RepoGraphScene *getActiveScene();
@@ -155,6 +159,8 @@ private:
 
     //! UI var.
     Ui::RepoGUI *ui;
+
+    QMenu *panelsMenu;
 
     //! Settings geometry label.
     static const QString REPO_SETTINGS_GUI_GEOMETRY;
