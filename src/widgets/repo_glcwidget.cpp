@@ -1033,16 +1033,19 @@ void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
 	GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
 	GLC_uint pickupID = glcViewport.selectOnPreviousRender(x, y);
 	glcWorld.collection()->setLodUsage(false, &glcViewport);
-	select(selectionID, multiSelection);	
+    select(selectionID, multiSelection);
 }
 
 void repo::gui::RepoGLCWidget::select(GLC_uint selectionID, 
-	bool multiSelection, bool repaint) 
+    bool multiSelection,
+    bool unselectSelected,
+    bool repaint)
 {
 	setAutoBufferSwap(true);
 	if (glcWorld.containsOccurence(selectionID))
 	{
-		if ((!glcWorld.isSelected(selectionID)) 
+        if (unselectSelected
+            && (!glcWorld.isSelected(selectionID))
 			&& (glcWorld.selectionSize() > 0) 
 			&& (!multiSelection))
 		{
@@ -1056,22 +1059,23 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 			emit selectionChanged(this, getSelectionList());			
 			//emit updateSelection(m_World.collection()->selection());
 		}
-		else if (glcWorld.isSelected(selectionID) && multiSelection)
+        else if (unselectSelected && glcWorld.isSelected(selectionID) && multiSelection)
 		{
 			glcWorld.unselect(selectionID);
 			emit selectionChanged(this, getSelectionList());
 			//emit updateSelection(m_World.collection()->selection());
 		}
-		else
+        else
 		{
-			glcWorld.unselectAll();
+            if (unselectSelected)
+                glcWorld.unselectAll();
 			glcWorld.select(selectionID);
 
 			emit selectionChanged(this, getSelectionList());
 			//emit updateSelection(m_World.collection()->selection());
 		}
 	}
-	else if ((glcWorld.selectionSize() > 0) && (!multiSelection))
+    else if (unselectSelected && (glcWorld.selectionSize() > 0) && (!multiSelection))
 	{
 		// if a geometry is selected, unselect it
 		glcWorld.unselectAll();
@@ -1083,12 +1087,15 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 		updateGL();
 }
 
-void repo::gui::RepoGLCWidget::select(QString &name, bool multiSelection, 
-	bool repaint) 
+void repo::gui::RepoGLCWidget::select(
+        QString &name,
+        bool multiSelection,
+        bool unselectSelected,
+        bool repaint)
 {
 	QHash<QString, GLC_uint>::const_iterator i = glcMeshesIds.find(name);
 	if (i != glcMeshesIds.end())
-		select(i.value(), multiSelection, repaint);
+        select(i.value(), multiSelection, unselectSelected, repaint);
 }
 
 //------------------------------------------------------------------------------

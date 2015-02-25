@@ -50,6 +50,11 @@ QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar() const
     return ui->progressBar;
 }
 
+QItemSelectionModel* repo::gui::RepoFilterableTreeWidget::getSelectionModel() const
+{
+    return ui->treeView->selectionModel();
+}
+
 void repo::gui::RepoFilterableTreeWidget::setHeaders(const QList<QString>& headers)
 {
     model->setColumnCount(headers.size());
@@ -74,4 +79,9 @@ void repo::gui::RepoFilterableTreeWidget::setProxyModel(QSortFilterProxyModel* p
     QObject::connect(
         ui->lineEdit, &QLineEdit::textChanged,
         proxy, &QSortFilterProxyModel::setFilterFixedString);
+}
+
+void repo::gui::RepoFilterableTreeWidget::setSelectionMode(QAbstractItemView::SelectionMode mode)
+{
+    ui->treeView->setSelectionMode(mode);
 }

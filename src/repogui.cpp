@@ -270,9 +270,10 @@ repo::gui::RepoGUI::~RepoGUI()
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGUI::addSelectionTree()
+void repo::gui::RepoGUI::addSelectionTree(
+        RepoGLCWidget* widget,
+        Qt::DockWidgetArea area)
 {
-    RepoGLCWidget *widget = getActiveWidget();
     if (!widget)
     {
         std::cerr << "A window has to be selected" << std::endl;
@@ -281,7 +282,7 @@ void repo::gui::RepoGUI::addSelectionTree()
     {
         RepoSelectionTreeDockWidget* dock =
                 new RepoSelectionTreeDockWidget(widget, this);
-        this->addDockWidget(Qt::RightDockWidgetArea, dock);
+        this->addDockWidget(area, dock);
 
         if (panelsMenu)
             delete panelsMenu;
@@ -560,8 +561,18 @@ void repo::gui::RepoGUI::open3DDiff()
 
         if (oldScene && newScene)
         {
+            addSelectionTree(oldScene, Qt::LeftDockWidgetArea);
+            addSelectionTree(newScene, Qt::RightDockWidgetArea);
+
+            ui->mdiArea->maximizeSubWindows();
+
+            ui->actionLink->setChecked(true);
+            ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+
             core::Repo3DDiff diff;
             diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
+
+
         }
     }
     else

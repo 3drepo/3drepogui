@@ -54,6 +54,18 @@ public slots :
 
     void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
 
+    void changeItem(QStandardItem*);
+
+    void changeSelection(
+            const QItemSelection& selected,
+            const QItemSelection& deselected);
+
+    void changeSelection(const QItemSelection& selection,
+                         bool unselectSelected);
+
+
+    void select(const core::RepoNodeAbstract* node,
+                bool unselectSelected);
 
 private:
 

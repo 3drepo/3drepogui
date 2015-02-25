@@ -29,6 +29,9 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     , ui(new Ui::RepoSelectionTreeDockWidget)
 {
     ui->setupUi(this);
+
+    //qRegisterMetaType<const core::RepoNodeAbstract*>("const core::RepoNodeAbstract*");
+
     this->setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(glcWidget, SIGNAL(destroyed()),
                      this, SLOT(close()));
@@ -38,9 +41,11 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     QList<QString> headers;
     headers << tr("Name");
     headers << tr("Type");
+    headers << tr("Unique ID");
+    headers << tr("Shared ID");
     ui->filterableTreeWidget->setHeaders(headers);
     ui->filterableTreeWidget->setProxyModel(new RepoSortFilterProxyModel(this, true));
-
+    ui->filterableTreeWidget->setExtendedSelection();
 
     const core::RepoGraphScene* repoScene = glcWidget->getRepoScene();
     if (repoScene)
@@ -48,6 +53,14 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
         addNode(ui->filterableTreeWidget->getModel()->invisibleRootItem(),
             repoScene->getRoot());
     }
+
+    QObject::connect(ui->filterableTreeWidget->getSelectionModel(),
+                     SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
+                     this, SLOT(changeSelection(QItemSelection, QItemSelection)));
+
+    QObject::connect(ui->filterableTreeWidget->getModel(),
+                     SIGNAL(itemChanged(QStandardItem*)),
+                     this, SLOT(changeItem(QStandardItem*)));
 }
 
 repo::gui::RepoSelectionTreeDockWidget::~RepoSelectionTreeDockWidget()
@@ -70,54 +83,126 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
 
     // Name
     QStandardItem* nameItem = new QStandardItem(name);
-    nameItem->setToolTip(name);
+    nameItem->setToolTip(QString::fromStdString(node->toString()));
     nameItem->setEditable(false);
     nameItem->setCheckable(true);
-    nameItem->setCheckState(Qt::Checked);
+    nameItem->setData(qVariantFromValue((void *) node));
+    nameItem->setCheckState(Qt::Checked);  
     row << nameItem;
 
     // Type
     QString type = QString::fromStdString(node->getType());
-    if (REPO_NODE_TYPE_TRANSFORMATION == type)
-    {
-        const core::RepoNodeTransformation* transformation =
-                dynamic_cast<const core::RepoNodeTransformation*>(node);
-        if (transformation)
-        {
-            aiMatrix4x4 t = transformation->getMatrix();
-            QString nameTooltip =
-                    QString::number(t.a1) + ", " +
-                    QString::number(t.a2) + ", " +
-                    QString::number(t.a3) + ", " +
-                    QString::number(t.a4) + "\n" +
-                    QString::number(t.b1) + ", " +
-                    QString::number(t.b2) + ", " +
-                    QString::number(t.b3) + ", " +
-                    QString::number(t.b4) + "\n" +
-                    QString::number(t.c1) + ", " +
-                    QString::number(t.c2) + ", " +
-                    QString::number(t.c3) + ", " +
-                    QString::number(t.c4) + "\n" +
-                    QString::number(t.d1) + ", " +
-                    QString::number(t.d2) + ", " +
-                    QString::number(t.d3) + ", " +
-                    QString::number(t.d4);
-            nameItem->setToolTip(nameTooltip);
-        }
-    }
     QStandardItem* typeItem = new QStandardItem(type);
     typeItem->setEditable(false);
     typeItem->setToolTip(type);
     row << typeItem;
 
 
+    // Unique ID
+    QString uid = QString::fromStdString(
+                core::MongoClientWrapper::uuidToString(node->getUniqueID()));
+    QStandardItem* uidItem = new QStandardItem(uid);
+    uidItem->setEditable(false);
+    uidItem->setToolTip(uid);
+    row << uidItem;
+
+    // Shared ID
+    QString sid = QString::fromStdString(
+                core::MongoClientWrapper::uuidToString(node->getSharedID()));
+    QStandardItem* sidItem = new QStandardItem(sid);
+    sidItem->setEditable(false);
+    sidItem->setToolTip(sid);
+    row << sidItem;
+
     parentItem->appendRow(row);
 
     std::set<const core::RepoNodeAbstract*> children = node->getChildren();
     std::set<const core::RepoNodeAbstract*>::iterator it;
-
     for (it = children.begin(); it != children.end(); ++it)
     {
         addNode(nameItem, *it);
     }
 }
+
+void repo::gui::RepoSelectionTreeDockWidget::changeItem(QStandardItem* item)
+{
+
+    QObject::disconnect(ui->filterableTreeWidget->getModel(),
+                     SIGNAL(itemChanged(QStandardItem*)),
+                     this, SLOT(changeItem(QStandardItem*)));
+
+    switch(item->checkState())
+    {
+        case Qt::Checked :
+            std::cerr << "checked" << std::endl;
+            break;
+        case Qt::Unchecked :
+            std::cerr << "unchecked" << std::endl;
+            break;
+        case Qt::PartiallyChecked :
+            std::cerr << "partially checked" << std::endl;
+            break;
+    }
+
+    QObject::connect(ui->filterableTreeWidget->getModel(),
+                     SIGNAL(itemChanged(QStandardItem*)),
+                     this, SLOT(changeItem(QStandardItem*)));
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
+        const QItemSelection& selection,
+        bool unselectSelected)
+{
+    QList<QModelIndex> selectionIndexes = selection.indexes();
+    for (int i = 0; i < selectionIndexes.size(); ++i)
+    {
+        QModelIndex index = selectionIndexes[i];
+        if (0 == index.column()) // Name column
+        {
+            core::RepoNodeAbstract* node =
+                (core::RepoNodeAbstract*)index.data(Qt::UserRole+1).value<void*>();
+           select(node, unselectSelected);
+        }
+    }
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
+        const QItemSelection& selected, const QItemSelection& deselected)
+{
+    changeSelection(deselected, true);
+    changeSelection(selected, false);
+    glcWidget->repaint();
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::select(
+        const core::RepoNodeAbstract* node,
+        bool unselectSelected)
+{
+    if (node)
+    {
+        if (REPO_NODE_TYPE_MESH == node->getType())
+            glcWidget->select(QString::fromStdString(node->getName()), true, unselectSelected, false);
+
+//        std::set<const core::RepoNodeAbstract*> children = node->getChildren();
+//        std::set<const core::RepoNodeAbstract*>::iterator it;
+//        for (it = children.begin(); it != children.end(); ++it)
+//           select(*it, unselectSelected);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

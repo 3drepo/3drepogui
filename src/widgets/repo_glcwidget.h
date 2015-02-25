@@ -210,9 +210,15 @@ public :
 	//! Removes and deletes all bounding boxes.
 	void clearBoundingBoxes();
 
-	void select(GLC_uint selectionID, bool multiSelection = false, bool repaint = true);
+    void select(GLC_uint selectionID,
+                bool multiSelection = false,
+                bool unselectSelected = true,
+                bool repaint = true);
 
-	void select(QString &meshName, bool multiSelection = false, bool repaint = true);
+    void select(QString &meshName,
+                bool multiSelection = false,
+                bool unselectSelected = true,
+                bool repaint = true);
 
     //--------------------------------------------------------------------------
 	//
@@ -250,8 +256,7 @@ protected :
 	// User interaction
 	//
     //--------------------------------------------------------------------------
-	void keyPressEvent(QKeyEvent*);
-	
+	void keyPressEvent(QKeyEvent*);	
 	void mousePressEvent(QMouseEvent*);
 	void mouseDoubleClickEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);

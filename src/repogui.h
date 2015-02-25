@@ -55,7 +55,15 @@ public:
 
 public slots:
 
-    void addSelectionTree();
+    //! Adds a selection tree for a currently active widget.
+    void addSelectionTree()
+    {  addSelectionTree(getActiveWidget()); }
+
+    //! Adds a selection tree for a given widget.
+    void addSelectionTree(
+            RepoGLCWidget* widget,
+            Qt::DockWidgetArea area = Qt::RightDockWidgetArea);
+
 
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
@@ -160,6 +168,7 @@ private:
     //! UI var.
     Ui::RepoGUI *ui;
 
+    //! Panels menu (dockable widgets and toolbars)
     QMenu *panelsMenu;
 
     //! Settings geometry label.

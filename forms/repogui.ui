@@ -454,7 +454,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>3D Diff...</string>
+    <string>3D Diff</string>
    </property>
   </action>
   <action name="actionUserManager">
