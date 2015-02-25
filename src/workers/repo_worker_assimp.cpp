@@ -177,18 +177,62 @@ void repo::gui::RepoWorkerAssimp::run()
 
 	//-------------------------------------------------------------------------
 	// Import model
-    repo::core::AssimpWrapper assimpWrapper;
-	assimpWrapper.importModel(
+    core::AssimpWrapper importer;
+
+    if (settings.getCalculateTangentSpace())
+        importer.setCalcTangentSpaceSmoothingAngle(settings.getCalculateTangentSpaceMaxSmoothingAngle());
+    if (settings.getDebone())
+    {
+        importer.setDeboneThreshold(settings.getDeboneThreshold());
+        importer.setDeboneOnlyIfAll(settings.getDeboneOnlyIfAll());
+    }
+    if (settings.getFindInvalidData())
+        importer.setFindInvalidDataAnimationAccuracy(settings.getFindInvalidDataAnimationAccuracy());
+    if (settings.getGenerateNormals() && settings.getGenerateNormalsSmooth())
+        importer.setGenerateSmoothNormalsSmoothingAngle(settings.getGenerateNormalsSmoothCreaseAngle());
+    if (settings.getImproveCacheLocality())
+        importer.setImproveCacheLocalityCacheSize(settings.getImproveCacheLocalityVertexCacheSize());
+    if (settings.getLimitBoneWeights())
+        importer.setLimitBoneWeightsMaxWeights(settings.getLimitBoneWeightsMaxWeight());
+    if (settings.getPreTransformVertices())
+        importer.setPreTransformVerticesNormalize(settings.getPreTransformVerticesNormalize());
+    if (settings.getRemoveComponents())
+        importer.setRemoveComponents(settings.getRemoveComponentsAnimations(),
+                                     settings.getRemoveComponentsBiTangents(),
+                                     settings.getRemoveComponentsBoneWeights(),
+                                     settings.getRemoveComponentsCameras(),
+                                     settings.getRemoveComponentsColors(),
+                                     settings.getRemoveComponentsLights(),
+                                     settings.getRemoveComponentsMaterials(),
+                                     settings.getRemoveComponentsMeshes(),
+                                     settings.getRemoveComponentsNormals(),
+                                     settings.getRemoveComponentsTextureCoordinates(),
+                                     settings.getRemoveComponentsTextures());
+    if (settings.getRemoveRedundantMaterials())
+        importer.setRemoveRedundantMaterialsSkip(settings.getRemoveRedundantMaterialsSkip().toStdString());
+    if (settings.getRemoveRedundantNodes())
+        importer.setRemoveRedundantNodesSkip(settings.getRemoveRedundantNodesSkip().toStdString());
+    if (settings.getSortAndRemove())
+    {
+        importer.setSortAndRemovePrimitives(
+                    settings.getSortAndRemovePoints(),
+                    settings.getSortAndRemovePoints(),
+                    settings.getSortAndRemoveTriangles(),
+                    settings.getSortAndRemovePolygons());
+    }
+    if (settings.getSplitLargeMeshes())
+    {
+        importer.setSplitLargeMeshesTriangleLimit(settings.getSplitLargeMeshesTriangleLimit());
+        importer.setSplitLargeMeshesVertexLimit(settings.getSplitLargeMeshesVertexLimit());
+    }
+    if (settings.getSplitByBoneCount())
+        importer.setSplitByBoneCountMaxBones(settings.getSplitByBoneCountMaxBones());
+
+    importer.importModel(
 		fileName, 
 		fullPath.toStdString(), 
-        settings.getAssimpPostProcessingFlags(),
-        settings.getSplitLargeMeshesTriangleLimit(),
-        settings.getSplitLargeMeshesVertexLimit(),
-        settings.getSortAndRemovePoints(),
-        settings.getSortAndRemoveLines(),
-        settings.getSortAndRemoveTriangles(),
-        settings.getSortAndRemovePolygons());
-    const aiScene *assimpScene = assimpWrapper.getScene();
+        settings.getAssimpPostProcessingFlags());
+    const aiScene *assimpScene = importer.getScene();
 	emit progress(1, jobsCount);
 	
 	repo::core::RepoGraphScene * repoGraphScene = 0;
@@ -215,14 +259,14 @@ void repo::gui::RepoWorkerAssimp::run()
 		// Textures
 		std::map<std::string, QImage> textures = loadTextures(
 			assimpScene,
-			assimpWrapper.getFullFolderPath());
+            importer.getFullFolderPath());
 		emit progress(3, jobsCount);
 
 		//-------------------------------------------------------------------------
 		// Repo scene graph
 		const std::map<std::string, core::RepoNodeAbstract *> tex = loadTextures(
 			textures, 
-			assimpWrapper.getFullFolderPath());
+            importer.getFullFolderPath());
 		repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex);
 		emit progress(4, jobsCount);
 

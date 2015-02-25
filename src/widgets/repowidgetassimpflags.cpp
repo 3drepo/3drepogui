@@ -31,6 +31,8 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     ui->calculateTangentSpaceCheckBox->setChecked(settings.getCalculateTangentSpace());
 
+    ui->calculateTangentSpaceDoubleSpinBox->setValue(settings.getCalculateTangentSpaceMaxSmoothingAngle());
+
     ui->convertToUVCoordinatesCheckBox->setChecked(settings.getConvertToUVCoordinates());
 
     ui->degeneratesToPointsLinesCheckBox->setChecked(settings.getDegeneratesToPointsLines());
@@ -139,6 +141,9 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     //--------------------------------------------------------------------------
 
+    QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
+                     ui->calculateTangentSpaceDoubleSpinBox, SLOT(setEnabled(bool)));
+
     QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
                      ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
 
@@ -153,6 +158,9 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
                      this, SLOT(setCreaseAngleEnabled(bool)));
+
+    QObject::connect(ui->preDefinedSettingsComboBox, SIGNAL(currentIndexChanged(int)),
+                     this, SLOT(setPredefinedSettings(int)));
 }
 
 repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
@@ -163,6 +171,8 @@ repo::gui::RepoWidgetAssimpFlags::~RepoWidgetAssimpFlags()
 void repo::gui::RepoWidgetAssimpFlags::apply()
 {
     settings.setCalculateTangentSpace(ui->calculateTangentSpaceCheckBox->isChecked());
+
+    settings.setCalculateTangentSpaceMaxSmoothingAngle(ui->calculateTangentSpaceDoubleSpinBox->value());
 
     settings.setConvertToUVCoordinates(ui->convertToUVCoordinatesCheckBox->isChecked());
 
@@ -308,6 +318,130 @@ void repo::gui::RepoWidgetAssimpFlags::apply()
                       ui->validateDataStructuresCheckBox->isChecked());
 }
 
+void repo::gui::RepoWidgetAssimpFlags::reset()
+{
+    ui->calculateTangentSpaceCheckBox->setChecked(false);
+
+    ui->calculateTangentSpaceDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultCalculateTangentSpaceMaxSmoothingAngle());
+
+    ui->convertToUVCoordinatesCheckBox->setChecked(false);
+
+    ui->degeneratesToPointsLinesCheckBox->setChecked(false);
+
+    ui->deboneGroupBox->setChecked(false);
+
+    ui->deboneThresholdDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultDeboneThreshold());
+
+    ui->deboneIfAndOnlyIfCheckBox->setChecked(false);
+
+    ui->findInstancesCheckBox->setChecked(false);
+
+    ui->findInvalidDataGroupBox->setChecked(false);
+
+    ui->findInvalidDataAnimationAccuracyDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultFindInvalidDataAnimationAccuracy());
+
+    ui->fixInfacingNormalsCheckBox->setChecked(false);
+
+    ui->flipUVCoordinatesCheckBox->setChecked(false);
+
+    ui->flipWindingOrderCheckBox->setChecked(false);
+
+    ui->generateNormalsGroupBox->setChecked(false);
+
+    ui->generateNormalsFlatRadioButton->setChecked(false);
+
+    ui->generateNormalsSmoothRadioButton->setChecked(false);
+
+    ui->generateNormalsSmoothDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultGenerateSmoothNormalsCreaseAngle());
+
+    ui->improveCacheLocalityCheckBox->setChecked(false);
+
+    ui->improveCacheLocalitySpinBox->setValue(core::AssimpWrapper::getDefaultImproveCacheLocalityVertexCacheSize());
+
+    ui->joinIdenticalVerticesCheckBox->setChecked(false);
+
+    ui->limitBoneWeightsCheckBox->setChecked(false);
+
+    ui->limitBoneWeightsSpinBox->setValue(core::AssimpWrapper::getDefaultBoneWeightsMaxWeights());
+
+    ui->makeLeftHandedCheckBox->setChecked(false);
+
+    ui->optimizeMeshesCheckBox->setChecked(false);
+
+    ui->preTransformUVCoordinatesCheckBox->setChecked(false);
+
+    ui->preTransformVerticesGroupBox->setChecked(false);
+
+    ui->preTransformVerticesNormalizeCheckBox->setChecked(false);
+
+    ui->removeComponentsGroupBox->setChecked(false);
+
+    ui->removeComponentsAnimationsCheckBox->setChecked(false);
+
+    ui->removeComponentsBiTangentsCheckBox->setChecked(false);
+
+    ui->removeComponentsBoneWeightsCheckBox->setChecked(false);
+
+    ui->removeComponentsCamerasCheckBox->setChecked(false);
+
+    ui->removeComponentsColorsCheckBox->setChecked(false);
+
+    ui->removeComponentsLightsCheckBox->setChecked(false);
+
+    ui->removeComponentsMaterialsCheckBox->setChecked(false);
+
+    ui->removeComponentsMeshesCheckBox->setChecked(false);
+
+    ui->removeComponentsNormalsCheckBox->setChecked(false);
+
+    ui->removeComponentsTexturesCheckBox->setChecked(false);
+
+    ui->removeComponentsTextureCoordinatesCheckBox->setChecked(false);
+
+    ui->removeRedundantMaterialsGroupBox->setChecked(false);
+
+    ui->removeRedundantMaterialsSkipLineEdit->setText("");
+
+    ui->removeRedundantNodesGroupBox->setChecked(false);
+
+    ui->removeRedundantNodesSkipLineEdit->setText("");
+
+    ui->sortAndRemoveGroupBox->setChecked(false);
+
+    ui->sortAndRemovePointsCheckBox->setChecked(false);
+
+    ui->sortAndRemoveLinesCheckBox->setChecked(false);
+
+    ui->sortAndRemoveTrianglesCheckBox->setChecked(false);
+
+    ui->sortAndRemovePolygonsCheckBox->setChecked(false);
+
+    ui->splitByBoneCountCheckBox->setChecked(false);
+
+    ui->splitByBoneCountSpinBox->setValue(core::AssimpWrapper::getDefaultSplitByBoneCountMaxBones());
+
+    ui->splitLargeMeshesGroupBox->setChecked(false);
+
+    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(core::AssimpWrapper::getDefaultSplitLargeMeshesTriangleLimit());
+
+    ui->splitLargeMeshesVertexLimitSpinBox->setValue(core::AssimpWrapper::getDefaultSplitLargeMeshesVertexLimit());
+
+    ui->triangulateCheckBox->setChecked(false);
+
+    ui->validateDataStructuresCheckBox->setChecked(false);
+}
+
+void repo::gui::RepoWidgetAssimpFlags::setBasic()
+{
+    ui->calculateTangentSpaceCheckBox->setChecked(true);
+    ui->generateNormalsGroupBox->setChecked(true);
+    ui->generateNormalsFlatRadioButton->setChecked(true);
+    ui->joinIdenticalVerticesCheckBox->setChecked(true);
+    ui->triangulateCheckBox->setChecked(true);
+    ui->convertToUVCoordinatesCheckBox->setChecked(true);
+    ui->sortAndRemoveGroupBox->setChecked(true);
+}
+
 void repo::gui::RepoWidgetAssimpFlags::setCreaseAngleEnabled(bool on)
 {
     ui->generateNormalsSmoothDoubleSpinBox->setEnabled(
@@ -315,3 +449,61 @@ void repo::gui::RepoWidgetAssimpFlags::setCreaseAngleEnabled(bool on)
                 ui->generateNormalsSmoothRadioButton->isChecked());
 }
 
+void repo::gui::RepoWidgetAssimpFlags::setDirect3D()
+{
+    ui->makeLeftHandedCheckBox->setChecked(true);
+    ui->flipUVCoordinatesCheckBox->setChecked(true);
+    ui->flipWindingOrderCheckBox->setChecked(true);
+}
+
+void repo::gui::RepoWidgetAssimpFlags::setExtreme()
+{
+    setMedium();
+    ui->findInstancesCheckBox->setChecked(true);
+    ui->validateDataStructuresCheckBox->setChecked(true);
+    ui->optimizeMeshesCheckBox->setChecked(true);
+    ui->deboneGroupBox->setChecked(true);
+}
+
+void repo::gui::RepoWidgetAssimpFlags::setMedium()
+{
+    ui->calculateTangentSpaceCheckBox->setChecked(true);
+    ui->generateNormalsGroupBox->setChecked(true);
+    ui->generateNormalsSmoothRadioButton->setChecked(true);
+    ui->joinIdenticalVerticesCheckBox->setChecked(true);
+    ui->improveCacheLocalityCheckBox->setChecked(true);
+    ui->limitBoneWeightsCheckBox->setChecked(true);
+    ui->removeRedundantMaterialsGroupBox->setChecked(true);
+    ui->splitLargeMeshesGroupBox->setChecked(true);
+    ui->triangulateCheckBox->setChecked(true);
+    ui->convertToUVCoordinatesCheckBox->setChecked(true);
+    ui->sortAndRemoveGroupBox->setChecked(true);
+    ui->degeneratesToPointsLinesCheckBox->setChecked(true);
+    ui->findInvalidDataGroupBox->setChecked(true);
+}
+
+void repo::gui::RepoWidgetAssimpFlags::setPredefinedSettings(int selection)
+{
+    switch (selection)
+    {
+    case DEFAULT :
+        reset();
+        break;
+    case DIRECT_3D :
+        reset();
+        setDirect3D();
+        break;
+    case BASIC :
+        reset();
+        setBasic();
+        break;
+    case MEDIUM :
+        reset();
+        setMedium();
+        break;
+    case EXTREME :
+        reset();
+        setExtreme();
+        break;
+    }
+}

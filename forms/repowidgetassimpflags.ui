@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>606</width>
+    <width>637</width>
     <height>463</height>
    </rect>
   </property>
@@ -15,10 +15,36 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QComboBox" name="comboBox">
+    <widget class="QComboBox" name="preDefinedSettingsComboBox">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
      <item>
       <property name="text">
        <string>Default</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Direct 3D</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Basic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Medium</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Extreme</string>
       </property>
      </item>
     </widget>
@@ -69,10 +95,68 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QCheckBox" name="calculateTangentSpaceCheckBox">
-           <property name="text">
-            <string>Calculate Tangent Space</string>
+          <widget class="QFrame" name="frame_7">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
            </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="calculateTangentSpaceCheckBox">
+              <property name="text">
+               <string>Calc Tangent Space:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="calculateTangentSpaceDoubleSpinBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>Maximum smoothing angle</string>
+              </property>
+              <property name="whatsThis">
+               <string>Maximum angle between two vertex tangents</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="accelerated">
+               <bool>true</bool>
+              </property>
+              <property name="suffix">
+               <string>°</string>
+              </property>
+              <property name="maximum">
+               <double>175.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>5.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>45.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -459,7 +543,7 @@
             <string>Join Identical Vertices</string>
            </property>
            <property name="checked">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -632,16 +716,16 @@
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QCheckBox" name="removeComponentsColorsCheckBox">
+             <widget class="QCheckBox" name="removeComponentsCamerasCheckBox">
               <property name="text">
-               <string>Colors</string>
+               <string>Cameras</string>
               </property>
              </widget>
             </item>
             <item row="4" column="0">
-             <widget class="QCheckBox" name="removeComponentsCamerasCheckBox">
+             <widget class="QCheckBox" name="removeComponentsColorsCheckBox">
               <property name="text">
-               <string>Cameras</string>
+               <string>Colors</string>
               </property>
              </widget>
             </item>
@@ -683,7 +767,7 @@
             <item row="4" column="1">
              <widget class="QCheckBox" name="removeComponentsTextureCoordinatesCheckBox">
               <property name="text">
-               <string>UV Coords</string>
+               <string>Tex Coords</string>
               </property>
              </widget>
             </item>
@@ -779,7 +863,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="removeRedundantMaterialsSkipLabel">
               <property name="text">
-               <string>Skip:</string>
+               <string>Preserve:</string>
               </property>
              </widget>
             </item>
@@ -826,7 +910,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="removeRedundantNodesSkipLabel">
               <property name="text">
-               <string>Skip:</string>
+               <string>Preserve:</string>
               </property>
              </widget>
             </item>
@@ -1075,7 +1159,7 @@
             <string>Triangulate</string>
            </property>
            <property name="checked">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>

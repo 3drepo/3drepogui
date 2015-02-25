@@ -20,6 +20,9 @@
 #define REPODIALOGSETTINGS_H
 
 #include <QDialog>
+#include <QModelIndex>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 
 namespace Ui {
     class RepoDialogSettings;
@@ -34,18 +37,27 @@ class RepoDialogSettings : public QDialog
 
 public:
 
+    //! Default constructor.
     explicit RepoDialogSettings(QWidget *parent = 0);
 
+    //! Destructor to clean up list view and model proxies.
     ~RepoDialogSettings();
 
 public slots :
 
-
     //! Applies all of the currently selected settings.
     void apply();
 
+    void changeOptionsPane(const QModelIndex &);
+
 private:
+
     Ui::RepoDialogSettings *ui;
+
+    QStandardItemModel *optionsModel;
+
+    QSortFilterProxyModel *optionsProxy;
+
 };
 
 } // end namespace gui

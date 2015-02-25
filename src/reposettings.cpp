@@ -20,6 +20,7 @@
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoSettings::CALCULATE_TANGENT_SPACE = "calculateTangentSpace";
+const QString repo::gui::RepoSettings::CALCULATE_TANGENT_SPACE_MAX_SMOOTHING_ANGLE = "calculateTangentSpaceMaxSmoothingAngle";
 const QString repo::gui::RepoSettings::CONVERT_TO_UV_COORDINATES = "convertToUVCoordinates";
 const QString repo::gui::RepoSettings::DEGENERATES_TO_POINTS_LINES = "degeneratesToPoinstLines";
 const QString repo::gui::RepoSettings::DEBONE = "debone";

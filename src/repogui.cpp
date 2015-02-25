@@ -87,6 +87,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                      SLOT(saveAs()));
     ui->actionSave_As->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_floppy_o));
 
+    // Save Screenshot
+    QObject::connect(ui->actionSave_Screenshot, SIGNAL(triggered()), this,
+                     SLOT(saveScreenshot()));
+
 
     //--------------------------------------------------------------------------
     // Exit
@@ -261,6 +265,11 @@ void repo::gui::RepoGUI::commit()
         QString dbName = path.completeBaseName();
         //dbName = dbName.mid(0, dbName.indexOf("_"));
         dbName.replace(".", "_");
+        dbName.replace(" ", "_");
+
+        if (dbName.size() > 63) // MongoDB db name can only have fewer than 64 chars
+            dbName.resize(63);
+
         repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
 
         core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
@@ -610,6 +619,44 @@ void repo::gui::RepoGUI::saveAs()
             std::cout << "Export successful." << std::endl;
         }
         delete scene;
+    }
+}
+
+void repo::gui::RepoGUI::saveScreenshot()
+{
+    const repo::gui::RepoGLCWidget * widget = getActiveWidget();
+    std::vector<repo::gui::RepoGLCWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::RepoGLCWidget*>();
+
+    if (widgets.size() == 0)
+    {
+        std::cerr << tr("A window has to be open.").toStdString() << std::endl;
+    }
+    else
+    {
+        QString path = QFileDialog::getSaveFileName(
+                    this,
+                    tr("Choose a file to save"),
+                    QString(QDir::separator()) + widget->windowTitle(),
+                    tr("Image Files (*.bmp *.gif *.jpg *.jpeg *.png *.pbm *.pgm *.ppm *.tiff *.xbm *.xpm)"));
+
+        QFileInfo fileInfo(path);
+        for (int i = 0; i < widgets.size(); ++i)
+        {
+            repo::gui::RepoGLCWidget *widget = widgets[i];
+            if (widget)
+            {
+                QString newPath = fileInfo.absolutePath() + QDir::separator() + fileInfo.baseName() + QString::number(i);
+                if (!fileInfo.completeSuffix().isEmpty())
+                    newPath += "." + fileInfo.completeSuffix();
+
+                std::cout << tr("Exporting image to ").toStdString() + newPath.toStdString() << std::endl;
+                // See https://bugreports.qt-project.org/browse/QTBUG-33186
+                //QPixmap pixmap = widget->renderPixmap(3840, 2160);
+                QImage image = widget->renderQImage(13440,7560); // HD x 7 res
+                if (!image.save(newPath, 0, 100)) // 100% quality
+                    std::cerr << tr("Export failed.").toStdString() << std::endl;
+            }
+        }
     }
 }
 

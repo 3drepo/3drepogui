@@ -45,6 +45,9 @@ class RepoWidgetAssimpFlags : public QWidget
 {
     Q_OBJECT
 
+    //! Databases header positions
+    enum PreDefinedAssimpSettings { DEFAULT = 0, DIRECT_3D = 1, BASIC = 2, MEDIUM = 3, EXTREME = 4 };
+
 public:
 
     explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
@@ -56,8 +59,24 @@ public slots :
     //! Saves the current state of the flags into settings.
     void apply();
 
+    void reset();
+
+    void setBasic();
+
     //! Sets the crease angle enabled or disabled based on the radio button.
     void setCreaseAngleEnabled(bool on);
+
+    void setDirect3D();
+
+    void setExtreme();
+
+    void setMedium();
+
+    void setPredefinedSettings(int);
+
+
+
+
 
 private :
 
