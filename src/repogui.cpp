@@ -561,6 +561,8 @@ void repo::gui::RepoGUI::open3DDiff()
 
         if (oldScene && newScene)
         {
+
+            // TODO: make asynchronous as trees can be very large
             addSelectionTree(oldScene, Qt::LeftDockWidgetArea);
             addSelectionTree(newScene, Qt::RightDockWidgetArea);
 
@@ -569,6 +571,7 @@ void repo::gui::RepoGUI::open3DDiff()
             ui->actionLink->setChecked(true);
             ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 
+            // TODO: make asynchronous
             core::Repo3DDiff diff;
             diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
 
