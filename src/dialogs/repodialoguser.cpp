@@ -461,7 +461,7 @@ void repo::gui::RepoDialogUser::setAvatar(const QImage &image)
     QByteArray byteArray;
     QBuffer buffer(&byteArray);
     buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG"); // writes image in PNG format
+    image.save(&buffer, "JPG"); // writes image in PNG format
     //std::vector<char> imageBytes((unsigned char*) byteArray.constData(), (unsigned char*) byteArray.constData() + byteArray.size());
     //this->avatar = core::RepoImage(imageBytes, image.width(), image.height(), REPO_MEDIA_TYPE_PNG);
 
@@ -469,7 +469,7 @@ void repo::gui::RepoDialogUser::setAvatar(const QImage &image)
                                    byteArray.size(),
                                    image.width(),
                                    image.height(),
-                                   REPO_MEDIA_TYPE_PNG);
+                                   REPO_MEDIA_TYPE_JPG);
 
     ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
 }

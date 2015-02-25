@@ -24,7 +24,7 @@
 //------------------------------------------------------------------------------
 // Core
 #include <RepoWrapperAssimp>
-#include <assimp\postprocess.h>
+#include <assimp/postprocess.h>
 
 namespace repo {
 namespace gui {
