@@ -43,6 +43,7 @@
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
+#include "primitives/repo_color.h"
 
 
 //------------------------------------------------------------------------------
@@ -556,25 +557,48 @@ void repo::gui::RepoGUI::open3DDiff()
     ui->mdiArea->closeHiddenSubWindows();
     if (ui->mdiArea->subWindowList().count() == 2)
     {
-        RepoGLCWidget *oldScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
-        RepoGLCWidget *newScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
+        RepoGLCWidget *widgetA = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
+        RepoGLCWidget *widgetB = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
 
-        if (oldScene && newScene)
+        if (widgetA && widgetB)
         {
 
             // TODO: make asynchronous as trees can be very large
-            addSelectionTree(oldScene, Qt::LeftDockWidgetArea);
-            addSelectionTree(newScene, Qt::RightDockWidgetArea);
+            addSelectionTree(widgetA, Qt::LeftDockWidgetArea);
+            addSelectionTree(widgetB, Qt::RightDockWidgetArea);
 
             ui->mdiArea->maximizeSubWindows();
 
             ui->actionLink->setChecked(true);
             ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 
-            // TODO: make asynchronous
-            core::Repo3DDiff diff;
-            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
 
+            core::Repo3DDiff diff(widgetA->getRepoScene(), widgetB->getRepoScene());
+
+            // TODO: make asynchronous
+            diff.diff();
+
+            core::RepoSelfSimilarSet selfSimilarSetA = diff.getSelfSimilarSetA();
+            //core::RepoSelfSimilarSet::iterator it;
+
+
+
+            for (unsigned int i = 0; i < selfSimilarSetA.bucket_count(); ++i)
+            {
+                std::cerr << "bucket #" << i << " contains:";
+
+                RepoColor color = RepoColor::getNext();
+                for (auto it = selfSimilarSetA.begin(i); it != selfSimilarSetA.end(i); ++it)
+                {
+                    QMetaObject::invokeMethod(
+                        widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+                        Q_ARG(QString, QString::fromStdString((*it)->getName())),
+                        Q_ARG(qreal, 1.0),
+                        Q_ARG(QColor, color));
+                    std::cerr << " " << (*it)->getName();
+                }
+                std::cerr << "\n";
+              }
 
         }
     }
