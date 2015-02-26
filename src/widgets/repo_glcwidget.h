@@ -49,7 +49,7 @@ namespace gui {
 
 class RepoGLCWidget : public QGLWidget
 {
-	Q_OBJECT 
+	Q_OBJECT
 
 public :
 
@@ -58,7 +58,7 @@ public :
 	// Static variables
 	//
     //--------------------------------------------------------------------------
-	
+
 	//! Factor by which to zoom, e.g 1.2 for 120%.
 	static const double ZOOM_FACTOR;
 
@@ -75,10 +75,10 @@ public :
     RepoGLCWidget(QWidget *p_parent, const QString &windowTitle = "");
 
 	//! Destructor
-	~RepoGLCWidget(); 
+	~RepoGLCWidget();
 
 protected :
-	
+
     //--------------------------------------------------------------------------
 	//
 	// OpenGL functions
@@ -86,8 +86,8 @@ protected :
     //--------------------------------------------------------------------------
 
 	//! Initializes the OpenGL context.
-	void initializeGL();	
-	
+	void initializeGL();
+
 	//! Initializes the OpenGL shaders (and compiles them).
 	void initializeShaders();
 
@@ -105,7 +105,7 @@ protected :
 public :
 
 	void reframeOnSelection();
-	
+
 public slots :
 
     //--------------------------------------------------------------------------
@@ -122,19 +122,19 @@ public slots :
 
 	//! Sets the per-vertex colours on a mesh identified by its string name.
 	/*!
-	 * Sets the per-vertex colours each as [r,g,b,a] on a single mesh. Hence, 
+	 * Sets the per-vertex colours each as [r,g,b,a] on a single mesh. Hence,
 	 * the size of the vector is 4 times the number of vertices in a mesh. If
 	 * duplicate vertices are present, setting the same colour on every
 	 * vertex belonging to a face colours the faces.
 	 */
 	void setGLCMeshColors(
-		const QString&, 
-		const QVector<GLfloat>&, 
+		const QString&,
+		const QVector<GLfloat>&,
 		const bool repaint = true);
 
 	void setGLCMeshColors(
-		const float r, 
-		const float g, 
+		const float r,
+		const float g,
 		const float b,
 		const float a = 1.0f);
 
@@ -152,8 +152,8 @@ public slots :
 
 	//! Sets the opacity of a glc occurrence identified by its name.
 	void setGLCOccurrenceOpacity(
-		const QString &, 
-		qreal opacity = 1.0, 
+		const QString &,
+		qreal opacity = 1.0,
 		const QColor &color = Qt::gray);
 
 	//! Sets the visibility of given occurence name
@@ -166,8 +166,8 @@ public slots :
 	void setBackgroundColor(const QColor &color, const bool repaint = true);
 
 signals :
-	
-	void cameraChangedSignal(const GLC_Camera&);	
+
+	void cameraChangedSignal(const GLC_Camera&);
 
 	void selectionChanged(const RepoGLCWidget *, std::vector<std::string>);
 
@@ -175,7 +175,7 @@ public :
 
 	//! Sets the widget to hook with
 	void linkCameras(const RepoGLCWidget *widget, const bool& link = true) const;
-	
+
     //--------------------------------------------------------------------------
 	//
 	// Setters
@@ -184,7 +184,7 @@ public :
 
     //! Sets the 3D Repo scene for this widget.
     void setRepoScene(core::RepoGraphScene *repoScene);
-	
+
     //! Sets the GLC World for this widget which is used for rendering purposes.
 	void setGLCWorld(GLC_World);
 
@@ -192,7 +192,7 @@ public :
     void setShader(GLuint id) { shaderID = id; }
 
 	//! Sets the rendering flag.
-	inline void setRenderingFlag(glc::RenderFlag renderingFlag) 
+	inline void setRenderingFlag(glc::RenderFlag renderingFlag)
     { this->renderingFlag = renderingFlag; }
 
 	//! Sets the rendering mode (GL_POINT, GL_LINE, GL_FILL)
@@ -215,7 +215,7 @@ public :
                 bool unselectSelected = true,
                 bool repaint = true);
 
-    void select(QString &meshName,
+    void select(const QString &meshName,
                 bool multiSelection = false,
                 bool unselectSelected = true,
                 bool repaint = true);
@@ -256,7 +256,7 @@ protected :
 	// User interaction
 	//
     //--------------------------------------------------------------------------
-	void keyPressEvent(QKeyEvent*);	
+	void keyPressEvent(QKeyEvent*);
 	void mousePressEvent(QMouseEvent*);
 	void mouseDoubleClickEvent(QMouseEvent*);
 	void mouseMoveEvent(QMouseEvent*);
@@ -291,7 +291,7 @@ protected :
 
 	//! Main light of the scene.
 	GLC_Light glcLight;
-	
+
 	//! The viewport, in GLC lib attributed as glView.
 	GLC_Viewport glcViewport;
 
@@ -303,7 +303,7 @@ protected :
 	GLC_3DViewCollection glcUICollection;
 
 	//! The navigation controller of the scene (arc ball, fly etc).
-	GLC_MoverController glcMoverController; 
+	GLC_MoverController glcMoverController;
 
 	//! Dictionary of meshes pointed to by their associated unique name.
 	QHash<QString, GLC_Mesh*> glcMeshes;
@@ -339,7 +339,7 @@ protected :
 
 	//! Number of frames rendered per second.
 	float fps;
-	
+
 }; // end class
 
 } // end namespace gui

@@ -43,28 +43,29 @@ std::tuple<float, float, float> repo::gui::RepoColor::tupleF() const
 
 bool repo::gui::RepoColor::operator<(const RepoColor &color) const
 {
-	return 
-		redF() != color.redF() 
-		? redF() < color.redF() 
+	return
+		redF() != color.redF()
+		? redF() < color.redF()
 		: greenF() != color.greenF()
 		? greenF() < color.greenF()
 		: blueF() != color.blueF()
 		? blueF() < color.blueF()
-		: alphaF() < color.alphaF(); 
+		: alphaF() < color.alphaF();
 }
 
 repo::gui::RepoColor repo::gui::RepoColor::getNext()
 {
 	RepoColor color;
-		
+
 	// There is 138 pre-defined colours in total.
-	const unsigned int totalColorsCount = 138;
+	const unsigned int totalColorsCount = repo::gui::RepoColor::numberOfColors;
+
 	if (colorCounter >= totalColorsCount)
 	{
 		colorCounter %= totalColorsCount;
         std::cerr << "Too many colour requests, reusing colours." << std::endl;
 	}
-	
+
 	color = RepoColor();
 	color.setNamedColor(QString(COLORS[colorCounter].c_str()));
 	colorCounter++;
@@ -74,9 +75,9 @@ repo::gui::RepoColor repo::gui::RepoColor::getNext()
 repo::gui::RepoColor repo::gui::RepoColor::getNextRandom()
 {
 	return RepoColor(
-			(float)rand()/RAND_MAX, 
-			(float)rand()/RAND_MAX, 
-			(float)rand()/RAND_MAX);	
+			(float)rand()/RAND_MAX,
+			(float)rand()/RAND_MAX,
+			(float)rand()/RAND_MAX);
 }
 
 repo::gui::RepoColor repo::gui::RepoColor::getComplement() const
@@ -84,7 +85,7 @@ repo::gui::RepoColor repo::gui::RepoColor::getComplement() const
 	RepoColor complement(fromHslF(
 		fmod(this->hslHueF() + 0.5, 1.0),
 		this->hslSaturationF(),
-		this->lightnessF(), 
+		this->lightnessF(),
 		this->alphaF()));
 	return complement;
 }
@@ -99,7 +100,7 @@ std::string repo::gui::RepoColor::toString() const
 	return res;
 }
 
-const std::string repo::gui::RepoColor::COLORS[] = {
+const std::string repo::gui::RepoColor::COLORS[repo::gui::RepoColor::numberOfColors] = {
 "#48D1CC",
 "#0000CD",
 "#FFE4E1",
