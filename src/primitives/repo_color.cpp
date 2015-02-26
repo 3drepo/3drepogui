@@ -16,7 +16,7 @@
  */
 
 #include "repo_color.h"
-
+#include <RepoTranscoderString>
 unsigned int repo::gui::RepoColor::colorCounter = 0;
 
 repo::gui::RepoColor::RepoColor() : QColor() {}
@@ -92,10 +92,10 @@ repo::gui::RepoColor repo::gui::RepoColor::getComplement() const
 std::string repo::gui::RepoColor::toString() const
 {
 	std::string res;
-	res += "[" + repo::toString(this->red());
-	res += ", " + repo::toString(this->green());
-	res += ", " + repo::toString(this->blue());
-	res += ", " + repo::toString(this->alpha()) + "]";
+    res += "[" + core::RepoTranscoderString::toString(this->red());
+    res += ", " + core::RepoTranscoderString::toString(this->green());
+    res += ", " + core::RepoTranscoderString::toString(this->blue());
+    res += ", " + core::RepoTranscoderString::toString(this->alpha()) + "]";
 	return res;
 }
 

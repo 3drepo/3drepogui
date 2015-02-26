@@ -602,11 +602,11 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceOpacity(
 	GLC_RenderProperties properties;
 	if (opacity < 1.0)
 	{
-		properties.setOverwriteTransparency(opacity);
+    //	properties.setOverwriteTransparency(opacity);
 		// This does not create memory leak as the overwrite material deletes
 		// previous one if set and not used.
 		properties.setOverwriteMaterial(new GLC_Material(color));
-		properties.setRenderingMode(glc::OverwriteTransparencyAndMaterial);
+        properties.setRenderingMode(glc::OverwriteMaterial);
 	}
 	else
 		properties.setRenderingMode(glc::NormalRenderMode);

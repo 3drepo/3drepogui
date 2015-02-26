@@ -579,10 +579,6 @@ void repo::gui::RepoGUI::open3DDiff()
             diff.diff();
 
             core::RepoSelfSimilarSet selfSimilarSetA = diff.getSelfSimilarSetA();
-            //core::RepoSelfSimilarSet::iterator it;
-
-
-
             for (unsigned int i = 0; i < selfSimilarSetA.bucket_count(); ++i)
             {
                 std::cerr << "bucket #" << i << " contains:";
@@ -593,12 +589,33 @@ void repo::gui::RepoGUI::open3DDiff()
                     QMetaObject::invokeMethod(
                         widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
                         Q_ARG(QString, QString::fromStdString((*it)->getName())),
-                        Q_ARG(qreal, 1.0),
+                        Q_ARG(qreal, 0.9),
                         Q_ARG(QColor, color));
                     std::cerr << " " << (*it)->getName();
                 }
                 std::cerr << "\n";
               }
+            widgetA->updateGL();
+
+
+            core::RepoSelfSimilarSet selfSimilarSetB = diff.getSelfSimilarSetB();
+            for (unsigned int i = 0; i < selfSimilarSetB.bucket_count(); ++i)
+            {
+                std::cerr << "bucket #" << i << " contains:";
+
+                RepoColor color = RepoColor::getNext();
+                for (auto it = selfSimilarSetB.begin(i); it != selfSimilarSetB.end(i); ++it)
+                {
+                    QMetaObject::invokeMethod(
+                        widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+                        Q_ARG(QString, QString::fromStdString((*it)->getName())),
+                        Q_ARG(qreal, 0.9),
+                        Q_ARG(QColor, color));
+                    std::cerr << " " << (*it)->getName();
+                }
+                std::cerr << "\n";
+              }
+              widgetB->updateGL();
 
         }
     }
