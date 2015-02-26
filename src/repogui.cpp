@@ -25,6 +25,7 @@
 #include <RepoLogger>
 #include <Repo3DDiff>
 #include <RepoNodeRevision>
+#include <RepoPCA>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -583,15 +584,31 @@ void repo::gui::RepoGUI::open3DDiff()
             {
                 std::cerr << "bucket #" << i << " contains:";
 
-                RepoColor color = RepoColor::getNext();
+                RepoColor color;
                 for (auto it = selfSimilarSetA.begin(i); it != selfSimilarSetA.end(i); ++it)
                 {
+                    if (!color.isValid())
+                         color = RepoColor::getNext();
+
                     QMetaObject::invokeMethod(
                         widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
                         Q_ARG(QString, QString::fromStdString((*it)->getName())),
                         Q_ARG(qreal, 0.9),
                         Q_ARG(QColor, color));
                     std::cerr << " " << (*it)->getName();
+
+                    core::RepoPCA pca = ((core::RepoNodeMesh*)(*it))->getPCA();
+                    //---------------------------------------------------------------------
+                    // Add bounding boxes.
+                    const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
+                    const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
+                    const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
+                    widgetA->addBoundingBox(lx, ly, lz, pca.getTransformationMatrix());
+
+                    std::cerr << std::endl;
+                    std::cerr << "Principals: " << lx << ", " << ly << ", " << lz << "   " << std::endl;
+                    std::cerr << "BB: " << pca.getUVWBoundingBox().getLengthX() << ", " << pca.getUVWBoundingBox().getLengthY() << ", " << pca.getUVWBoundingBox().getLengthZ() << std::endl;
+
                 }
                 std::cerr << "\n";
               }
