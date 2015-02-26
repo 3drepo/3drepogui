@@ -58,9 +58,9 @@ public :
 	// Operators
 	//
 	//-------------------------------------------------------------------------
-	
+
 	/*!
-	 * Compares the colors based on the rgba components, one at the time in 
+	 * Compares the colors based on the rgba components, one at the time in
 	 * a decreasing order of red, green, blue and alpha.
 	 */
 	bool operator<(const RepoColor &color) const;
@@ -80,6 +80,8 @@ public :
 private :
 
 	static unsigned int colorCounter;
+
+	static const int numberOfColors = 137;
 
 	//! 138 predefined HTML named colours (without black and shades of gray) randomly ordered.
 	// See http://www.w3schools.com/html/html_colornames.asp

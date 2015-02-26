@@ -87,7 +87,7 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
     nameItem->setEditable(false);
     nameItem->setCheckable(true);
     nameItem->setData(qVariantFromValue((void *) node));
-    nameItem->setCheckState(Qt::Checked);  
+    nameItem->setCheckState(Qt::Checked);
     row << nameItem;
 
     // Type
@@ -178,6 +178,7 @@ void repo::gui::RepoSelectionTreeDockWidget::select(
         const core::RepoNodeAbstract* node,
         bool unselectSelected)
 {
+
     if (node)
     {
         if (REPO_NODE_TYPE_MESH == node->getType())

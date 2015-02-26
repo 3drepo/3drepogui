@@ -120,11 +120,11 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 }
 
 repo::gui::RepoGLCWidget::~RepoGLCWidget()
-{	
+{
 	glcUICollection.clear();
 	glcViewCollection.clear();
 	glcWorld.clear();
-		
+
     GLC_SelectionMaterial::deleteShader(context());
 
 	for (int i = 0; i < shaders.size(); ++i)
@@ -137,7 +137,7 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
 
 //------------------------------------------------------------------------------
 //
-// OpenGL 
+// OpenGL
 //
 //------------------------------------------------------------------------------
 void repo::gui::RepoGLCWidget::initializeGL()
@@ -147,8 +147,8 @@ void repo::gui::RepoGLCWidget::initializeGL()
 	glcViewport.cameraHandle()->setDefaultUpVector(glc::Y_AXIS);
 	glcViewport.initGl();
 
-	bool isAdvancedGPU = 
-		GLC_State::vendorIsNvidia() || 
+	bool isAdvancedGPU =
+		GLC_State::vendorIsNvidia() ||
 		QString("Intel") == GLC_State::vendor();
 
     //--------------------------------------------------------------------------
@@ -163,24 +163,24 @@ void repo::gui::RepoGLCWidget::initializeGL()
 
     //--------------------------------------------------------------------------
 	// Enable VBOs and other settings.
-	GLC_State::setVboUsage(isAdvancedGPU); 
+	GLC_State::setVboUsage(isAdvancedGPU);
 	GLC_State::setDefaultOctreeDepth(10);
 	GLC_State::setPixelCullingUsage(true);
 	GLC_State::setFrustumCullingUsage(true);
 	GLC_State::setSpacePartionningUsage(true);
 	GLC_State::setCacheUsage(true);
-	
+
 
 	//glEnable(GL_CULL_FACE);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_LINE_SMOOTH);
-	
+
 	GLint bufs;
     GLint samples;
     glGetIntegerv(GL_SAMPLE_BUFFERS, &bufs);
     glGetIntegerv(GL_SAMPLES, &samples);
-	
+
 	//setFormat(QGLFormat(QGL::SampleBuffers));
 	GLC_RenderStatistics::setActivationFlag(true);
 
@@ -204,7 +204,7 @@ void repo::gui::RepoGLCWidget::initializeShaders()
             context());
         GLC_SelectionMaterial::initShader(context());
 /*
-		
+
 		if (shaders.isEmpty())
 		{
 			// Phong Shader
@@ -222,7 +222,7 @@ void repo::gui::RepoGLCWidget::initializeShaders()
 			pShader->setVertexAndFragmentShader(vertexToonShaderFile, fragmentToonShaderFile);
 			pShader->createAndCompileProgrammShader();
 			shaders.append(pShader);
-			
+
 			// Minnaert Shader
 			pShader = new GLC_Shader();
 			QFile vertex2ShaderFile(":shaders/minnaert.vert");
@@ -256,12 +256,12 @@ void repo::gui::RepoGLCWidget::paintGL()
 	{
         //----------------------------------------------------------------------
 		// Calculate camera's depth of view
-		glcViewport.setDistMinAndMax(glcWorld.boundingBox());	
+		glcViewport.setDistMinAndMax(glcWorld.boundingBox());
 		glcWorld.collection()->updateInstanceViewableState();
 
         //----------------------------------------------------------------------
 		// Clear screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //----------------------------------------------------------------------
 		// Load identity matrix
@@ -283,10 +283,10 @@ void repo::gui::RepoGLCWidget::paintGL()
 			GLC_Shader::use(shaderID);
 
 		// Display opaque instanced objects
-		glcWorld.render(0, renderingFlag);		
+		glcWorld.render(0, renderingFlag);
 		if (GLC_State::glslUsed())
 			glcWorld.renderShaderGroup(renderingFlag);
-		
+
 		// Display transparent instanced objects
 		glcWorld.render(0, glc::TransparentRenderFlag);
 		if (GLC_State::glslUsed())
@@ -300,8 +300,8 @@ void repo::gui::RepoGLCWidget::paintGL()
         //----------------------------------------------------------------------
 		// Display selected objects
 		const int selectedNodesCount = glcWorld.collection()->selectionSize();
-		if ((selectedNodesCount > 0) && 
-			GLC_State::selectionShaderUsed() && 
+		if ((selectedNodesCount > 0) &&
+			GLC_State::selectionShaderUsed() &&
 			!GLC_State::isInSelectionMode())
 		{
 			//if (selectedNodesCount != glcWorld.collection()->drawableObjectsSize())
@@ -320,9 +320,9 @@ void repo::gui::RepoGLCWidget::paintGL()
 		}
 		else if (selectedNodesCount > 0)
 			glcWorld.render(1, renderingFlag);
-	
+
 		// Remove global shader if set.
-		if (shaderID) 
+		if (shaderID)
 			GLC_Shader::unuse();
 
 		glcViewport.useClipPlane(false);
@@ -347,7 +347,7 @@ void repo::gui::RepoGLCWidget::paintGL()
 	{
         std::cerr << e.what() << std::endl;
 	}
-	
+
 	//QGLFramebufferObject::bindDefault();
 }
 
@@ -378,16 +378,16 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	glDisable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
-	
+
     //--------------------------------------------------------------------------
 	QSize screenSize(size());
 	int screenHeight = screenSize.height();
 	float panelRatio = static_cast<float>(screenHeight - 4) / screenHeight;
-	double displayRatio = static_cast<double>(screenSize.height()) / 
+	double displayRatio = static_cast<double>(screenSize.height()) /
 		static_cast<double>(screenSize.width());
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBlendFunc(GL_ONE,GL_SRC_ALPHA);
-	
+
     //--------------------------------------------------------------------------
 	// Display the frame rate
 	qglColor(Qt::gray);
@@ -395,7 +395,7 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	renderText(10, screenSize.height() - 10, fpsString);
 
 
-	
+
 	GLC_Matrix4x4 uiMatrix(glcViewport.cameraHandle()->viewMatrix());
 	// Change matrix to follow camera orientation
 	double scaleFactor = 0.08;
@@ -404,9 +404,9 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	if (screenSize.height() < 400)
 		scaleFactor *= (double) 400 / (double) screenSize.height();
 
-	glTranslated(1.0 - (scaleFactor * displayRatio * 1.4), 
+	glTranslated(1.0 - (scaleFactor * displayRatio * 1.4),
 		- panelRatio + (scaleFactor * 1.3), 0.0);
-		
+
 	glScaled(scaleFactor * displayRatio, scaleFactor, scaleFactor);
 	glMultMatrixd(uiMatrix.getData());
 
@@ -443,7 +443,7 @@ void repo::gui::RepoGLCWidget::reframe(const GLC_BoundingBox& boundingBox)
 			GLC_Camera savCam(*(glcViewport.cameraHandle()));
 			glcViewport.reframe(collectionBox);
 			updateGL();
-			emit cameraChangedSignal(*glcViewport.cameraHandle());	
+			emit cameraChangedSignal(*glcViewport.cameraHandle());
 		}
 	}
 	else
@@ -455,7 +455,7 @@ void repo::gui::RepoGLCWidget::reframe(const GLC_BoundingBox& boundingBox)
 			glcViewport.reframe(collectionBox);
 		}
 		updateGL();
-		emit cameraChangedSignal(*glcViewport.cameraHandle());	
+		emit cameraChangedSignal(*glcViewport.cameraHandle());
 	}
 }
 
@@ -488,38 +488,38 @@ void repo::gui::RepoGLCWidget::setCamera(const CameraView& view)
 {
 	switch (view)
 	{
-		case FRONT : 
+		case FRONT :
 			glcViewport.cameraHandle()->setFrontView();
 			break;
-		case BACK :	
+		case BACK :
 			glcViewport.cameraHandle()->setRearView();
 			break;
-		case LEFT : 
+		case LEFT :
 			glcViewport.cameraHandle()->setLeftView();
 			break;
-		case RIGHT : 
+		case RIGHT :
 			glcViewport.cameraHandle()->setRightView();
 			break;
-		case TOP : 
+		case TOP :
 			glcViewport.cameraHandle()->setTopView();
 			break;
-		case BOTTOM : 
+		case BOTTOM :
 			glcViewport.cameraHandle()->setBottomView();
 			break;
-		case ISO :		
-		default : 
-			glcViewport.cameraHandle()->setIsoView();	
+		case ISO :
+		default :
+			glcViewport.cameraHandle()->setIsoView();
 	}
-	
+
 	if (!glcWorld.isEmpty())
-		glcViewport.reframe(glcWorld.boundingBox());	
+		glcViewport.reframe(glcWorld.boundingBox());
 
 	updateGL();
-	emit cameraChangedSignal(*glcViewport.cameraHandle());	
+	emit cameraChangedSignal(*glcViewport.cameraHandle());
 }
 
 void repo::gui::RepoGLCWidget::setGLCMeshColors(
-	const QString &name, 
+	const QString &name,
 	const QVector<GLfloat> &colors,
 	const bool repaint)
 {
@@ -535,8 +535,8 @@ void repo::gui::RepoGLCWidget::setGLCMeshColors(
 }
 
 void repo::gui::RepoGLCWidget::setGLCMeshColors(
-	const float r, 
-	const float g, 
+	const float r,
+	const float g,
 	const float b,
 	const float a)
 {
@@ -546,7 +546,7 @@ void repo::gui::RepoGLCWidget::setGLCMeshColors(
     {
         GLC_Mesh *glcMesh = it.value();
 		// Always [r,g,b,a] hence times 4
-		QVector<GLfloat> vector(glcMesh->VertexCount() * 4); 
+		QVector<GLfloat> vector(glcMesh->VertexCount() * 4);
         for (size_t i = 0; i < vector.size(); i += 4)
 		{
 			vector[i + 0] = r;
@@ -580,20 +580,20 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceRenderProperties(
 	const GLC_RenderProperties &properties)
 {
 	GLC_StructOccurence * oc;
-	
-	QHash<QString, GLC_StructOccurence *>::iterator it = 
+
+	QHash<QString, GLC_StructOccurence *>::iterator it =
 		glcOccurrences.find(occurrenceName);
-	
-	QHash<QString, GLC_StructOccurence *>::iterator itt = 
+
+	QHash<QString, GLC_StructOccurence *>::iterator itt =
 		glcMeshOccurences.find(occurrenceName);
 	if (glcMeshOccurences.end() != itt)
 			oc = itt.value();
 	else if (glcOccurrences.end() != it)
 		oc = it.value();
-	
+
 	if (oc)
 		oc->setRenderProperties(properties);
-	
+
 }
 
 void repo::gui::RepoGLCWidget::setGLCOccurrenceOpacity(
@@ -630,28 +630,28 @@ void repo::gui::RepoGLCWidget::setInfoVisibility(const bool visible)
 
 void repo::gui::RepoGLCWidget::setBackgroundColor(
 	const QColor &color,
-	const bool repaint) 
-{ 
-	glcViewport.setBackgroundColor(color); 
+	const bool repaint)
+{
+	glcViewport.setBackgroundColor(color);
 	if (repaint)
-		updateGL(); 
+		updateGL();
 }
 
 void repo::gui::RepoGLCWidget::linkCameras(
-	const RepoGLCWidget *widget, 
+	const RepoGLCWidget *widget,
 	const bool & on) const
 {
 	if (on)
 	{
 		connect(
-			this, SIGNAL(cameraChangedSignal(const GLC_Camera &)), 
+			this, SIGNAL(cameraChangedSignal(const GLC_Camera &)),
 			widget, SLOT(setCamera(const GLC_Camera &)));
 		// TODO: align all views
 	 }
 	 else
 	 {
 		disconnect(
-			this, SIGNAL(cameraChangedSignal(const GLC_Camera &)), 
+			this, SIGNAL(cameraChangedSignal(const GLC_Camera &)),
 			widget, SLOT(setCamera(const GLC_Camera &)));
 	 }
 }
@@ -673,7 +673,7 @@ void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 {
 	this->glcWorld = glcWorld;
-	glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());	
+	glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());
 	setCamera(ISO);
 	extractMeshes(this->glcWorld.rootOccurence());
 }
@@ -727,7 +727,7 @@ QImage repo::gui::RepoGLCWidget::renderQImage(int w, int h)
 	QImage image;
 	// If the frame buffer does not work then return an empty image
 	if(qfb.isValid())
-	{		
+	{
 		// Draw the scene to the buffer
 		isInfoVisible = false;
 		resizeGL(w,h); // resize scene
@@ -753,10 +753,10 @@ void repo::gui::RepoGLCWidget::addBoundingBox(
 {
 	GLC_Box* pBox= new GLC_Box(lx, ly, lz);
 	GLC_3DViewInstance box(pBox);
-	
+
 	// Rotate and translate the box by the transformation matrix
-	box.multMatrix(GLC_Matrix4x4(&transformationMatrix[0])); 
-	
+	box.multMatrix(GLC_Matrix4x4(&transformationMatrix[0]));
+
 	// Create GLC_Box from a Bounding box
 	//GLC_3DViewInstance box(GLC_Factory::instance()->createBox(glcWorld.boundingBox()));
 
@@ -782,7 +782,7 @@ void repo::gui::RepoGLCWidget::clearBoundingBoxes()
 void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 {
 	switch(e->key())
-	{		
+	{
 		case Qt::Key_0 :
 			shaderID = 0;
 			updateGL();
@@ -823,27 +823,27 @@ void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_A :
 			if ((e->modifiers() == Qt::ControlModifier))
 			{
-				if (glcWorld.collection()->selectionSize() == 
+				if (glcWorld.collection()->selectionSize() ==
 						glcWorld.collection()->drawableObjectsSize())
 					glcWorld.unselectAll();
 				else
 					glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
 				updateGL();
 			}
-		case Qt::Key_T :		
+		case Qt::Key_T :
 			if (glIsEnabled(GL_TEXTURE_2D))
 				glDisable(GL_TEXTURE_2D);
 			else
 				glEnable(GL_TEXTURE_2D);
 			updateGL();
 			break;
-		case Qt::Key_C :		
+		case Qt::Key_C :
 			if (glIsEnabled(GL_CULL_FACE))
 			{
 				glDisable(GL_CULL_FACE);
 				glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 			}
-			else 
+			else
 			{
 				glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 				glEnable(GL_CULL_FACE);
@@ -857,7 +857,7 @@ void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 			else
 				glEnable(GL_LIGHTING);
 			updateGL();
-			break;	  
+			break;
 		case Qt::Key_W :
 			{
 				isWireframe = !isWireframe;
@@ -866,7 +866,7 @@ void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 				break;
 			}
 		case Qt::Key_P :
-			glcViewport.setToOrtho(!glcViewport.useOrtho());			
+			glcViewport.setToOrtho(!glcViewport.useOrtho());
 			updateGL();
 			break;
 		case Qt::Key_R :
@@ -879,7 +879,7 @@ void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 					float g = (float) rand() / (RAND_MAX);
 					float b = (float) rand() / (RAND_MAX);
 					// Always [r,g,b,a] hence times 4
-					QVector<GLfloat> vector(glcMesh->VertexCount() * 4); 
+					QVector<GLfloat> vector(glcMesh->VertexCount() * 4);
 					for (unsigned int i = 0; i < vector.size(); i += 4)
 					{
 						vector[i + 0] = r;
@@ -890,12 +890,12 @@ void repo::gui::RepoGLCWidget::keyPressEvent(QKeyEvent *e)
 					setGLCMeshColors(glcMesh->name(), vector);
 				}
 				updateGL();
-			break;			
+			break;
         }
 		case Qt::Key_Q :
 			{
-				QColor color = QColorDialog::getColor(Qt::white, 
-					this, 
+				QColor color = QColorDialog::getColor(Qt::white,
+					this,
 					"Color picker");
 					if (color.isValid())
 					{
@@ -944,40 +944,40 @@ void repo::gui::RepoGLCWidget::mousePressEvent(QMouseEvent *e)
 		case (Qt::RightButton):
 			this->setCursor(Qt::ClosedHandCursor);
 			glcMoverController.setActiveMover(
-				GLC_MoverController::TrackBall, 
-				GLC_UserInput(e->x(), e->y()));		
+				GLC_MoverController::TrackBall,
+				GLC_UserInput(e->x(), e->y()));
 			updateGL();
 			break;
 		case (Qt::LeftButton):
-			this->setCursor(Qt::SizeAllCursor);		
+			this->setCursor(Qt::SizeAllCursor);
 			glcMoverController.setActiveMover(
-				GLC_MoverController::Pan, 
+				GLC_MoverController::Pan,
 				GLC_UserInput(e->x(), e->y()));
 			updateGL();
 			break;
 		case (Qt::MidButton):
 			this->setCursor(Qt::CrossCursor);
 			glcMoverController.setActiveMover(
-				GLC_MoverController::Fly, 
+				GLC_MoverController::Fly,
 				GLC_UserInput(e->x(), e->y()));
 			updateGL();
 			break;
 	}
-	// Pass on the event to parent.	
+	// Pass on the event to parent.
 	QGLWidget::mousePressEvent(e);
 }
 void repo::gui::RepoGLCWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
-	if (Qt::LeftButton == e->button()) 
+	if (Qt::LeftButton == e->button())
 	{
 		bool multiSelection = (
-			(e->modifiers() == Qt::ControlModifier) || 
+			(e->modifiers() == Qt::ControlModifier) ||
 			(e->modifiers() == Qt::ShiftModifier));
 		select(e->x(),e->y(), multiSelection, e);
 	}
 
 	// Pass on the event to parent.
-	QGLWidget::mouseDoubleClickEvent(e);	
+	QGLWidget::mouseDoubleClickEvent(e);
 }
 void repo::gui::RepoGLCWidget::mouseMoveEvent(QMouseEvent * e)
 {
@@ -985,7 +985,7 @@ void repo::gui::RepoGLCWidget::mouseMoveEvent(QMouseEvent * e)
 		glcMoverController.move(GLC_UserInput(e->x(), e->y())))
 	{
 		updateGL();
-		emit cameraChangedSignal(*glcViewport.cameraHandle());		
+		emit cameraChangedSignal(*glcViewport.cameraHandle());
 	}
 	else
 	{
@@ -1020,12 +1020,12 @@ void repo::gui::RepoGLCWidget::wheelEvent(QWheelEvent * e)
 		updateGL();
 		emit cameraChangedSignal(*glcViewport.cameraHandle());
 	}
-	
+
 	// Pass on the event to parent.
 	QGLWidget::wheelEvent(e);
 }
 
-void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection, 
+void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
 	QMouseEvent *pMouseEvent)
 {
 	setAutoBufferSwap(false);
@@ -1036,7 +1036,7 @@ void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
     select(selectionID, multiSelection);
 }
 
-void repo::gui::RepoGLCWidget::select(GLC_uint selectionID, 
+void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
     bool multiSelection,
     bool unselectSelected,
     bool repaint)
@@ -1046,17 +1046,17 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 	{
         if (unselectSelected
             && (!glcWorld.isSelected(selectionID))
-			&& (glcWorld.selectionSize() > 0) 
+			&& (glcWorld.selectionSize() > 0)
 			&& (!multiSelection))
 		{
 			glcWorld.unselectAll();
-			emit selectionChanged(this, getSelectionList());			
+			emit selectionChanged(this, getSelectionList());
 			//emit unselectAll();
 		}
 		if (!glcWorld.isSelected(selectionID))
 		{
 			glcWorld.select(selectionID);
-			emit selectionChanged(this, getSelectionList());			
+			emit selectionChanged(this, getSelectionList());
 			//emit updateSelection(m_World.collection()->selection());
 		}
         else if (unselectSelected && glcWorld.isSelected(selectionID) && multiSelection)
@@ -1079,7 +1079,7 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 	{
 		// if a geometry is selected, unselect it
 		glcWorld.unselectAll();
-		emit selectionChanged(this, getSelectionList());			
+		emit selectionChanged(this, getSelectionList());
 		//emit unselectAll();
 	}
 
@@ -1088,7 +1088,7 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 }
 
 void repo::gui::RepoGLCWidget::select(
-        QString &name,
+        const QString &name,
         bool multiSelection,
         bool unselectSelected,
         bool repaint)
@@ -1112,7 +1112,7 @@ void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
 		QString occurrenceName = occurrence->name();
 		glcOccurrences.insert(occurrenceName, occurrence);
 
-		if (occurrence->structInstance() && 
+		if (occurrence->structInstance() &&
 			occurrence->structInstance()->structReference())
 		{
 			GLC_StructReference * glcReference = occurrence->structInstance()->structReference();
@@ -1125,7 +1125,7 @@ void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
 					for (int i = 0; i < pRep->numberOfBody(); ++i)
 					{
 						GLC_Mesh * glcMesh = dynamic_cast<GLC_Mesh*>(pRep->geomAt(i));
-					
+
 						if (glcMesh)
 						{
 							glcMesh->setColorPearVertex(true);
@@ -1145,7 +1145,7 @@ void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
         for (it = children.begin(); it != children.end(); ++it)
         {
             GLC_StructOccurence *child = *it;
-			extractMeshes(child);	
+			extractMeshes(child);
         }
 	}
 }
