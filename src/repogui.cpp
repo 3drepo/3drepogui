@@ -627,6 +627,12 @@ void repo::gui::RepoGUI::open3DDiff()
 					Q_ARG(qreal, 0.9),
 					Q_ARG(QColor, color));
 
+                core::RepoPCA pca = ((core::RepoNodeMesh*)(it->second))->getPCA();
+                const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
+                const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
+                const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
+                widgetA->addBoundingBox(lx, ly, lz, pca.getXYZTransformationMatrix());
+
 				std::cerr << "[" << it->first << "]" << it->second->getName();
 
                 std::cerr << "\n";
@@ -634,8 +640,10 @@ void repo::gui::RepoGUI::open3DDiff()
             widgetA->updateGL();
 
 
+            //------------------------------------------------------------------
+
             core::RepoSelfSimilarSet selfSimilarSetB = diff.getSelfSimilarSetB();
-            for (auto it = selfSimilarSetA.begin(); it != selfSimilarSetA.end(); ++it)
+            for (auto it = selfSimilarSetB.begin(); it != selfSimilarSetB.end(); ++it)
             {
 				if(currentKey.compare(it->first))
 				{
@@ -651,6 +659,14 @@ void repo::gui::RepoGUI::open3DDiff()
 					Q_ARG(qreal, 0.9),
 					Q_ARG(QColor, color));
 				std::cerr << "[" << it->first << "] " << it->second->getName();
+
+                core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);
+
+
+                widgetB->addBoundingBox(mesh->getBoundingBox().getLengthX(),
+                                        mesh->getBoundingBox().getLengthY(),
+                                        mesh->getBoundingBox().getLengthZ(),
+                                        mesh->getBoundingBox().getTransformationMatrix());
 
                 std::cerr << "\n";
               }
