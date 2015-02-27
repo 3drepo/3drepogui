@@ -631,7 +631,12 @@ void repo::gui::RepoGUI::open3DDiff()
                 const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
                 const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
                 const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
-                widgetA->addBoundingBox(lx, ly, lz, pca.getXYZTransformationMatrix());
+
+                widgetA->addBoundingBox(
+                            pca.getUVWBoundingBox().getLengthX(),
+                            pca.getUVWBoundingBox().getLengthY(),
+                            pca.getUVWBoundingBox().getLengthZ(),
+                            pca.getXYZTransformationMatrix());
 
 				std::cerr << "[" << it->first << "]" << it->second->getName();
 
