@@ -227,10 +227,10 @@ public :
     //--------------------------------------------------------------------------
 
 	//! Returns the 3D Repo scene of this widget.
-    const core::RepoGraphScene *getRepoScene() const { return repoScene; }
+    core::RepoGraphScene *getRepoScene() const { return repoScene; }
 
 	//! Returns the GLC World of this widget.
-	const GLC_World& getGLCWorld() const;
+    GLC_World getGLCWorld() const { return glcWorld; }
 
     int heightForWidth(int w) const { return w; }
 

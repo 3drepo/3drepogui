@@ -94,6 +94,7 @@
      <string>Tools</string>
     </property>
     <addaction name="actionUserManager"/>
+    <addaction name="actionMetadataManager"/>
     <addaction name="separator"/>
     <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
@@ -465,6 +466,11 @@
   <action name="actionSelection_Tree">
    <property name="text">
     <string>Selection Tree</string>
+   </property>
+  </action>
+  <action name="actionMetadataManager">
+   <property name="text">
+    <string>Metadata Manager...</string>
    </property>
   </action>
  </widget>

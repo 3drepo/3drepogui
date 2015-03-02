@@ -173,6 +173,9 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
     ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
 
+    // Metadata Management...
+    QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
+
 
     // 3D Diff...
     QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
@@ -691,6 +694,28 @@ void repo::gui::RepoGUI::openFile()
         QString::null,
         repo::core::AssimpWrapper::getImportFormats().c_str());
     loadFiles(filePaths);
+}
+
+void repo::gui::RepoGUI::openMetadataManager()
+{
+    if (const RepoGLCWidget *widget = getActiveWidget())
+    {
+        QString filePath = QFileDialog::getOpenFileName(
+            this,
+            tr("Select one or more files to open"),
+            QString::null,
+            "*.csv");
+
+        core::RepoGraphScene *repoScene = widget->getRepoScene();
+
+        core::RepoCSV repoCSV;
+
+
+            repoScene->addCSVMetadata(filePath.toStdString());
+
+    }
+    else
+        std::cerr << "3D model has to be open." << std::endl;
 }
 
 void repo::gui::RepoGUI::openSettings() const

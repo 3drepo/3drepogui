@@ -684,11 +684,6 @@ void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 //
 //------------------------------------------------------------------------------
 
-const GLC_World& repo::gui::RepoGLCWidget::getGLCWorld() const
-{
-	return glcWorld;
-}
-
 std::vector<std::string> repo::gui::RepoGLCWidget::getSelectionList() const
 {
 	std::vector<std::string> selectedNames;

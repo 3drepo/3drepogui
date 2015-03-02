@@ -106,6 +106,9 @@ public slots:
     //! Opens a file dialog.
     void openFile();
 
+    //! Opens metadata manager.
+    void openMetadataManager();
+
     //! Opens settings dialog.
     void openSettings() const;
 
