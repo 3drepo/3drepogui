@@ -26,6 +26,7 @@
 #include <Repo3DDiff>
 #include <RepoNodeRevision>
 #include <RepoPCA>
+#include <RepoCSV>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -706,12 +707,8 @@ void repo::gui::RepoGUI::openMetadataManager()
             QString::null,
             "*.csv");
 
-        core::RepoGraphScene *repoScene = widget->getRepoScene();
-
-        core::RepoCSV repoCSV;
-
-
-            repoScene->addCSVMetadata(filePath.toStdString());
+        core::RepoNodeAbstractSet metadata = core::RepoCSV::readMetadata(filePath.toStdString());
+        widget->getRepoScene()->addMetadata(metadata,false);
 
     }
     else
