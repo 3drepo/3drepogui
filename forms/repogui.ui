@@ -96,6 +96,7 @@
     <addaction name="actionUserManager"/>
     <addaction name="actionMetadataManager"/>
     <addaction name="separator"/>
+    <addaction name="actionOptimize_Graph"/>
     <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
@@ -471,6 +472,11 @@
   <action name="actionMetadataManager">
    <property name="text">
     <string>Metadata Manager...</string>
+   </property>
+  </action>
+  <action name="actionOptimize_Graph">
+   <property name="text">
+    <string>Optimize Graph</string>
    </property>
   </action>
  </widget>

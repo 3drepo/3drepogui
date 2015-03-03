@@ -118,6 +118,8 @@ public slots:
     //! Opens user management dialog box.
     void openUserManager() const;
 
+    void optimizeGraph();
+
     //! Refreshes currently connected database.
     void refresh();
 

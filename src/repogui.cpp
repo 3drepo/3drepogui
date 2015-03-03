@@ -27,6 +27,7 @@
 #include <RepoNodeRevision>
 #include <RepoPCA>
 #include <RepoCSV>
+#include <RepoGraphOptimizer>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -176,6 +177,9 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     // Metadata Management...
     QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
+
+    // Metadata Management...
+    QObject::connect(ui->actionOptimize_Graph, SIGNAL(triggered()), this, SLOT(optimizeGraph()));
 
 
     // 3D Diff...
@@ -707,12 +711,23 @@ void repo::gui::RepoGUI::openMetadataManager()
             QString::null,
             "*.csv");
 
-        core::RepoNodeAbstractSet metadata = core::RepoCSV::readMetadata(filePath.toStdString());
+        core::RepoCSV repoCSV;
+        core::RepoNodeAbstractSet metadata = repoCSV.readMetadata(filePath.toStdString());
         widget->getRepoScene()->addMetadata(metadata,false);
-
     }
-    else
-        std::cerr << "3D model has to be open." << std::endl;
+}
+
+void repo::gui::RepoGUI::optimizeGraph()
+{
+    if (const RepoGLCWidget *widget = getActiveWidget())
+    {
+        core::RepoGraphScene* scene = widget->getRepoScene();
+        core::RepoGraphOptimizer optimizer(scene);
+
+        optimizer.collapseZeroMeshTransformations();
+
+        optimizer.collapseSingleMeshTransformations();
+    }
 }
 
 void repo::gui::RepoGUI::openSettings() const
