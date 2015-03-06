@@ -16,10 +16,10 @@
  */
 
 #include "repo_mdisubwindow.h"
-#include "repo_glcwidget.h"
+#include "../renderers/repo_glcwidget.h"
 #include "../primitives/repo_fontawesome.h"
 
-#include "../oculus/repo_oculus.h"
+#include "../renderers/repo_oculus.h"
 
 repo::gui::RepoMdiSubWindow::RepoMdiSubWindow(
         QWidget *parent,

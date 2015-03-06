@@ -42,7 +42,7 @@
 #include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
-#include "oculus/repo_oculus.h"
+#include "renderers/repo_oculus.h"
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"

@@ -18,7 +18,7 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 
-#include "../oculus/repo_oculus.h"
+#include "../renderers/repo_oculus.h"
 #include "repodialogoculus.h"
 #include "ui_repodialogoculus.h"
 
@@ -88,6 +88,12 @@ int repo::gui::RepoDialogOculus::exec()
                     RepoOculus::singleBufferFormat(),
                     glcWidget->windowTitle());
         oculusWidget->setGLCWorld(glcWidget->getGLCWorld());
+
+
+
+        QObject::connect(
+            glcWidget, SIGNAL(cameraChangedSignal(const GLC_Camera &)),
+            oculusWidget, SLOT(setCamera(const GLC_Camera &)));
 
         QObject::connect(oculusWidget, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setCentralWidget(oculusWidget);

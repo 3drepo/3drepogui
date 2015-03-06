@@ -71,6 +71,15 @@ public :
     //! Retruns the icon associated with Oculus widget.
     static QIcon getIcon();
 
+public slots :
+
+    //! Sets the camera of the view.
+    void setCamera(const GLC_Camera&);
+
+signals :
+
+    void cameraChangedSignal(const GLC_Camera&);
+
 protected :
 
     void initializeGL();
