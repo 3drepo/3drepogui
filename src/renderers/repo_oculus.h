@@ -80,7 +80,10 @@ signals :
 
     void cameraChangedSignal(const GLC_Camera&);
 
-protected :
+    //! Emitted when left eye texture has been updates.
+    void eyeTextureChanged(int eye, const QImage&);
+
+public :
 
     void initializeGL();
 
@@ -94,18 +97,15 @@ protected :
 
     void mouseReleaseEvent(QMouseEvent *e);
 
+    void wheelEvent(QWheelEvent * e);
+
+protected :
+
     void paintGL();
 
     void paintGLC(int eye);
 
     void resizeGL(int w, int h);
-
-    void wheelEvent(QWheelEvent * e);
-
-
-
-
-
 
 private :
 

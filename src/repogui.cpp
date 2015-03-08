@@ -43,6 +43,7 @@
 #include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
 #include "renderers/repo_oculus.h"
+#include "renderers/repooculustexturerenderer.h"
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
@@ -554,9 +555,12 @@ void repo::gui::RepoGUI::oculus()
         std::cout << "A 3D window has to be open." << std::endl;
     else
     {
-        RepoDialogOculus oculusDialog(activeSubWidget, this);
+        RepoMdiSubWindow* textureSubwindow = ui->mdiArea->addOculusTextureSubWindow();
+        RepoDialogOculus oculusDialog(activeSubWidget,
+                                      textureSubwindow->widget<RepoOculusTextureRenderer*>(),
+                                      this);
         oculusDialog.exec();
-        //ui->mdiArea->activeSubWindowToOculus();
+
     }
 
 }

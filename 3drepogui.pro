@@ -66,7 +66,8 @@ HEADERS  += src/repogui.h \
             src/reposettings.h \
             src/widgets/repofilterabletreewidget.h \
             src/widgets/reposelectiontreedockwidget.h \
-            src/primitives/repo_color.h
+            src/primitives/repo_color.h \
+    src/renderers/repooculustexturerenderer.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -104,7 +105,8 @@ SOURCES += src/main.cpp\
            src/reposettings.cpp \
            src/widgets/repofilterabletreewidget.cpp \
            src/widgets/reposelectiontreedockwidget.cpp \
-            src/primitives/repo_color.cpp
+            src/primitives/repo_color.cpp \
+    src/renderers/repooculustexturerenderer.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

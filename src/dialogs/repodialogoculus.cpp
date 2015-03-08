@@ -24,10 +24,12 @@
 
 repo::gui::RepoDialogOculus::RepoDialogOculus(
         const RepoGLCWidget *glcWidget,
+        RepoOculusTextureRenderer *textureRenderer,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoDialogOculus)
     , glcWidget(glcWidget)
+    , textureRenderer(textureRenderer)
 {
     ui->setupUi(this);
     setWindowTitle(tr("Oculus Rift Settings"));
@@ -89,11 +91,7 @@ int repo::gui::RepoDialogOculus::exec()
                     glcWidget->windowTitle());
         oculusWidget->setGLCWorld(glcWidget->getGLCWorld());
 
-
-
-        QObject::connect(
-            glcWidget, SIGNAL(cameraChangedSignal(const GLC_Camera &)),
-            oculusWidget, SLOT(setCamera(const GLC_Camera &)));
+        textureRenderer->connect(oculusWidget);
 
         QObject::connect(oculusWidget, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setCentralWidget(oculusWidget);
