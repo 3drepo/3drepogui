@@ -7,3 +7,6 @@
 [submodule "submodules/3drepocore"]
 	path = submodules/3drepocore
 	url = https://github.com/3drepo/3drepocore
+[submodule "submodules/UnrealEngine"]
+	path = submodules/UnrealEngine
+	url = https://github.com/3drepo/UnrealEngine
