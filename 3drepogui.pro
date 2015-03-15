@@ -16,6 +16,7 @@
 include(3drepocore.pri)
 include(glclib.pri)
 include(oculus.pri)
+include(unrealengine.pri)
 
 #-------------------------------------------------------------------------------
 
