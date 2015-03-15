@@ -10,6 +10,7 @@ Cross-platform C++ GUI written in Qt.
 - [Font Awesome v4.2.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.2.0)
 - [Qt v5.3](https://qt.gitorious.org/qt)
 - [Oculus SDK 0.4.3](https://developer.oculus.com/downloads/)
+- [UnrealEngine 4.7.2](https://github.com/3drepo/UnrealEngine)
 
 ## Compiling on Windows
 
@@ -26,6 +27,11 @@ See also [http://qt-project.org/wiki/Compiling-ICU-with-MSVC](http://qt-project.
 ### Oculus
 
 Download and install Oculus Runtime for Windows. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
+
+### UnrealEngine
+
+Firstly, register for an Unreal account and follow these instructions to link the account with Epic Games' GitHub private repository: [https://www.unrealengine.com/ue4-on-github](https://www.unrealengine.com/ue4-on-github)
+Once forked, follow the installation instructions (the page is inaccessible unless you're registered and linked): [https://github.com/EpicGames/UnrealEngine](https://github.com/EpicGames/UnrealEngine) 
 
 ## Compiling on Mac
 
