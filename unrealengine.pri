@@ -23,11 +23,12 @@
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/submodules/UnrealEngine/Engine/Binaries/Win64/ -lUnrealHeaderTool-Core
 
 win32:DEFINES += "UBT_COMPILED_PLATFORM=Win64"
-win32:DEFINES += "WIN32=1"
+#win32:DEFINES += "WIN32=1"
 
 # See https://msdn.microsoft.com/en-us/library/windows/desktop/aa383745.aspx
-win32:DEFINES += "_WIN32_WINNT=0x0502"
-win32:DEFINES += "WINVER=0x0502" # Win Server 2003
+win32:DEFINES += "_WIN32_WINNT=_WIN32_WINNT_WS03"
+win32:DEFINES += "WINVER=_WIN32_WINNT_WS03" # Win Server 2003
+win32:DEFINES += "NTDDI_VERSION=NTDDI_WS03"
 win32:DEFINES += "PLATFORM_WINDOWS=1"
 
 win32:INCLUDEPATH += "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/INCLUDE" \
@@ -63,7 +64,7 @@ DEFINES += "FP_FIRSTPERSON_API="
 DEFINES += "UE_ENABLE_ICU=1"
 DEFINES += "WITH_STEAMWORKS=0"
 DEFINES += "WITH_DIRECTXMATH=0"
-DEFINES += "CORE_API="s
+DEFINES += "CORE_API="
 DEFINES += "COREUOBJECT_API="
 DEFINES += "WITH_PHYSX=1"
 DEFINES += "WITH_APEX=1"

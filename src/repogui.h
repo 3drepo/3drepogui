@@ -30,7 +30,6 @@
 #include "renderers/repo_glcwidget.h"
 //------------------------------------------------------------------------------
 
-
 namespace Ui
 {
     class RepoGUI;
