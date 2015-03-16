@@ -47,6 +47,9 @@
      <property name="lineWidth">
       <number>0</number>
      </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>

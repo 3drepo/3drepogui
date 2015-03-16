@@ -20,9 +20,10 @@
 #define REPO_FILTERABLE_TREE_WIDGET_H
 
 #include <QWidget>
-#include<QStandardItemModel>
-#include<QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QProgressBar>
+#include <QAbstractItemView>
 
 namespace Ui {
     class RepoFilterableTreeWidget;
@@ -38,10 +39,8 @@ class RepoFilterableTreeWidget : public QWidget
 
 public:
 
-    RepoFilterableTreeWidget(
-            const QList<QString>& headers,
-            QSortFilterProxyModel* proxy = new QSortFilterProxyModel(),
-            QWidget *parent = 0);
+    //! Constructs a default model (no headers) and default basic proxy.
+    RepoFilterableTreeWidget(QWidget *parent = 0);
 
     //! Constructor to remove the UI elements and tree models.
     ~RepoFilterableTreeWidget();
@@ -50,8 +49,11 @@ public:
 public slots:
 
     //! Adds a single row to the tree view.
-    addRow(const QList<QStandardItem*>& row)
+    void addTopLevelRow(const QList<QStandardItem*>& row)
     { model->invisibleRootItem()->appendRow(row); }
+
+    void addTopLevelRow(QStandardItem* item)
+    { model->invisibleRootItem()->appendRow(item); }
 
 public:
 
@@ -63,10 +65,68 @@ public:
     QSortFilterProxyModel* getProxyModel() const
     { return proxy; }
 
+    //! Returns progress bar.
     QProgressBar* getProgressBar() const;
+
+    QItemSelectionModel* getSelectionModel() const;
+
+    //! Sets the headers on this model.
+    void setHeaders(const QList<QString>& headers);
+
+    //! Takes ownership of the given proxy pointer (and deletes memory appropriately).
+    void setProxyModel(QSortFilterProxyModel* proxy = new QSortFilterProxyModel());
+
+    /*!
+     * Sets the selection mode of the tree view.
+     * See http://doc.qt.io/qt-5/qabstractitemview.html#SelectionMode-enum
+     */
+    void setSelectionMode(QAbstractItemView::SelectionMode mode);
+
+    /*!
+     * When the user selects an item, any already-selected item becomes
+     * unselected, and the user cannot unselect the selected item by clicking on
+     * it.
+     */
+    void setSingleSelectionMode()
+    { setSelectionMode(QAbstractItemView::SingleSelection); }
+
+    /*!
+     * When the user selects an item in the usual way, the selection is cleared
+     * and the new item selected. However, if the user presses the Shift key
+     * while clicking on an item, all items between the current item and the
+     * clicked item are selected or unselected, depending on the state of the
+     * clicked item.
+     */
+    void setContiguousSelection()
+    { setSelectionMode(QAbstractItemView::ContiguousSelection); }
+
+    /*!
+     * When the user selects an item in the usual way, the selection is cleared
+     * and the new item selected. However, if the user presses the Ctrl key when
+     * clicking on an item, the clicked item gets toggled and all other items
+     * are left untouched. If the user presses the Shift key while clicking on
+     * an item, all items between the current item and the clicked item are
+     * selected or unselected, depending on the state of the clicked item.
+     * Multiple items can be selected by dragging the mouse over them.
+     */
+    void setExtendedSelection()
+    { setSelectionMode(QAbstractItemView::ExtendedSelection); }
+
+    /*!
+     * When the user selects an item in the usual way, the selection status of
+     * that item is toggled and the other items are left alone. Multiple items
+     * can be toggled by dragging the mouse over them.
+     */
+    void setMultiSelection()
+    { setSelectionMode(QAbstractItemView::MultiSelection); }
+
+    //! Items cannot be selected.
+    void setNoSelection()
+    { setSelectionMode(QAbstractItemView::NoSelection); }
 
 private:
 
+    //! UI var.
     Ui::RepoFilterableTreeWidget* ui;
 
     //! Default model for the databases.

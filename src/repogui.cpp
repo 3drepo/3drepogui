@@ -25,6 +25,9 @@
 #include <RepoLogger>
 #include <Repo3DDiff>
 #include <RepoNodeRevision>
+#include <RepoPCA>
+#include <RepoCSV>
+#include <RepoGraphOptimizer>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -39,9 +42,12 @@
 #include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
-#include "oculus/repo_oculus.h"
+#include "renderers/repo_oculus.h"
+#include "renderers/repooculustexturerenderer.h"
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
+#include "widgets/reposelectiontreedockwidget.h"
+#include "primitives/repo_color.h"
 
 
 //------------------------------------------------------------------------------
@@ -50,9 +56,10 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 
-repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::RepoGUI)
+repo::gui::RepoGUI::RepoGUI(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::RepoGUI)
+    , panelsMenu(0)
 {
     ui->setupUi(this);
     restoreSettings();
@@ -169,6 +176,12 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
     QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
     ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
 
+    // Metadata Management...
+    QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
+
+    // Metadata Management...
+    QObject::connect(ui->actionOptimize_Graph, SIGNAL(triggered()), this, SLOT(optimizeGraph()));
+
 
     // 3D Diff...
     QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
@@ -202,12 +215,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
                     RepoFontAwesome::fa_th));
 
 
+    // Selection Tree (Scene Graph)
+    QObject::connect(ui->actionSelection_Tree, SIGNAL(triggered()),
+                     this, SLOT(addSelectionTree()));
 
     // Panels
-    QMenu *menuPanels = QMainWindow::createPopupMenu();
-    menuPanels->setTitle(tr("Dock Widgets"));
-    menuPanels->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
-    ui->menuWindow->addMenu(menuPanels);
+    panelsMenu = createPanelsMenu();
+    ui->menuWindow->addMenu(panelsMenu);
 
 
     //--------------------------------------------------------------------------
@@ -255,14 +269,40 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent) :
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
+
+    if (panelsMenu)
+        delete panelsMenu;
 }
 
 
 //------------------------------------------------------------------------------
 //
-// Public
+// Public Slots
 //
 //------------------------------------------------------------------------------
+
+void repo::gui::RepoGUI::addSelectionTree(
+        RepoGLCWidget* widget,
+        Qt::DockWidgetArea area)
+{
+    if (!widget)
+    {
+        std::cerr << "A window has to be selected" << std::endl;
+    }
+    else
+    {
+        RepoSelectionTreeDockWidget* dock =
+                new RepoSelectionTreeDockWidget(widget, this);
+        this->addDockWidget(area, dock);
+
+        if (panelsMenu)
+            delete panelsMenu;
+        panelsMenu = createPanelsMenu();
+        ui->menuWindow->addMenu(panelsMenu);
+
+        dock->show();
+    }
+}
 
 void repo::gui::RepoGUI::commit()
 {
@@ -381,6 +421,14 @@ void repo::gui::RepoGUI::connect()
     }
 }
 
+QMenu* repo::gui::RepoGUI::createPanelsMenu()
+{
+    QMenu* panelsMenu = QMainWindow::createPopupMenu();
+    panelsMenu->setTitle(tr("Dock Widgets"));
+    panelsMenu->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
+    return panelsMenu;
+}
+
 void repo::gui::RepoGUI::dropDatabase()
 {
     QString dbName = ui->widgetRepository->getSelectedDatabase();
@@ -426,7 +474,7 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-const repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
+repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
 {
     RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
     if (!widget)
@@ -507,9 +555,12 @@ void repo::gui::RepoGUI::oculus()
         std::cout << "A 3D window has to be open." << std::endl;
     else
     {
-        RepoDialogOculus oculusDialog(activeSubWidget, this);
+        RepoMdiSubWindow* textureSubwindow = ui->mdiArea->addOculusTextureSubWindow();
+        RepoDialogOculus oculusDialog(activeSubWidget,
+                                      textureSubwindow->widget<RepoOculusTextureRenderer*>(),
+                                      this);
         oculusDialog.exec();
-        //ui->mdiArea->activeSubWindowToOculus();
+
     }
 
 }
@@ -519,13 +570,125 @@ void repo::gui::RepoGUI::open3DDiff()
     ui->mdiArea->closeHiddenSubWindows();
     if (ui->mdiArea->subWindowList().count() == 2)
     {
-        RepoGLCWidget *oldScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
-        RepoGLCWidget *newScene = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
+        RepoGLCWidget *widgetA = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
+        RepoGLCWidget *widgetB = dynamic_cast<RepoGLCWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
 
-        if (oldScene && newScene)
+        if (widgetA && widgetB)
         {
-            core::Repo3DDiff diff;
-            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
+
+            // TODO: make asynchronous as trees can be very large
+            addSelectionTree(widgetA, Qt::LeftDockWidgetArea);
+            addSelectionTree(widgetB, Qt::RightDockWidgetArea);
+
+            ui->mdiArea->maximizeSubWindows();
+
+            ui->actionLink->setChecked(true);
+            ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+
+
+            core::Repo3DDiff diff(widgetA->getRepoScene(), widgetB->getRepoScene());
+
+            // TODO: make asynchronous
+            diff.diff();
+
+            core::RepoSelfSimilarSet selfSimilarSetA = diff.getSelfSimilarSetA();
+			std::string currentKey("");
+			RepoColor color;
+
+            for (auto it = selfSimilarSetA.begin(); it != selfSimilarSetA.end(); ++it)
+            {
+				if((currentKey.compare(it->first)))
+				{
+					currentKey = it->first;
+	                color = RepoColor::getNext();
+				}
+
+
+//                RepoColor color;
+//                for (auto it = selfSimilarSetA.begin(i); it != selfSimilarSetA.end(i); ++it)
+//                {
+//                    if (!color.isValid())
+//                         color = RepoColor::getNext();
+
+//                    QMetaObject::invokeMethod(
+//                        widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+//                        Q_ARG(QString, QString::fromStdString((*it)->getName())),
+//                        Q_ARG(qreal, 0.9),
+//                        Q_ARG(QColor, color));
+//                    std::cerr << " " << (*it)->getName();
+
+//                    core::RepoPCA pca = ((core::RepoNodeMesh*)(*it))->getPCA();
+//                    //---------------------------------------------------------------------
+//                    // Add bounding boxes.
+//                    const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
+//                    const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
+//                    const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
+//                    widgetA->addBoundingBox(lx, ly, lz, pca.getTransformationMatrix());
+
+//                    std::cerr << std::endl;
+//                    std::cerr << "Principals: " << lx << ", " << ly << ", " << lz << "   " << std::endl;
+//                    std::cerr << "BB: " << pca.getUVWBoundingBox().getLengthX() << ", " << pca.getUVWBoundingBox().getLengthY() << ", " << pca.getUVWBoundingBox().getLengthZ() << std::endl;
+
+//                }
+
+                std::cerr << "bucket #" << currentKey << " contains:";
+
+				QMetaObject::invokeMethod(
+					widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+					Q_ARG(QString, QString::fromStdString(it->second->getName())),
+					Q_ARG(qreal, 0.9),
+					Q_ARG(QColor, color));
+
+                core::RepoPCA pca = ((core::RepoNodeMesh*)(it->second))->getPCA();
+                const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
+                const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
+                const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
+
+                widgetA->addBoundingBox(
+                            pca.getUVWBoundingBox().getLengthX(),
+                            pca.getUVWBoundingBox().getLengthY(),
+                            pca.getUVWBoundingBox().getLengthZ(),
+                            pca.getXYZTransformationMatrix());
+
+				std::cerr << "[" << it->first << "]" << it->second->getName();
+
+                std::cerr << "\n";
+              }
+            widgetA->updateGL();
+
+
+            //------------------------------------------------------------------
+
+            core::RepoSelfSimilarSet selfSimilarSetB = diff.getSelfSimilarSetB();
+            for (auto it = selfSimilarSetB.begin(); it != selfSimilarSetB.end(); ++it)
+            {
+				if(currentKey.compare(it->first))
+				{
+					currentKey = it->first;
+	                color = RepoColor::getNext();
+				}
+
+                std::cerr << "bucket #" << currentKey << " contains:";
+
+				QMetaObject::invokeMethod(
+					widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+					Q_ARG(QString, QString::fromStdString(it->second->getName())),
+					Q_ARG(qreal, 0.9),
+					Q_ARG(QColor, color));
+				std::cerr << "[" << it->first << "] " << it->second->getName();
+
+                core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);
+
+
+                widgetB->addBoundingBox(mesh->getBoundingBox().getLengthX(),
+                                        mesh->getBoundingBox().getLengthY(),
+                                        mesh->getBoundingBox().getLengthZ(),
+                                        mesh->getBoundingBox().getTransformationMatrix());
+
+                std::cerr << "\n";
+              }
+              widgetB->updateGL();
+
         }
     }
     else
@@ -540,6 +703,35 @@ void repo::gui::RepoGUI::openFile()
         QString::null,
         repo::core::AssimpWrapper::getImportFormats().c_str());
     loadFiles(filePaths);
+}
+
+void repo::gui::RepoGUI::openMetadataManager()
+{
+    if (const RepoGLCWidget *widget = getActiveWidget())
+    {
+        QString filePath = QFileDialog::getOpenFileName(
+            this,
+            tr("Select one or more files to open"),
+            QString::null,
+            "*.csv");
+
+        core::RepoCSV repoCSV;
+        core::RepoNodeAbstractSet metadata = repoCSV.readMetadata(filePath.toStdString());
+        widget->getRepoScene()->addMetadata(metadata,false);
+    }
+}
+
+void repo::gui::RepoGUI::optimizeGraph()
+{
+    if (const RepoGLCWidget *widget = getActiveWidget())
+    {
+        core::RepoGraphScene* scene = widget->getRepoScene();
+        core::RepoGraphOptimizer optimizer(scene);
+
+        optimizer.collapseZeroMeshTransformations();
+
+        optimizer.collapseSingleMeshTransformations();
+    }
 }
 
 void repo::gui::RepoGUI::openSettings() const
@@ -818,4 +1010,3 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
 }
-

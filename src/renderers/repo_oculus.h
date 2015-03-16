@@ -71,7 +71,19 @@ public :
     //! Retruns the icon associated with Oculus widget.
     static QIcon getIcon();
 
-protected :
+public slots :
+
+    //! Sets the camera of the view.
+    void setCamera(const GLC_Camera&);
+
+signals :
+
+    void cameraChangedSignal(const GLC_Camera&);
+
+    //! Emitted when left eye texture has been updates.
+    void eyeTextureChanged(int eye, const QImage&);
+
+public :
 
     void initializeGL();
 
@@ -85,18 +97,15 @@ protected :
 
     void mouseReleaseEvent(QMouseEvent *e);
 
+    void wheelEvent(QWheelEvent * e);
+
+protected :
+
     void paintGL();
 
     void paintGLC(int eye);
 
     void resizeGL(int w, int h);
-
-    void wheelEvent(QWheelEvent * e);
-
-
-
-
-
 
 private :
 
