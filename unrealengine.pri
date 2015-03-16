@@ -18,17 +18,18 @@
 # See https://wiki.unrealengine.com/Using_QtCreator_With_UnrealEngine4
 # For doxygen: https://forums.unrealengine.com/showthread.php?15803-UE4-C-Documentation-within-Qt-Creator
 # API: https://docs.unrealengine.com/latest/INT/Programming/
+# https://answers.unrealengine.com/questions/190406/project-fails-to-compile.html
 
 #win32:CONFIG(release, debug|release): LIBS += -L$$PWD/submodules/UnrealEngine/Engine/Binaries/Win64/ -lUnrealHeaderTool-Core
 #else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/submodules/UnrealEngine/Engine/Binaries/Win64/ -lUnrealHeaderTool-Core
 
 win32:DEFINES += "UBT_COMPILED_PLATFORM=Win64"
-#win32:DEFINES += "WIN32=1"
+win32:DEFINES += "WIN32=1"
 
 # See https://msdn.microsoft.com/en-us/library/windows/desktop/aa383745.aspx
-win32:DEFINES += "_WIN32_WINNT=_WIN32_WINNT_WS03"
-win32:DEFINES += "WINVER=_WIN32_WINNT_WS03" # Win Server 2003
-win32:DEFINES += "NTDDI_VERSION=NTDDI_WS03"
+#win32:DEFINES += "_WIN32_WINNT=_WIN32_WINNT_VISTA"
+#win32:DEFINES += "WINVER=_WIN32_WINNT_WS03" # Win Server 2003
+#win32:DEFINES += "NTDDI_VERSION=NTDDI_WS03"
 win32:DEFINES += "PLATFORM_WINDOWS=1"
 
 win32:INCLUDEPATH += "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/INCLUDE" \

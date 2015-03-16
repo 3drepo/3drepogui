@@ -19,6 +19,8 @@
 #ifndef REPO_IRENDERER_H
 #define REPO_IRENDERER_H
 
+#include <boost/uuid/uuid.hpp>
+
 namespace repo {
 namespace gui {
 

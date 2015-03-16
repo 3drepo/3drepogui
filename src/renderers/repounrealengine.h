@@ -19,6 +19,8 @@
 #ifndef REPO_UNREAL_ENGINE_H
 #define REPO_UNREAL_ENGINE_H
 
+#include <QGLWidget>
+
 //------------------------------------------------------------------------------
 // Unreal Engine 4
 #include "EngineMinimal.h"
