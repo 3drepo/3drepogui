@@ -24,7 +24,7 @@ DEFINES += "WINVER=0x0600"
 DEFINES += "PLATFORM_WINDOWS=1"
 DEFINES += "NDEBUG=1"
 DEFINES += "UE_BUILD_DEVELOPMENT=1"
-DEFINES += "ORIGINAL_FILE_NAME="UE4Editor-FP_FirstPerson.dll"
+#DEFINES += "ORIGINAL_FILE_NAME=UE4Editor-FP_FirstPerson.dll"
 DEFINES += "DEPRECATED_FORGAME=DEPRECATED"
 DEFINES += "FP_FIRSTPERSON_API="
 DEFINES += "UE_ENABLE_ICU=1"
@@ -76,226 +76,226 @@ DEFINES += "LEVELEDITOR_API="
 DEFINES += "SETTINGS_API="
 DEFINES += "KISMET_API="
 
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source
-..\..\Source
-..\Build\Win64\Inc\FP_FirstPerson
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Internationalization
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Async
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Concurrency
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Containers
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Delegates
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\GenericPlatform
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\HAL
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Logging
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Math
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Misc
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Modules
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Modules\Boilerplate
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\ProfilingDebugging
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Serialization
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Serialization\Csv
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Stats
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Templates
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\UObject
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core\Public\Windows
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Core
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\CoreUObject
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\Blueprint
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\Misc
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\Serialization
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\Templates
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject\Public\UObject
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\CoreUObject
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Engine
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\AI
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\EdGraph
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\Features
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\Net
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\Slate
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\Tests
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\VisualLogger
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine\Public\AI\Navigation
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Json
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Json\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Json\Public\Dom
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Json\Public\Policies
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Json\Public\Serialization
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Json
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\SlateCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Animation
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Application
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Brushes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Fonts
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Input
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Layout
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Logging
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Rendering
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Sound
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Styling
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Textures
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Types
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore\Public\Widgets
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\InputCore\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\InputCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\InputCore\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\InputCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SlateCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Slate
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Application
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Commands
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Docking
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Layout
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\MultiBox
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Notifications
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Styling
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Text
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Views
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Text\Android
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Framework\Text\IOS
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Colors
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Docking
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Images
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Input
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\LayerManager
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Layout
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Navigation
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Notifications
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Text
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate\Public\Widgets\Views
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Slate
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Messaging
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Messaging\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Messaging\Public\Deprecated
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Messaging\Public\Helpers
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Messaging
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\RenderCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\RenderCore\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\RenderCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\RHI
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\RHI\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\RHI
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\ShaderCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\ShaderCore\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\ShaderCore
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\AssetRegistry
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\AssetRegistry\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\AssetRegistry
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineMessages\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\EngineMessages
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineMessages\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineMessages
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineSettings\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\EngineSettings
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineSettings\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\EngineSettings
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\SynthBenchmark
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\SynthBenchmark\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Renderer
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Renderer\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Renderer
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\SynthBenchmark
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\AIModule\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\AIModule\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\AIModule
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\AIModule
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\VectorVM
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\VectorVM\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\VectorVM
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\DatabaseSupport
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\DatabaseSupport\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\DatabaseSupport
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Programs\UnrealLightmass\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\UnrealEd
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\AutoReimport
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Commandlets
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Dialogs
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\DragAndDrop
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\FeaturePack
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Features
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Kismet2
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Layers
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Tests
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd\Public\Toolkits
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\BspMode
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\BspMode\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\BspMode
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Documentation
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Documentation\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Documentation
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Projects
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Projects\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Projects\Public\Interfaces
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Projects
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\SandboxFile
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SandboxFile\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\SandboxFile
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\EditorStyle
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\EditorStyle\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\EditorStyle\Public\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\EditorStyle\Public\Interfaces
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\EditorStyle
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\SourceControl
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\SourceControl\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\SourceControl\Public\Tests
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\SourceControl
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEdMessages\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\UnrealEdMessages
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEdMessages\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEdMessages
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\BlueprintGraph\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\BlueprintGraph
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\BlueprintGraph\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\BlueprintGraph
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\HTTP
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Online\HTTP\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Online\HTTP\Public\Interfaces
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Online\HTTP
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\XAudio2
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Windows\XAudio2\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Windows\XAudio2
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\UserFeedback
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UserFeedback\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UserFeedback
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\CollectionManager
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\CollectionManager\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\CollectionManager
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\NiagaraEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\NiagaraEditor\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\GraphEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\GraphEditor\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\IntroTutorials
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\IntroTutorials\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\IntroTutorials
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\GraphEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\LevelEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\LevelEditor\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Settings
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\Settings\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Developer\Settings
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\LevelEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\NiagaraEditor
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\UnrealEd
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Kismet\Classes
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Intermediate\Build\Win64\Inc\Kismet
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Kismet\Public
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Kismet\Public\WorkflowOrientedApp
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Editor\Kismet
-C:\Users\Jozef\workspace\3DRepo\3drepogui\submodules\UnrealEngine\Engine\Source\Runtime\Engine
-..\..\Source\FP_FirstPerson
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\INCLUDE
-C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\ATLMFC\INCLUDE
-C:\Program Files (x86)\Windows Kits\8.1\include\shared
-C:\Program Files (x86)\Windows Kits\8.1\include\um
-C:\Program Files (x86)\Windows Kits\8.1\include\winrt
-
+INCLUDEPATH += "$(NMakeIncludeSearchPath)"
+INCLUDEPATH += "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/INCLUDE"
+INCLUDEPATH += "C:/Program Files (x86)/Microsoft Visual Studio 12.0/VC/ATLMFC/INCLUDE"
+INCLUDEPATH += "C:/Program Files (x86)/Windows Kits/8.1/include/shared"
+INCLUDEPATH += "C:/Program Files (x86)/Windows Kits/8.1/include/um"
+INCLUDEPATH += "C:/Program Files (x86)/Windows Kits/8.1/include/winrt"
+#INCLUDEPATH += "../../Source"
+#INCLUDEPATH += "../Build/Win64/Inc/FP_FirstPerson"
+#INCLUDEPATH += "../../Source/FP_FirstPerson"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Internationalization"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Async"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Concurrency"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Containers"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Delegates"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/GenericPlatform"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/HAL"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Logging"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Math"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Misc"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Modules"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Modules/Boilerplate"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/ProfilingDebugging"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Serialization"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Serialization/Csv"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Stats"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Templates"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/UObject"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core/Public/Windows"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Core"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/CoreUObject"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Blueprint"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Misc"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Serialization"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/Templates"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject/Public/UObject"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/CoreUObject"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Engine"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/EdGraph"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/Features"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/Net"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/Slate"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/Tests"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/VisualLogger"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine/Public/AI/Navigation"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Json"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Json/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Json/Public/Dom"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Json/Public/Policies"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Json/Public/Serialization"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Json"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/SlateCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Animation"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Application"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Brushes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Fonts"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Input"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Layout"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Logging"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Rendering"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Sound"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Styling"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Textures"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Types"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore/Public/Widgets"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/InputCore/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/InputCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/InputCore/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/InputCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SlateCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Slate"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Application"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Commands"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Docking"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Layout"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/MultiBox"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Notifications"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Styling"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Text"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Views"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Text/Android"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Framework/Text/IOS"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Colors"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Docking"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Images"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Input"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/LayerManager"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Layout"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Navigation"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Notifications"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Text"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate/Public/Widgets/Views"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Slate"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Messaging"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Messaging/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Messaging/Public/Deprecated"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Messaging/Public/Helpers"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Messaging"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/RenderCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/RenderCore/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/RenderCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/RHI"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/RHI/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/RHI"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/ShaderCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/ShaderCore/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/ShaderCore"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/AssetRegistry"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/AssetRegistry/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/AssetRegistry"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineMessages/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/EngineMessages"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineMessages/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineMessages"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineSettings/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/EngineSettings"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineSettings/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/EngineSettings"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/SynthBenchmark"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/SynthBenchmark/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Renderer"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Renderer/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Renderer"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/SynthBenchmark"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/AIModule/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/AIModule/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/AIModule"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/AIModule"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/VectorVM"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/VectorVM/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/VectorVM"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/DatabaseSupport"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/DatabaseSupport/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/DatabaseSupport"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Programs/UnrealLightmass/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/UnrealEd"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/AutoReimport"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Commandlets"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Dialogs"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/DragAndDrop"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/FeaturePack"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Features"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Kismet2"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Layers"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Tests"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd/Public/Toolkits"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/BspMode"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/BspMode/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/BspMode"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Documentation"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Documentation/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Documentation"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Projects"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Projects/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Projects/Public/Interfaces"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Projects"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/SandboxFile"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SandboxFile/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/SandboxFile"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/EditorStyle"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/EditorStyle/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/EditorStyle/Public/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/EditorStyle/Public/Interfaces"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/EditorStyle"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/SourceControl"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/SourceControl/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/SourceControl/Public/Tests"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/SourceControl"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEdMessages/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/UnrealEdMessages"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEdMessages/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEdMessages"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/BlueprintGraph/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/BlueprintGraph"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/BlueprintGraph/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/BlueprintGraph"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/HTTP"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Online/HTTP/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Online/HTTP/Public/Interfaces"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Online/HTTP"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/XAudio2"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Windows/XAudio2/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Windows/XAudio2"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/UserFeedback"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UserFeedback/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UserFeedback"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/CollectionManager"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/CollectionManager/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/CollectionManager"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/NiagaraEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/NiagaraEditor/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/GraphEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/GraphEditor/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/IntroTutorials"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/IntroTutorials/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/IntroTutorials"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/GraphEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/LevelEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/LevelEditor/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Settings"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/Settings/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Developer/Settings"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/LevelEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/NiagaraEditor"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/UnrealEd"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Kismet/Classes"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Intermediate/Build/Win64/Inc/Kismet"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Kismet/Public"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Kismet/Public/WorkflowOrientedApp"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Editor/Kismet"
+INCLUDEPATH += "$$PWD/submodules/UnrealEngine/Engine/Source/Runtime/Engine"
