@@ -98,7 +98,9 @@ public :
     //! Transforms active subwindow to oculus rendering.
     RepoMdiSubWindow *activeSubWindowToOculus();
 
-   RepoMdiSubWindow* addOculusTextureSubWindow();
+    RepoMdiSubWindow* addOculusTextureSubWindow();
+
+    RepoMdiSubWindow* addUnrealEngineSubWindow();
 
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 

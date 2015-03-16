@@ -20,6 +20,7 @@
 
 #include "../renderers/repo_oculus.h"
 #include "../renderers/repooculustexturerenderer.h"
+#include "../renderers/repounrealengine.h"
 
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerfetchrevision.h"
@@ -253,6 +254,18 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addOculusTextureSubWindow()
     return repoSubWindow;
 }
 
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addUnrealEngineSubWindow()
+{
+    RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow();
+    repoSubWindow->setWidget(new RepoUnrealEngine(repoSubWindow));
+
+    QMdiArea::addSubWindow(repoSubWindow);
+    repoSubWindow->show();
+
+    this->update();
+    this->repaint();
+    return repoSubWindow;
+}
 
 
 repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()

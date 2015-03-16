@@ -81,6 +81,8 @@
     </property>
     <addaction name="actionLink"/>
     <addaction name="separator"/>
+    <addaction name="actionGLC_Lib"/>
+    <addaction name="actionUnreal_Engine_4"/>
     <addaction name="actionOculus"/>
     <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
@@ -477,6 +479,19 @@
   <action name="actionOptimize_Graph">
    <property name="text">
     <string>Optimize Graph</string>
+   </property>
+  </action>
+  <action name="actionGLC_Lib">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>GLC Lib</string>
+   </property>
+  </action>
+  <action name="actionUnreal_Engine_4">
+   <property name="text">
+    <string>Unreal Engine 4</string>
    </property>
   </action>
  </widget>

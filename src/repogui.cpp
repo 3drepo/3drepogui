@@ -162,6 +162,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
                     RepoFontAwesome::fa_chain_broken));
 
 
+    QObject::connect(ui->actionUnreal_Engine_4, SIGNAL(triggered()),
+                     this, SLOT(openUnrealEngineWindow()));
+
+
     QObject::connect(ui->actionOculus, SIGNAL(triggered()), this, SLOT(oculus()));
     ui->actionOculus->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
@@ -765,6 +769,11 @@ void repo::gui::RepoGUI::openUserManager() const
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
     RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
     um.exec();
+}
+
+void repo::gui::RepoGUI::openUnrealEngineWindow()
+{
+    ui->mdiArea->addUnrealEngineSubWindow();
 }
 
 void repo::gui::RepoGUI::refresh()
