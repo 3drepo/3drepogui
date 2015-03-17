@@ -59,7 +59,7 @@ repo::gui::RepoFilterableTreeWidget::~RepoFilterableTreeWidget()
     delete proxy;
 }
 
-QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar()
+QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar() const
 {
     return ui->progressBar;
 }

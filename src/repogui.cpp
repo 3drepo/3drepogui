@@ -524,8 +524,8 @@ void repo::gui::RepoGUI::open3DDiff()
 
         if (oldScene && newScene)
         {
-            core::Repo3DDiff diff;
-            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
+//            core::Repo3DDiff diff;
+//            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
         }
     }
     else

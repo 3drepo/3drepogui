@@ -50,7 +50,7 @@ public:
 public slots:
 
     //! Adds a single row to the tree view.
-    addRow(const QList<QStandardItem*>& row)
+    void addRow(const QList<QStandardItem*>& row)
     { model->invisibleRootItem()->appendRow(row); }
 
 public:
