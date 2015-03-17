@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 // GUI
 
-#include "widgets/repo_glcwidget.h"
+#include "renderers/repo_glcwidget.h"
 //------------------------------------------------------------------------------
 
 
@@ -55,11 +55,23 @@ public:
 
 public slots:
 
+    //! Adds a selection tree for a currently active widget.
+    void addSelectionTree()
+    {  addSelectionTree(getActiveWidget()); }
+
+    //! Adds a selection tree for a given widget.
+    void addSelectionTree(
+            RepoGLCWidget* widget,
+            Qt::DockWidgetArea area = Qt::RightDockWidgetArea);
+
+
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
     //! Shows a connection dialog and connects to the specified database.
     void connect();
+
+    QMenu* createPanelsMenu();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void dropDatabase();
@@ -68,7 +80,7 @@ public slots:
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
-    const RepoGLCWidget *getActiveWidget();
+    RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
     const core::RepoGraphScene *getActiveScene();
@@ -94,6 +106,9 @@ public slots:
     //! Opens a file dialog.
     void openFile();
 
+    //! Opens metadata manager.
+    void openMetadataManager();
+
     //! Opens settings dialog.
     void openSettings() const;
 
@@ -102,6 +117,8 @@ public slots:
 
     //! Opens user management dialog box.
     void openUserManager() const;
+
+    void optimizeGraph();
 
     //! Refreshes currently connected database.
     void refresh();
@@ -155,6 +172,9 @@ private:
 
     //! UI var.
     Ui::RepoGUI *ui;
+
+    //! Panels menu (dockable widgets and toolbars)
+    QMenu *panelsMenu;
 
     //! Settings geometry label.
     static const QString REPO_SETTINGS_GUI_GEOMETRY;

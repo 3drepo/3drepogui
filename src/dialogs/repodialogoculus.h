@@ -25,7 +25,8 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../widgets/repo_glcwidget.h"
+#include "../renderers/repo_glcwidget.h"
+#include "../renderers/repooculustexturerenderer.h"
 
 //------------------------------------------------------------------------------
 namespace Ui {
@@ -42,7 +43,9 @@ class RepoDialogOculus : public QDialog
 
 public:
 
-    RepoDialogOculus(const RepoGLCWidget *glcWidget, QWidget *parent);
+    RepoDialogOculus(const RepoGLCWidget *glcWidget,
+                     RepoOculusTextureRenderer *textureRenderer,
+                     QWidget *parent);
 
     ~RepoDialogOculus();
 
@@ -54,6 +57,8 @@ private:
     Ui::RepoDialogOculus *ui;
 
     const RepoGLCWidget *glcWidget;
+
+    RepoOculusTextureRenderer* textureRenderer;
 };
 
 } // end namespace gui

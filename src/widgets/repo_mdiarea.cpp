@@ -16,9 +16,10 @@
  */
 
 #include "repo_mdiarea.h"
-#include "repo_glcwidget.h"
+#include "../renderers/repo_glcwidget.h"
 
-#include "../oculus/repo_oculus.h"
+#include "../renderers/repo_oculus.h"
+#include "../renderers/repooculustexturerenderer.h"
 
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerfetchrevision.h"
@@ -237,6 +238,19 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	this->update();
 	this->repaint();
 	return repoSubWindow;
+}
+
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addOculusTextureSubWindow()
+{
+    RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
+    repoSubWindow->setWidget(new RepoOculusTextureRenderer(repoSubWindow));
+
+    QMdiArea::addSubWindow(repoSubWindow);
+    repoSubWindow->show();
+
+    this->update();
+    this->repaint();
+    return repoSubWindow;
 }
 
 

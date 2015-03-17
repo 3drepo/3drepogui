@@ -41,7 +41,7 @@ HEADERS  += src/repogui.h \
             src/widgets/repo_textbrowser.h \
             src/widgets/repo_mdiarea.h \
             src/widgets/repo_mdisubwindow.h \
-            src/widgets/repo_glcwidget.h \
+            src/renderers/repo_glcwidget.h \
             src/workers/repo_workerdatabases.h \
             src/workers/repo_worker_abstract.h \
             src/workers/repo_workercollection.h \
@@ -55,7 +55,7 @@ HEADERS  += src/repogui.h \
             src/conversion/repo_transcoder_assimp.h \
             src/conversion/repo_transcoder_graph_scene.h \
             src/conversion/repo_transcoder_helpers.h \
-            src/oculus/repo_oculus.h \
+            src/renderers/repo_oculus.h \
             src/dialogs/repodialogoculus.h \
             src/dialogs/repodialogusermanager.h \
             src/dialogs/repodialoguser.h \
@@ -64,7 +64,10 @@ HEADERS  += src/repogui.h \
             src/dialogs/repodialogsettings.h \
             src/widgets/repowidgetassimpflags.h \
             src/reposettings.h \
-            src/widgets/repofilterabletreewidget.h
+            src/widgets/repofilterabletreewidget.h \
+            src/widgets/reposelectiontreedockwidget.h \
+            src/primitives/repo_color.h \
+    src/renderers/repooculustexturerenderer.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -77,7 +80,7 @@ SOURCES += src/main.cpp\
            src/widgets/repo_textbrowser.cpp \
            src/widgets/repo_mdiarea.cpp \
            src/widgets/repo_mdisubwindow.cpp \
-           src/widgets/repo_glcwidget.cpp \
+           src/renderers/repo_glcwidget.cpp \
            src/workers/repo_workerdatabases.cpp \
            src/workers/repo_worker_abstract.cpp \
            src/workers/repo_workercommit.cpp \
@@ -91,7 +94,7 @@ SOURCES += src/main.cpp\
            src/conversion/repo_transcoder_assimp.cpp \
            src/conversion/repo_transcoder_graph_scene.cpp \
            src/conversion/repo_transcoder_helpers.cpp \
-           src/oculus/repo_oculus.cpp \
+           src/renderers/repo_oculus.cpp \
            src/dialogs/repodialogoculus.cpp \
            src/dialogs/repodialogusermanager.cpp \
            src/dialogs/repodialoguser.cpp \
@@ -99,8 +102,11 @@ SOURCES += src/main.cpp\
            src/primitives/repocomboboxdelegate.cpp \
            src/dialogs/repodialogsettings.cpp \
            src/widgets/repowidgetassimpflags.cpp \
-            src/reposettings.cpp \
-            src/widgets/repofilterabletreewidget.cpp
+           src/reposettings.cpp \
+           src/widgets/repofilterabletreewidget.cpp \
+           src/widgets/reposelectiontreedockwidget.cpp \
+            src/primitives/repo_color.cpp \
+    src/renderers/repooculustexturerenderer.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -112,7 +118,8 @@ FORMS    += forms/repogui.ui \
             forms/repodialoguser.ui \
             forms/repodialogsettings.ui \
             forms/repowidgetassimpflags.ui \
-            forms/repofilterabletreewidget.ui
+            forms/repofilterabletreewidget.ui \
+            forms/reposelectiontreedockwidget.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

@@ -18,16 +18,18 @@
 #include <QDesktopWidget>
 #include <QMainWindow>
 
-#include "../oculus/repo_oculus.h"
+#include "../renderers/repo_oculus.h"
 #include "repodialogoculus.h"
 #include "ui_repodialogoculus.h"
 
 repo::gui::RepoDialogOculus::RepoDialogOculus(
         const RepoGLCWidget *glcWidget,
+        RepoOculusTextureRenderer *textureRenderer,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoDialogOculus)
     , glcWidget(glcWidget)
+    , textureRenderer(textureRenderer)
 {
     ui->setupUi(this);
     setWindowTitle(tr("Oculus Rift Settings"));
@@ -88,6 +90,8 @@ int repo::gui::RepoDialogOculus::exec()
                     RepoOculus::singleBufferFormat(),
                     glcWidget->windowTitle());
         oculusWidget->setGLCWorld(glcWidget->getGLCWorld());
+
+        textureRenderer->connect(oculusWidget);
 
         QObject::connect(oculusWidget, SIGNAL(destroyed()), oculusWindow, SLOT(deleteLater()));
         oculusWindow->setCentralWidget(oculusWidget);
