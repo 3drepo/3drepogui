@@ -28,6 +28,10 @@ See also [http://qt-project.org/wiki/Compiling-ICU-with-MSVC](http://qt-project.
 
 Download and install Oculus Runtime for Windows. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
 
+### OpenSSL
+
+Download pre-compiled OpenSSL binaries from [https://www.openssl.org/related/binaries.html](https://www.openssl.org/related/binaries.html). Either add them to the Path variable or copy the DLLs next to the 3D Repo executable.
+
 ### UnrealEngine
 
 Firstly, register for an Unreal account and follow these instructions to link the account with Epic Games' GitHub private repository: [https://www.unrealengine.com/ue4-on-github](https://www.unrealengine.com/ue4-on-github)
