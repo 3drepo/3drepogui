@@ -316,6 +316,8 @@ void repo::gui::RepoGUI::commit()
     RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     const RepoGLCWidget *widget = getActiveWidget();
 
+    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+
     if (activeWindow && widget)
     {
         const core::RepoGraphScene *repoScene = widget->getRepoScene();
@@ -336,7 +338,7 @@ void repo::gui::RepoGUI::commit()
 
         repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
 
-        core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+
         std::string username = mongo.getUsername(dbName.toStdString());
         username = username.empty() ? "anonymous" : username;
 
@@ -346,13 +348,13 @@ void repo::gui::RepoGUI::commit()
 
         // http://docs.mongodb.org/manual/reference/connection-string/
         repo::gui::RepoDialogCommit commitDialog(
-            QString::fromStdString(username + "@" + mongo.getHostAndPort()),
+            mongo,
+            this,
+            Qt::Window,
             dbName,
             "master {00000000-0000-0000-0000-000000000000}", // TODO: get currently active branch from QSettings
             repoScene,
-            revision,
-            this,
-            Qt::Window);
+            revision);
         commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + dbName);
 
         if(!commitDialog.exec())
@@ -377,6 +379,11 @@ void repo::gui::RepoGUI::commit()
             // Fire up the asynchronous calculation.
             QThreadPool::globalInstance()->start(worker);
         }
+    }
+    else
+    {
+        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window);
+        commitDialog.exec();
     }
 }
 

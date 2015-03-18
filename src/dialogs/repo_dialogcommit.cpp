@@ -26,13 +26,13 @@
 
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogCommit::RepoDialogCommit(
-    const QString &server,
+    const core::MongoClientWrapper &server,
+    QWidget *parent,
+    Qt::WindowFlags flags,
     const QString &repository,
     const QString &branch,
     const core::RepoGraphAbstract *scene,
-    core::RepoNodeRevision *revision,
-    QWidget *parent,
-	Qt::WindowFlags flags)
+    core::RepoNodeRevision *revision)
 	: QDialog(parent, flags)
 	, scene(scene)
 	, revision(revision)
@@ -64,9 +64,25 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
         ui->filterLineEdit, &QLineEdit::textChanged,
 		proxyModel, &QSortFilterProxyModel::setFilterFixedString);	
 
-    ui->serverLabel->setText(" <b>mongodb://" + server + "/</b>");
-    ui->repositoryLineEdit->setText(repository);
+    //--------------------------------------------------------------------------
+    // Add DB connections to selector
+    // TODO: for loop to add multiple servers
+    ui->serverComboBox->addItem(
+                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_laptop),
+                QString::fromStdString(server.getHostAndPort()));
+
+
+
+    ui->projectComboBox->addItem(
+                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_cube),
+                repository);
+
+
     ui->branchLineEdit->setText(branch);
+
+
+
+
     this->setWindowIcon(getIcon());
 
     ui->repositoryPushButton->setIcon(
@@ -114,7 +130,7 @@ int repo::gui::RepoDialogCommit::exec()
     //--------------------------------------------------------------------------
 	// If user clicked OK
 	int result;
-	if (result = QDialog::exec())
+    if (result = QDialog::exec() && revision)
 	{
 		// TODO: modify the revision object according to user selection
 		revision->setMessage(getMessage().toStdString());
@@ -125,8 +141,9 @@ int repo::gui::RepoDialogCommit::exec()
 //------------------------------------------------------------------------------
 void repo::gui::RepoDialogCommit::setModifiedObjects()
 {	
-    const std::set<repo::core::RepoNodeAbstract*> modifiedObjects =
-		scene->getNodes();
+    std::set<repo::core::RepoNodeAbstract*> modifiedObjects;
+    if (scene)
+        modifiedObjects = scene->getNodes();
 
     //--------------------------------------------------------------------------
 	// Number of changes
