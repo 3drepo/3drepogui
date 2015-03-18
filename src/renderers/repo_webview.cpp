@@ -18,15 +18,93 @@
 
 #include "repo_webview.h"
 #include "ui_repo_webview.h"
+#include "../primitives/repo_fontawesome.h"
 
-RepoWebView::RepoWebView(QWidget *parent) :
+
+repo::gui::RepoWebView::RepoWebView(
+        const QUrl &url,
+        QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RepoWebView)
 {
     ui->setupUi(this);
+
+    // Global settings for all pages
+    QWebSettings *webSettings = QWebSettings::globalSettings();
+    webSettings->setAttribute(QWebSettings::WebGLEnabled, true);
+    webSettings->setAttribute(QWebSettings::PluginsEnabled, true);
+    webSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    webSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
+
+    setAddressBar(url);
+    loadFromAddressBar();
+
+    //--------------------------------------------------------------------------
+    // Accelerated view
+    // See https://trac.webkit.org/wiki/QtWebKitWebGL
+    // See bug report: https://bugreports.qt.io/browse/QTBUG-30405
+//     ui->graphicsView->setViewport(new QGLWidget());
+//    QGraphicsScene* scene = new QGraphicsScene();
+//    QGraphicsWebView graphicsWebView = new QGraphicsWebView();
+//    graphicsWebView->setResizesToContents(true);
+//    scene->addItem(graphicsWebView);
+//    ui->graphicsView->setScene(scene);
+//    graphicsWebView->load(url);
+
+
+    QObject::connect(ui->reloadPushButton, &QPushButton::pressed,
+                      ui->webView, &QWebView::reload);
+    ui->reloadPushButton->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_repeat));
+
+    QObject::connect(ui->backwardPushButton, &QPushButton::pressed,
+                      ui->webView, &QWebView::back);
+    ui->backwardPushButton->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_arrow_left));
+
+    QObject::connect(ui->forwardPushButton, &QPushButton::pressed,
+                      ui->webView, &QWebView::forward);
+    ui->forwardPushButton->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_arrow_right));
+
+
+
+    QObject::connect(ui->webView, SIGNAL(urlChanged(const QUrl&)),
+                     this, SLOT(setAddressBar(const QUrl&)));
+
+    QObject::connect(ui->webView, SIGNAL(titleChanged(const QString&)),
+                     this, SLOT(setWindowTitle(const QString&)));
+
+    QObject::connect(ui->addressBar, &QLineEdit::returnPressed,
+                     this, &RepoWebView::loadFromAddressBar);
+
+
 }
 
-RepoWebView::~RepoWebView()
+repo::gui::RepoWebView::~RepoWebView()
 {
     delete ui;
+}
+
+void repo::gui::RepoWebView::loadFromAddressBar()
+{
+    QString address = ui->addressBar->text();
+    QUrl url(address);
+    if (!address.startsWith("http://") && !address.startsWith("https://")
+            && !address.startsWith("file://"))
+        url = QUrl("http://" + address);
+    ui->webView->setUrl(url);
+}
+
+void repo::gui::RepoWebView::setAddressBar(const QUrl& url)
+{
+    setAddressBar(url.toString());
+}
+
+void repo::gui::RepoWebView::setAddressBar(const QString& url)
+{
+    ui->addressBar->setText(url);
 }

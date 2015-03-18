@@ -25,6 +25,7 @@
 #include <GLC_World>
 //------------------------------------------------------------------------------
 #include <QtGui>
+#include <QUrl>
 #include <QList>
 #include <QtWidgets/QMdiArea>
 #include <QtWidgets/QMdiSubWindow>
@@ -67,6 +68,9 @@ public slots :
 
 public :
 
+    //! Adds a widget into a sub window.
+    RepoMdiSubWindow* addSubWidget(QWidget* widget);
+
 	/*!
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * using Assimp library from the given full file path.
@@ -98,7 +102,11 @@ public :
     //! Transforms active subwindow to oculus rendering.
     RepoMdiSubWindow *activeSubWindowToOculus();
 
-   RepoMdiSubWindow* addOculusTextureSubWindow();
+    //! Adds texture subwindow to render oculus view on desktop.
+    RepoMdiSubWindow* addOculusTextureSubWindow();
+
+    //! Adds a web view subwindow
+    RepoMdiSubWindow* addWebViewSubWindow();
 
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 
