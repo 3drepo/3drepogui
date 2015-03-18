@@ -20,7 +20,7 @@
 
 //------------------------------------------------------------------------------
 #include "repo_mdisubwindow.h"
-#include "repo_glcwidget.h"
+#include "../renderers/repo_glcwidget.h"
 //------------------------------------------------------------------------------
 #include <GLC_World>
 //------------------------------------------------------------------------------
@@ -95,7 +95,10 @@ public :
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
 
+    //! Transforms active subwindow to oculus rendering.
     RepoMdiSubWindow *activeSubWindowToOculus();
+
+   RepoMdiSubWindow* addOculusTextureSubWindow();
 
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 

@@ -29,7 +29,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "repo_glcwidget.h"
+#include "../renderers/repo_glcwidget.h"
 
 namespace Ui {
     class RepoSelectionTreeDockWidget;

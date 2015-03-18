@@ -42,7 +42,8 @@
 #include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
 #include "primitives/repo_fontawesome.h"
-#include "oculus/repo_oculus.h"
+#include "renderers/repo_oculus.h"
+#include "renderers/repooculustexturerenderer.h"
 #include "dialogs/repodialogsettings.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
@@ -554,9 +555,12 @@ void repo::gui::RepoGUI::oculus()
         std::cout << "A 3D window has to be open." << std::endl;
     else
     {
-        RepoDialogOculus oculusDialog(activeSubWidget, this);
+        RepoMdiSubWindow* textureSubwindow = ui->mdiArea->addOculusTextureSubWindow();
+        RepoDialogOculus oculusDialog(activeSubWidget,
+                                      textureSubwindow->widget<RepoOculusTextureRenderer*>(),
+                                      this);
         oculusDialog.exec();
-        //ui->mdiArea->activeSubWindowToOculus();
+
     }
 
 }
@@ -571,6 +575,10 @@ void repo::gui::RepoGUI::open3DDiff()
 
         if (widgetA && widgetB)
         {
+
+//            core::Repo3DDiff diff;
+//            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
+
 
             // TODO: make asynchronous as trees can be very large
             addSelectionTree(widgetA, Qt::LeftDockWidgetArea);
@@ -684,7 +692,6 @@ void repo::gui::RepoGUI::open3DDiff()
                 std::cerr << "\n";
               }
               widgetB->updateGL();
-
         }
     }
     else

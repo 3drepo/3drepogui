@@ -50,6 +50,13 @@ void repo::gui::RepoWorkerCollection::run()
 		jobsCount = mongo.countItemsInCollection(database, collection);
 		emit progressRangeChanged(0, jobsCount);
 
+
+
+//        repo::core::MongoClientWrapper localhost;
+//        localhost.connect("localhost");
+
+
+
         //----------------------------------------------------------------------
 		// Retrieves all BSON objects until finished or cancelled.
 		unsigned long long retrieved = 0;
@@ -63,12 +70,21 @@ void repo::gui::RepoWorkerCollection::run()
 				emit keyValuePairAdded(retrieved, (unsigned long long) bson.objsize(), type.isEmpty() ? "BSONObj" : type, 0);
 				decodeRecords(bson, 1);
 				emit progressValueChanged(retrieved);
+
+
+//                localhost.insertRecord(database, collection, bson);
+
+
 			}
 			if (!cancelled)
 				cursor = mongo.listAllTailable(database, collection, retrieved);		
 		}
 		while (!cancelled && cursor.get() && cursor->more());
 	}
+
+
+
+
     //--------------------------------------------------------------------------
 	emit progressValueChanged(jobsCount);
 	emit RepoWorkerAbstract::finished();
