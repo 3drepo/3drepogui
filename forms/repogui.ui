@@ -82,6 +82,7 @@
     <addaction name="actionLink"/>
     <addaction name="separator"/>
     <addaction name="actionOculus"/>
+    <addaction name="actionWeb_View"/>
     <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
     <addaction name="actionHighlights"/>
@@ -477,6 +478,11 @@
   <action name="actionOptimize_Graph">
    <property name="text">
     <string>Optimize Graph</string>
+   </property>
+  </action>
+  <action name="actionWeb_View">
+   <property name="text">
+    <string>Web View</string>
    </property>
   </action>
  </widget>

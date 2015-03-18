@@ -20,21 +20,42 @@
 #define REPO_WEBVIEW_H
 
 #include <QWidget>
+#include <QUrl>
+#include <QtNetwork>
+#include <QWebSettings>
+#include <QGraphicsWebView>
+#include <QGLWidget>
 
 namespace Ui {
 class RepoWebView;
 }
+
+namespace repo {
+namespace gui {
 
 class RepoWebView : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit RepoWebView(QWidget *parent = 0);
+    explicit RepoWebView(const QUrl& url = QUrl("https://3drepo.io"),
+                         QWidget *parent = 0);
     ~RepoWebView();
+
+
+public slots:
+
+    void loadFromAddressBar();
+
+    void setAddressBar(const QUrl& url);
+    void setAddressBar(const QString& url);
 
 private:
     Ui::RepoWebView *ui;
-};
+
+}; // end class
+
+} // end namespace gui
+} // end namespace repo
 
 #endif // REPO_WEBVIEW_H
