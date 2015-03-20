@@ -324,9 +324,7 @@ void repo::gui::RepoGUI::commit()
         // TODO: fix !!!
         std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-        // MongoDB cannot have dots in database names, hence replace with underscores
-        // (and remove file extension if any)
-        // http://docs.mongodb.org/manual/reference/limits/#naming-restrictions
+
         QFileInfo path(activeWindow->windowTitle());
         QString dbName = path.completeBaseName();
         //dbName = dbName.mid(0, dbName.indexOf("_"));
@@ -384,6 +382,8 @@ void repo::gui::RepoGUI::commit()
     {
         repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window);
         commitDialog.exec();
+
+        std::cerr<< commitDialog.getCurrentDatabaseName().toStdString() << std::endl;
     }
 }
 
@@ -418,11 +418,6 @@ void repo::gui::RepoGUI::connect()
                     connectionDialog.getPassword().toStdString());
             }
             ui->widgetRepository->fetchDatabases(mongo);
-
-//            RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
-//              QThreadPool      threadPool;
-//              threadPool.start(worker);
-
 
             //-----------------------------------------------------------------
             // enable buttons

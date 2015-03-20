@@ -41,13 +41,6 @@
       <property name="horizontalSpacing">
        <number>6</number>
       </property>
-      <item row="4" column="0">
-       <widget class="QLabel" name="branchLabel">
-        <property name="text">
-         <string>Branch:</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -55,10 +48,10 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="5">
+      <item row="6" column="5">
        <widget class="QPushButton" name="branchPushButton">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -72,8 +65,11 @@
         <property name="checkable">
          <bool>true</bool>
         </property>
-        <property name="flat">
+        <property name="checked">
          <bool>true</bool>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -98,21 +94,28 @@
          <bool>true</bool>
         </property>
         <property name="flat">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="3">
-       <widget class="QLineEdit" name="branchLineEdit">
-        <property name="enabled">
-         <bool>false</bool>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Database:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="databaseComboBox">
+        <property name="editable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="3" column="0">
        <widget class="QComboBox" name="serverComboBox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
         <property name="duplicatesEnabled">
          <bool>true</bool>
@@ -122,23 +125,31 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="accountComboBox"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Account:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QComboBox" name="projectComboBox"/>
-      </item>
       <item row="2" column="2">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Project:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QComboBox" name="projectComboBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="branchLabel">
+        <property name="text">
+         <string>Branch:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="3">
+       <widget class="QLineEdit" name="branchLineEdit">
+        <property name="enabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

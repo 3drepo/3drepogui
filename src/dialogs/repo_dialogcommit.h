@@ -90,6 +90,10 @@ public:
 	//! Returns the default green icon for the commit dialog.
 	static QIcon getIcon();
 
+    QString getCurrentDatabaseName() const;
+
+    QString getCurrentProjectName() const;
+
 public slots:
 
 	/*! 

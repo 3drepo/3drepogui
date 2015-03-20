@@ -57,6 +57,15 @@ public slots :
      * once it is finished.
 	 */
 	void run();
+
+
+public :
+
+    /*!
+     * Returns a sanitized name of a database suitable for mongo, ie no dots
+     * and only 63 chars long.
+     */
+    static QString sanitizeDatabaseName(const QString &dbName);
 	
 private :
 

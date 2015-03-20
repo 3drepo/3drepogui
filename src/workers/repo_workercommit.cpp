@@ -85,3 +85,21 @@ void repo::gui::RepoWorkerCommit::run()
     // Done
     emit RepoWorkerAbstract::finished();
 }
+
+
+QString repo::gui::RepoWorkerCommit::sanitizeDatabaseName(const QString &dbName)
+{
+    QString sanitized = dbName;
+    // MongoDB cannot have dots in database names, hence replace with underscores
+    // (and remove file extension if any)
+    // http://docs.mongodb.org/manual/reference/limits/#naming-restrictions
+
+    sanitized.replace(".", "_");
+    sanitized.replace(" ", "_");
+
+    // MongoDB db name can only have fewer than 64 chars
+    if (sanitized.size() > 63)
+        sanitized.resize(63);
+
+    return sanitized;
+}
