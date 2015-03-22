@@ -27,10 +27,11 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     //--------------------------------------------------------------------------
 	// Set database model and create headers
 	databasesModel = new QStandardItemModel(this); 
-	databasesModel->setColumnCount(3);
+    databasesModel->setColumnCount(4);
 	databasesModel->setHeaderData(RepoDatabasesColumns::NAME, Qt::Horizontal, QObject::tr("Name"));
 	databasesModel->setHeaderData(RepoDatabasesColumns::COUNT, Qt::Horizontal, QObject::tr("Count"));
 	databasesModel->setHeaderData(RepoDatabasesColumns::SIZE, Qt::Horizontal, QObject::tr("Size"));
+    databasesModel->setHeaderData(RepoDatabasesColumns::ALLOCATED, Qt::Horizontal, QObject::tr("Allocated"));
 
 	databasesProxyModel = new RepoSortFilterProxyModel(this, false);
 	enableFiltering(
@@ -212,6 +213,7 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
 	row.append(hostItem);
 	row.append(createItem(QString(), 0, Qt::AlignRight));
 	row.append(createItem(QString(), 0, Qt::AlignRight));
+    row.append(createItem(QString(), 0, Qt::AlignRight));
     //--------------------------------------------------------------------------
 	databasesModel->invisibleRootItem()->appendRow(row);
     //--------------------------------------------------------------------------
@@ -236,6 +238,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 	row.append(createItem(database, database, Qt::AlignLeft));
 	row.append(createItem(QString(), 0, Qt::AlignRight));
 	row.append(createItem(QString(), 0, Qt::AlignRight));	
+    row.append(createItem(QString(), 0, Qt::AlignRight));
     row[0]->setIcon(RepoFontAwesome::getDatabaseIcon());
 
     //--------------------------------------------------------------------------
@@ -247,11 +250,13 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::addCollection(
-	QString collection, 
-	unsigned long long count, 
-	unsigned long long size)
+void repo::gui::RepoWidgetRepository::addCollection(core::RepoCollStats stats)
 {
+    QString collection = QString::fromStdString(stats.getCollection());
+    unsigned long long count = stats.getCount();
+    unsigned long long size = stats.getActualSizeOnDisk();
+    unsigned long long allocated = stats.getStorageSize();
+
     if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
 		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
 	{
@@ -259,10 +264,11 @@ void repo::gui::RepoWidgetRepository::addCollection(
 		// Append to the bottom most database
         QList<QStandardItem * > row;
 		row.append(createItem(collection));
-		row.at(0)->setIcon(getIcon(collection));
+        row.at(0)->setIcon(getIcon(collection));
 
         row.append(createItem(toLocaleString(count), count, Qt::AlignRight));
         row.append(createItem(toFileSize(size), size, Qt::AlignRight));
+        row.append(createItem(toFileSize(allocated), allocated, Qt::AlignRight));
         if (QStandardItem *database = host->child(databaseRowCounter, RepoDatabasesColumns::NAME))
 			database->appendRow(row);
 
@@ -272,6 +278,8 @@ void repo::gui::RepoWidgetRepository::addCollection(
 			setItemCount(databaseCount, databaseCount->data().toULongLong() + count);
         if (QStandardItem *databaseSize = host->child(databaseRowCounter, RepoDatabasesColumns::SIZE))
 			setItemSize(databaseSize, databaseSize->data().toULongLong() + size);
+        if (QStandardItem *databaseAllocated = host->child(databaseRowCounter, RepoDatabasesColumns::ALLOCATED))
+            setItemSize(databaseAllocated, databaseAllocated->data().toULongLong() + allocated);
 		
         //----------------------------------------------------------------------
 		// Increase count and size on the bottom most host
@@ -280,7 +288,10 @@ void repo::gui::RepoWidgetRepository::addCollection(
 			setItemCount(hostCount, hostCount->data().toULongLong() + count);	
         if (QStandardItem *hostSize = databasesModel->invisibleRootItem()->child(
 			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::SIZE))
-			setItemSize(hostSize, hostSize->data().toULongLong() + size);		
+            setItemSize(hostSize, hostSize->data().toULongLong() + size);
+        if (QStandardItem *hostAllocated = databasesModel->invisibleRootItem()->child(
+            databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::ALLOCATED))
+            setItemSize(hostAllocated, hostAllocated->data().toULongLong() + allocated);
 	}
 }
 
@@ -317,6 +328,7 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
     //--------------------------------------------------------------------------
     ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::COUNT);
     ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::SIZE);
+    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::ALLOCATED);
     ui->databasesFilterLineEdit->clear();
 }
 

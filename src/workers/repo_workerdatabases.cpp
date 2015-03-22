@@ -21,14 +21,12 @@
 #include <string>
 #include <cctype>
 
-
 repo::gui::RepoWorkerDatabases::RepoWorkerDatabases(const repo::core::MongoClientWrapper& mongo)
 	: RepoWorkerAbstract()
 	, mongo(mongo)
 {
-	//qRegisterMetaType<QAbstractItemModel::LayoutChangeHint>("QAbstractItemModel::LayoutChangeHint");
 	qRegisterMetaType<QList<QPersistentModelIndex>>("QList<QPersistentModelIndex>");
-	//qRegisterMetaType<QVector<int>>("QVector<int>");
+    qRegisterMetaType<core::RepoCollStats>("core::RepoCollStats");
 }
 
 repo::gui::RepoWorkerDatabases::~RepoWorkerDatabases() {}
@@ -82,12 +80,7 @@ void repo::gui::RepoWorkerDatabases::run()
                 !cancelled && colIterator != collections.end();
                 ++colIterator)
             {
-                const std::string collection = *colIterator;
-                const unsigned long long count = mongo.countItemsInCollection(collection);
-                const unsigned long long size = mongo.getCollectionSize(collection);
-                emit collectionFetched(
-                    QString::fromStdString(mongo.nsGetCollection(collection)),
-                    count, size);
+                emit collectionFetched(mongo.getCollectionStats(*colIterator));
             }
             emit databaseFinished(QString::fromStdString(database));
             //------------------------------------------------------------------

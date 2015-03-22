@@ -72,7 +72,7 @@
           <widget class="repo::gui::RepoLineEdit" name="filterLineEdit"/>
          </item>
          <item>
-          <widget class="QTreeView" name="usersTreeView">
+          <widget class="QTreeView" name="treeView">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -131,21 +131,21 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QPushButton" name="addUserPushButton">
+          <widget class="QPushButton" name="addPushButton">
            <property name="text">
             <string>Add...</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="removeUserPushButton">
+          <widget class="QPushButton" name="removePushButton">
            <property name="text">
             <string>Remove</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="editUserPushButton">
+          <widget class="QPushButton" name="editPushButton">
            <property name="text">
             <string>Edit...</string>
            </property>
@@ -171,7 +171,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="usersCountLabel">
+    <widget class="QLabel" name="countLabel">
      <property name="text">
       <string>Showing 0 of 0</string>
      </property>
@@ -218,11 +218,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="hostComboBox">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="databaseComboBox"/>
       </item>
       <item>
        <widget class="QDialogButtonBox" name="buttonBox">

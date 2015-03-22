@@ -134,7 +134,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     // History
     QObject::connect(ui->actionHistory, SIGNAL(triggered()), this, SLOT(history()));
-    ui->actionHistory->setIcon(RepoDialogHistory::getIcon());
+    ui->actionHistory->setIcon(RepoFontAwesome::getHistoryIcon());
 
 
     // Commit

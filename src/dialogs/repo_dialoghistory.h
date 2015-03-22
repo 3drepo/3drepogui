@@ -101,9 +101,6 @@ public :
 	//
     //--------------------------------------------------------------------------
 
-	//! Returns icon specific to the history dialog.
-	static QIcon getIcon();
-
 	//! Returns a non-editable item with set tooltip.
     static QStandardItem *createItem(QVariant& data);
 

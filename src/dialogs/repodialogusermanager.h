@@ -71,6 +71,9 @@ signals :
 
 public slots:
 
+    //! Called when loading is finished.
+    void finish();
+
     //! Adds a fresh list of custom roles.
     void addCustomRoles(const std::list<std::string> &);
 
@@ -102,16 +105,16 @@ public slots:
     void refresh(const core::RepoBSON &command = core::RepoBSON());
 
     //! Drops user from the database.
-    void removeUser();
+    void removeItem();
 
     //! Selects the data from the given item.
     void select(const QItemSelection &, const QItemSelection &);
 
     //! Shows the user dialog and saves edits to the database.
-    void showUserDialog(const core::RepoUser &user = core::RepoUser());
+    void showEditDialog(const core::RepoUser &user = core::RepoUser());
 
     //! Sets the number of users shown in the "Showing x of y" label.
-    void updateUsersCount() const;
+    void updateCountLabel() const;
 
 private :
 

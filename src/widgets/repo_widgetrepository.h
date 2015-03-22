@@ -29,6 +29,7 @@
 //------------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoCollStats>
 
 //------------------------------------------------------------------------------
 // Repo GUI
@@ -52,7 +53,7 @@ class RepoWidgetRepository : public QWidget
 	Q_OBJECT
 		
 	//! Databases header positions
-	enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2 };
+    enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
 
 	//! Collection header positions
 	enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
@@ -96,7 +97,7 @@ public slots :
 
 	void addDatabase(QString name);
 
-	void addCollection(QString name, unsigned long long count, unsigned long long size);
+    void addCollection(core::RepoCollStats stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 

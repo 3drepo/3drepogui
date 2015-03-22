@@ -33,7 +33,7 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
     , ui(new Ui::RepoDialogHistory)
 {
     ui->setupUi(this);
-	setWindowIcon(getIcon());
+    setWindowIcon(RepoFontAwesome::getHistoryIcon());
 	
     //--------------------------------------------------------------------------
 	historyModel = new QStandardItemModel(this); 
@@ -197,14 +197,6 @@ QList<QUuid> repo::gui::RepoDialogHistory::getSelectedRevisions()
          ++i)
         list << ui->historyTreeView->model()->data(*i).toUuid();
 	return list;
-}
-
-//------------------------------------------------------------------------------
-
-QIcon repo::gui::RepoDialogHistory::getIcon()
-{
-    return RepoFontAwesome::getInstance().getIcon(
-                repo::gui::RepoFontAwesome::fa_clock_o);
 }
 
 //------------------------------------------------------------------------------

@@ -56,7 +56,7 @@
       <item>
        <widget class="QGroupBox" name="profilePictureGroupBox">
         <property name="title">
-         <string>Avatar</string>
+         <string>Avatar:</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
@@ -123,7 +123,7 @@
          <item>
           <widget class="QGroupBox" name="credentialsGroupBox">
            <property name="title">
-            <string>Credentials</string>
+            <string>Credentials:</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
@@ -232,7 +232,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Access Rights</string>
+      <string>Access Rights:</string>
      </property>
      <property name="flat">
       <bool>false</bool>

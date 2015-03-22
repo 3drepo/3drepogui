@@ -95,9 +95,11 @@
      <string>Tools</string>
     </property>
     <addaction name="actionUserManager"/>
-    <addaction name="actionMetadataManager"/>
+    <addaction name="actionProject_Manager"/>
     <addaction name="separator"/>
+    <addaction name="actionMetadataManager"/>
     <addaction name="actionOptimize_Graph"/>
+    <addaction name="separator"/>
     <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
@@ -472,7 +474,7 @@
   </action>
   <action name="actionMetadataManager">
    <property name="text">
-    <string>Metadata Manager...</string>
+    <string>Load Metatada</string>
    </property>
   </action>
   <action name="actionOptimize_Graph">
@@ -483,6 +485,11 @@
   <action name="actionWeb_View">
    <property name="text">
     <string>Web View</string>
+   </property>
+  </action>
+  <action name="actionProject_Manager">
+   <property name="text">
+    <string>Project Manager...</string>
    </property>
   </action>
  </widget>

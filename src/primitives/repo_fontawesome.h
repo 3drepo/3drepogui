@@ -76,19 +76,22 @@ public:
 
     //! Returns pre-defined server icon.
     static QIcon getHostIcon()
-    { return getIconStatic(RepoFontAwesome::fa_laptop); }
+    { return getIconStatic(fa_laptop); }
 
     //! Returns pre-defined branch icon.
     static QIcon getBranchIcon()
-    { return getIconStatic(RepoFontAwesome::fa_code_fork); }
+    { return getIconStatic(fa_code_fork); }
 
     //! Returns pre-defined database icon.
     static QIcon getDatabaseIcon()
-    { return getIconStatic(RepoFontAwesome::fa_database); }
+    { return getIconStatic(fa_database); }
 
     //! Returns pre-defined project icon.
     static QIcon getProjectIcon()
-    { return getIconStatic(RepoFontAwesome::fa_list_alt); }
+    { return getIconStatic(fa_list_alt); }
+
+    static QIcon getHistoryIcon()
+    { return getIconStatic(fa_history); }
 
     //--------------------------------------------------------------------------
 

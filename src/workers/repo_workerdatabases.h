@@ -22,6 +22,7 @@
 //------------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoCollStats>
 
 //------------------------------------------------------------------------------
 // Repo GUI
@@ -51,7 +52,7 @@ signals :
 
 	void databaseFetched(QString database);
 
-	void collectionFetched(QString collection, unsigned long long count, unsigned long long size);
+    void collectionFetched(core::RepoCollStats);
 
 public slots :
 
