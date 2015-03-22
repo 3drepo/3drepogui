@@ -317,6 +317,7 @@ void repo::gui::RepoGUI::commit()
     const RepoGLCWidget *widget = getActiveWidget();
 
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+    QString database = ui->widgetRepository->getSelectedDatabase();
 
     if (activeWindow && widget)
     {
@@ -324,36 +325,25 @@ void repo::gui::RepoGUI::commit()
         // TODO: fix !!!
         std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-
         QFileInfo path(activeWindow->windowTitle());
-        QString dbName = path.completeBaseName();
-        //dbName = dbName.mid(0, dbName.indexOf("_"));
-        dbName.replace(".", "_");
-        dbName.replace(" ", "_");
+        QString project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
+        repo::core::RepoGraphHistory* history = new repo::core::RepoGraphHistory();
+        std::string username = mongo.getUsername(database.toStdString());
 
-        if (dbName.size() > 63) // MongoDB db name can only have fewer than 64 chars
-            dbName.resize(63);
-
-        repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
-
-
-        std::string username = mongo.getUsername(dbName.toStdString());
-        username = username.empty() ? "anonymous" : username;
-
-        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+        core::RepoNodeRevision* revision = new core::RepoNodeRevision(username);
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
 
-        // http://docs.mongodb.org/manual/reference/connection-string/
         repo::gui::RepoDialogCommit commitDialog(
             mongo,
             this,
             Qt::Window,
-            dbName,
-            "master {00000000-0000-0000-0000-000000000000}", // TODO: get currently active branch from QSettings
+            database,
+            project,
+            "master", // TODO: get currently active branch from QSettings
             repoScene,
             revision);
-        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + dbName);
+        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + project);
 
         if(!commitDialog.exec())
             std::cout << "Commit dialog cancelled by user" << std::endl;
@@ -365,7 +355,8 @@ void repo::gui::RepoGUI::commit()
             // Establish and connect the new worker.
             RepoWorkerCommit *worker = new RepoWorkerCommit(
                         mongo,
-                        dbName,
+                        database,
+                        project,
                         history,
                         widget->getRepoScene());
 
@@ -380,7 +371,7 @@ void repo::gui::RepoGUI::commit()
     }
     else
     {
-        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window);
+        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window, database);
         commitDialog.exec();
 
         std::cerr<< commitDialog.getCurrentDatabaseName().toStdString() << std::endl;

@@ -26,11 +26,11 @@
 #include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogCommit::RepoDialogCommit(
-    const core::MongoClientWrapper &server,
+repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &server,
     QWidget *parent,
     Qt::WindowFlags flags,
-    const QString &repository,
+    const QString &database,
+    const QString &project,
     const QString &branch,
     const core::RepoGraphAbstract *scene,
     core::RepoNodeRevision *revision)
@@ -66,20 +66,10 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
         ui->filterLineEdit, &QLineEdit::textChanged,
 		proxyModel, &QSortFilterProxyModel::setFilterFixedString);	
 
-    //--------------------------------------------------------------------------
-    // Repository Lock
-    ui->repositoryPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_unlock_alt,
-                    RepoFontAwesome::fa_lock));
-    QObject::connect(ui->repositoryPushButton, &QPushButton::toggled,
-                     ui->serverComboBox, &QComboBox::setEnabled);
-    QObject::connect(ui->repositoryPushButton, &QPushButton::toggled,
-                     ui->databaseComboBox, &QComboBox::setEnabled);
-    QObject::connect(ui->repositoryPushButton, &QPushButton::toggled,
-                     ui->projectComboBox, &QComboBox::setEnabled);
 
-
+    ui->branchComboBox->addItem(
+                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_code_fork),
+                branch);
 
     //--------------------------------------------------------------------------
     // Add DB connections to selector
@@ -90,26 +80,11 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
 
     ui->databaseComboBox->addItem(
                 RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
-                "balfourbeatty");
-    ui->databaseComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
-                "arup");
+                database);
 
     ui->projectComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_cube),
-                repository);
-
-
-    //--------------------------------------------------------------------------
-    // Branch Lock
-    QObject::connect(ui->branchPushButton, &QPushButton::toggled,
-                     ui->branchLineEdit, &QComboBox::setEnabled);
-    ui->branchLineEdit->setText(branch);
-    ui->branchPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_unlock_alt,
-                    RepoFontAwesome::fa_lock));
-
+                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_list_alt),
+                project);
 }
 
 //------------------------------------------------------------------------------

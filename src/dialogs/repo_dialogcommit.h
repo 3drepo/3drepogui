@@ -70,7 +70,8 @@ public:
         const core::MongoClientWrapper& server,
         QWidget* parent = 0,
         Qt::WindowFlags flags = 0,
-        const QString &repository = "",
+        const QString &database = "",
+        const QString& project = "",
         const QString &branch = "",
         const core::RepoGraphAbstract *scene = 0,
         core::RepoNodeRevision *revision = 0);

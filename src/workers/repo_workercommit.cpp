@@ -17,13 +17,14 @@
 
 #include "repo_workercommit.h"
 
-repo::gui::RepoWorkerCommit::RepoWorkerCommit(
-    const core::MongoClientWrapper &mongo,
-    const QString &repositoryName,
+repo::gui::RepoWorkerCommit::RepoWorkerCommit(const core::MongoClientWrapper &mongo,
+    const QString &database,
+    const QString &project,
     const repo::core::RepoGraphHistory *history,
-	const repo::core::RepoGraphScene *scene)
+    const repo::core::RepoGraphScene *scene)
 	: mongo(mongo) 
-	, repositoryName(repositoryName)
+    , database(sanitizeDatabaseName(database))
+    , project(sanitizeCollectionName(project))
 	, history(history)
 	, scene(scene)
 {}
@@ -32,7 +33,7 @@ repo::gui::RepoWorkerCommit::~RepoWorkerCommit() {}
 
 void repo::gui::RepoWorkerCommit::run() 
 {
-    std::string dbName = repositoryName.toStdString();
+    std::string dbName = database.toStdString();
     if (!cancelled && mongo.reconnectAndReauthenticate(dbName))
     {
         // TODO: only get those nodes that are mentioned in the revision object.
@@ -55,10 +56,12 @@ void repo::gui::RepoWorkerCommit::run()
 
 
             int counter = 0;
+            std::string historyCollection = core::MongoClientWrapper::getHistoryCollectionName(project.toStdString());
+            std::string sceneCollection = core::MongoClientWrapper::getSceneCollectionName(project.toStdString());
 
             //------------------------------------------------------------------
             // Insert the revision object first in case of a lost connection.
-            mongo.insertRecord(dbName, REPO_COLLECTION_HISTORY, revision->toBSONObj());
+            mongo.insertRecord(dbName, historyCollection, revision->toBSONObj());
             emit progress(++counter, jobsCount);
 
 
@@ -73,7 +76,7 @@ void repo::gui::RepoWorkerCommit::run()
                 if (nodeObj.objsize() > 16777216) // 16MB
                     std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
                 else
-                    mongo.insertRecord(dbName, REPO_COLLECTION_SCENE, nodeObj);
+                    mongo.insertRecord(dbName, sceneCollection, nodeObj);
                 emit progress(++counter, jobsCount);
             }
             //------------------------------------------------------------------
@@ -86,20 +89,42 @@ void repo::gui::RepoWorkerCommit::run()
     emit RepoWorkerAbstract::finished();
 }
 
-
-QString repo::gui::RepoWorkerCommit::sanitizeDatabaseName(const QString &dbName)
+// TODO: move to CORE
+QString repo::gui::RepoWorkerCommit::sanitizeDatabaseName(const QString &database)
 {
-    QString sanitized = dbName;
+    QString sanitized = database;
     // MongoDB cannot have dots in database names, hence replace with underscores
     // (and remove file extension if any)
     // http://docs.mongodb.org/manual/reference/limits/#naming-restrictions
 
+    // Cannot contain any of /\. "$*<>:|?
+    sanitized.replace("/", "_");
+    sanitized.replace("\\", "_");
     sanitized.replace(".", "_");
     sanitized.replace(" ", "_");
+    sanitized.replace("\"", "_");
+    sanitized.replace("$", "_");
+    sanitized.replace("*", "_");
+    sanitized.replace("<", "_");
+    sanitized.replace(">", "_");
+    sanitized.replace(":", "_");
+    sanitized.replace("|", "_");
+    sanitized.replace("?", "_");
 
     // MongoDB db name can only have fewer than 64 chars
     if (sanitized.size() > 63)
         sanitized.resize(63);
 
+    return sanitized;
+}
+
+// TODO: move to CORE
+QString repo::gui::RepoWorkerCommit::sanitizeCollectionName(const QString& collection)
+{
+    // http://docs.mongodb.org/manual/reference/limits/#Restriction-on-Collection-Names
+    QString sanitized = collection;
+    sanitized.replace(" ", "_");
+    sanitized.replace("$", "_");
+    sanitized.replace("system.", "_");
     return sanitized;
 }
