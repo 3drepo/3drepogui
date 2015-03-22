@@ -354,8 +354,6 @@ void repo::gui::RepoGUI::commit()
             std::cout << "Commit dialog cancelled by user" << std::endl;
         else // Clicked "OK"
         {
-            // TODO: move this to the commit dialog.
-            std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
             //------------------------------------------------------------------
             // Establish and connect the new worker.
             RepoWorkerCommit *worker = new RepoWorkerCommit(

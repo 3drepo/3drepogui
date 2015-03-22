@@ -75,7 +75,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
     // Add DB connections to selector
     // TODO: for loop to add multiple servers
     ui->serverComboBox->addItem(
-                RepoFontAwesome::getServerIcon(),
+                RepoFontAwesome::getHostIcon(),
                 QString::fromStdString(server.getHostAndPort()));
 
     ui->databaseComboBox->addItem(

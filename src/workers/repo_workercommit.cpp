@@ -33,6 +33,8 @@ repo::gui::RepoWorkerCommit::~RepoWorkerCommit() {}
 
 void repo::gui::RepoWorkerCommit::run() 
 {
+    std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
+
     std::string dbName = database.toStdString();
     if (!cancelled && mongo.reconnectAndReauthenticate(dbName))
     {

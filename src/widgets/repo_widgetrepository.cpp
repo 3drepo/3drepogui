@@ -218,11 +218,13 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
 	// Expand top most host by default
     ui->databasesTreeView->expand(
 		databasesProxyModel->mapFromSource(databasesModel->indexFromItem(hostItem)));
-	//hostItem->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_hdd_o));
+    hostItem->setIcon(RepoFontAwesome::getHostIcon());
 
     // TODO: be careful when adding multiple mongo connections. This counter
     // won't work with more than one async addCollection call.
     databaseRowCounter = 0;
+
+    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::NAME);
 }
 
 //------------------------------------------------------------------------------
@@ -234,6 +236,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 	row.append(createItem(database, database, Qt::AlignLeft));
 	row.append(createItem(QString(), 0, Qt::AlignRight));
 	row.append(createItem(QString(), 0, Qt::AlignRight));	
+    row[0]->setIcon(RepoFontAwesome::getDatabaseIcon());
 
     //--------------------------------------------------------------------------
 	// Append to the bottom most child (host)
