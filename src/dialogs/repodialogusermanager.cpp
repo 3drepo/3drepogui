@@ -253,6 +253,9 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->filterLineEdit->clear();
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);
+
+    usersProxy->clear();
+    updateCountLabel();
 }
 
 QIcon repo::gui::RepoDialogUserManager::getIcon()

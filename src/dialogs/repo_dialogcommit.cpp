@@ -65,6 +65,13 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
 	QObject::connect(
         ui->filterLineEdit, &QLineEdit::textChanged,
 		proxyModel, &QSortFilterProxyModel::setFilterFixedString);	
+    QObject::connect(
+        proxyModel, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoDialogCommit::updateCountLabel);
+
+    QObject::connect(
+        proxyModel, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoDialogCommit::updateCountLabel);
 
 
     ui->branchComboBox->addItem(
@@ -205,3 +212,7 @@ QString repo::gui::RepoDialogCommit::getCurrentProjectName() const
     return ui->projectComboBox->currentText();
 }
 
+void repo::gui::RepoDialogCommit::updateCountLabel() const
+{
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxyModel->rowCount()).arg(model->rowCount()));
+}

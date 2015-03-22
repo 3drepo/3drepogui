@@ -255,7 +255,7 @@
       <item>
        <widget class="QLabel" name="countLabel">
         <property name="text">
-         <string>changes made</string>
+         <string>Showing 0 of 0</string>
         </property>
        </widget>
       </item>

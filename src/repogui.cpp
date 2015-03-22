@@ -498,7 +498,7 @@ void repo::gui::RepoGUI::history()
     QString project = ui->widgetRepository->getSelectedProject();
     core::MongoClientWrapper mongo =
             ui->widgetRepository->getSelectedConnection();
-    RepoDialogHistory historyDialog(mongo, database, this);
+    RepoDialogHistory historyDialog(mongo, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
         std::cout << "Revision History dialog cancelled by user." << std::endl;

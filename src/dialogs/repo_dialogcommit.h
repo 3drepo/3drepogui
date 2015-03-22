@@ -104,6 +104,8 @@ public slots:
 	 */
 	virtual int exec();
 
+    void updateCountLabel() const;
+
 private :
 
     //! Extracts modified objects from the revision and scene to list in change table.

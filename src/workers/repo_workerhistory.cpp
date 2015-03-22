@@ -20,11 +20,12 @@
 #include <RepoGraphHistory>
 
 //------------------------------------------------------------------------------
-repo::gui::RepoWorkerHistory::RepoWorkerHistory(
-    const repo::core::MongoClientWrapper &mongo,
-    const QString &database)
+repo::gui::RepoWorkerHistory::RepoWorkerHistory(const repo::core::MongoClientWrapper &mongo,
+    const QString &database,
+    const QString &project)
 	: mongo(mongo)
-	, database(database.toStdString()) 
+    , database(database.toStdString())
+    , project(project.toStdString())
 {}
 
 //------------------------------------------------------------------------------
@@ -52,31 +53,38 @@ void repo::gui::RepoWorkerHistory::run()
 		// Retrieves all BSON objects until finished or cancelled.
 		unsigned long long skip = 0;
 		QDateTime datetime;
-		std::auto_ptr<mongo::DBClientCursor> cursor;		
-		do
-		{
-			for (; !cancelled && cursor.get() && cursor->more(); ++skip)
-			{
-                core::RepoNodeRevision revision(cursor->nextSafe());
-				datetime.setMSecsSinceEpoch(revision.getTimestamp());
-                //--------------------------------------------------------------
-                emit revisionFetched(
-                    QUuid(core::MongoClientWrapper::uuidToString(revision.getUniqueID()).c_str()),
-                    QUuid(core::MongoClientWrapper::uuidToString(revision.getSharedID()).c_str()),
-					QString::fromStdString(revision.getMessage()),
-					QString::fromStdString(revision.getAuthor()),
-					datetime);
-			}
-			if (!cancelled)
-				cursor = mongo.listAllTailable(
-					database, 
-					REPO_COLLECTION_HISTORY, 
-					fields, 
-					REPO_NODE_LABEL_TIMESTAMP, 
-					-1, 
-					skip);		
-		}
-		while (!cancelled && cursor.get() && cursor->more());
+        std::auto_ptr<mongo::DBClientCursor> cursor;
+
+        try{
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+                {
+                    core::RepoNodeRevision revision(cursor->nextSafe());
+                    datetime.setMSecsSinceEpoch(revision.getTimestamp());
+                    //--------------------------------------------------------------
+                    emit revisionFetched(
+                        QUuid(core::MongoClientWrapper::uuidToString(revision.getUniqueID()).c_str()),
+                        QUuid(core::MongoClientWrapper::uuidToString(revision.getSharedID()).c_str()),
+                        QString::fromStdString(revision.getMessage()),
+                        QString::fromStdString(revision.getAuthor()),
+                        datetime);
+                }
+                if (!cancelled)
+                    cursor = mongo.listAllTailable(
+                        database,
+                        mongo.getHistoryCollectionName(project),
+                        fields,
+                        REPO_NODE_LABEL_TIMESTAMP,
+                        -1,
+                        skip);
+            }
+            while (!cancelled && cursor.get() && cursor->more());
+        }
+        catch (...)
+        {
+            std::cerr << tr("Fetching history failed").toStdString() << std::endl;
+        }
 	}
     //--------------------------------------------------------------------------
 	emit RepoWorkerAbstract::finished();

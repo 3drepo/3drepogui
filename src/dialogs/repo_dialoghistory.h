@@ -57,6 +57,7 @@ public:
 	RepoDialogHistory(
         const core::MongoClientWrapper &mongo,
         const QString &database,
+        const QString& project,
         QWidget *parent = 0,
 		Qt::WindowFlags flags = 0);
 
@@ -89,6 +90,8 @@ public slots:
 
 	//! Clears the history model (does not remove headers)
 	void clearHistoryModel();
+
+    void updateCountLabel();
 
 public :
 
@@ -123,6 +126,9 @@ private:
 
 	//! Database to retrieve revision history from.
 	QString database;
+
+    //! Project to retrieve revision history from.
+    QString project;
 
 	//! Threadpool for this object only.
 	QThreadPool threadPool;
