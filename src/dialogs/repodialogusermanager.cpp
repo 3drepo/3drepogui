@@ -37,7 +37,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     //--------------------------------------------------------------------------
     // Add DB connections to selector
     ui->comboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
+                RepoFontAwesome::getServerIcon(),
                 QString::fromStdString(mongo.getHostAndPort()));
 
     //--------------------------------------------------------------------------

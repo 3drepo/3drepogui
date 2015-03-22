@@ -29,11 +29,13 @@
 
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
     const repo::core::MongoClientWrapper &mongo,
-	const QString& database,
-	const QUuid& id,
-	bool headRevision)
+    const QString& database,
+    const QString &project,
+    const QUuid& id,
+    bool headRevision)
 	: mongo(mongo)
 	, database(database.toStdString())
+    , project(project.toStdString())
 	, id(id)
 	, headRevision(headRevision)
 {}
@@ -59,6 +61,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 	{
          masterSceneGraph = fetchSceneRecursively(
             database,
+            project,
             id.toString().toStdString(),
             headRevision,
             NULL,
@@ -102,8 +105,9 @@ void repo::gui::RepoWorkerFetchRevision::run()
 	emit RepoWorkerAbstract::finished();
 }
 
-repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
+repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
         const std::string &database,
+        const string &project,
         const std::string &uuid,
         bool isHeadRevision,
         core::RepoGraphScene *masterSceneGraph,
@@ -118,7 +122,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
     std::vector<mongo::BSONObj> data;
     // TODO: fetch transformations first to build the scene
     // and reconstruct meshes later so as to give visual feedback to the user immediatelly
-    // (eg as meshes popping up in XML3DRepo)
+    // (eg as meshes popping up in 3drepo.io)
 
     //--------------------------------------------------------------------------
     // First load revision object
@@ -130,21 +134,21 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
 
     // TODO: make this adhere to the revision history graph so that it does not
     // rely on timestamps!
-    mongo::BSONObj bson = isHeadRevision
+    mongo::BSONObj revisionBSON = isHeadRevision
         ? mongo.findOneBySharedID(
             database,
-            REPO_COLLECTION_HISTORY,
+            core::MongoClientWrapper::getHistoryCollectionName(project),
             uuid,
             REPO_NODE_LABEL_TIMESTAMP,
             fieldsToReturn)
         : mongo.findOneByUniqueID(
             database,
-            REPO_COLLECTION_HISTORY,
+            core::MongoClientWrapper::getHistoryCollectionName(project),
             uuid,
             fieldsToReturn);
 
    // std::cout << bson.toString(false, true) << std::endl;
-    mongo::BSONArray array = mongo::BSONArray(bson.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
+    mongo::BSONArray array = mongo::BSONArray(revisionBSON.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
     //----------------------------------------------------------------------
     emit progress(done++, jobsCount);
     //----------------------------------------------------------------------
@@ -164,7 +168,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
             if (!cancelled)
                 cursor = mongo.findAllByUniqueIDs(
                     database,
-                    REPO_COLLECTION_SCENE,
+                    core::MongoClientWrapper::getSceneCollectionName(project),
                     array,
                     retrieved);
         }
@@ -173,7 +177,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
     else
     {
         std::cerr << "Deprecated DB retrieval" << std::endl;
-        mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
+        mongo.fetchEntireCollection(database,  core::MongoClientWrapper::getSceneCollectionName(project), data);
     }
     //----------------------------------------------------------------------
 
@@ -223,6 +227,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
         // Recursion
         std::string refUuuid = core::RepoTranscoderString::toString(reference->getRevisionID());
         fetchSceneRecursively(
+                    database,
                     reference->getProject(),
                     refUuuid,
                     !reference->getIsUniqueID(),

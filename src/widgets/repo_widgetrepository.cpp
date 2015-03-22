@@ -401,6 +401,12 @@ QString repo::gui::RepoWidgetRepository::getSelectedCollection() const
 	return collection.toString();
 }
 
+QString repo::gui::RepoWidgetRepository::getSelectedProject() const
+{
+    QString collection = getSelectedCollection();
+    return collection.section(".",0,0);
+}
+
 //------------------------------------------------------------------------------
 
 QModelIndex repo::gui::RepoWidgetRepository::getSelectedDatabasesTreeViewIndex() const

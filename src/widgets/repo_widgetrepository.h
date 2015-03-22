@@ -150,6 +150,9 @@ public :
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
 
+    //! Returns selected project, empty string if none selected.
+    QString getSelectedProject() const;
+
     //! Returns the databases tree view.
     QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
 

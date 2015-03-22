@@ -65,16 +65,40 @@ public:
 
     //--------------------------------------------------------------------------
 	//
-	// Static getters
+    // Getters
 	//
     //--------------------------------------------------------------------------
 
     //! Returns a singleton instance of the RepoFontAwesome class.
     static RepoFontAwesome &getInstance();
 
+    //--------------------------------------------------------------------------
+
+    //! Returns pre-defined server icon.
+    static QIcon getServerIcon()
+    { return getIconStatic(RepoFontAwesome::fa_laptop); }
+
+    //! Returns pre-defined branch icon.
+    static QIcon getBranchIcon()
+    { return getIconStatic(RepoFontAwesome::fa_code_fork); }
+
+    //! Returns pre-defined database icon.
+    static QIcon getDatabaseIcon()
+    { return getIconStatic(RepoFontAwesome::fa_database); }
+
+    //! Returns pre-defined project icon.
+    static QIcon getProjectIcon()
+    { return getIconStatic(RepoFontAwesome::fa_list_alt); }
+
+    //--------------------------------------------------------------------------
+
 	QIcon getIcon(int iconOn);
     QIcon getIcon(int iconOn, const QColor &color);
 	QIcon getIcon(int iconOn, int iconOff);
+
+    //! Returns icon in a static way.
+    static QIcon getIconStatic(int iconOn)
+    { return RepoFontAwesome::getInstance().getIcon(iconOn); }
 
     /*!
      * Returns a font with a given size in pixels.

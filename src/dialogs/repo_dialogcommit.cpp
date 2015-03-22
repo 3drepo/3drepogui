@@ -68,22 +68,22 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
 
 
     ui->branchComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_code_fork),
+                RepoFontAwesome::getBranchIcon(),
                 branch);
 
     //--------------------------------------------------------------------------
     // Add DB connections to selector
     // TODO: for loop to add multiple servers
     ui->serverComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_laptop),
+                RepoFontAwesome::getServerIcon(),
                 QString::fromStdString(server.getHostAndPort()));
 
     ui->databaseComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_database),
+                RepoFontAwesome::getDatabaseIcon(),
                 database);
 
     ui->projectComboBox->addItem(
-                RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_list_alt),
+                RepoFontAwesome::getProjectIcon(),
                 project);
 }
 

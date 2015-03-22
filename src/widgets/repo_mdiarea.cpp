@@ -209,6 +209,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	const repo::core::MongoClientWrapper& mongo,
 	const QString& database,
+    const QString& project,
 	const QUuid& id,
 	bool headRevision)
 {
@@ -223,7 +224,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, id, headRevision);
+    RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));

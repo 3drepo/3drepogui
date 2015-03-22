@@ -318,6 +318,7 @@ void repo::gui::RepoGUI::commit()
 
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
     QString database = ui->widgetRepository->getSelectedDatabase();
+    QString project = ui->widgetRepository->getSelectedProject();
 
     if (activeWindow && widget)
     {
@@ -325,8 +326,12 @@ void repo::gui::RepoGUI::commit()
         // TODO: fix !!!
         std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-        QFileInfo path(activeWindow->windowTitle());
-        QString project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
+        if (project.isEmpty())
+        {
+            QFileInfo path(activeWindow->windowTitle());
+            project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
+        }
+
         repo::core::RepoGraphHistory* history = new repo::core::RepoGraphHistory();
         std::string username = mongo.getUsername(database.toStdString());
 
@@ -371,10 +376,8 @@ void repo::gui::RepoGUI::commit()
     }
     else
     {
-        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window, database);
-        commitDialog.exec();
-
-        std::cerr<< commitDialog.getCurrentDatabaseName().toStdString() << std::endl;
+        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window, database, project, "master");
+        commitDialog.exec();        
     }
 }
 
@@ -465,12 +468,13 @@ void repo::gui::RepoGUI::dropDatabase()
 
 void repo::gui::RepoGUI::fetchHead()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
+    // Head revision from master branch
     ui->mdiArea->addSubWindow(
                 ui->widgetRepository->getSelectedConnection(),
-                database); // head revision from master branch
+                ui->widgetRepository->getSelectedDatabase(),
+                ui->widgetRepository->getSelectedProject());
 
-    // make sure to hook controls if chain is on
+    // Make sure to hook controls if chain is on
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
@@ -493,6 +497,7 @@ const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
 void repo::gui::RepoGUI::history()
 {
     QString database = ui->widgetRepository->getSelectedDatabase();
+    QString project = ui->widgetRepository->getSelectedProject();
     core::MongoClientWrapper mongo =
             ui->widgetRepository->getSelectedConnection();
     RepoDialogHistory historyDialog(mongo, database, this);
@@ -505,7 +510,7 @@ void repo::gui::RepoGUI::history()
         for (QList<QUuid>::iterator uid = revisions.begin();
              uid != revisions.end();
              ++uid)
-            ui->mdiArea->addSubWindow(mongo, database, *uid, false);
+            ui->mdiArea->addSubWindow(mongo, database, project, *uid, false);
         //---------------------------------------------------------------------
         // make sure to hook controls if chain is on
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
@@ -914,16 +919,7 @@ void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
 
 void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 {
-    QMenu menu(ui->widgetRepository->getDatabasesTreeView());
-    menu.addAction(ui->actionConnect);
-    menu.addAction(ui->actionRefresh);
-    menu.addSeparator();
-    menu.addAction(ui->actionHead);
-    menu.addAction(ui->actionHistory);
-    menu.addAction(ui->actionSwitch);
-    menu.addSeparator();
-    menu.addAction(ui->actionDrop);
-    menu.exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
+    ui->menuRepository->exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
 }
 
 void repo::gui::RepoGUI::startup()
