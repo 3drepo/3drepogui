@@ -173,107 +173,116 @@ void repo::gui::RepoWorkerAssimp::run()
 	// Start
 	int jobsCount = 5;
 	emit progress(0, 0);
-	std::string fileName = getFileName(fullPath).toStdString();
 
-	//-------------------------------------------------------------------------
-	// Import model
-    core::AssimpWrapper importer;
+    repo::core::RepoGraphScene * repoGraphScene = 0;
+    GLC_World glcWorld;
 
-    if (settings.getCalculateTangentSpace())
-        importer.setCalcTangentSpaceSmoothingAngle(settings.getCalculateTangentSpaceMaxSmoothingAngle());
-    if (settings.getDebone())
+    try
     {
-        importer.setDeboneThreshold(settings.getDeboneThreshold());
-        importer.setDeboneOnlyIfAll(settings.getDeboneOnlyIfAll());
+        std::string fileName = getFileName(fullPath).toStdString();
+
+        //-------------------------------------------------------------------------
+        // Import model
+        core::AssimpWrapper importer;
+
+        if (settings.getCalculateTangentSpace())
+            importer.setCalcTangentSpaceSmoothingAngle(settings.getCalculateTangentSpaceMaxSmoothingAngle());
+        if (settings.getDebone())
+        {
+            importer.setDeboneThreshold(settings.getDeboneThreshold());
+            importer.setDeboneOnlyIfAll(settings.getDeboneOnlyIfAll());
+        }
+        if (settings.getFindInvalidData())
+            importer.setFindInvalidDataAnimationAccuracy(settings.getFindInvalidDataAnimationAccuracy());
+        if (settings.getGenerateNormals() && settings.getGenerateNormalsSmooth())
+            importer.setGenerateSmoothNormalsSmoothingAngle(settings.getGenerateNormalsSmoothCreaseAngle());
+        if (settings.getImproveCacheLocality())
+            importer.setImproveCacheLocalityCacheSize(settings.getImproveCacheLocalityVertexCacheSize());
+        if (settings.getLimitBoneWeights())
+            importer.setLimitBoneWeightsMaxWeights(settings.getLimitBoneWeightsMaxWeight());
+        if (settings.getPreTransformVertices())
+            importer.setPreTransformVerticesNormalize(settings.getPreTransformVerticesNormalize());
+        if (settings.getRemoveComponents())
+            importer.setRemoveComponents(settings.getRemoveComponentsAnimations(),
+                                         settings.getRemoveComponentsBiTangents(),
+                                         settings.getRemoveComponentsBoneWeights(),
+                                         settings.getRemoveComponentsCameras(),
+                                         settings.getRemoveComponentsColors(),
+                                         settings.getRemoveComponentsLights(),
+                                         settings.getRemoveComponentsMaterials(),
+                                         settings.getRemoveComponentsMeshes(),
+                                         settings.getRemoveComponentsNormals(),
+                                         settings.getRemoveComponentsTextureCoordinates(),
+                                         settings.getRemoveComponentsTextures());
+        if (settings.getRemoveRedundantMaterials())
+            importer.setRemoveRedundantMaterialsSkip(settings.getRemoveRedundantMaterialsSkip().toStdString());
+        if (settings.getRemoveRedundantNodes())
+            importer.setRemoveRedundantNodesSkip(settings.getRemoveRedundantNodesSkip().toStdString());
+        if (settings.getSortAndRemove())
+        {
+            importer.setSortAndRemovePrimitives(
+                        settings.getSortAndRemovePoints(),
+                        settings.getSortAndRemovePoints(),
+                        settings.getSortAndRemoveTriangles(),
+                        settings.getSortAndRemovePolygons());
+        }
+        if (settings.getSplitLargeMeshes())
+        {
+            importer.setSplitLargeMeshesTriangleLimit(settings.getSplitLargeMeshesTriangleLimit());
+            importer.setSplitLargeMeshesVertexLimit(settings.getSplitLargeMeshesVertexLimit());
+        }
+        if (settings.getSplitByBoneCount())
+            importer.setSplitByBoneCountMaxBones(settings.getSplitByBoneCountMaxBones());
+
+        importer.importModel(
+            fileName,
+            fullPath.toStdString(),
+            settings.getAssimpPostProcessingFlags());
+        const aiScene *assimpScene = importer.getScene();
+        emit progress(1, jobsCount);
+
+        if (!assimpScene)
+            std::cerr << std::string(aiGetErrorString()) << std::endl;
+        else
+        {
+            //-------------------------------------------------------------------------
+            // Polygon count
+            qlonglong polyCount = 0;
+            for (unsigned int i = 0; i < assimpScene->mNumMeshes; ++i)
+                polyCount += assimpScene->mMeshes[i]->mNumFaces;
+
+            std::cout << "Loaded ";
+            std::cout << fileName << " with " << polyCount << " polygons in ";
+            std::cout << assimpScene->mNumMeshes << " ";
+            std::cout << ((assimpScene->mNumMeshes == 1) ? "mesh" : "meshes");
+            std::cout << std::endl;
+            emit progress(2, jobsCount);
+
+            //-------------------------------------------------------------------------
+            // Textures
+            std::map<std::string, QImage> textures = loadTextures(
+                assimpScene,
+                importer.getFullFolderPath());
+            emit progress(3, jobsCount);
+
+            //-------------------------------------------------------------------------
+            // Repo scene graph
+            const std::map<std::string, core::RepoNodeAbstract *> tex = loadTextures(
+                textures,
+                importer.getFullFolderPath());
+            repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex);
+            emit progress(4, jobsCount);
+
+            //-------------------------------------------------------------------------
+            // GLC World conversion
+            glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
+        }
     }
-    if (settings.getFindInvalidData())
-        importer.setFindInvalidDataAnimationAccuracy(settings.getFindInvalidDataAnimationAccuracy());
-    if (settings.getGenerateNormals() && settings.getGenerateNormalsSmooth())
-        importer.setGenerateSmoothNormalsSmoothingAngle(settings.getGenerateNormalsSmoothCreaseAngle());
-    if (settings.getImproveCacheLocality())
-        importer.setImproveCacheLocalityCacheSize(settings.getImproveCacheLocalityVertexCacheSize());
-    if (settings.getLimitBoneWeights())
-        importer.setLimitBoneWeightsMaxWeights(settings.getLimitBoneWeightsMaxWeight());
-    if (settings.getPreTransformVertices())
-        importer.setPreTransformVerticesNormalize(settings.getPreTransformVerticesNormalize());
-    if (settings.getRemoveComponents())
-        importer.setRemoveComponents(settings.getRemoveComponentsAnimations(),
-                                     settings.getRemoveComponentsBiTangents(),
-                                     settings.getRemoveComponentsBoneWeights(),
-                                     settings.getRemoveComponentsCameras(),
-                                     settings.getRemoveComponentsColors(),
-                                     settings.getRemoveComponentsLights(),
-                                     settings.getRemoveComponentsMaterials(),
-                                     settings.getRemoveComponentsMeshes(),
-                                     settings.getRemoveComponentsNormals(),
-                                     settings.getRemoveComponentsTextureCoordinates(),
-                                     settings.getRemoveComponentsTextures());
-    if (settings.getRemoveRedundantMaterials())
-        importer.setRemoveRedundantMaterialsSkip(settings.getRemoveRedundantMaterialsSkip().toStdString());
-    if (settings.getRemoveRedundantNodes())
-        importer.setRemoveRedundantNodesSkip(settings.getRemoveRedundantNodesSkip().toStdString());
-    if (settings.getSortAndRemove())
+    catch (std::exception e)
     {
-        importer.setSortAndRemovePrimitives(
-                    settings.getSortAndRemovePoints(),
-                    settings.getSortAndRemovePoints(),
-                    settings.getSortAndRemoveTriangles(),
-                    settings.getSortAndRemovePolygons());
+        std::cerr << e.what() << std::endl;
     }
-    if (settings.getSplitLargeMeshes())
-    {
-        importer.setSplitLargeMeshesTriangleLimit(settings.getSplitLargeMeshesTriangleLimit());
-        importer.setSplitLargeMeshesVertexLimit(settings.getSplitLargeMeshesVertexLimit());
-    }
-    if (settings.getSplitByBoneCount())
-        importer.setSplitByBoneCountMaxBones(settings.getSplitByBoneCountMaxBones());
 
-    importer.importModel(
-		fileName, 
-		fullPath.toStdString(), 
-        settings.getAssimpPostProcessingFlags());
-    const aiScene *assimpScene = importer.getScene();
-	emit progress(1, jobsCount);
-	
-	repo::core::RepoGraphScene * repoGraphScene = 0;
-	GLC_World glcWorld;
-
-	if (!assimpScene)
-        std::cerr << std::string(aiGetErrorString()) << std::endl;
-	else
-	{
-		//-------------------------------------------------------------------------
-		// Polygon count
-		qlonglong polyCount = 0;
-		for (unsigned int i = 0; i < assimpScene->mNumMeshes; ++i) 
-			polyCount += assimpScene->mMeshes[i]->mNumFaces;
-
-        std::cout << "Loaded ";
-        std::cout << fileName << " with " << polyCount << " polygons in ";
-        std::cout << assimpScene->mNumMeshes << " ";
-        std::cout << ((assimpScene->mNumMeshes == 1) ? "mesh" : "meshes");
-        std::cout << std::endl;
-		emit progress(2, jobsCount);
-
-		//-------------------------------------------------------------------------
-		// Textures
-		std::map<std::string, QImage> textures = loadTextures(
-			assimpScene,
-            importer.getFullFolderPath());
-		emit progress(3, jobsCount);
-
-		//-------------------------------------------------------------------------
-		// Repo scene graph
-		const std::map<std::string, core::RepoNodeAbstract *> tex = loadTextures(
-			textures, 
-            importer.getFullFolderPath());
-		repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex);
-		emit progress(4, jobsCount);
-
-		//-------------------------------------------------------------------------
-		// GLC World conversion
-		glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
-	}
 	emit progress(jobsCount, jobsCount);
 
 	//-------------------------------------------------------------------------

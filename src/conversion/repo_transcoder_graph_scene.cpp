@@ -59,12 +59,13 @@ GLC_World RepoTranscoderGraphScene::toGLCWorld(
 
     //-------------------------------------------------------------------------
     // Allocate meshes
-    std::vector<core::RepoNodeAbstract*> meshes = graph->getMeshesVector();
+    const core::RepoNodeAbstractSet &meshes = graph->getMeshes();
     std::map<boost::uuids::uuid, GLC_3DRep*> glcMeshes;
-//    QVector<GLC_3DRep*> glcMeshes(meshes.size());
-    for (unsigned int i = 0; i < meshes.size(); ++i){
-        core::RepoNodeAbstract* node = meshes[i];
-        glcMeshes[node->getUniqueID()] = toGLCMesh(meshes[i], glcMaterials, namePrefix);
+    for (core::RepoNodeAbstractSet::const_iterator it = meshes.begin();
+         it != meshes.end(); ++it)
+    {
+        core::RepoNodeAbstract* node = (*it); // meshes[i];
+        glcMeshes[node->getUniqueID()] = toGLCMesh(node, glcMaterials, namePrefix);
     }
 
     //-------------------------------------------------------------------------
