@@ -358,8 +358,8 @@ void repo::gui::RepoGUI::commit()
             // Establish and connect the new worker.
             RepoWorkerCommit *worker = new RepoWorkerCommit(
                         mongo,
-                        database,
-                        project,
+                        commitDialog.getCurrentDatabaseName(),
+                        commitDialog.getCurrentProjectName(),
                         history,
                         widget->getRepoScene());
 
