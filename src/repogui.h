@@ -74,7 +74,7 @@ public slots:
     QMenu* createPanelsMenu();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
-    void dropDatabase();
+    void drop();
 
     //! Fetches head revision from selected DB and branch.
     void fetchHead();

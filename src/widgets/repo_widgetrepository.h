@@ -137,6 +137,10 @@ public :
     //
     //--------------------------------------------------------------------------
 
+    QList<QString> getDatabases(const QString& host) const;
+
+
+
 	/*! Returns a copy of a selected connection. It is necessary to reconnect 
      *	and reauthenticate.
      */
@@ -170,6 +174,8 @@ private :
 	//! Returns a selected databases model corresponding to the NAME column.
 	QModelIndex getSelectedDatabasesTreeViewIndex() const;
 
+    QModelIndex getHostModelIndex(const QString& host) const;
+
     //--------------------------------------------------------------------------
 	//
 	// Static helpers
@@ -179,7 +185,7 @@ private :
 	/*! Returns a hierarchy depth for given model index. 
 	    Root is depth 0, top level items are 1, their children are 2, etc.
 	*/
-	static unsigned int getHierarchyDepth(const QModelIndex&);
+	static unsigned int getHierarchyDepth(const QModelIndex&); 
 
 	static QStandardItem* getHierarchyDepth(
 		const QStandardItemModel* /* model */, 

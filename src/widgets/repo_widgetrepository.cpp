@@ -358,6 +358,12 @@ void repo::gui::RepoWidgetRepository::changeTab(int index)
 
 }
 
+QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host) const
+{
+    //databasesModel->invisibleRootItem()->child()
+    return QList<QString>();
+}
+
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::copySelectedCollectionCellToClipboard()
@@ -431,6 +437,12 @@ QModelIndex repo::gui::RepoWidgetRepository::getSelectedDatabasesTreeViewIndex()
 	// which has the selected row but the desired NAME column.
     const QModelIndex selectedIndex = ui->databasesTreeView->selectionModel()->currentIndex();
     return ui->databasesTreeView->model()->index(selectedIndex.row(), RepoDatabasesColumns::NAME, selectedIndex.parent());
+}
+
+QModelIndex repo::gui::RepoWidgetRepository::getHostModelIndex(const QString& host) const
+{
+    //for (ui->databasesTreeView->model())
+    return QModelIndex();
 }
 
 //------------------------------------------------------------------------------

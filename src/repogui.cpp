@@ -143,7 +143,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     //--------------------------------------------------------------------------
     // Drop
-    QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(dropDatabase()));
+    QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
 
@@ -430,18 +430,21 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
     return panelsMenu;
 }
 
-void repo::gui::RepoGUI::dropDatabase()
+void repo::gui::RepoGUI::drop()
 {
-    QString dbName = ui->widgetRepository->getSelectedDatabase();
-    if (dbName.isNull() || dbName.isEmpty())
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    QString collection = ui->widgetRepository->getSelectedCollection();
+
+    if (database.isNull() || database.isEmpty())
         std::cout << "A database must be selected." << std::endl;
-    else if (dbName == "local" || dbName == "admin")
+    else if ((database == "local" || database == "admin") && collection.isEmpty())
         std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
     else
     {
+        QString ns = database + (!collection.isEmpty() ? "." + collection : "");
         switch (QMessageBox::warning(this,
-            "Drop Database?",
-            "Are you sure you want to drop '" + dbName + "' repository?",
+            "Drop?",
+            "Are you sure you want to drop '" + ns + "'?",
             "&Yes",
             "&No",
             QString::null, 1, 1))
@@ -451,13 +454,10 @@ void repo::gui::RepoGUI::dropDatabase()
                 // TODO: create a DB manager separate from repositories widget.
                 core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
                 mongo.reconnectAndReauthenticate();
-                if (mongo.dropDatabase(dbName.toStdString()))
-                {
-                    std::cout << dbName.toStdString() << " deleted successfully."
-                                 << std::endl;
-                }
+                if (!collection.isEmpty())
+                    mongo.dropCollection(ns.toStdString());
                 else
-                   std::cout << "Delete unsuccessful" << std::endl;
+                    mongo.dropDatabase(ns.toStdString());
                 refresh();
                 break;
             }
