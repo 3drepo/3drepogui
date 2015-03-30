@@ -34,58 +34,68 @@ repo::gui::RepoWorkerCommit::~RepoWorkerCommit() {}
 void repo::gui::RepoWorkerCommit::run() 
 {
     std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
+    int jobsCount = 0;
 
-    std::string dbName = database.toStdString();
-    if (!cancelled && mongo.reconnectAndReauthenticate(dbName))
+    try
     {
-        // TODO: only get those nodes that are mentioned in the revision object.
-        std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
-
-        // TODO: remove
-        std::set<core::RepoNodeAbstract *> tester = scene->getNodes();
-        if (nodes.size() != tester.size())
+        std::string dbName = database.toStdString();
+        if (!cancelled && mongo.reconnectAndReauthenticate(dbName))
         {
-            std::cerr << "Nodes difference recursively: " << nodes.size();
-            std::cerr << ", set: " << tester.size() << std::endl;
-        }
-        core::RepoNodeRevision *revision = history->getCommitRevision();
-        int jobsCount = nodes.size() + 1; // +1 for revision entry
-        if (revision && nodes.size() > 0)
-        {
-            //------------------------------------------------------------------
-            // Start
-            emit progress(0, 0);
+            // TODO: only get those nodes that are mentioned in the revision object.
+            std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
 
-
-            int counter = 0;
-            std::string historyCollection = core::MongoClientWrapper::getHistoryCollectionName(project.toStdString());
-            std::string sceneCollection = core::MongoClientWrapper::getSceneCollectionName(project.toStdString());
-
-            //------------------------------------------------------------------
-            // Insert the revision object first in case of a lost connection.
-            mongo.insertRecord(dbName, historyCollection, revision->toBSONObj());
-            emit progress(++counter, jobsCount);
-
-
-            std::set<const core::RepoNodeAbstract *>::iterator it;
-            //------------------------------------------------------------------
-            // Insert new records one-by-one
-
-            for (it = nodes.begin(); it != nodes.end(); ++it)
+            // TODO: remove
+            std::set<core::RepoNodeAbstract *> tester = scene->getNodes();
+            if (nodes.size() != tester.size())
             {
-                const core::RepoNodeAbstract *node = *it;
-                mongo::BSONObj nodeObj = node->toBSONObj();
-                if (nodeObj.objsize() > 16777216) // 16MB
-                    std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
-                else
-                    mongo.insertRecord(dbName, sceneCollection, nodeObj);
-                emit progress(++counter, jobsCount);
+                std::cerr << "Nodes difference recursively: " << nodes.size();
+                std::cerr << ", set: " << tester.size() << std::endl;
             }
-            //------------------------------------------------------------------
-            // End
-            emit progress(jobsCount, jobsCount);
+            core::RepoNodeRevision *revision = history->getCommitRevision();
+            jobsCount = nodes.size() + 1; // +1 for revision entry
+            if (revision && nodes.size() > 0)
+            {
+                //------------------------------------------------------------------
+                // Start
+                emit progress(0, 0);
+
+
+                int counter = 0;
+                std::string historyCollection = core::MongoClientWrapper::getHistoryCollectionName(project.toStdString());
+                std::string sceneCollection = core::MongoClientWrapper::getSceneCollectionName(project.toStdString());
+
+                //------------------------------------------------------------------
+                // Insert the revision object first in case of a lost connection.
+                mongo.insertRecord(dbName, historyCollection, revision->toBSONObj());
+                emit progress(++counter, jobsCount);
+
+
+                std::set<const core::RepoNodeAbstract *>::iterator it;
+                //------------------------------------------------------------------
+                // Insert new records one-by-one
+
+                for (it = nodes.begin(); it != nodes.end(); ++it)
+                {
+                    const core::RepoNodeAbstract *node = *it;
+                    mongo::BSONObj nodeObj = node->toBSONObj();
+                    if (nodeObj.objsize() > 16777216) // 16MB
+                        std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
+                    else
+                        mongo.insertRecord(dbName, sceneCollection, nodeObj);
+                    emit progress(++counter, jobsCount);
+                }
+
+            }
         }
     }
+    catch (std::exception e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
+    //--------------------------------------------------------------------------
+    // End
+    emit progress(jobsCount, jobsCount);
     //--------------------------------------------------------------------------
     // Done
     emit RepoWorkerAbstract::finished();

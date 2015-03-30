@@ -37,56 +37,64 @@ void repo::gui::RepoWorkerDatabases::run()
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 	emit progressValueChanged(0);
 
-	if (!cancelled && !mongo.reconnect())
-        std::cout << "Connection failed" << std::endl;
-	else
-	{
-		mongo.reauthenticate();
-
-		emit hostFetched(QString::fromStdString(mongo.getUsernameAtHostAndPort()));			
-        //----------------------------------------------------------------------
-		// For each database (if not cancelled)
-		std::list<std::string> databases = mongo.getDatabases();
-
-        //----------------------------------------------------------------------
-        jobsCount = (int) databases.size() * 2;
-        emit progressRangeChanged(0, jobsCount);
-
-
-        //----------------------------------------------------------------------
-        // Populate databases
-        int counter = 0;
-        for (std::list<std::string>::const_iterator dbIterator = databases.begin();
-            !cancelled && dbIterator != databases.end();
-            ++dbIterator)
+    try
+    {
+        if (!cancelled && !mongo.reconnect())
+            std::cout << "Connection failed" << std::endl;
+        else
         {
-            const std::string database = *dbIterator;
-            emit databaseFetched(QString::fromStdString(database));
-            emit progressValueChanged(counter++);
-        }
+            mongo.reauthenticate();
 
-        //----------------------------------------------------------------------
-        // Populate collections with sizes
-		for (std::list<std::string>::const_iterator dbIterator = databases.begin(); 
-			!cancelled && dbIterator != databases.end(); 
-			++dbIterator) 
-		{
-			const std::string database = *dbIterator;
-            //emit databaseFetched(QString::fromStdString(database));
-            //------------------------------------------------------------------
-            // For each collection within the database (if not cancelled)
-            std::list<std::string> collections = mongo.getCollections(database);
-            for (std::list<std::string>::const_iterator colIterator = collections.begin();
-                !cancelled && colIterator != collections.end();
-                ++colIterator)
+            emit hostFetched(QString::fromStdString(mongo.getUsernameAtHostAndPort()));
+            //----------------------------------------------------------------------
+            // For each database (if not cancelled)
+            std::list<std::string> databases = mongo.getDatabases();
+
+            //----------------------------------------------------------------------
+            jobsCount = (int) databases.size() * 2;
+            emit progressRangeChanged(0, jobsCount);
+
+
+            //----------------------------------------------------------------------
+            // Populate databases
+            int counter = 0;
+            for (std::list<std::string>::const_iterator dbIterator = databases.begin();
+                !cancelled && dbIterator != databases.end();
+                ++dbIterator)
             {
-                emit collectionFetched(mongo.getCollectionStats(*colIterator));
+                const std::string database = *dbIterator;
+                emit databaseFetched(QString::fromStdString(database));
+                emit progressValueChanged(counter++);
             }
-            emit databaseFinished(QString::fromStdString(database));
-            //------------------------------------------------------------------
-			emit progressValueChanged(counter++);
-		}
-	}
+
+            //----------------------------------------------------------------------
+            // Populate collections with sizes
+            for (std::list<std::string>::const_iterator dbIterator = databases.begin();
+                !cancelled && dbIterator != databases.end();
+                ++dbIterator)
+            {
+                const std::string database = *dbIterator;
+                //emit databaseFetched(QString::fromStdString(database));
+                //------------------------------------------------------------------
+                // For each collection within the database (if not cancelled)
+                std::list<std::string> collections = mongo.getCollections(database);
+                for (std::list<std::string>::const_iterator colIterator = collections.begin();
+                    !cancelled && colIterator != collections.end();
+                    ++colIterator)
+                {
+                    emit collectionFetched(mongo.getCollectionStats(*colIterator));
+                }
+                emit databaseFinished(QString::fromStdString(database));
+                //------------------------------------------------------------------
+                emit progressValueChanged(counter++);
+            }
+        }
+    }
+    catch (std::exception e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
     //--------------------------------------------------------------------------
     emit progressValueChanged(jobsCount);
 	emit RepoWorkerAbstract::finished();

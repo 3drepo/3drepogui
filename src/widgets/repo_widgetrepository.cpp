@@ -226,7 +226,7 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
     // won't work with more than one async addCollection call.
     databaseRowCounter = 0;
 
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::NAME);
+//    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::NAME);
 }
 
 //------------------------------------------------------------------------------

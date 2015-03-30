@@ -50,53 +50,60 @@ void repo::gui::RepoWorkerFetchRevision::run()
     done = 0;
 	emit progress(0, 0); // undetermined (moving) progress bar
 
-
 	GLC_World glcWorld;
-    core::RepoGraphScene *masterSceneGraph = NULL;
-	if (!cancelled && !mongo.reconnect())
+    core::RepoGraphScene *masterSceneGraph = 0;
+
+    try
     {
-        std::cerr << "Connection failed" << std::endl;
-    }
-	else
-	{
-         masterSceneGraph = fetchSceneRecursively(
-            database,
-            project,
-            id.toString().toStdString(),
-            headRevision,
-            NULL,
-            NULL);
-
-        //----------------------------------------------------------------------
-		// Convert to Assimp
-		// TODO: code in direct conversion from RepoSceneGraph to GLC_World
-		// to avoid intermediary Assimp aiScene conversion!
-		aiScene* scene = new aiScene();
-        if (!cancelled && masterSceneGraph)
-		{
-            masterSceneGraph->toAssimp(scene);
-			emit progress(done++, jobsCount);
-
-            //------------------------------------------------------------------
-            // Convert raw textures into QImages
-            std::map<std::string, QImage> namedTextures;
-            std::vector<repo::core::RepoNodeTexture*> textures =
-                    masterSceneGraph->getTextures();
-            for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
-            {
-                repo::core::RepoNodeTexture* repoTex = textures[i];
-                const unsigned char* data = (unsigned char*) repoTex->getRawData();
-                QImage image = QImage::fromData(data, repoTex->getRawDataSize());
-                namedTextures.insert(std::make_pair(repoTex->getName(), image));
-            }
-            emit progress(done++, jobsCount);
-
-            //------------------------------------------------------------------
-            // GLC World conversion
-            if (!cancelled)
-                glcWorld = repo::gui::RepoTranscoderAssimp::toGLCWorld(scene, namedTextures);
+        if (!cancelled && !mongo.reconnect())
+        {
+            std::cerr << "Connection failed" << std::endl;
         }
-	}
+        else
+        {
+             masterSceneGraph = fetchSceneRecursively(
+                database,
+                project,
+                id.toString().toStdString(),
+                headRevision,
+                NULL,
+                NULL);
+
+            //----------------------------------------------------------------------
+            // Convert to Assimp
+            // TODO: code in direct conversion from RepoSceneGraph to GLC_World
+            // to avoid intermediary Assimp aiScene conversion!
+            aiScene* scene = new aiScene();
+            if (!cancelled && masterSceneGraph)
+            {
+                masterSceneGraph->toAssimp(scene);
+                emit progress(done++, jobsCount);
+
+                //------------------------------------------------------------------
+                // Convert raw textures into QImages
+                std::map<std::string, QImage> namedTextures;
+                std::vector<repo::core::RepoNodeTexture*> textures =
+                        masterSceneGraph->getTextures();
+                for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
+                {
+                    repo::core::RepoNodeTexture* repoTex = textures[i];
+                    const unsigned char* data = (unsigned char*) repoTex->getRawData();
+                    QImage image = QImage::fromData(data, repoTex->getRawDataSize());
+                    namedTextures.insert(std::make_pair(repoTex->getName(), image));
+                }
+                emit progress(done++, jobsCount);
+
+                //------------------------------------------------------------------
+                // GLC World conversion
+                if (!cancelled)
+                    glcWorld = repo::gui::RepoTranscoderAssimp::toGLCWorld(scene, namedTextures);
+            }
+        }
+    }
+    catch (std::exception e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 
     //--------------------------------------------------------------------------
 	emit progress(jobsCount, jobsCount);

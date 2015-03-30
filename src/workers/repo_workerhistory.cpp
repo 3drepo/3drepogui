@@ -36,26 +36,28 @@ repo::gui::RepoWorkerHistory::~RepoWorkerHistory() {}
 
 void repo::gui::RepoWorkerHistory::run()
 {
-	if (!mongo.reconnect())
-        std::cerr << tr("Connection failed").toStdString() << std::endl;
-    else
+    try
     {
-		mongo.reauthenticate(database);	
+        if (!mongo.reconnect())
+            std::cerr << tr("Connection failed").toStdString() << std::endl;
+        else
+        {
+            mongo.reauthenticate(database);
 
-		std::list<std::string> fields;
-		fields.push_back(REPO_NODE_LABEL_ID);
-		fields.push_back(REPO_NODE_LABEL_SHARED_ID);
-		fields.push_back(REPO_NODE_LABEL_MESSAGE);
-		fields.push_back(REPO_NODE_LABEL_AUTHOR);
-		fields.push_back(REPO_NODE_LABEL_TIMESTAMP);
+            std::list<std::string> fields;
+            fields.push_back(REPO_NODE_LABEL_ID);
+            fields.push_back(REPO_NODE_LABEL_SHARED_ID);
+            fields.push_back(REPO_NODE_LABEL_MESSAGE);
+            fields.push_back(REPO_NODE_LABEL_AUTHOR);
+            fields.push_back(REPO_NODE_LABEL_TIMESTAMP);
 
-        //----------------------------------------------------------------------
-		// Retrieves all BSON objects until finished or cancelled.
-		unsigned long long skip = 0;
-		QDateTime datetime;
-        std::auto_ptr<mongo::DBClientCursor> cursor;
+            //----------------------------------------------------------------------
+            // Retrieves all BSON objects until finished or cancelled.
+            unsigned long long skip = 0;
+            QDateTime datetime;
+            std::auto_ptr<mongo::DBClientCursor> cursor;
 
-        try{
+
             do
             {
                 for (; !cancelled && cursor.get() && cursor->more(); ++skip)
@@ -81,11 +83,12 @@ void repo::gui::RepoWorkerHistory::run()
             }
             while (!cancelled && cursor.get() && cursor->more());
         }
-        catch (...)
-        {
-            std::cerr << tr("Fetching history failed").toStdString() << std::endl;
-        }
-	}
+
+    }
+    catch (std::exception e)
+    {
+        std::cerr << tr("Fetching history failed").toStdString() << " " << e.what() << std::endl;
+    }
     //--------------------------------------------------------------------------
 	emit RepoWorkerAbstract::finished();
 }
