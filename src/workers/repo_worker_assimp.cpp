@@ -50,8 +50,8 @@ std::map<std::string, QImage> repo::gui::RepoWorkerAssimp::loadTextures(
 
 		aiString path;	// filename
 		while (AI_SUCCESS == texFound)
-		{			
-			texFound = material->GetTexture(aiTextureType_DIFFUSE, texIndex, & path);	
+		{
+			texFound = material->GetTexture(aiTextureType_DIFFUSE, texIndex, & path);
 			std::string fileName(path.data);
 
 			// Multiple materials can point to the same texture
@@ -61,24 +61,24 @@ std::map<std::string, QImage> repo::gui::RepoWorkerAssimp::loadTextures(
 				// In assimp, embedded textures name starts with asterisk and a textures array index
 				// so the name can be "*0" for example
 				if (scene->HasTextures() && '*' == fileName.at(0))
-				{ 
+				{
 					//---------------------------------------------------------
 					// Embedded texture
-					int textureIndex = atoi(fileName.substr(1, fileName.size()).c_str());				
+					int textureIndex = atoi(fileName.substr(1, fileName.size()).c_str());
 					aiTexture *texture = scene->mTextures[textureIndex];
-				
-					if (0 == texture->mHeight) 
+
+					if (0 == texture->mHeight)
 					{
 						// if height is 0, it is compressed
 						const uchar * data = (uchar *) texture->pcData;
 						image = QImage::fromData(data, (int) texture->mWidth).
-							mirrored(false, true);								
+							mirrored(false, true);
 					}
-					else 
-					{			
+					else
+					{
 						image = QImage(
-							texture->mWidth, 
-							texture->mWidth, 
+							texture->mWidth,
+							texture->mWidth,
 							QImage::Format_ARGB32);
 						for (unsigned int i = 0; i < texture->mWidth; ++i) {
 							for (unsigned int j = 0; j < texture->mHeight; ++j) {
@@ -86,24 +86,24 @@ std::map<std::string, QImage> repo::gui::RepoWorkerAssimp::loadTextures(
 									i * texture->mHeight + j];
 								image.setPixel(i, j, qRgba(
 									texel.r,
-									texel.g, 
-									texel.b, 
+									texel.g,
+									texel.b,
 									texel.a));
 							}
-						}					
-					}	
+						}
+					}
 				}
 				else
-				{ 
+				{
 					//---------------------------------------------------------
 					// External texture
 					QString fileloc((basePath + fileName).c_str());
 					if (!image.load(fileloc))
-					{			
+					{
                         std::cerr << "Image " << fileloc.toStdString();
                         std::cerr << " could not be loaded." << std::endl;
 						/*
-						if (fileName.size() >= 3 &&  TGAHandler::TGA_EXTENSION == fileName.substr(fileName.size() - 3, 3)) 
+						if (fileName.size() >= 3 &&  TGAHandler::TGA_EXTENSION == fileName.substr(fileName.size() - 3, 3))
 						{
 							QFile file(fileloc);
 							file.open(QIODevice::ReadOnly);
@@ -113,13 +113,13 @@ std::map<std::string, QImage> repo::gui::RepoWorkerAssimp::loadTextures(
 							handler->read(in, &image);
 						}		*/
 
-					}		
+					}
 				}
 				namedTextures.insert(std::make_pair(path.data, image));
 			}
 			texIndex++;
 		}
-	}	
+	}
 	return namedTextures;
 }
 
@@ -132,12 +132,12 @@ std::map<std::string, repo::core::RepoNodeAbstract *> repo::gui::RepoWorkerAssim
 	{
 		std::string name = it->first;
 		QImage qimage = it->second;
-					
+
 		// If QImage checked that the file exists and is loadable...
 		if (NULL != qimage.bits())
 		{
 			// Read the raw file to save space in the DB. QImage will happily
-			// claim a file is 32 bit depth even though it is 24 for example.							
+			// claim a file is 32 bit depth even though it is 24 for example.
             ifstream::pos_type size;
             char *memblock;
 			ifstream file (texturesFolderPath + name, ios::in|ios::binary|ios::ate);
@@ -151,15 +151,15 @@ std::map<std::string, repo::core::RepoNodeAbstract *> repo::gui::RepoWorkerAssim
 				memblock = new char [size];
 				file.seekg (0, ios::beg);
 				file.read (memblock, size);
-				file.close();								
-								
+				file.close();
+
 				repo::core::RepoNodeAbstract * texture = new repo::core::RepoNodeTexture(
 					name,
 					memblock,
 					(unsigned int) size,
 					qimage.width(),
 					qimage.height());
-				repoTextures.insert(std::make_pair(name, texture));	
+				repoTextures.insert(std::make_pair(name, texture));
 				delete [] memblock;
 			}
 		}
@@ -278,15 +278,15 @@ void repo::gui::RepoWorkerAssimp::run()
             glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
         }
     }
-    catch (std::exception e)
+    catch (...)
     {
-        std::cerr << e.what() << std::endl;
+        //std::cerr << e.what() << std::endl;
     }
 
 	emit progress(jobsCount, jobsCount);
 
 	//-------------------------------------------------------------------------
 	// Done
-	emit finished(repoGraphScene, glcWorld);	
+	emit finished(repoGraphScene, glcWorld);
 	emit RepoWorkerAbstract::finished();
 }
