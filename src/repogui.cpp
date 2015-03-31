@@ -162,10 +162,19 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
                     RepoFontAwesome::fa_chain_broken));
 
 
+    // Oculus VR
     QObject::connect(ui->actionOculus, SIGNAL(triggered()), this, SLOT(oculus()));
     ui->actionOculus->setIcon(
                 RepoFontAwesome::getInstance().getIcon(
                     RepoFontAwesome::fa_eye));
+
+    // Web View
+    QObject::connect(ui->actionWeb_View, &QAction::triggered,
+                     ui->mdiArea, &RepoMdiArea::addWebViewSubWindow);
+    ui->actionWeb_View->setIcon(
+                RepoFontAwesome::getInstance().getIcon(
+                    RepoFontAwesome::fa_globe));
+
 
     //--------------------------------------------------------------------------
     //
@@ -242,9 +251,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Report Issue
     QObject::connect(ui->actionReport_Issue, SIGNAL(triggered()),
                     this, SLOT(reportIssue()));
-    ui->actionReport_Issue->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_globe));
+
 
 
 

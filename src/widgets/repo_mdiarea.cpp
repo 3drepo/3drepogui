@@ -20,6 +20,7 @@
 
 #include "../renderers/repo_oculus.h"
 #include "../renderers/repooculustexturerenderer.h"
+#include "../renderers/repo_webview.h"
 
 //------------------------------------------------------------------------------
 #include "../workers/repo_workerfetchrevision.h"
@@ -171,6 +172,23 @@ void repo::gui::RepoMdiArea::closeHiddenSubWindows()
 //
 //------------------------------------------------------------------------------
 
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWidget(QWidget* widget)
+{
+    RepoMdiSubWindow * subWindow = new RepoMdiSubWindow();
+    widget->setParent(subWindow);
+    subWindow->setWidget(widget);
+
+    QObject::connect(widget, &QWidget::windowTitleChanged,
+                     subWindow, &RepoMdiSubWindow::setWindowTitle);
+
+    QMdiArea::addSubWindow(subWindow);
+    subWindow->show();
+
+    this->update();
+    this->repaint();
+    return subWindow;
+}
+
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
     const QString& fullPath)
 {
@@ -242,18 +260,13 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addOculusTextureSubWindow()
 {
-    RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidget(new RepoOculusTextureRenderer(repoSubWindow));
-
-    QMdiArea::addSubWindow(repoSubWindow);
-    repoSubWindow->show();
-
-    this->update();
-    this->repaint();
-    return repoSubWindow;
+    return addSubWidget(new RepoOculusTextureRenderer());
 }
 
-
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
+{
+    return addSubWidget(new RepoWebView());
+}
 
 repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()
 {
