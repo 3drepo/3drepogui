@@ -7,7 +7,7 @@ Cross-platform C++ GUI written in Qt.
 
 - [3D Repo Core master branch](https://github.com/3drepo/3drepocore)
 - [GLC Lib v2.5.1](https://github.com/laumaya/GLC_lib/tree/Version_2_5_1)
-- [Font Awesome v4.2.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.2.0)
+- [Font Awesome v4.3.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.3.0)
 - [Qt v5.4.1 OpenGL](https://www.qt.io/download-open-source/#section-2)
 - [Oculus SDK 0.4.3](https://developer.oculus.com/downloads/)
 - [UnrealEngine 4.7.2](https://github.com/3drepo/UnrealEngine)
