@@ -8,4 +8,16 @@ malehead.obj
 libovr.a
 run
 *.log
+ui_*.h
+*.o
+*.ply
+moc*.cpp
+forms/*.cpp
+forms/*.h
+Makefile.*
+qrc_fonts.cpp
+qrc_fonts.o
+qrc_resources.cpp
+qrc_resources.o
+debug
 
