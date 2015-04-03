@@ -132,10 +132,10 @@ private:
     std::map<std::string, std::list<std::string> > databasesWithProjects;
 
     //! Model of the users table.
-    QStandardItemModel *usersModel;
+    QStandardItemModel *model;
 
     //! Proxy model for users table to enable filtering.
-    QSortFilterProxyModel *usersProxy;
+    QSortFilterProxyModel *proxy;
 
     //! Threadpool for this object only.
     QThreadPool threadPool;

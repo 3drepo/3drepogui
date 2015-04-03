@@ -47,47 +47,47 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
 
     //--------------------------------------------------------------------------
     // Users
-    usersModel = new QStandardItemModel(this);
-    usersModel->setColumnCount(8);
-    usersModel->setHeaderData(
+    model = new QStandardItemModel(this);
+    model->setColumnCount(8);
+    model->setHeaderData(
                 Columns::ACTIVE,
                 Qt::Horizontal,
                 tr("Active"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::USERNAME,
                 Qt::Horizontal,
                 tr("Username"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::FIRST_NAME,
                 Qt::Horizontal,
                 tr("First Name"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::LAST_NAME,
                 Qt::Horizontal,
                 tr("Last Name"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::EMAIL,
                 Qt::Horizontal,
                 tr("Email"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::PROJECTS,
                 Qt::Horizontal,
                 tr("Projects"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::GROUPS,
                 Qt::Horizontal,
                 tr("Groups"));
-    usersModel->setHeaderData(
+    model->setHeaderData(
                 Columns::ROLES,
                 Qt::Horizontal,
                 tr("Roles"));
 
-    usersProxy = new QSortFilterProxyModel(this);
-    usersProxy->setFilterKeyColumn(-1); // filter all columns
-    usersProxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    usersProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-    usersProxy->setSourceModel(usersModel);
-    ui->treeView->setModel(usersProxy);
+    proxy = new QSortFilterProxyModel(this);
+    proxy->setFilterKeyColumn(-1); // filter all columns
+    proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
+    proxy->setSourceModel(model);
+    ui->treeView->setModel(proxy);
     ui->treeView->sortByColumn(Columns::USERNAME, Qt::SortOrder::AscendingOrder);
     clearUsersModel();
 
@@ -95,18 +95,18 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
     // Connect filtering text input to the filtering proxy model
     QObject::connect(
         ui->filterLineEdit, &QLineEdit::textChanged,
-        usersProxy, &QSortFilterProxyModel::setFilterFixedString);
+        proxy, &QSortFilterProxyModel::setFilterFixedString);
 
     QObject::connect(
         ui->refreshPushButton, SIGNAL(pressed()),
         this, SLOT(refresh()));
 
     QObject::connect(
-        usersProxy, &QSortFilterProxyModel::rowsInserted,
+        proxy, &QSortFilterProxyModel::rowsInserted,
         this, &RepoDialogUserManager::updateCountLabel);
 
     QObject::connect(
-        usersProxy, &QSortFilterProxyModel::rowsRemoved,
+        proxy, &QSortFilterProxyModel::rowsRemoved,
         this, &RepoDialogUserManager::updateCountLabel);
 
     QObject::connect(
@@ -131,8 +131,8 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
 {
     cancelAllThreads();
-    delete usersModel;
-    delete usersProxy;
+    delete model;
+    delete proxy;
     delete ui;
 }
 
@@ -189,7 +189,7 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     row.append(createItem((qulonglong)(user.getRolesList().size())));
 
     //--------------------------------------------------------------------------
-    usersModel->invisibleRootItem()->appendRow(row);
+    model->invisibleRootItem()->appendRow(row);
 }
 
 void repo::gui::RepoDialogUserManager::finish()
@@ -239,7 +239,7 @@ repo::core::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex
 
 void repo::gui::RepoDialogUserManager::clearUsersModel()
 {
-    usersModel->removeRows(0, usersModel->rowCount());
+    model->removeRows(0, model->rowCount());
     //--------------------------------------------------------------------------
     ui->treeView->resizeColumnToContents(Columns::ACTIVE);
     ui->treeView->resizeColumnToContents(Columns::USERNAME);
@@ -254,7 +254,7 @@ void repo::gui::RepoDialogUserManager::clearUsersModel()
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);
 
-    usersProxy->clear();
+    proxy->clear();
     updateCountLabel();
 }
 
@@ -360,7 +360,7 @@ void repo::gui::RepoDialogUserManager::showEditDialog(const core::RepoUser &user
 
 void repo::gui::RepoDialogUserManager::updateCountLabel() const
 {
-    ui->countLabel->setText(tr("Showing %1 of %2").arg(usersProxy->rowCount()).arg(usersModel->rowCount()));
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxy->rowCount()).arg(model->rowCount()));
 }
 
 QStandardItem *repo::gui::RepoDialogUserManager::createItem(const QString &data)
