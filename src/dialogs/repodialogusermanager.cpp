@@ -16,38 +16,22 @@
  */
 
 
-#include <QMessageBox>
 #include "repodialogusermanager.h"
-#include "ui_repodialogusermanager.h"
+
 #include "../primitives/repo_fontawesome.h"
 #include "../workers/repo_workerusers.h"
+#include "ui_repoabstractmanagerdialog.h"
 
 repo::gui::RepoDialogUserManager::RepoDialogUserManager(
         const core::MongoClientWrapper& mongo,
         const std::string &database,
         QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::RepoDialogUserManager)
-    , mongo(mongo)
-    , database(database)
+    : RepoAbstractManagerDialog(mongo, database, parent)
 {
-    ui->setupUi(this);
     setWindowIcon(getIcon());
 
     //--------------------------------------------------------------------------
-    // Add DB connections to selector
-    ui->hostComboBox->addItem(
-                RepoFontAwesome::getHostIcon(),
-                QString::fromStdString(mongo.getHostAndPort()));
-
-    ui->databaseComboBox->addItem(
-                RepoFontAwesome::getDatabaseIcon(),
-                "admin");
-
-
-    //--------------------------------------------------------------------------
     // Users
-    model = new QStandardItemModel(this);
     model->setColumnCount(8);
     model->setHeaderData(
                 Columns::ACTIVE,
@@ -82,59 +66,11 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 Qt::Horizontal,
                 tr("Roles"));
 
-    proxy = new QSortFilterProxyModel(this);
-    proxy->setFilterKeyColumn(-1); // filter all columns
-    proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSourceModel(model);
-    ui->treeView->setModel(proxy);
     ui->treeView->sortByColumn(Columns::USERNAME, Qt::SortOrder::AscendingOrder);
     clearUsersModel();
-
-    //--------------------------------------------------------------------------
-    // Connect filtering text input to the filtering proxy model
-    QObject::connect(
-        ui->filterLineEdit, &QLineEdit::textChanged,
-        proxy, &QSortFilterProxyModel::setFilterFixedString);
-
-    QObject::connect(
-        ui->refreshPushButton, SIGNAL(pressed()),
-        this, SLOT(refresh()));
-
-    QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsInserted,
-        this, &RepoDialogUserManager::updateCountLabel);
-
-    QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsRemoved,
-        this, &RepoDialogUserManager::updateCountLabel);
-
-    QObject::connect(
-        ui->treeView->selectionModel(), &QItemSelectionModel::selectionChanged,
-        this, &RepoDialogUserManager::select);
-
-    QObject::connect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
-                     this, SLOT(editUser(const QModelIndex &)));
-
-    QObject::connect(
-        ui->addPushButton, SIGNAL(pressed()),
-                this, SLOT(showEditDialog()));
-
-    QObject::connect(
-        ui->removePushButton, SIGNAL(pressed()),
-                this, SLOT(removeItem()));
-
-    QObject::connect(ui->editPushButton, SIGNAL(pressed()),
-                     this, SLOT(editUser()));
 }
 
-repo::gui::RepoDialogUserManager::~RepoDialogUserManager()
-{
-    cancelAllThreads();
-    delete model;
-    delete proxy;
-    delete ui;
-}
+repo::gui::RepoDialogUserManager::~RepoDialogUserManager() {}
 
 void repo::gui::RepoDialogUserManager::addCustomRoles(const std::list<std::string> &list)
 {
@@ -192,31 +128,12 @@ void repo::gui::RepoDialogUserManager::addUser(const core::RepoUser &user)
     model->invisibleRootItem()->appendRow(row);
 }
 
-void repo::gui::RepoDialogUserManager::finish()
-{
-    ui->hostComboBox->setEnabled(true);
-    ui->databaseComboBox->setEnabled(true);
-}
-
-
-bool repo::gui::RepoDialogUserManager::cancelAllThreads()
-{
-    emit cancel();
-    return threadPool.waitForDone(); // msecs
-}
-
-int repo::gui::RepoDialogUserManager::exec()
-{
-    refresh();
-    return QDialog::exec();
-}
-
-void repo::gui::RepoDialogUserManager::editUser()
+void repo::gui::RepoDialogUserManager::edit()
 {
     showEditDialog(getUser());
 }
 
-void repo::gui::RepoDialogUserManager::editUser(const QModelIndex &index)
+void repo::gui::RepoDialogUserManager::edit(const QModelIndex &index)
 {
     showEditDialog(getUser(index));
 }
@@ -334,15 +251,6 @@ void repo::gui::RepoDialogUserManager::removeItem()
         }
 }
 
-//! Selects the data from the given item.
-void repo::gui::RepoDialogUserManager::select(
-        const QItemSelection &,
-        const QItemSelection &)
-{
-    ui->removePushButton->setEnabled(true);
-    ui->editPushButton->setEnabled(true);
-}
-
 void repo::gui::RepoDialogUserManager::showEditDialog(const core::RepoUser &user)
 {
     RepoDialogUser userDialog(user, databasesWithProjects, customRolesList, this);
@@ -355,31 +263,4 @@ void repo::gui::RepoDialogUserManager::showEditDialog(const core::RepoUser &user
         // Create or update user
         refresh(userDialog.getCommand());
     }
-
 }
-
-void repo::gui::RepoDialogUserManager::updateCountLabel() const
-{
-    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxy->rowCount()).arg(model->rowCount()));
-}
-
-QStandardItem *repo::gui::RepoDialogUserManager::createItem(const QString &data)
-{
-    QStandardItem *item = new QStandardItem(data);
-    item->setEditable(false);
-    item->setToolTip(data);
-    return item;
-}
-
-QStandardItem *repo::gui::RepoDialogUserManager::createItem(
-    const QVariant& data)
-{
-    QStandardItem* item = new QStandardItem();
-    item->setEditable(false);
-    item->setTextAlignment(Qt::AlignRight);
-    item->setText(data.toString());
-    item->setToolTip(data.toString());
-    item->setData(data);
-    return item;
-}
-

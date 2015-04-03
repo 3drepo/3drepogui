@@ -50,7 +50,7 @@
 #include "renderers/repooculustexturerenderer.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
-
+#include "dialogs/repoabstractmanagerdialog.h"
 
 //------------------------------------------------------------------------------
 
