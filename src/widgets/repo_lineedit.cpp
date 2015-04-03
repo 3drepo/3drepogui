@@ -22,7 +22,10 @@ repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent)
 {
 	this->setPlaceholderText(tr("Filter"));
 	clearButton = new QToolButton(this);
-	clearButton->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_ban, QColor(Qt::darkRed)));
+
+    // See http://doc.qt.io/qt-5/qstyle.html#StandardPixmap-enum
+    clearButton->setIcon(this->style()->standardIcon(QStyle::SP_LineEditClearButton));
+//	clearButton->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_ban, QColor(Qt::darkRed)));
 	clearButton->setToolTip(tr("Clear"));
 	clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");    
@@ -41,6 +44,8 @@ repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent)
 	setMinimumSize(qMax(sizeHint.width(), clearButton->sizeHint().height() + width * 2 + 2),
 		qMax(sizeHint.height(), clearButton->sizeHint().height() + width * 2 + 2));
 	
+
+
 	setClearButtonEnabled(this->text());
 }
 

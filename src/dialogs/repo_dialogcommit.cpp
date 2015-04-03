@@ -21,24 +21,26 @@
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
 #include <QCheckBox>
+#include <QPushButton>
 //------------------------------------------------------------------------------
 #include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogCommit::RepoDialogCommit(
-    const QString &server,
-    const QString &repository,
+repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &server,
+    QWidget *parent,
+    Qt::WindowFlags flags,
+    const QString &database,
+    const QString &project,
     const QString &branch,
     const core::RepoGraphAbstract *scene,
-    core::RepoNodeRevision *revision,
-    QWidget *parent,
-	Qt::WindowFlags flags)
+    core::RepoNodeRevision *revision)
 	: QDialog(parent, flags)
 	, scene(scene)
 	, revision(revision)
     , ui(new Ui::RepoDialogCommit)
 {
     ui->setupUi(this);
+    this->setWindowIcon(getIcon());
 
 	//this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
@@ -63,22 +65,33 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
 	QObject::connect(
         ui->filterLineEdit, &QLineEdit::textChanged,
 		proxyModel, &QSortFilterProxyModel::setFilterFixedString);	
+    QObject::connect(
+        proxyModel, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoDialogCommit::updateCountLabel);
 
-    ui->serverLabel->setText(" <b>mongodb://" + server + "/</b>");
-    ui->repositoryLineEdit->setText(repository);
-    ui->branchLineEdit->setText(branch);
-    this->setWindowIcon(getIcon());
+    QObject::connect(
+        proxyModel, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoDialogCommit::updateCountLabel);
 
-    ui->repositoryPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_unlock_alt,
-                    RepoFontAwesome::fa_lock));
 
-    ui->branchPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_unlock_alt,
-                    RepoFontAwesome::fa_lock));
+    ui->branchComboBox->addItem(
+                RepoFontAwesome::getBranchIcon(),
+                branch);
 
+    //--------------------------------------------------------------------------
+    // Add DB connections to selector
+    // TODO: for loop to add multiple servers
+    ui->serverComboBox->addItem(
+                RepoFontAwesome::getHostIcon(),
+                QString::fromStdString(server.getHostAndPort()));
+
+    ui->databaseComboBox->addItem(
+                RepoFontAwesome::getDatabaseIcon(),
+                database);
+
+    ui->projectComboBox->addItem(
+                RepoFontAwesome::getProjectIcon(),
+                project);
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +127,7 @@ int repo::gui::RepoDialogCommit::exec()
     //--------------------------------------------------------------------------
 	// If user clicked OK
 	int result;
-	if (result = QDialog::exec())
+    if (result = QDialog::exec() && revision)
 	{
 		// TODO: modify the revision object according to user selection
 		revision->setMessage(getMessage().toStdString());
@@ -125,8 +138,9 @@ int repo::gui::RepoDialogCommit::exec()
 //------------------------------------------------------------------------------
 void repo::gui::RepoDialogCommit::setModifiedObjects()
 {	
-    const std::set<repo::core::RepoNodeAbstract*> modifiedObjects =
-		scene->getNodes();
+    std::set<repo::core::RepoNodeAbstract*> modifiedObjects;
+    if (scene)
+        modifiedObjects = scene->getNodes();
 
     //--------------------------------------------------------------------------
 	// Number of changes
@@ -186,4 +200,19 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
         //----------------------------------------------------------------------
 		model->appendRow(row);
 	}	
+}
+
+QString repo::gui::RepoDialogCommit::getCurrentDatabaseName() const
+{
+    return ui->databaseComboBox->currentText();
+}
+
+QString repo::gui::RepoDialogCommit::getCurrentProjectName() const
+{
+    return ui->projectComboBox->currentText();
+}
+
+void repo::gui::RepoDialogCommit::updateCountLabel() const
+{
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxyModel->rowCount()).arg(model->rowCount()));
 }

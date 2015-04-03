@@ -38,51 +38,55 @@ void repo::gui::RepoWorkerCollection::run()
 	emit progressRangeChanged(0, 0);
 	emit progressValueChanged(0);
 
-	if (!mongo.reconnect())
-        std::cerr << "Connection failed" << std::endl;
-	else
-	{
-		// Authentication can return false especially if it is not required by 
-		// the remote DB.
-		mongo.reauthenticate(database);	
+    try
+    {
+
+        if (!mongo.reconnect())
+            std::cerr << "Connection failed" << std::endl;
+        else
+        {
+            // Authentication can return false especially if it is not required by
+            // the remote DB.
+            mongo.reauthenticate(database);
 
 
-		jobsCount = mongo.countItemsInCollection(database, collection);
-		emit progressRangeChanged(0, jobsCount);
+            jobsCount = mongo.countItemsInCollection(database, collection);
+            emit progressRangeChanged(0, jobsCount);
 
 
+    //        repo::core::MongoClientWrapper localhost;
+    //        localhost.connect("localhost");
 
-//        repo::core::MongoClientWrapper localhost;
-//        localhost.connect("localhost");
-
-
-
-        //----------------------------------------------------------------------
-		// Retrieves all BSON objects until finished or cancelled.
-		unsigned long long retrieved = 0;
-		std::auto_ptr<mongo::DBClientCursor> cursor;		
-		do
-		{
-			for (; !cancelled && cursor.get() && cursor->more(); ++retrieved)
-			{
-				mongo::BSONObj bson = cursor->nextSafe();	
-				QString type = QString(bson.getStringField(REPO_NODE_LABEL_TYPE));
-				emit keyValuePairAdded(retrieved, (unsigned long long) bson.objsize(), type.isEmpty() ? "BSONObj" : type, 0);
-				decodeRecords(bson, 1);
-				emit progressValueChanged(retrieved);
+            //----------------------------------------------------------------------
+            // Retrieves all BSON objects until finished or cancelled.
+            unsigned long long retrieved = 0;
+            std::auto_ptr<mongo::DBClientCursor> cursor;
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++retrieved)
+                {
+                    mongo::BSONObj bson = cursor->nextSafe();
+                    QString type = QString(bson.getStringField(REPO_NODE_LABEL_TYPE));
+                    emit keyValuePairAdded(retrieved, (unsigned long long) bson.objsize(), type.isEmpty() ? "BSONObj" : type, 0);
+                    decodeRecords(bson, 1);
+                    emit progressValueChanged(retrieved);
 
 
-//                localhost.insertRecord(database, collection, bson);
+    //                localhost.insertRecord(database, collection, bson);
 
 
-			}
-			if (!cancelled)
-				cursor = mongo.listAllTailable(database, collection, retrieved);		
-		}
-		while (!cancelled && cursor.get() && cursor->more());
-	}
+                }
+                if (!cancelled)
+                    cursor = mongo.listAllTailable(database, collection, retrieved);
+            }
+            while (!cancelled && cursor.get() && cursor->more());
+        }
 
-
+    }
+    catch(std::exception e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 
 
     //--------------------------------------------------------------------------

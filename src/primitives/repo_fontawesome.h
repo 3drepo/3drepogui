@@ -65,16 +65,43 @@ public:
 
     //--------------------------------------------------------------------------
 	//
-	// Static getters
+    // Getters
 	//
     //--------------------------------------------------------------------------
 
     //! Returns a singleton instance of the RepoFontAwesome class.
     static RepoFontAwesome &getInstance();
 
+    //--------------------------------------------------------------------------
+
+    //! Returns pre-defined server icon.
+    static QIcon getHostIcon()
+    { return getIconStatic(fa_laptop); }
+
+    //! Returns pre-defined branch icon.
+    static QIcon getBranchIcon()
+    { return getIconStatic(fa_code_fork); }
+
+    //! Returns pre-defined database icon.
+    static QIcon getDatabaseIcon()
+    { return getIconStatic(fa_database); }
+
+    //! Returns pre-defined project icon.
+    static QIcon getProjectIcon()
+    { return getIconStatic(fa_list_alt); }
+
+    static QIcon getHistoryIcon()
+    { return getIconStatic(fa_history); }
+
+    //--------------------------------------------------------------------------
+
 	QIcon getIcon(int iconOn);
     QIcon getIcon(int iconOn, const QColor &color);
 	QIcon getIcon(int iconOn, int iconOff);
+
+    //! Returns icon in a static way.
+    static QIcon getIconStatic(int iconOn)
+    { return RepoFontAwesome::getInstance().getIcon(iconOn); }
 
     /*!
      * Returns a font with a given size in pixels.
@@ -156,6 +183,7 @@ enum Icons
     fa_bar_chart_o = 0xf080,
     fa_barcode = 0xf02a,
     fa_bars = 0xf0c9,
+    fa_bed = 0xf236,
     fa_beer = 0xf0fc,
     fa_behance = 0xf1b4,
     fa_behance_square = 0xf1b5,
@@ -183,6 +211,7 @@ enum Icons
     fa_bullhorn = 0xf0a1,
     fa_bullseye = 0xf140,
     fa_bus = 0xf207,
+    fa_buysellads = 0xf20d,
     fa_cab = 0xf1ba,
     fa_calculator = 0xf1ec,
     fa_calendar = 0xf073,
@@ -198,6 +227,8 @@ enum Icons
     fa_caret_square_o_right = 0xf152,
     fa_caret_square_o_up = 0xf151,
     fa_caret_up = 0xf0d8,
+    fa_cart_arrow_down = 0xf218,
+    fa_cart_plus = 0xf217,
     fa_cc = 0xf20a,
     fa_cc_amex = 0xf1f3,
     fa_cc_discover = 0xf1f2,
@@ -246,6 +277,7 @@ enum Icons
     fa_comments_o = 0xf0e6,
     fa_compass = 0xf14e,
     fa_compress = 0xf066,
+    fa_connectdevelop = 0xf20e,
     fa_copy = 0xf0c5,
     fa_copyright = 0xf1f9,
     fa_credit_card = 0xf09d,
@@ -257,11 +289,13 @@ enum Icons
     fa_cut = 0xf0c4,
     fa_cutlery = 0xf0f5,
     fa_dashboard = 0xf0e4,
+    fa_dashcube = 0xf210,
     fa_database = 0xf1c0,
     fa_dedent = 0xf03b,
     fa_delicious = 0xf1a5,
     fa_desktop = 0xf108,
     fa_deviantart = 0xf1bd,
+    fa_diamond = 0xf219,
     fa_digg = 0xf1a6,
     fa_dollar = 0xf155,
     fa_dot_circle_o = 0xf192,
@@ -291,6 +325,8 @@ enum Icons
     fa_eye_slash = 0xf070,
     fa_eyedropper = 0xf1fb,
     fa_facebook = 0xf09a,
+    fa_facebook_f = 0xf09a,
+    fa_facebook_official = 0xf230,
     fa_facebook_square = 0xf082,
     fa_fast_backward = 0xf049,
     fa_fast_forward = 0xf050,
@@ -332,6 +368,7 @@ enum Icons
     fa_folder_open = 0xf07c,
     fa_folder_open_o = 0xf115,
     fa_font = 0xf031,
+    fa_forumbee = 0xf211,
     fa_forward = 0xf04e,
     fa_foursquare = 0xf180,
     fa_frown_o = 0xf119,
@@ -342,6 +379,7 @@ enum Icons
     fa_ge = 0xf1d1,
     fa_gear = 0xf013,
     fa_gears = 0xf085,
+    fa_genderless = 0xf1db,
     fa_gift = 0xf06b,
     fa_git = 0xf1d3,
     fa_git_square = 0xf1d2,
@@ -356,6 +394,7 @@ enum Icons
     fa_google_plus_square = 0xf0d4,
     fa_google_wallet = 0xf1ee,
     fa_graduation_cap = 0xf19d,
+    fa_gratipay = 0xf184,
     fa_group = 0xf0c0,
     fa_h_square = 0xf0fd,
     fa_hacker_news = 0xf1d4,
@@ -368,9 +407,11 @@ enum Icons
     fa_headphones = 0xf025,
     fa_heart = 0xf004,
     fa_heart_o = 0xf08a,
+    fa_heartbeat = 0xf21e,
     fa_history = 0xf1da,
     fa_home = 0xf015,
     fa_hospital_o = 0xf0f8,
+    fa_hotel = 0xf236,
     fa_html5 = 0xf13b,
     fa_ils = 0xf20b,
     fa_image = 0xf03e,
@@ -394,6 +435,7 @@ enum Icons
     fa_lastfm = 0xf202,
     fa_lastfm_square = 0xf203,
     fa_leaf = 0xf06c,
+    fa_leanpub = 0xf212,
     fa_legal = 0xf0e3,
     fa_lemon_o = 0xf094,
     fa_level_down = 0xf149,
@@ -425,10 +467,17 @@ enum Icons
     fa_mail_reply_all = 0xf122,
     fa_male = 0xf183,
     fa_map_marker = 0xf041,
+    fa_mars = 0xf222,
+    fa_mars_double = 0xf227,
+    fa_mars_stroke = 0xf229,
+    fa_mars_stroke_h = 0xf22b,
+    fa_mars_stroke_v = 0xf22a,
     fa_maxcdn = 0xf136,
     fa_meanpath = 0xf20c,
+    fa_medium = 0xf23a,
     fa_medkit = 0xf0fa,
     fa_meh_o = 0xf11a,
+    fa_mercury = 0xf223,
     fa_microphone = 0xf130,
     fa_microphone_slash = 0xf131,
     fa_minus = 0xf068,
@@ -440,8 +489,10 @@ enum Icons
     fa_money = 0xf0d6,
     fa_moon_o = 0xf186,
     fa_mortar_board = 0xf19d,
+    fa_motorcycle = 0xf21c,
     fa_music = 0xf001,
     fa_navicon = 0xf0c9,
+    fa_neuter = 0xf22c,
     fa_newspaper_o = 0xf1ea,
     fa_openid = 0xf19b,
     fa_outdent = 0xf03b,
@@ -466,6 +517,7 @@ enum Icons
     fa_pied_piper = 0xf1a7,
     fa_pied_piper_alt = 0xf1a8,
     fa_pinterest = 0xf0d2,
+    fa_pinterest_p = 0xf231,
     fa_pinterest_square = 0xf0d3,
     fa_plane = 0xf072,
     fa_play = 0xf04b,
@@ -515,8 +567,10 @@ enum Icons
     fa_search = 0xf002,
     fa_search_minus = 0xf010,
     fa_search_plus = 0xf00e,
+    fa_sellsy = 0xf213,
     fa_send = 0xf1d8,
     fa_send_o = 0xf1d9,
+    fa_server = 0xf233,
     fa_share = 0xf064,
     fa_share_alt = 0xf1e0,
     fa_share_alt_square = 0xf1e1,
@@ -525,11 +579,15 @@ enum Icons
     fa_shekel = 0xf20b,
     fa_sheqel = 0xf20b,
     fa_shield = 0xf132,
+    fa_ship = 0xf21a,
+    fa_shirtsinbulk = 0xf214,
     fa_shopping_cart = 0xf07a,
     fa_sign_in = 0xf090,
     fa_sign_out = 0xf08b,
     fa_signal = 0xf012,
+    fa_simplybuilt = 0xf215,
     fa_sitemap = 0xf0e8,
+    fa_skyatlas = 0xf216,
     fa_skype = 0xf17e,
     fa_slack = 0xf198,
     fa_sliders = 0xf1de,
@@ -568,10 +626,12 @@ enum Icons
     fa_step_forward = 0xf051,
     fa_stethoscope = 0xf0f1,
     fa_stop = 0xf04d,
+    fa_street_view = 0xf21d,
     fa_strikethrough = 0xf0cc,
     fa_stumbleupon = 0xf1a4,
     fa_stumbleupon_circle = 0xf1a3,
     fa_subscript = 0xf12c,
+    fa_subway = 0xf239,
     fa_suitcase = 0xf0f2,
     fa_sun_o = 0xf185,
     fa_superscript = 0xf12b,
@@ -606,6 +666,9 @@ enum Icons
     fa_toggle_on = 0xf205,
     fa_toggle_right = 0xf152,
     fa_toggle_up = 0xf151,
+    fa_train = 0xf238,
+    fa_transgender = 0xf224,
+    fa_transgender_alt = 0xf225,
     fa_trash = 0xf1f8,
     fa_trash_o = 0xf014,
     fa_tree = 0xf1bb,
@@ -632,7 +695,14 @@ enum Icons
     fa_usd = 0xf155,
     fa_user = 0xf007,
     fa_user_md = 0xf0f0,
+    fa_user_plus = 0xf234,
+    fa_user_secret = 0xf21b,
+    fa_user_times = 0xf235,
     fa_users = 0xf0c0,
+    fa_venus = 0xf221,
+    fa_venus_double = 0xf226,
+    fa_venus_mars = 0xf228,
+    fa_viacoin = 0xf237,
     fa_video_camera = 0xf03d,
     fa_vimeo_square = 0xf194,
     fa_vine = 0xf1ca,
@@ -644,6 +714,7 @@ enum Icons
     fa_wechat = 0xf1d7,
     fa_weibo = 0xf18a,
     fa_weixin = 0xf1d7,
+    fa_whatsapp = 0xf232,
     fa_wheelchair = 0xf193,
     fa_wifi = 0xf1eb,
     fa_windows = 0xf17a,
@@ -656,8 +727,7 @@ enum Icons
     fa_yelp = 0xf1e9,
     fa_yen = 0xf157,
     fa_youtube = 0xf167,
-    fa_youtube_play = 0xf16a,
-    fa_youtube_square = 0xf166
+    fa_youtube_play = 0xf16a
 };
 
 }; // end class

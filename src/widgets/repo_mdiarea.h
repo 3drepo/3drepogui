@@ -81,11 +81,11 @@ public :
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * from the database given a database.
 	 */
-    RepoMdiSubWindow* addSubWindow(
-		const repo::core::MongoClientWrapper& mongo,
-		const QString& database,
-		const QUuid& id = QUuid(),
-		bool headRevision = true);
+    RepoMdiSubWindow* addSubWindow(const repo::core::MongoClientWrapper& mongo,
+        const QString& database,
+        const QString &project,
+        const QUuid& id = QUuid(),
+        bool headRevision = true);
 
 	//! Adds a RepoGLCWidget subWindow.
     RepoMdiSubWindow* addSubWindow(RepoGLCWidget *widget);

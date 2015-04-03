@@ -22,18 +22,19 @@
 
 //------------------------------------------------------------------------------
 
-repo::gui::RepoDialogHistory::RepoDialogHistory(
-	const repo::core::MongoClientWrapper& mongo, 
-	const QString& database,
-	QWidget *parent, 
-	Qt::WindowFlags flags)
+repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWrapper& mongo,
+    const QString& database,
+    const QString &project,
+    QWidget *parent,
+    Qt::WindowFlags flags)
 	: QDialog(parent, flags)
 	, mongo(mongo)
 	, database(database)
+    , project(project)
     , ui(new Ui::RepoDialogHistory)
 {
     ui->setupUi(this);
-	setWindowIcon(getIcon());
+    setWindowIcon(RepoFontAwesome::getHistoryIcon());
 	
     //--------------------------------------------------------------------------
 	historyModel = new QStandardItemModel(this); 
@@ -89,7 +90,15 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
 	// Connect filtering text input to the filtering proxy model
 	QObject::connect(
         ui->filterLineEdit, &QLineEdit::textChanged,
-		historyProxy, &QSortFilterProxyModel::setFilterFixedString);
+		historyProxy, &QSortFilterProxyModel::setFilterFixedString);    
+    QObject::connect(
+        historyProxy, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoDialogHistory::updateCountLabel);
+    QObject::connect(
+        historyProxy, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoDialogHistory::updateCountLabel);
+
+
     //--------------------------------------------------------------------------
 	QObject::connect(
         ui->refreshPushButton, &QPushButton::pressed,
@@ -127,7 +136,7 @@ void repo::gui::RepoDialogHistory::refresh()
 {
 	if (!database.isEmpty() && cancelAllThreads())
 	{
-		RepoWorkerHistory* worker = new RepoWorkerHistory(mongo, database);	
+        RepoWorkerHistory* worker = new RepoWorkerHistory(mongo, database, project);
 		worker->setAutoDelete(true);
 
 		// Direct connection ensures cancel signal is processed ASAP
@@ -165,8 +174,7 @@ void repo::gui::RepoDialogHistory::addRevision(
     //--------------------------------------------------------------------------
 	historyModel->invisibleRootItem()->appendRow(row);
     //--------------------------------------------------------------------------
-    ui->revisionsCountLabel->setText(tr("Showing %1 revision(s)").arg(
-		historyModel->invisibleRootItem()->rowCount()));
+    updateCountLabel();
 }
 
 //------------------------------------------------------------------------------
@@ -182,7 +190,14 @@ void repo::gui::RepoDialogHistory::clearHistoryModel()
     ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::TIMESTAMP);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
-    ui->revisionsCountLabel->setText(tr("Showing %1 revision(s)").arg(0));
+    updateCountLabel();
+}
+
+void repo::gui::RepoDialogHistory::updateCountLabel()
+{
+    ui->revisionsCountLabel->setText(
+                tr("Showing %1 of %2").arg(historyProxy->rowCount()).arg(
+        historyModel->rowCount()));
 }
 
 //------------------------------------------------------------------------------
@@ -197,14 +212,6 @@ QList<QUuid> repo::gui::RepoDialogHistory::getSelectedRevisions()
          ++i)
         list << ui->historyTreeView->model()->data(*i).toUuid();
 	return list;
-}
-
-//------------------------------------------------------------------------------
-
-QIcon repo::gui::RepoDialogHistory::getIcon()
-{
-    return RepoFontAwesome::getInstance().getIcon(
-                repo::gui::RepoFontAwesome::fa_clock_o);
 }
 
 //------------------------------------------------------------------------------

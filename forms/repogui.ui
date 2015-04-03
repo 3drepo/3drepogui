@@ -73,7 +73,7 @@
     <addaction name="actionEmail_Technical_Support"/>
     <addaction name="actionReport_Issue"/>
     <addaction name="separator"/>
-    <addaction name="actionAbout_3D_Repo_GUI"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuOpenGL">
     <property name="title">
@@ -95,9 +95,11 @@
      <string>Tools</string>
     </property>
     <addaction name="actionUserManager"/>
-    <addaction name="actionMetadataManager"/>
+    <addaction name="actionProject_Manager"/>
     <addaction name="separator"/>
+    <addaction name="actionMetadataManager"/>
     <addaction name="actionOptimize_Graph"/>
+    <addaction name="separator"/>
     <addaction name="action3D_Diff"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
@@ -232,9 +234,9 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionAbout_3D_Repo_GUI">
+  <action name="actionAbout">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>About 3D Repo GUI</string>
@@ -472,7 +474,7 @@
   </action>
   <action name="actionMetadataManager">
    <property name="text">
-    <string>Metadata Manager...</string>
+    <string>Load Metatada</string>
    </property>
   </action>
   <action name="actionOptimize_Graph">
@@ -483,6 +485,11 @@
   <action name="actionWeb_View">
    <property name="text">
     <string>Web View</string>
+   </property>
+  </action>
+  <action name="actionProject_Manager">
+   <property name="text">
+    <string>Project Manager...</string>
    </property>
   </action>
  </widget>

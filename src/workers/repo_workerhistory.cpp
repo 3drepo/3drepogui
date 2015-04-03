@@ -20,11 +20,12 @@
 #include <RepoGraphHistory>
 
 //------------------------------------------------------------------------------
-repo::gui::RepoWorkerHistory::RepoWorkerHistory(
-    const repo::core::MongoClientWrapper &mongo,
-    const QString &database)
+repo::gui::RepoWorkerHistory::RepoWorkerHistory(const repo::core::MongoClientWrapper &mongo,
+    const QString &database,
+    const QString &project)
 	: mongo(mongo)
-	, database(database.toStdString()) 
+    , database(database.toStdString())
+    , project(project.toStdString())
 {}
 
 //------------------------------------------------------------------------------
@@ -35,49 +36,59 @@ repo::gui::RepoWorkerHistory::~RepoWorkerHistory() {}
 
 void repo::gui::RepoWorkerHistory::run()
 {
-	if (!mongo.reconnect())
-        std::cerr << tr("Connection failed").toStdString() << std::endl;
-    else
+    try
     {
-		mongo.reauthenticate(database);	
+        if (!mongo.reconnect())
+            std::cerr << tr("Connection failed").toStdString() << std::endl;
+        else
+        {
+            mongo.reauthenticate(database);
 
-		std::list<std::string> fields;
-		fields.push_back(REPO_NODE_LABEL_ID);
-		fields.push_back(REPO_NODE_LABEL_SHARED_ID);
-		fields.push_back(REPO_NODE_LABEL_MESSAGE);
-		fields.push_back(REPO_NODE_LABEL_AUTHOR);
-		fields.push_back(REPO_NODE_LABEL_TIMESTAMP);
+            std::list<std::string> fields;
+            fields.push_back(REPO_NODE_LABEL_ID);
+            fields.push_back(REPO_NODE_LABEL_SHARED_ID);
+            fields.push_back(REPO_NODE_LABEL_MESSAGE);
+            fields.push_back(REPO_NODE_LABEL_AUTHOR);
+            fields.push_back(REPO_NODE_LABEL_TIMESTAMP);
 
-        //----------------------------------------------------------------------
-		// Retrieves all BSON objects until finished or cancelled.
-		unsigned long long skip = 0;
-		QDateTime datetime;
-		std::auto_ptr<mongo::DBClientCursor> cursor;		
-		do
-		{
-			for (; !cancelled && cursor.get() && cursor->more(); ++skip)
-			{
-                core::RepoNodeRevision revision(cursor->nextSafe());
-				datetime.setMSecsSinceEpoch(revision.getTimestamp());
-                //--------------------------------------------------------------
-                emit revisionFetched(
-                    QUuid(core::MongoClientWrapper::uuidToString(revision.getUniqueID()).c_str()),
-                    QUuid(core::MongoClientWrapper::uuidToString(revision.getSharedID()).c_str()),
-					QString::fromStdString(revision.getMessage()),
-					QString::fromStdString(revision.getAuthor()),
-					datetime);
-			}
-			if (!cancelled)
-				cursor = mongo.listAllTailable(
-					database, 
-					REPO_COLLECTION_HISTORY, 
-					fields, 
-					REPO_NODE_LABEL_TIMESTAMP, 
-					-1, 
-					skip);		
-		}
-		while (!cancelled && cursor.get() && cursor->more());
-	}
+            //----------------------------------------------------------------------
+            // Retrieves all BSON objects until finished or cancelled.
+            unsigned long long skip = 0;
+            QDateTime datetime;
+            std::auto_ptr<mongo::DBClientCursor> cursor;
+
+
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++skip)
+                {
+                    core::RepoNodeRevision revision(cursor->nextSafe());
+                    datetime.setMSecsSinceEpoch(revision.getTimestamp());
+                    //--------------------------------------------------------------
+                    emit revisionFetched(
+                        QUuid(core::MongoClientWrapper::uuidToString(revision.getUniqueID()).c_str()),
+                        QUuid(core::MongoClientWrapper::uuidToString(revision.getSharedID()).c_str()),
+                        QString::fromStdString(revision.getMessage()),
+                        QString::fromStdString(revision.getAuthor()),
+                        datetime);
+                }
+                if (!cancelled)
+                    cursor = mongo.listAllTailable(
+                        database,
+                        mongo.getHistoryCollectionName(project),
+                        fields,
+                        REPO_NODE_LABEL_TIMESTAMP,
+                        -1,
+                        skip);
+            }
+            while (!cancelled && cursor.get() && cursor->more());
+        }
+
+    }
+    catch (std::exception e)
+    {
+        std::cerr << tr("Fetching history failed").toStdString() << " " << e.what() << std::endl;
+    }
     //--------------------------------------------------------------------------
 	emit RepoWorkerAbstract::finished();
 }
