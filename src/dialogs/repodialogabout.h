@@ -37,6 +37,8 @@ public:
     explicit RepoDialogAbout(QWidget *parent = 0);
     ~RepoDialogAbout();
 
+    static QString getVersionInfo(const QString& separator = "\n");
+
 private:
     Ui::RepoDialogAbout *ui;
 

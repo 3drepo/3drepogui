@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QGLFormat>
 
 #include "repodialogabout.h"
 #include "ui_repodialogabout.h"
@@ -24,9 +25,27 @@ repo::gui::RepoDialogAbout::RepoDialogAbout(QWidget *parent) :
     ui(new Ui::RepoDialogAbout)
 {
     ui->setupUi(this);
+
+    QObject::connect(ui->aboutQtPushButton, SIGNAL(pressed()),
+                     QApplication::instance(),
+                     SLOT(aboutQt()));
+
+    ui->versionLabel->setText(getVersionInfo(" | "));
 }
 
 repo::gui::RepoDialogAbout::~RepoDialogAbout()
 {
     delete ui;
+}
+
+QString repo::gui::RepoDialogAbout::getVersionInfo(const QString &separator)
+{
+    QString info;
+    info += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    info += separator;
+    info += QString("Qt ") + QT_VERSION_STR;
+    info += separator;
+    info += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
+    info += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
+    return info;
 }

@@ -292,7 +292,6 @@ repo::gui::RepoGUI::~RepoGUI()
 
 void repo::gui::RepoGUI::about()
 {
-//    QApplication::aboutQt();
     RepoDialogAbout aboutDialog(this);
     aboutDialog.exec();
 }
@@ -747,20 +746,10 @@ void repo::gui::RepoGUI::openSupportEmail() const
 {
     QString email = "support@3drepo.org";
     QString subject = "GUI Support Request";
-
-    // TODO: get system state printout directly from About dialog.
-    QString body;
-    body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
-    body += "\n";
-    body += QString("Qt ") + QT_VERSION_STR;
-    body += "\n";
-    body += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
-    body += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
-
     QDesktopServices::openUrl(
-                QUrl("mailto:" + email +
+                QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
-                     "&body=" + body));
+                     "&body=" + RepoDialogAbout::getVersionInfo()));
 }
 
 void repo::gui::RepoGUI::openUserManager() const
