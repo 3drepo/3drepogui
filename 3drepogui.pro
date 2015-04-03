@@ -67,8 +67,9 @@ HEADERS  += src/repogui.h \
             src/widgets/repofilterabletreewidget.h \
             src/widgets/reposelectiontreedockwidget.h \
             src/primitives/repo_color.h \
-    src/renderers/repooculustexturerenderer.h \
-    src/renderers/repo_webview.h
+            src/renderers/repooculustexturerenderer.h \
+            src/renderers/repo_webview.h \
+            src/dialogs/repodialogabout.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -108,7 +109,8 @@ SOURCES += src/main.cpp\
            src/widgets/reposelectiontreedockwidget.cpp \
             src/primitives/repo_color.cpp \
             src/renderers/repooculustexturerenderer.cpp \
-            src/renderers/repo_webview.cpp
+            src/renderers/repo_webview.cpp \
+            src/dialogs/repodialogabout.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -122,7 +124,8 @@ FORMS    += forms/repogui.ui \
             forms/repowidgetassimpflags.ui \
             forms/repofilterabletreewidget.ui \
             forms/reposelectiontreedockwidget.ui \
-            forms/repo_webview.ui
+            forms/repo_webview.ui \
+            forms/repodialogabout.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

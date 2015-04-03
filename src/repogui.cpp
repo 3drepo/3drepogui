@@ -34,20 +34,21 @@
 // GUI
 #include "repogui.h"
 #include "ui_repogui.h"
-#include "widgets/repo_widgetrepository.h"
-#include "widgets/repo_textbrowser.h"
-#include "workers/repo_workercommit.h"
 #include "dialogs/repo_dialogcommit.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
 #include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
-#include "primitives/repo_fontawesome.h"
-#include "renderers/repo_oculus.h"
-#include "renderers/repooculustexturerenderer.h"
 #include "dialogs/repodialogsettings.h"
+#include "dialogs/repodialogabout.h"
+#include "widgets/repo_widgetrepository.h"
+#include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
+#include "workers/repo_workercommit.h"
+#include "renderers/repo_oculus.h"
+#include "renderers/repooculustexturerenderer.h"
+#include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 
 
@@ -256,12 +257,8 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Report Issue
     QObject::connect(ui->actionReport_Issue, SIGNAL(triggered()),
                     this, SLOT(reportIssue()));
-
-
-
     QObject::connect(ui->actionAbout, SIGNAL(triggered()),
                     this, SLOT(about()));
-
 
 
     //--------------------------------------------------------------------------
@@ -282,7 +279,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
-
     if (panelsMenu)
         delete panelsMenu;
 }
@@ -296,26 +292,20 @@ repo::gui::RepoGUI::~RepoGUI()
 
 void repo::gui::RepoGUI::about()
 {
-    QApplication::aboutQt();
-
+//    QApplication::aboutQt();
+    RepoDialogAbout aboutDialog(this);
+    aboutDialog.exec();
 }
 
-void repo::gui::RepoGUI::addSelectionTree(
-        RepoGLCWidget* widget,
-        Qt::DockWidgetArea area)
+void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)
 {
-
-        RepoSelectionTreeDockWidget* dock =
-                new RepoSelectionTreeDockWidget(widget, this);
-        this->addDockWidget(area, dock);
-
-        if (panelsMenu)
-            delete panelsMenu;
-        panelsMenu = createPanelsMenu();
-        ui->menuWindow->addMenu(panelsMenu);
-
-        dock->show();
-
+    RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
+    this->addDockWidget(area, dock);
+    if (panelsMenu)
+        delete panelsMenu;
+    panelsMenu = createPanelsMenu();
+    ui->menuWindow->addMenu(panelsMenu);
+    dock->show();
 }
 
 void repo::gui::RepoGUI::commit()
