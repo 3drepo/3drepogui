@@ -55,6 +55,9 @@ public:
 
 public slots:
 
+    //! Shows about dialog.
+    void about();
+
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree()
     {  addSelectionTree(getActiveWidget()); }

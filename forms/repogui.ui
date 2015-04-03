@@ -73,7 +73,7 @@
     <addaction name="actionEmail_Technical_Support"/>
     <addaction name="actionReport_Issue"/>
     <addaction name="separator"/>
-    <addaction name="actionAbout_3D_Repo_GUI"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuOpenGL">
     <property name="title">
@@ -234,9 +234,9 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionAbout_3D_Repo_GUI">
+  <action name="actionAbout">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>About 3D Repo GUI</string>

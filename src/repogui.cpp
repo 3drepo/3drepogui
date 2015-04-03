@@ -259,7 +259,8 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
 
 
-
+    QObject::connect(ui->actionAbout, SIGNAL(triggered()),
+                    this, SLOT(about()));
 
 
 
@@ -293,16 +294,17 @@ repo::gui::RepoGUI::~RepoGUI()
 //
 //------------------------------------------------------------------------------
 
+void repo::gui::RepoGUI::about()
+{
+    QApplication::aboutQt();
+
+}
+
 void repo::gui::RepoGUI::addSelectionTree(
         RepoGLCWidget* widget,
         Qt::DockWidgetArea area)
 {
-    if (!widget)
-    {
-        std::cerr << "A window has to be selected" << std::endl;
-    }
-    else
-    {
+
         RepoSelectionTreeDockWidget* dock =
                 new RepoSelectionTreeDockWidget(widget, this);
         this->addDockWidget(area, dock);
@@ -313,7 +315,7 @@ void repo::gui::RepoGUI::addSelectionTree(
         ui->menuWindow->addMenu(panelsMenu);
 
         dock->show();
-    }
+
 }
 
 void repo::gui::RepoGUI::commit()
