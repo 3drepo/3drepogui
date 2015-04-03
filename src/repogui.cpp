@@ -18,6 +18,7 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QMessageBox>
+#include <QtSvg>
 
 //------------------------------------------------------------------------------
 // Core
@@ -66,10 +67,14 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     core::RepoLogger::instance().addListener(ui->logTextBrowser);
 
-    this->setWindowIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                            RepoFontAwesome::fa_database,
-                            QColor(246, 101, 60)));
+
+    QIcon icon(":/images/3drepo-icon.svg");
+    this->setWindowIcon(icon);
+
+//    this->setWindowIcon(
+//                RepoFontAwesome::getInstance().getIcon(
+//                            RepoFontAwesome::fa_database,
+//                            QColor(246, 101, 60)));
 
     //--------------------------------------------------------------------------
     // For docks and windows not to update as they are slow to repaint.
