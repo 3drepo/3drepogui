@@ -58,12 +58,6 @@ public:
 
     ~RepoDialogUserManager();
 
-    //! Clears the users model.
-    void clearUsersModel();
-
-    //! Returns icon associated with this dialog.
-    static QIcon getIcon();
-
 public slots:
 
     //! Adds a fresh list of custom roles.
@@ -94,8 +88,9 @@ public slots:
     void removeItem();
 
     //! Shows the user dialog and saves edits to the database.
-
     void showEditDialog() {  showEditDialog(core::RepoUser()); }
+
+    //! Shows the user dialog and saves edits to the database.
     void showEditDialog(const core::RepoUser &user);
 
 private:
@@ -105,7 +100,6 @@ private:
 
     //! Mapping of databases to their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;
-
 };
 
 } // end namespace gui

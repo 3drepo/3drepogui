@@ -18,7 +18,6 @@
 
 #include "repodialogusermanager.h"
 
-#include "../primitives/repo_fontawesome.h"
 #include "../workers/repo_workerusers.h"
 #include "ui_repoabstractmanagerdialog.h"
 
@@ -28,7 +27,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
         QWidget *parent)
     : RepoAbstractManagerDialog(mongo, database, parent)
 {
-    setWindowIcon(getIcon());
+    setWindowTitle("User Manager");
 
     //--------------------------------------------------------------------------
     // Users
@@ -67,7 +66,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 tr("Roles"));
 
     ui->treeView->sortByColumn(Columns::USERNAME, Qt::SortOrder::AscendingOrder);
-    clearUsersModel();
+    clear();
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager() {}
@@ -154,32 +153,6 @@ repo::core::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex
     return user;
 }
 
-void repo::gui::RepoDialogUserManager::clearUsersModel()
-{
-    model->removeRows(0, model->rowCount());
-    //--------------------------------------------------------------------------
-    ui->treeView->resizeColumnToContents(Columns::ACTIVE);
-    ui->treeView->resizeColumnToContents(Columns::USERNAME);
-    ui->treeView->resizeColumnToContents(Columns::FIRST_NAME);
-    ui->treeView->resizeColumnToContents(Columns::LAST_NAME);
-    ui->treeView->resizeColumnToContents(Columns::EMAIL);
-    ui->treeView->resizeColumnToContents(Columns::PROJECTS);
-    ui->treeView->resizeColumnToContents(Columns::GROUPS);
-    ui->treeView->resizeColumnToContents(Columns::ROLES);
-    //--------------------------------------------------------------------------
-    ui->filterLineEdit->clear();
-    ui->removePushButton->setEnabled(false);
-    ui->editPushButton->setEnabled(false);
-
-    proxy->clear();
-    updateCountLabel();
-}
-
-QIcon repo::gui::RepoDialogUserManager::getIcon()
-{
-   return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_users);
-}
-
 void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
 {
     if (cancelAllThreads())
@@ -222,7 +195,7 @@ void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
 
         //----------------------------------------------------------------------
         // Clear any previous entries
-        clearUsersModel();
+        clear();
 
         //----------------------------------------------------------------------
         ui->progressBar->show();
@@ -237,7 +210,7 @@ void repo::gui::RepoDialogUserManager::removeItem()
     core::RepoUser user = this->getUser();
     switch(QMessageBox::warning(this,
         tr("Remove user?"),
-        tr("Are you sure you want to remove '") + QString::fromStdString(user.getUsername())  + tr("' user?"),
+        tr("Are you sure you want to remove '") + QString::fromStdString(user.getUsername()) + "'?",
         tr("&Yes"),
         tr("&No"),
         QString::null, 1, 1))

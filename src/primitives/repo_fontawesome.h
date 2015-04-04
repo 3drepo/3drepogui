@@ -42,6 +42,9 @@ namespace gui {
 /*!
  * \brief The RepoFontAwesome class
  * Singleton class that defines the Font Awesome icons.
+ *
+ * See also http://doc.qt.io/qt-5/qstyle.html#StandardPixmap-enum for standard
+ * Qt icons.
  */
 class RepoFontAwesome : public QObject
 {
@@ -90,8 +93,13 @@ public:
     static QIcon getProjectIcon()
     { return getIconStatic(fa_list_alt); }
 
+    //! Returns pre-defined history icon.
     static QIcon getHistoryIcon()
     { return getIconStatic(fa_history); }
+
+    //! Returns pre-defined manager icon.
+    static QIcon getManagerIcon()
+    { return getIconStatic(fa_dashboard); }
 
     //--------------------------------------------------------------------------
 

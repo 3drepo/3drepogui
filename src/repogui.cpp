@@ -41,6 +41,7 @@
 #include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
+#include "dialogs/repoprojectmanagerdialog.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
@@ -189,7 +190,11 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     //--------------------------------------------------------------------------
     // User Management...
     QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
-    ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
+    ui->actionUserManager->setIcon(RepoFontAwesome::getManagerIcon());
+
+    // Project Manager...
+    QObject::connect(ui->actionProject_Manager, SIGNAL(triggered()), this,
+                     SLOT(openProjectManager()));
 
     // Metadata Management...
     QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
@@ -757,6 +762,14 @@ void repo::gui::RepoGUI::openUserManager() const
     core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
     RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
     um.exec();
+}
+
+void repo::gui::RepoGUI::openProjectManager() const
+{
+    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+    std::string database = ui->widgetRepository->getSelectedDatabase().toStdString();
+    RepoProjectManagerDialog pm(mongo, database, (QWidget*) this);
+    pm.exec();
 }
 
 void repo::gui::RepoGUI::refresh()

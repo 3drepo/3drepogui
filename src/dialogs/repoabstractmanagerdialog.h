@@ -61,22 +61,25 @@ signals :
 public slots :
 
     //! Cancels all running threads and waits for their completion.
-    bool cancelAllThreads();
+    virtual bool cancelAllThreads();
+
+    //! Clears the model.
+    virtual void clear();
 
     //! Updates selected item.
-    virtual void edit() {}
+    virtual void edit() = 0;
 
     //! Updates item based on model index.
-    virtual void edit(const QModelIndex &index) {}
+    virtual void edit(const QModelIndex &index) = 0;
 
     //! Called when loading is finished.
-    void finish();
+    virtual void finish();
 
     //! Shows the dialog in a modal window and waits for user input.
     virtual int exec();
 
     //! Sets the number of items shown as "Showing x of y" label.
-    void updateCountLabel() const;
+    virtual void updateCountLabel() const;
 
     //! Refreshes the current list
     virtual void refresh(const core::RepoBSON &command = core::RepoBSON()) = 0;
@@ -85,7 +88,7 @@ public slots :
     virtual void removeItem() = 0;
 
     //! Selects the data from the given item.
-    void select(const QItemSelection &, const QItemSelection &);
+    virtual void select(const QItemSelection &, const QItemSelection &);
 
     //! Shows edit dialog.
     virtual void showEditDialog() = 0;

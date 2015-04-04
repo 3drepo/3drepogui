@@ -19,6 +19,9 @@
 #include "repoabstractmanagerdialog.h"
 #include "ui_repoabstractmanagerdialog.h"
 
+#include "../primitives/repo_fontawesome.h"
+
+
 repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
         const core::MongoClientWrapper& mongo,
         const std::string &database,
@@ -29,6 +32,7 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
     , ui(new Ui::RepoAbstractManagerDialog)
 {
     ui->setupUi(this);
+    setWindowIcon(RepoFontAwesome::getManagerIcon());
 
     //--------------------------------------------------------------------------
     // Add DB connections to selector
@@ -38,7 +42,7 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
 
     ui->databaseComboBox->addItem(
                 RepoFontAwesome::getDatabaseIcon(),
-                "admin");
+                QString::fromStdString(database));
 
     model = new QStandardItemModel(this);
     proxy = new QSortFilterProxyModel(this);
@@ -98,6 +102,19 @@ bool repo::gui::RepoAbstractManagerDialog::cancelAllThreads()
 {
     emit cancel();
     return threadPool.waitForDone(); // msecs
+}
+
+
+void repo::gui::RepoAbstractManagerDialog::clear()
+{
+    model->removeRows(0, model->rowCount());
+    for (int i = 0; i < model->columnCount(); ++i)
+        ui->treeView->resizeColumnToContents(i);
+    ui->filterLineEdit->clear();
+    ui->removePushButton->setEnabled(false);
+    ui->editPushButton->setEnabled(false);
+    proxy->clear();
+    updateCountLabel();
 }
 
 void repo::gui::RepoAbstractManagerDialog::select(
