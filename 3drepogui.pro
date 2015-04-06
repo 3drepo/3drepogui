@@ -71,7 +71,8 @@ HEADERS  += src/repogui.h \
             src/renderers/repo_webview.h \
             src/dialogs/repodialogabout.h \
             src/dialogs/repoabstractmanagerdialog.h \
-            src/dialogs/repoprojectmanagerdialog.h
+            src/dialogs/repoprojectmanagerdialog.h \
+    src/workers/repoworkerprojectsettings.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \
@@ -114,7 +115,8 @@ SOURCES += src/main.cpp\
             src/renderers/repo_webview.cpp \
             src/dialogs/repodialogabout.cpp \
             src/dialogs/repoabstractmanagerdialog.cpp \
-            src/dialogs/repoprojectmanagerdialog.cpp
+            src/dialogs/repoprojectmanagerdialog.cpp \
+    src/workers/repoworkerprojectsettings.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
