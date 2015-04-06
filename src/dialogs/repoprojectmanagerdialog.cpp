@@ -59,8 +59,93 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
     clear();
 }
 
-repo::gui::RepoProjectManagerDialog::~RepoProjectManagerDialog()
-{
+repo::gui::RepoProjectManagerDialog::~RepoProjectManagerDialog() {}
 
+void repo::gui::RepoProjectManagerDialog::addProjectSettings(
+        core::RepoProjectSettings projectSettings)
+{
+    QList<QStandardItem *> row;
+    //--------------------------------------------------------------------------
+    // User object itself
+    QVariant var;
+    var.setValue(projectSettings);
+
+    // Project
+    QStandardItem *item = createItem(QString::fromStdString(projectSettings.getProject()));
+    item->setData(var);
+    row.append(item);
+
+    // Description
+    row.append(createItem(QString::fromStdString(projectSettings.getDescription())));
+
+    // Owner
+    row.append(createItem(QString::fromStdString(projectSettings.getOwner())));
+
+    // Permissions
+    item = createItem(QString::fromStdString(projectSettings.getPermissionsString()));
+    item->setTextAlignment(Qt::AlignRight);
+    row.append(item);
+
+    // Type
+    row.append(createItem(QString::fromStdString(projectSettings.getType())));
+
+    // Users count
+    row.append(createItem((qulonglong)(projectSettings.getUsers().size())));
+
+    //--------------------------------------------------------------------------
+    model->invisibleRootItem()->appendRow(row);
+}
+
+void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
+{
+    RepoAbstractManagerDialog::clear(resizeColumns);
+
+    ui->treeView->resizeColumnToContents(Columns::PERMISSIONS);
+    ui->treeView->resizeColumnToContents(Columns::TYPE);
+    ui->treeView->resizeColumnToContents(Columns::USERS);
+}
+
+void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
+{
+    if (cancelAllThreads())
+    {
+        RepoWorkerProjectSettings* worker = new RepoWorkerProjectSettings(mongo, database, command);
+        worker->setAutoDelete(true);
+
+        // Direct connection ensures cancel signal is processed ASAP
+        QObject::connect(
+            this, &RepoProjectManagerDialog::cancel,
+            worker, &RepoWorkerProjectSettings::cancel, Qt::DirectConnection);
+
+        QObject::connect(
+            worker, &RepoWorkerProjectSettings::projectSettingsFetched,
+            this, &RepoProjectManagerDialog::addProjectSettings);
+
+        QObject::connect(
+            worker, &RepoWorkerProjectSettings::finished,
+            ui->progressBar, &QProgressBar::hide);
+
+        QObject::connect(
+            worker, &RepoWorkerProjectSettings::finished,
+            this, &RepoProjectManagerDialog::finish);
+
+        QObject::connect(
+            worker, &RepoWorkerProjectSettings::progressRangeChanged,
+            ui->progressBar, &QProgressBar::setRange);
+
+        QObject::connect(
+            worker, &RepoWorkerProjectSettings::progressValueChanged,
+            ui->progressBar, &QProgressBar::setValue);
+
+        //----------------------------------------------------------------------
+        // Clear any previous entries
+        clear();
+
+        //----------------------------------------------------------------------
+        ui->progressBar->show();
+        ui->hostComboBox->setEnabled(false);
+        ui->databaseComboBox->setEnabled(false);
+        threadPool.start(worker);
+    }
 }
 

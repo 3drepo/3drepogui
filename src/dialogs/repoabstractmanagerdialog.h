@@ -64,7 +64,7 @@ public slots :
     virtual bool cancelAllThreads();
 
     //! Clears the model.
-    virtual void clear();
+    virtual void clear(bool resizeColumns = false);
 
     //! Updates selected item.
     virtual void edit() = 0;

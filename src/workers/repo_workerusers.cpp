@@ -23,7 +23,8 @@
 #include <RepoRole>
 
 //------------------------------------------------------------------------------
-repo::gui::RepoWorkerUsers::RepoWorkerUsers(const repo::core::MongoClientWrapper &mongo,
+repo::gui::RepoWorkerUsers::RepoWorkerUsers(
+    const repo::core::MongoClientWrapper &mongo,
     const std::string &database,
     const core::RepoBSON &command)
     : mongo(mongo)

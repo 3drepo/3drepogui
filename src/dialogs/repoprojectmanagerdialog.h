@@ -22,6 +22,9 @@
 #include <QObject>
 
 #include "repoabstractmanagerdialog.h"
+#include "../workers/repoworkerprojectsettings.h"
+
+Q_DECLARE_METATYPE(repo::core::RepoProjectSettings)
 
 namespace repo {
 namespace gui {
@@ -42,11 +45,15 @@ public:
 
 public slots :
 
+    void addProjectSettings(core::RepoProjectSettings);
+
+    void clear(bool resizeColumns = false);
+
     void edit() {}
 
     void edit(const QModelIndex &index) {}
 
-    void refresh(const core::RepoBSON &command = core::RepoBSON()) {}
+    void refresh(const core::RepoBSON &command = core::RepoBSON());
 
     void removeItem() {}
 

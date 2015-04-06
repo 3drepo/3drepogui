@@ -105,11 +105,14 @@ bool repo::gui::RepoAbstractManagerDialog::cancelAllThreads()
 }
 
 
-void repo::gui::RepoAbstractManagerDialog::clear()
+void repo::gui::RepoAbstractManagerDialog::clear(bool resizeColumns)
 {
     model->removeRows(0, model->rowCount());
-    for (int i = 0; i < model->columnCount(); ++i)
-        ui->treeView->resizeColumnToContents(i);
+
+    if (resizeColumns)
+        for (int i = 0; i < model->columnCount(); ++i)
+            ui->treeView->resizeColumnToContents(i);
+
     ui->filterLineEdit->clear();
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);

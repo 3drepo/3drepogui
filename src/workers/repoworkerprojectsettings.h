@@ -31,13 +31,33 @@
 namespace repo {
 namespace gui {
 
-class RepoWorkerProjectSettings : RepoWorkerAbstract
+class RepoWorkerProjectSettings : public RepoWorkerAbstract
 {
+    Q_OBJECT
 
 public:
-    RepoWorkerProjectSettings();
+    RepoWorkerProjectSettings(
+            const core::MongoClientWrapper &mongo,
+            const std::string &database,
+            const core::RepoBSON &command);
 
     ~RepoWorkerProjectSettings();
+
+signals :
+
+    void projectSettingsFetched(core::RepoProjectSettings);
+
+public slots :
+
+    void run();
+
+private :
+
+    core::MongoClientWrapper mongo;
+
+    std::string database;
+
+    core::RepoBSON command;
 
 }; // end class
 
