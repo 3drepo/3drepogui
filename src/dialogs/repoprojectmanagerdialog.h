@@ -23,6 +23,7 @@
 
 #include "repoabstractmanagerdialog.h"
 #include "../workers/repoworkerprojectsettings.h"
+#include "../primitives/repoidbcache.h"
 
 Q_DECLARE_METATYPE(repo::core::RepoProjectSettings)
 
@@ -37,9 +38,9 @@ class RepoProjectManagerDialog : public RepoAbstractManagerDialog
 
 public:
 
-    RepoProjectManagerDialog(const core::MongoClientWrapper &mongo,
-                             const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
-                             QWidget *parent = 0);
+    RepoProjectManagerDialog(
+            const RepoIDBCache *cache,
+            QWidget *parent = 0);
 
     ~RepoProjectManagerDialog();
 

@@ -37,6 +37,7 @@
 #include "../workers/repo_workerusers.h"
 #include "repodialoguser.h"
 #include "repoabstractmanagerdialog.h"
+#include "../primitives/repoidbcache.h"
 
 Q_DECLARE_METATYPE(repo::core::RepoUser)
 
@@ -52,8 +53,7 @@ class RepoDialogUserManager : public RepoAbstractManagerDialog
 public:
 
     explicit RepoDialogUserManager(
-            const core::MongoClientWrapper &mongo,
-            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+            const RepoIDBCache *dbCache,
             QWidget *parent = 0);
 
     ~RepoDialogUserManager();

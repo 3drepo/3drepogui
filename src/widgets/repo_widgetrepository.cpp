@@ -80,6 +80,53 @@ repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
     delete ui;
 }
 
+//------------------------------------------------------------------------------
+//
+// RepoIDBCache
+//
+//------------------------------------------------------------------------------
+
+QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host) const
+{
+    // TODO retrieve appropriate host if connected to multiple hosts
+    QList<QString> databases;
+    if (databasesModel->invisibleRootItem() &&
+        databasesModel->invisibleRootItem()->hasChildren())
+    {
+        QStandardItem *hostItem = databasesModel->invisibleRootItem()->child(0,0);
+        //  QStandardItem *hostItem = databasesModel->findChild<QStandardItem*>(host, Qt::FindDirectChildrenOnly);
+        if (hostItem)
+        {
+            for (int i = 0; i < hostItem->rowCount(); ++i)
+            {
+                databases << hostItem->child(i, 0)->text();
+            }
+        }
+    }
+    return databases;
+}
+
+repo::core::MongoClientWrapper  repo::gui::RepoWidgetRepository::getConnection(
+        const QString &host) const
+{
+    // TODO: implement multiple host connections.
+    return getSelectedConnection();
+}
+
+QList<QString> repo::gui::RepoWidgetRepository::getHosts() const
+{
+    QList<QString> hosts;
+    QStandardItem *root = databasesModel->invisibleRootItem();
+    if (root &&
+        root->hasChildren())
+    {
+        for (int i = 0; i < root->rowCount(); ++i)
+             hosts << root->child(i,0)->text();
+    }
+    return hosts;
+}
+
+
 void repo::gui::RepoWidgetRepository::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,
@@ -358,11 +405,6 @@ void repo::gui::RepoWidgetRepository::changeTab(int index)
 
 }
 
-QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host) const
-{
-    //databasesModel->invisibleRootItem()->child()
-    return QList<QString>();
-}
 
 //------------------------------------------------------------------------------
 

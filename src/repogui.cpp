@@ -759,16 +759,14 @@ void repo::gui::RepoGUI::openSupportEmail() const
 
 void repo::gui::RepoGUI::openUserManager() const
 {
-    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
+//    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+    RepoDialogUserManager um(ui->widgetRepository, (QWidget*) this);
     um.exec();
 }
 
 void repo::gui::RepoGUI::openProjectManager() const
 {
-    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    std::string database = ui->widgetRepository->getSelectedDatabase().toStdString();
-    RepoProjectManagerDialog pm(mongo, database, (QWidget*) this);
+    RepoProjectManagerDialog pm(ui->widgetRepository, (QWidget*) this);
     pm.exec();
 }
 

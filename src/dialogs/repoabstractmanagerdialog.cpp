@@ -21,73 +21,30 @@
 
 #include "../primitives/repo_fontawesome.h"
 
-
 repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
-        const core::MongoClientWrapper& mongo,
-        const std::string &database,
+        const RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
-    , mongo(mongo)
-    , database(database)
+    , dbCache(dbCache)
     , ui(new Ui::RepoAbstractManagerDialog)
 {
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getManagerIcon());
 
     //--------------------------------------------------------------------------
-    // Add DB connections to selector
-    ui->hostComboBox->addItem(
-                RepoFontAwesome::getHostIcon(),
-                QString::fromStdString(mongo.getHostAndPort()));
-
-    ui->databaseComboBox->addItem(
-                RepoFontAwesome::getDatabaseIcon(),
-                QString::fromStdString(database));
-
-    model = new QStandardItemModel(this);
-    proxy = new QSortFilterProxyModel(this);
-    proxy->setFilterKeyColumn(-1); // filter all columns
-    proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
-    proxy->setSourceModel(model);
-    ui->treeView->setModel(proxy);
-
+    QList<QString> hosts = dbCache->getHosts();
+    QString selectedHost = dbCache->getSelectedHost();    
+    setComboBox(ui->hostComboBox, RepoFontAwesome::getHostIcon(),
+                hosts, selectedHost);
 
     //--------------------------------------------------------------------------
-    // Connect filtering text input to the filtering proxy model
-    QObject::connect(
-        ui->filterLineEdit, &QLineEdit::textChanged,
-        proxy, &QSortFilterProxyModel::setFilterFixedString);
+    QList<QString> databases = dbCache->getDatabases(dbCache->getSelectedHost());
+    QString selectedDatabase = dbCache->getSelectedDatabase();
+    setComboBox(ui->databaseComboBox, RepoFontAwesome::getDatabaseIcon(),
+                databases, selectedDatabase);
 
-    QObject::connect(
-        ui->refreshPushButton, SIGNAL(pressed()),
-        this, SLOT(refresh()));
-
-    QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsInserted,
-        this, &RepoAbstractManagerDialog::updateCountLabel);
-
-    QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsRemoved,
-        this, &RepoAbstractManagerDialog::updateCountLabel);
-
-    QObject::connect(
-        ui->treeView->selectionModel(), &QItemSelectionModel::selectionChanged,
-        this, &RepoAbstractManagerDialog::select);
-
-    QObject::connect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
-                     this, SLOT(edit(const QModelIndex &)));
-
-    QObject::connect(
-        ui->addPushButton, SIGNAL(pressed()),
-                this, SLOT(showEditDialog()));
-
-    QObject::connect(
-        ui->removePushButton, SIGNAL(pressed()),
-                this, SLOT(removeItem()));
-
-    QObject::connect(ui->editPushButton, SIGNAL(pressed()),
-                     this, SLOT(edit()));
+    //--------------------------------------------------------------------------
+    initialize();
 }
 
 repo::gui::RepoAbstractManagerDialog::~RepoAbstractManagerDialog()
@@ -163,6 +120,67 @@ QStandardItem *repo::gui::RepoAbstractManagerDialog::createItem(
     item->setToolTip(data.toString());
     item->setData(data);
     return item;
+}
+
+void repo::gui::RepoAbstractManagerDialog::initialize()
+{
+    model = new QStandardItemModel(this);
+    proxy = new QSortFilterProxyModel(this);
+    proxy->setFilterKeyColumn(-1); // filter all columns
+    proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
+    proxy->setSourceModel(model);
+    ui->treeView->setModel(proxy);
+
+    //--------------------------------------------------------------------------
+    // Connect filtering text input to the filtering proxy model
+    QObject::connect(
+        ui->filterLineEdit, &QLineEdit::textChanged,
+        proxy, &QSortFilterProxyModel::setFilterFixedString);
+
+    QObject::connect(
+        ui->refreshPushButton, SIGNAL(pressed()),
+        this, SLOT(refresh()));
+
+    QObject::connect(
+        proxy, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoAbstractManagerDialog::updateCountLabel);
+
+    QObject::connect(
+        proxy, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoAbstractManagerDialog::updateCountLabel);
+
+    QObject::connect(
+        ui->treeView->selectionModel(), &QItemSelectionModel::selectionChanged,
+        this, &RepoAbstractManagerDialog::select);
+
+    QObject::connect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
+                     this, SLOT(edit(const QModelIndex &)));
+
+    QObject::connect(
+        ui->addPushButton, SIGNAL(pressed()),
+                this, SLOT(showEditDialog()));
+
+    QObject::connect(
+        ui->removePushButton, SIGNAL(pressed()),
+                this, SLOT(removeItem()));
+
+    QObject::connect(ui->editPushButton, SIGNAL(pressed()),
+                     this, SLOT(edit()));
+}
+
+void repo::gui::RepoAbstractManagerDialog::setComboBox(
+        QComboBox *comboBox,
+        const QIcon &icon,
+        const QList<QString> &list,
+        const QString selected)
+{
+    for (int i = 0; i < list.size(); ++i)
+    {
+        comboBox->addItem(icon, list[i]);
+        if (selected == list[i])
+            comboBox->setCurrentIndex(i);
+    }
 }
 
 

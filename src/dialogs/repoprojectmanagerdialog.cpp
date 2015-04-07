@@ -20,10 +20,9 @@
 #include "ui_repoabstractmanagerdialog.h"
 
 repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
-        const core::MongoClientWrapper &mongo,
-        const string &database,
+        const RepoIDBCache *cache,
         QWidget *parent)
-    : RepoAbstractManagerDialog(mongo, database, parent)
+    : RepoAbstractManagerDialog(cache, parent)
 {
     setWindowTitle("Project Manager");
 
@@ -109,6 +108,9 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 {
     if (cancelAllThreads())
     {
+        core::MongoClientWrapper mongo = dbCache->getConnection(ui->hostComboBox->currentText());
+        std::string database = ui->databaseComboBox->currentText().toStdString();
+
         RepoWorkerProjectSettings* worker = new RepoWorkerProjectSettings(mongo, database, command);
         worker->setAutoDelete(true);
 

@@ -35,6 +35,7 @@
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
 #include "../primitives/repo_fontawesome.h"
+#include "../primitives/repoidbcache.h"
 #include "../workers/repo_workerdatabases.h"
 #include "../workers/repo_workercollection.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
@@ -44,11 +45,10 @@ namespace Ui {
     class RepoWidgetRepository;
 }
 
-
 namespace repo {
 namespace gui {
 
-class RepoWidgetRepository : public QWidget
+class RepoWidgetRepository : public QWidget, public RepoIDBCache
 {
 	Q_OBJECT
 		
@@ -72,6 +72,40 @@ signals :
      *	Use waitForDone() to make sure all have finished.
      */
 	void cancel();
+
+
+
+
+    //--------------------------------------------------------------------------
+    //
+    // RepoIDBCache
+    //
+    //--------------------------------------------------------------------------
+
+public slots :
+
+    virtual QList<QString> getCollections(const QString &host, const QString &database) const
+    { return QList<QString>(); }
+
+    //! Returns connection corresponding to given host.
+    virtual core::MongoClientWrapper getConnection(const QString &host) const;
+
+    //! Returns a list of available hosts.
+    virtual QList<QString> getHosts() const;
+
+    /*! Returns a copy of a selected connection. It is necessary to reconnect
+     *	and reauthenticate.
+     */
+    core::MongoClientWrapper getSelectedConnection() const { return mongo; }
+
+    //! Returns a list of available databases.
+    QList<QString> getDatabases(const QString& host) const;
+
+    //! Returns selected host, empty string if none selected.
+    QString getSelectedHost() const;
+
+    //! Returns selected database, empty string if none selected.
+    QString getSelectedDatabase() const;
 
 public slots :
 
@@ -137,20 +171,7 @@ public :
     //
     //--------------------------------------------------------------------------
 
-    QList<QString> getDatabases(const QString& host) const;
 
-
-
-	/*! Returns a copy of a selected connection. It is necessary to reconnect 
-     *	and reauthenticate.
-     */
-    repo::core::MongoClientWrapper getSelectedConnection() const { return mongo; }
-
-	//! Returns selected host, empty string if none selected.
-	QString getSelectedHost() const;
-
-	//! Returns selected database, empty string if none selected.
-	QString getSelectedDatabase() const;
 
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
@@ -161,6 +182,7 @@ public :
     //! Returns the databases tree view.
     QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
 
+    //! Returns the collection tree view.
     QWidget *getCollectionTreeView() const { return ui->collectionTreeView; }
 
     const QPoint &mapToGlobalDatabasesTreeView(const QPoint &pos)

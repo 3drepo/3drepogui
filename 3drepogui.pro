@@ -72,7 +72,8 @@ HEADERS  += src/repogui.h \
             src/dialogs/repodialogabout.h \
             src/dialogs/repoabstractmanagerdialog.h \
             src/dialogs/repoprojectmanagerdialog.h \
-    src/workers/repoworkerprojectsettings.h
+    src/workers/repoworkerprojectsettings.h \
+    src/primitives/repoidbcache.h
 
 SOURCES += src/main.cpp\
            src/repogui.cpp \

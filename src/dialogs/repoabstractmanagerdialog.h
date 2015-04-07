@@ -26,10 +26,14 @@
 #include <QSortFilterProxyModel>
 #include <QThreadPool>
 #include <QItemSelection>
+#include <QComboBox>
 
 //------------------------------------------------------------------------------
 // Core
 #include <RepoWrapperMongo>
+
+// GUI
+#include "../primitives/repoidbcache.h"
 
 namespace Ui {
 class RepoAbstractManagerDialog;
@@ -45,9 +49,14 @@ class RepoAbstractManagerDialog : public QDialog
 public:
 
     //! Constructor.
+//    RepoAbstractManagerDialog(
+//            const core::MongoClientWrapper &mongo,
+//            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+//            QWidget *parent = 0);
+
+    //! Explicit constructor.
     explicit RepoAbstractManagerDialog(
-            const core::MongoClientWrapper &mongo,
-            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+            const RepoIDBCache *dbCache = 0,
             QWidget *parent = 0);
 
     //! Destructor to clean up model and proxy.
@@ -103,6 +112,17 @@ public :
 
 protected :
 
+    //! Sets default connections.
+    void initialize();
+
+    void setComboBox(
+            QComboBox *comboBox,
+            const QIcon &icon,
+            const QList<QString> &list,
+            const QString selected);
+
+protected :
+
     //! Model of the users table.
     QStandardItemModel *model;
 
@@ -112,14 +132,10 @@ protected :
     //! Threadpool for this object only.
     QThreadPool threadPool;
 
-    //! Mongo connector.
-    core::MongoClientWrapper mongo;
-
-    //! Database the users are being set on.
-    std::string database;
-
     //! Ui var.
     Ui::RepoAbstractManagerDialog *ui;
+
+    const RepoIDBCache *dbCache;
 
 }; // end class
 

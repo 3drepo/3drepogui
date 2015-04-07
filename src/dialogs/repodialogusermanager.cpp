@@ -22,12 +22,13 @@
 #include "ui_repoabstractmanagerdialog.h"
 
 repo::gui::RepoDialogUserManager::RepoDialogUserManager(
-        const core::MongoClientWrapper& mongo,
-        const std::string &database,
+        const RepoIDBCache *dbCache,
         QWidget *parent)
-    : RepoAbstractManagerDialog(mongo, database, parent)
+    : RepoAbstractManagerDialog(dbCache, parent)
 {
     setWindowTitle("User Manager");
+
+    ui->databaseComboBox->setCurrentText(REPO_ADMIN);
 
     //--------------------------------------------------------------------------
     // Users
@@ -157,6 +158,9 @@ void repo::gui::RepoDialogUserManager::refresh(const core::RepoBSON &command)
 {
     if (cancelAllThreads())
     {
+        core::MongoClientWrapper mongo = dbCache->getConnection(ui->hostComboBox->currentText());
+        std::string database = ui->databaseComboBox->currentText().toStdString();
+
         RepoWorkerUsers* worker = new RepoWorkerUsers(mongo, database, command);
         worker->setAutoDelete(true);
 
