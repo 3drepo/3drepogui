@@ -33,10 +33,15 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     //qRegisterMetaType<const core::RepoNodeAbstract*>("const core::RepoNodeAbstract*");
 
     this->setAttribute(Qt::WA_DeleteOnClose);
-    QObject::connect(glcWidget, SIGNAL(destroyed()),
-                     this, SLOT(close()));
 
-    this->setWindowTitle(windowTitle() + ": " + glcWidget->windowTitle());
+    const core::RepoGraphScene* repoScene = 0;
+    if (glcWidget)
+    {
+        QObject::connect(glcWidget, SIGNAL(destroyed()),
+                         this, SLOT(close()));
+        this->setWindowTitle(windowTitle() + ": " + glcWidget->windowTitle());
+        repoScene = glcWidget->getRepoScene();
+    }
 
     QList<QString> headers;
     headers << tr("Name");
@@ -47,7 +52,7 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     ui->filterableTreeWidget->setProxyModel(new RepoSortFilterProxyModel(this, true));
     ui->filterableTreeWidget->setExtendedSelection();
 
-    const core::RepoGraphScene* repoScene = glcWidget->getRepoScene();
+
     if (repoScene)
     {
         addNode(ui->filterableTreeWidget->getModel()->invisibleRootItem(),
@@ -171,7 +176,8 @@ void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
 {
     changeSelection(deselected, true);
     changeSelection(selected, false);
-    glcWidget->repaint();
+    if (glcWidget)
+        glcWidget->repaint();
 }
 
 void repo::gui::RepoSelectionTreeDockWidget::select(
@@ -181,7 +187,7 @@ void repo::gui::RepoSelectionTreeDockWidget::select(
 
     if (node)
     {
-        if (REPO_NODE_TYPE_MESH == node->getType())
+        if (REPO_NODE_TYPE_MESH == node->getType() && glcWidget)
             glcWidget->select(QString::fromStdString(node->getName()), true, unselectSelected, false);
 
 //        std::set<const core::RepoNodeAbstract*> children = node->getChildren();

@@ -39,7 +39,8 @@ public :
 	//! Default worker constructor.
 	RepoWorkerHistory(
         const core::MongoClientWrapper &mongo,
-        const QString &database);
+        const QString &database,
+        const QString& project);
 
 	//! Default empty destructor.
 	~RepoWorkerHistory();
@@ -63,6 +64,8 @@ private :
     core::MongoClientWrapper mongo;
 
 	std::string database;
+
+    std::string project;
 
 }; // end class
 

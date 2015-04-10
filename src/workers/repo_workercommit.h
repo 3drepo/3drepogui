@@ -43,7 +43,8 @@ public :
     //! Constructor.
 	RepoWorkerCommit(
         const core::MongoClientWrapper &mongo,
-        const QString &repositoryName,
+        const QString &database,
+        const QString& project,
         const core::RepoGraphHistory *history,
         const core::RepoGraphScene *scene);
 
@@ -57,11 +58,26 @@ public slots :
      * once it is finished.
 	 */
 	void run();
+
+
+public :
+
+    /*!
+     * Returns a sanitized name of a database suitable for mongo, ie no dots
+     * and only 63 chars long.
+     */
+    static QString sanitizeDatabaseName(const QString &database);
+
+    //! See http://docs.mongodb.org/manual/reference/limits/#Restriction-on-Collection-Names
+    static QString sanitizeCollectionName(const QString &collection);
 	
 private :
 
 	//! Name of the database to commit to.
-    const QString repositoryName;
+    const QString database;
+
+    //! Name of the project to commit to.
+    const QString project;
 
     /*!
      * Revision history to be committed. This is commited first in case of

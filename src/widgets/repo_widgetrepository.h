@@ -29,6 +29,7 @@
 //------------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoCollStats>
 
 //------------------------------------------------------------------------------
 // Repo GUI
@@ -52,7 +53,7 @@ class RepoWidgetRepository : public QWidget
 	Q_OBJECT
 		
 	//! Databases header positions
-	enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2 };
+    enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
 
 	//! Collection header positions
 	enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
@@ -96,7 +97,7 @@ public slots :
 
 	void addDatabase(QString name);
 
-	void addCollection(QString name, unsigned long long count, unsigned long long size);
+    void addCollection(core::RepoCollStats stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 
@@ -136,6 +137,10 @@ public :
     //
     //--------------------------------------------------------------------------
 
+    QList<QString> getDatabases(const QString& host) const;
+
+
+
 	/*! Returns a copy of a selected connection. It is necessary to reconnect 
      *	and reauthenticate.
      */
@@ -149,6 +154,9 @@ public :
 
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
+
+    //! Returns selected project, empty string if none selected.
+    QString getSelectedProject() const;
 
     //! Returns the databases tree view.
     QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
@@ -166,6 +174,8 @@ private :
 	//! Returns a selected databases model corresponding to the NAME column.
 	QModelIndex getSelectedDatabasesTreeViewIndex() const;
 
+    QModelIndex getHostModelIndex(const QString& host) const;
+
     //--------------------------------------------------------------------------
 	//
 	// Static helpers
@@ -175,7 +185,7 @@ private :
 	/*! Returns a hierarchy depth for given model index. 
 	    Root is depth 0, top level items are 1, their children are 2, etc.
 	*/
-	static unsigned int getHierarchyDepth(const QModelIndex&);
+	static unsigned int getHierarchyDepth(const QModelIndex&); 
 
 	static QStandardItem* getHierarchyDepth(
 		const QStandardItemModel* /* model */, 

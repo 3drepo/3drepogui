@@ -128,28 +128,28 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 			break;
 	}
 
-	qlonglong polyCount = 0;
-	qlonglong meshesCount = 0;
-    for (QList<RepoMdiSubWindow *>::iterator it = openWindows.begin();
-         it != openWindows.end();
-         ++it)
-	{
-        RepoMdiSubWindow *subWindow = *it;
-        RepoGLCWidget *widget = subWindow->widget<RepoGLCWidget*>();
-        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
-        for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
-             i < meshes.size(); ++i)
-        {
-            core::RepoNodeMesh *m = static_cast<core::RepoNodeMesh*>(meshes[i]);
-            polyCount += m->getFaces()->size();
-			++meshesCount;
-		}
-	}
+//	qlonglong polyCount = 0;
+//	qlonglong meshesCount = 0;
+//    for (QList<RepoMdiSubWindow *>::iterator it = openWindows.begin();
+//         it != openWindows.end();
+//         ++it)
+//	{
+//        RepoMdiSubWindow *subWindow = *it;
+//        RepoGLCWidget *widget = subWindow->widget<RepoGLCWidget*>();
+//        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
+//        for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
+//             i < meshes.size(); ++i)
+//        {
+//            core::RepoNodeMesh *m = static_cast<core::RepoNodeMesh*>(meshes[i]);
+//            polyCount += m->getFaces()->size();
+//			++meshesCount;
+//		}
+//	}
 
-    //--------------------------------------------------------------------------
-	// Polygon count
-    std::cout << polyCount << " polygons in " << meshesCount << " " ;
-    std::cout << ((meshesCount == 1) ? "mesh" : "meshes") << std::endl;
+//    //--------------------------------------------------------------------------
+//	// Polygon count
+//    std::cout << polyCount << " polygons in " << meshesCount << " " ;
+//    std::cout << ((meshesCount == 1) ? "mesh" : "meshes") << std::endl;
 
 	this->update();
 	this->repaint();
@@ -209,6 +209,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	const repo::core::MongoClientWrapper& mongo,
 	const QString& database,
+    const QString& project,
 	const QUuid& id,
 	bool headRevision)
 {
@@ -223,7 +224,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, id, headRevision);
+    RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));

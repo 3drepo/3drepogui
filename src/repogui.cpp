@@ -18,6 +18,7 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QMessageBox>
+#include <QtSvg>
 
 //------------------------------------------------------------------------------
 // Core
@@ -33,20 +34,21 @@
 // GUI
 #include "repogui.h"
 #include "ui_repogui.h"
-#include "widgets/repo_widgetrepository.h"
-#include "widgets/repo_textbrowser.h"
-#include "workers/repo_workercommit.h"
 #include "dialogs/repo_dialogcommit.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
 #include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
-#include "primitives/repo_fontawesome.h"
-#include "renderers/repo_oculus.h"
-#include "renderers/repooculustexturerenderer.h"
 #include "dialogs/repodialogsettings.h"
+#include "dialogs/repodialogabout.h"
+#include "widgets/repo_widgetrepository.h"
+#include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
+#include "workers/repo_workercommit.h"
+#include "renderers/repo_oculus.h"
+#include "renderers/repooculustexturerenderer.h"
+#include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 
 
@@ -66,10 +68,14 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     core::RepoLogger::instance().addListener(ui->logTextBrowser);
 
-    this->setWindowIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                            RepoFontAwesome::fa_database,
-                            QColor(246, 101, 60)));
+
+    QIcon icon(":/images/3drepo-icon.svg");
+    this->setWindowIcon(icon);
+
+//    this->setWindowIcon(
+//                RepoFontAwesome::getInstance().getIcon(
+//                            RepoFontAwesome::fa_database,
+//                            QColor(246, 101, 60)));
 
     //--------------------------------------------------------------------------
     // For docks and windows not to update as they are slow to repaint.
@@ -134,7 +140,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     // History
     QObject::connect(ui->actionHistory, SIGNAL(triggered()), this, SLOT(history()));
-    ui->actionHistory->setIcon(RepoDialogHistory::getIcon());
+    ui->actionHistory->setIcon(RepoFontAwesome::getHistoryIcon());
 
 
     // Commit
@@ -143,7 +149,7 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 
     //--------------------------------------------------------------------------
     // Drop
-    QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(dropDatabase()));
+    QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
 
 
@@ -251,11 +257,8 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Report Issue
     QObject::connect(ui->actionReport_Issue, SIGNAL(triggered()),
                     this, SLOT(reportIssue()));
-
-
-
-
-
+    QObject::connect(ui->actionAbout, SIGNAL(triggered()),
+                    this, SLOT(about()));
 
 
     //--------------------------------------------------------------------------
@@ -276,7 +279,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
-
     if (panelsMenu)
         delete panelsMenu;
 }
@@ -288,27 +290,21 @@ repo::gui::RepoGUI::~RepoGUI()
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGUI::addSelectionTree(
-        RepoGLCWidget* widget,
-        Qt::DockWidgetArea area)
+void repo::gui::RepoGUI::about()
 {
-    if (!widget)
-    {
-        std::cerr << "A window has to be selected" << std::endl;
-    }
-    else
-    {
-        RepoSelectionTreeDockWidget* dock =
-                new RepoSelectionTreeDockWidget(widget, this);
-        this->addDockWidget(area, dock);
+    RepoDialogAbout aboutDialog(this);
+    aboutDialog.exec();
+}
 
-        if (panelsMenu)
-            delete panelsMenu;
-        panelsMenu = createPanelsMenu();
-        ui->menuWindow->addMenu(panelsMenu);
-
-        dock->show();
-    }
+void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)
+{
+    RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
+    this->addDockWidget(area, dock);
+    if (panelsMenu)
+        delete panelsMenu;
+    panelsMenu = createPanelsMenu();
+    ui->menuWindow->addMenu(panelsMenu);
+    dock->show();
 }
 
 void repo::gui::RepoGUI::commit()
@@ -316,56 +312,50 @@ void repo::gui::RepoGUI::commit()
     RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     const RepoGLCWidget *widget = getActiveWidget();
 
+    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    QString project = ui->widgetRepository->getSelectedProject();
+
     if (activeWindow && widget)
     {
         const core::RepoGraphScene *repoScene = widget->getRepoScene();
         // TODO: fix !!!
         std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-        // MongoDB cannot have dots in database names, hence replace with underscores
-        // (and remove file extension if any)
-        // http://docs.mongodb.org/manual/reference/limits/#naming-restrictions
-        QFileInfo path(activeWindow->windowTitle());
-        QString dbName = path.completeBaseName();
-        //dbName = dbName.mid(0, dbName.indexOf("_"));
-        dbName.replace(".", "_");
-        dbName.replace(" ", "_");
+        if (project.isEmpty())
+        {
+            QFileInfo path(activeWindow->windowTitle());
+            project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
+        }
 
-        if (dbName.size() > 63) // MongoDB db name can only have fewer than 64 chars
-            dbName.resize(63);
+        repo::core::RepoGraphHistory* history = new repo::core::RepoGraphHistory();
+        std::string username = mongo.getUsername(database.toStdString());
 
-        repo::core::RepoGraphHistory *history = new repo::core::RepoGraphHistory();
-
-        core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-        std::string username = mongo.getUsername(dbName.toStdString());
-        username = username.empty() ? "anonymous" : username;
-
-        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+        core::RepoNodeRevision* revision = new core::RepoNodeRevision(username);
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
 
-        // http://docs.mongodb.org/manual/reference/connection-string/
         repo::gui::RepoDialogCommit commitDialog(
-            QString::fromStdString(username + "@" + mongo.getHostAndPort()),
-            dbName,
-            "master {00000000-0000-0000-0000-000000000000}", // TODO: get currently active branch from QSettings
-            repoScene,
-            revision,
+            mongo,
             this,
-            Qt::Window);
-        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + dbName);
+            Qt::Window,
+            database,
+            project,
+            "master", // TODO: get currently active branch from QSettings
+            repoScene,
+            revision);
+        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + project);
 
         if(!commitDialog.exec())
             std::cout << "Commit dialog cancelled by user" << std::endl;
         else // Clicked "OK"
         {
-            // TODO: move this to the commit dialog.
-            std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
             //------------------------------------------------------------------
             // Establish and connect the new worker.
             RepoWorkerCommit *worker = new RepoWorkerCommit(
                         mongo,
-                        dbName,
+                        commitDialog.getCurrentDatabaseName(),
+                        commitDialog.getCurrentProjectName(),
                         history,
                         widget->getRepoScene());
 
@@ -377,6 +367,11 @@ void repo::gui::RepoGUI::commit()
             // Fire up the asynchronous calculation.
             QThreadPool::globalInstance()->start(worker);
         }
+    }
+    else
+    {
+        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window, database, project, "master");
+        commitDialog.exec();        
     }
 }
 
@@ -412,11 +407,6 @@ void repo::gui::RepoGUI::connect()
             }
             ui->widgetRepository->fetchDatabases(mongo);
 
-//            RepoWorkerUsers* worker = new RepoWorkerUsers(mongo);
-//              QThreadPool      threadPool;
-//              threadPool.start(worker);
-
-
             //-----------------------------------------------------------------
             // enable buttons
             ui->actionRefresh->setEnabled(true);
@@ -436,18 +426,21 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
     return panelsMenu;
 }
 
-void repo::gui::RepoGUI::dropDatabase()
+void repo::gui::RepoGUI::drop()
 {
-    QString dbName = ui->widgetRepository->getSelectedDatabase();
-    if (dbName.isNull() || dbName.isEmpty())
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    QString collection = ui->widgetRepository->getSelectedCollection();
+
+    if (database.isNull() || database.isEmpty())
         std::cout << "A database must be selected." << std::endl;
-    else if (dbName == "local" || dbName == "admin")
+    else if ((database == "local" || database == "admin") && collection.isEmpty())
         std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
     else
     {
+        QString ns = database + (!collection.isEmpty() ? "." + collection : "");
         switch (QMessageBox::warning(this,
-            "Drop Database?",
-            "Are you sure you want to drop '" + dbName + "' repository?",
+            "Drop?",
+            "Are you sure you want to drop '" + ns + "'?",
             "&Yes",
             "&No",
             QString::null, 1, 1))
@@ -457,13 +450,10 @@ void repo::gui::RepoGUI::dropDatabase()
                 // TODO: create a DB manager separate from repositories widget.
                 core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
                 mongo.reconnectAndReauthenticate();
-                if (mongo.dropDatabase(dbName.toStdString()))
-                {
-                    std::cout << dbName.toStdString() << " deleted successfully."
-                                 << std::endl;
-                }
+                if (!collection.isEmpty())
+                    mongo.dropCollection(ns.toStdString());
                 else
-                   std::cout << "Delete unsuccessful" << std::endl;
+                    mongo.dropDatabase(ns.toStdString());
                 refresh();
                 break;
             }
@@ -472,12 +462,13 @@ void repo::gui::RepoGUI::dropDatabase()
 
 void repo::gui::RepoGUI::fetchHead()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
+    // Head revision from master branch
     ui->mdiArea->addSubWindow(
                 ui->widgetRepository->getSelectedConnection(),
-                database); // head revision from master branch
+                ui->widgetRepository->getSelectedDatabase(),
+                ui->widgetRepository->getSelectedProject());
 
-    // make sure to hook controls if chain is on
+    // Make sure to hook controls if chain is on
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
@@ -500,9 +491,10 @@ const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
 void repo::gui::RepoGUI::history()
 {
     QString database = ui->widgetRepository->getSelectedDatabase();
+    QString project = ui->widgetRepository->getSelectedProject();
     core::MongoClientWrapper mongo =
             ui->widgetRepository->getSelectedConnection();
-    RepoDialogHistory historyDialog(mongo, database, this);
+    RepoDialogHistory historyDialog(mongo, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
         std::cout << "Revision History dialog cancelled by user." << std::endl;
@@ -512,7 +504,7 @@ void repo::gui::RepoGUI::history()
         for (QList<QUuid>::iterator uid = revisions.begin();
              uid != revisions.end();
              ++uid)
-            ui->mdiArea->addSubWindow(mongo, database, *uid, false);
+            ui->mdiArea->addSubWindow(mongo, database, project, *uid, false);
         //---------------------------------------------------------------------
         // make sure to hook controls if chain is on
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
@@ -754,20 +746,10 @@ void repo::gui::RepoGUI::openSupportEmail() const
 {
     QString email = "support@3drepo.org";
     QString subject = "GUI Support Request";
-
-    // TODO: get system state printout directly from About dialog.
-    QString body;
-    body += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
-    body += "\n";
-    body += QString("Qt ") + QT_VERSION_STR;
-    body += "\n";
-    body += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
-    body += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
-
     QDesktopServices::openUrl(
-                QUrl("mailto:" + email +
+                QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
-                     "&body=" + body));
+                     "&body=" + RepoDialogAbout::getVersionInfo()));
 }
 
 void repo::gui::RepoGUI::openUserManager() const
@@ -921,16 +903,7 @@ void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
 
 void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 {
-    QMenu menu(ui->widgetRepository->getDatabasesTreeView());
-    menu.addAction(ui->actionConnect);
-    menu.addAction(ui->actionRefresh);
-    menu.addSeparator();
-    menu.addAction(ui->actionHead);
-    menu.addAction(ui->actionHistory);
-    menu.addAction(ui->actionSwitch);
-    menu.addSeparator();
-    menu.addAction(ui->actionDrop);
-    menu.exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
+    ui->menuRepository->exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
 }
 
 void repo::gui::RepoGUI::startup()

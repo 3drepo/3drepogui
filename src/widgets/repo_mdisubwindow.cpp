@@ -44,9 +44,9 @@ repo::gui::RepoMdiSubWindow::RepoMdiSubWindow(
 	// Progress bar
 	progressBar = new QProgressBar();
 	progressBar->hide();
-	progressBar->setTextVisible(false);	
+	progressBar->setTextVisible(false);
 	boxLayout->addWidget(progressBar);
-	
+
     //--------------------------------------------------------------------------
 	// The super-class assumes ownership of the centralWidget.
 	QMdiSubWindow::setWidget(centralWidget);
@@ -69,24 +69,24 @@ repo::gui::RepoMdiSubWindow::~RepoMdiSubWindow()
 
 void repo::gui::RepoMdiSubWindow::setWidget(const QString& windowTitle)
 {
-	setWidget(new RepoGLCWidget(this, windowTitle));
+	setWidget(new RepoGLCWidget(0, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
 void repo::gui::RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath)
 {
-    setWidget(new RepoGLCWidget(this, RepoWorkerAssimp::getFileName(filePath)));
+    setWidget(new RepoGLCWidget(0, RepoWorkerAssimp::getFileName(filePath)));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
     // Assimp flags is a memory leak TODO: fixme!
     RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, new RepoWidgetAssimpFlags());
-	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)), 
+	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 	//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
-	
+
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
 	QThreadPool::globalInstance()->start(worker);
@@ -119,15 +119,15 @@ void repo::gui::RepoMdiSubWindow::removeWidget()
 
 //------------------------------------------------------------------------------
 
-QWidget * repo::gui::RepoMdiSubWindow::widget() const 
+QWidget * repo::gui::RepoMdiSubWindow::widget() const
 {
-	return boxLayout->itemAt(1) ? boxLayout->itemAt(1)->widget() : 0; 
+	return boxLayout->itemAt(1) ? boxLayout->itemAt(1)->widget() : 0;
 }
 
 void repo::gui::RepoMdiSubWindow::finishedLoading(
     repo::core::RepoGraphScene *repoScene,
 	GLC_World& glcWorld)
-{	
+{
     RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());
 	if (widget)
 	{

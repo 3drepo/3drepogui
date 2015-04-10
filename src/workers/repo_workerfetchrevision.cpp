@@ -29,11 +29,13 @@
 
 repo::gui::RepoWorkerFetchRevision::RepoWorkerFetchRevision(
     const repo::core::MongoClientWrapper &mongo,
-	const QString& database,
-	const QUuid& id,
-	bool headRevision)
+    const QString& database,
+    const QString &project,
+    const QUuid& id,
+    bool headRevision)
 	: mongo(mongo)
 	, database(database.toStdString())
+    , project(project.toStdString())
 	, id(id)
 	, headRevision(headRevision)
 {}
@@ -48,52 +50,60 @@ void repo::gui::RepoWorkerFetchRevision::run()
     done = 0;
 	emit progress(0, 0); // undetermined (moving) progress bar
 
-
 	GLC_World glcWorld;
-    core::RepoGraphScene *masterSceneGraph = NULL;
-	if (!cancelled && !mongo.reconnect())
+    core::RepoGraphScene *masterSceneGraph = 0;
+
+    try
     {
-        std::cerr << "Connection failed" << std::endl;
-    }
-	else
-	{
-         masterSceneGraph = fetchSceneRecursively(
-            database,
-            id.toString().toStdString(),
-            headRevision,
-            NULL,
-            NULL);
-
-        //----------------------------------------------------------------------
-		// Convert to Assimp
-		// TODO: code in direct conversion from RepoSceneGraph to GLC_World
-		// to avoid intermediary Assimp aiScene conversion!
-		aiScene* scene = new aiScene();
-        if (!cancelled && masterSceneGraph)
-		{
-            masterSceneGraph->toAssimp(scene);
-			emit progress(done++, jobsCount);
-
-            //------------------------------------------------------------------
-            // Convert raw textures into QImages
-            std::map<std::string, QImage> namedTextures;
-            std::vector<repo::core::RepoNodeTexture*> textures =
-                    masterSceneGraph->getTextures();
-            for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
-            {
-                repo::core::RepoNodeTexture* repoTex = textures[i];
-                const unsigned char* data = (unsigned char*) repoTex->getRawData();
-                QImage image = QImage::fromData(data, repoTex->getRawDataSize());
-                namedTextures.insert(std::make_pair(repoTex->getName(), image));
-            }
-            emit progress(done++, jobsCount);
-
-            //------------------------------------------------------------------
-            // GLC World conversion
-            if (!cancelled)
-                glcWorld = repo::gui::RepoTranscoderAssimp::toGLCWorld(scene, namedTextures);
+        if (!cancelled && !mongo.reconnect())
+        {
+            std::cerr << "Connection failed" << std::endl;
         }
-	}
+        else
+        {
+             masterSceneGraph = fetchSceneRecursively(
+                database,
+                project,
+                id.toString().toStdString(),
+                headRevision,
+                NULL,
+                NULL);
+
+            //----------------------------------------------------------------------
+            // Convert to Assimp
+            // TODO: code in direct conversion from RepoSceneGraph to GLC_World
+            // to avoid intermediary Assimp aiScene conversion!
+            aiScene* scene = new aiScene();
+            if (!cancelled && masterSceneGraph)
+            {
+                masterSceneGraph->toAssimp(scene);
+                emit progress(done++, jobsCount);
+
+                //------------------------------------------------------------------
+                // Convert raw textures into QImages
+                std::map<std::string, QImage> namedTextures;
+                std::vector<repo::core::RepoNodeTexture*> textures =
+                        masterSceneGraph->getTextures();
+                for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
+                {
+                    repo::core::RepoNodeTexture* repoTex = textures[i];
+                    const unsigned char* data = (unsigned char*) repoTex->getRawData();
+                    QImage image = QImage::fromData(data, repoTex->getRawDataSize());
+                    namedTextures.insert(std::make_pair(repoTex->getName(), image));
+                }
+                emit progress(done++, jobsCount);
+
+                //------------------------------------------------------------------
+                // GLC World conversion
+                if (!cancelled)
+                    glcWorld = repo::gui::RepoTranscoderAssimp::toGLCWorld(scene, namedTextures);
+            }
+        }
+    }
+    catch (std::exception e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
 
     //--------------------------------------------------------------------------
 	emit progress(jobsCount, jobsCount);
@@ -102,8 +112,9 @@ void repo::gui::RepoWorkerFetchRevision::run()
 	emit RepoWorkerAbstract::finished();
 }
 
-repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
+repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
         const std::string &database,
+        const string &project,
         const std::string &uuid,
         bool isHeadRevision,
         core::RepoGraphScene *masterSceneGraph,
@@ -118,7 +129,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
     std::vector<mongo::BSONObj> data;
     // TODO: fetch transformations first to build the scene
     // and reconstruct meshes later so as to give visual feedback to the user immediatelly
-    // (eg as meshes popping up in XML3DRepo)
+    // (eg as meshes popping up in 3drepo.io)
 
     //--------------------------------------------------------------------------
     // First load revision object
@@ -130,21 +141,21 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
 
     // TODO: make this adhere to the revision history graph so that it does not
     // rely on timestamps!
-    mongo::BSONObj bson = isHeadRevision
+    mongo::BSONObj revisionBSON = isHeadRevision
         ? mongo.findOneBySharedID(
             database,
-            REPO_COLLECTION_HISTORY,
+            core::MongoClientWrapper::getHistoryCollectionName(project),
             uuid,
             REPO_NODE_LABEL_TIMESTAMP,
             fieldsToReturn)
         : mongo.findOneByUniqueID(
             database,
-            REPO_COLLECTION_HISTORY,
+            core::MongoClientWrapper::getHistoryCollectionName(project),
             uuid,
             fieldsToReturn);
 
    // std::cout << bson.toString(false, true) << std::endl;
-    mongo::BSONArray array = mongo::BSONArray(bson.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
+    mongo::BSONArray array = mongo::BSONArray(revisionBSON.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
     //----------------------------------------------------------------------
     emit progress(done++, jobsCount);
     //----------------------------------------------------------------------
@@ -164,7 +175,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
             if (!cancelled)
                 cursor = mongo.findAllByUniqueIDs(
                     database,
-                    REPO_COLLECTION_SCENE,
+                    core::MongoClientWrapper::getSceneCollectionName(project),
                     array,
                     retrieved);
         }
@@ -173,7 +184,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
     else
     {
         std::cerr << "Deprecated DB retrieval" << std::endl;
-        mongo.fetchEntireCollection(database, REPO_COLLECTION_SCENE, data);
+        mongo.fetchEntireCollection(database,  core::MongoClientWrapper::getSceneCollectionName(project), data);
     }
     //----------------------------------------------------------------------
 
@@ -223,6 +234,7 @@ repo::core::RepoGraphScene * repo::gui::RepoWorkerFetchRevision::fetchSceneRecur
         // Recursion
         std::string refUuuid = core::RepoTranscoderString::toString(reference->getRevisionID());
         fetchSceneRecursively(
+                    database,
                     reference->getProject(),
                     refUuuid,
                     !reference->getIsUniqueID(),

@@ -50,6 +50,7 @@ public :
 	RepoWorkerFetchRevision(
 		const repo::core::MongoClientWrapper& mongo,
 		const QString& database,
+        const QString& project,
 		const QUuid& id = QUuid(),
 		bool headRevision = true);
 
@@ -71,7 +72,9 @@ signals :
 
 private :
 
-    core::RepoGraphScene *fetchSceneRecursively(const std::string &database,
+    core::RepoGraphScene *fetchSceneRecursively(
+            const std::string &database,
+            const std::string& project,
             const std::string &uuid,
             bool isHeadRevision,
             core::RepoGraphScene *masterSceneGraph,
@@ -82,6 +85,9 @@ private :
 
 	//! Database to fetch the revision from.
 	std::string database;
+
+    //! Project to fetch the revision from.
+    std::string project;
 
 	//! SID of a branch if headRevision is true, UID of a specific revision otherwise.
 	QUuid id;

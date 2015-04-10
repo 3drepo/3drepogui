@@ -67,13 +67,14 @@ public:
 	 * dialog to have minimize/maximize buttons.
 	 */
 	RepoDialogCommit(
-        const QString &server,
-        const QString &repository,
-        const QString &branch,
-        const core::RepoGraphAbstract *scene,
-        core::RepoNodeRevision *revision,
-		QWidget* parent = 0, 
-		Qt::WindowFlags flags = 0);
+        const core::MongoClientWrapper& server,
+        QWidget* parent = 0,
+        Qt::WindowFlags flags = 0,
+        const QString &database = "",
+        const QString& project = "",
+        const QString &branch = "",
+        const core::RepoGraphAbstract *scene = 0,
+        core::RepoNodeRevision *revision = 0);
 
     //--------------------------------------------------------------------------
 	//
@@ -90,6 +91,10 @@ public:
 	//! Returns the default green icon for the commit dialog.
 	static QIcon getIcon();
 
+    QString getCurrentDatabaseName() const;
+
+    QString getCurrentProjectName() const;
+
 public slots:
 
 	/*! 
@@ -98,6 +103,8 @@ public slots:
 	 * as user settings. Returns a DialogCode result.
 	 */
 	virtual int exec();
+
+    void updateCountLabel() const;
 
 private :
 

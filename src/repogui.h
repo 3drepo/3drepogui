@@ -55,6 +55,9 @@ public:
 
 public slots:
 
+    //! Shows about dialog.
+    void about();
+
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree()
     {  addSelectionTree(getActiveWidget()); }
@@ -74,7 +77,7 @@ public slots:
     QMenu* createPanelsMenu();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
-    void dropDatabase();
+    void drop();
 
     //! Fetches head revision from selected DB and branch.
     void fetchHead();
