@@ -101,6 +101,9 @@ public:
     static QIcon getManagerIcon()
     { return getIconStatic(fa_dashboard); }
 
+    static QIcon getUserManagerIcon()
+    { return getIconStatic(fa_users); }
+
     //--------------------------------------------------------------------------
 
 	QIcon getIcon(int iconOn);

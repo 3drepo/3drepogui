@@ -82,9 +82,7 @@ void repo::gui::RepoProjectManagerDialog::addProjectSettings(
     row.append(createItem(QString::fromStdString(projectSettings.getOwner())));
 
     // Permissions
-    item = createItem(QString::fromStdString(projectSettings.getPermissionsString()));
-    item->setTextAlignment(Qt::AlignRight);
-    row.append(item);
+    row.append(createItem(QString::fromStdString(projectSettings.getPermissionsString())));
 
     // Type
     row.append(createItem(QString::fromStdString(projectSettings.getType())));

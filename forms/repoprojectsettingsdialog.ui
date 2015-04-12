@@ -111,7 +111,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="ownerLabel_2">
+       <widget class="QLabel" name="ownerSetterLabel">
         <property name="text">
          <string>Owner:</string>
         </property>
@@ -125,7 +125,7 @@
        </widget>
       </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="groupLabel_2">
+       <widget class="QLabel" name="groupSetterLabel">
         <property name="text">
          <string>Group:</string>
         </property>

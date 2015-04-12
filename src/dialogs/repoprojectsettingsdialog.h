@@ -57,15 +57,12 @@ public slots :
     //! Updates permissions octal based on corresponding value.
     void updatePermissionsOctal(unsigned short value);
 
-    //! Updates permissions octal based on corresponding text.
-    void updatePermissionsOctal(const QString &text);
-
-    //! Updates permissions octal based on index in Permissions enum.
-    void updatePermissionsOctal(int index, int value);
+    //! Updates permissions octal based on set text.
+    void updatePermissionsOctal(const QString &value);
 
 public :
 
-    static unsigned int getOctal(
+    static unsigned short getOctal(
             const QCheckBox *r,
             const QCheckBox *w,
             const QCheckBox *x);
@@ -78,14 +75,20 @@ public :
 
 protected :
 
-    void connectPermissionsOctal(
-            const QCheckBox *four,
-            const QCheckBox *two,
-            const QCheckBox *one);
+    void connectPermissionsOctal();
+    void disconnectPermissionsOctal();
+
+    void setPermissionsCheckBoxes(
+         unsigned short octal,
+         QCheckBox *r, unsigned short rMask,
+         QCheckBox *w, unsigned short wMask,
+         QCheckBox *x, unsigned short xMask);
 
 private:
 
     Ui::RepoProjectSettingsDialog *ui;
+
+    QList<QCheckBox*> checkboxes;
 
 }; // end class
 

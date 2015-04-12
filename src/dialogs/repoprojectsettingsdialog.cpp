@@ -27,25 +27,15 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
 {
     ui->setupUi(this);
 
-    connectPermissionsOctal(
-                    ui->uidCheckBox,
-                    ui->gidCheckBox,
-                    ui->stickyBitCheckBox);
+    checkboxes << ui->uidCheckBox << ui->gidCheckBox << ui->stickyBitCheckBox;
+    checkboxes << ui->ownerReadCheckBox << ui->ownerWriteCheckBox << ui->ownerExecuteCheckBox;
+    checkboxes << ui->groupReadCheckBox << ui->groupWriteCheckBox << ui->groupExecuteCheckBox;
+    checkboxes << ui->publicReadCheckBox << ui->publicWriteCheckBox << ui->publicExecuteCheckBox;
+
+    connectPermissionsOctal();
     //--------------------------------------------------------------------------
-    connectPermissionsOctal(
-                ui->ownerReadCheckBox,
-                ui->ownerWriteCheckBox,
-                ui->ownerExecuteCheckBox);
-    //--------------------------------------------------------------------------
-    connectPermissionsOctal(
-                ui->groupReadCheckBox,
-                ui->groupWriteCheckBox,
-                ui->groupExecuteCheckBox);
-    //--------------------------------------------------------------------------
-    connectPermissionsOctal(
-                ui->publicReadCheckBox,
-                ui->publicWriteCheckBox,
-                ui->publicExecuteCheckBox);
+    QObject::connect(ui->octalLineEdit, SIGNAL(textEdited(const QString &)),
+                     this, SLOT(updatePermissionsOctal(const QString &)));
 
     if (!projectSettings.isEmpty())
     {
@@ -57,8 +47,12 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
         updatePermissionsOctal(projectSettings.getPermissionsOctal());
     }
     else
+    {
         ui->typeComboBox->setCurrentText(tr("Architectural"));
-
+        ui->ownerReadCheckBox->setChecked(true);
+        ui->ownerWriteCheckBox->setChecked(true);
+        ui->ownerExecuteCheckBox->setChecked(true);
+    }
 }
 
 repo::gui::RepoProjectSettingsDialog::~RepoProjectSettingsDialog()
@@ -68,19 +62,19 @@ repo::gui::RepoProjectSettingsDialog::~RepoProjectSettingsDialog()
 
 void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal()
 {
-    unsigned int bits = getOctal(
+    unsigned short bits = getOctal(
                 ui->uidCheckBox,
                 ui->gidCheckBox,
                 ui->stickyBitCheckBox);
-    unsigned int owner = getOctal(
+    unsigned short owner = getOctal(
                 ui->ownerReadCheckBox,
                 ui->ownerWriteCheckBox,
                 ui->ownerExecuteCheckBox);
-    unsigned int group = getOctal(
+    unsigned short group = getOctal(
                 ui->groupReadCheckBox,
                 ui->groupWriteCheckBox,
                 ui->groupExecuteCheckBox);
-    unsigned int publ = getOctal(
+    unsigned short publ = getOctal(
                 ui->publicReadCheckBox,
                 ui->publicWriteCheckBox,
                 ui->publicExecuteCheckBox);
@@ -93,93 +87,45 @@ void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal()
 
 void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal(unsigned short value)
 {
-    ui->uidCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::UID_BIT)
-                == core::RepoPermissionsBitMask::UID_BIT);
-    ui->gidCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::GID_BIT)
-                == core::RepoPermissionsBitMask::GID_BIT);
-    ui->stickyBitCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::STICKY_BIT)
-                == core::RepoPermissionsBitMask::STICKY_BIT);
     //--------------------------------------------------------------------------
-    ui->ownerReadCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::OWNER_READ)
-                == core::RepoPermissionsBitMask::OWNER_READ);
-    ui->ownerWriteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::OWNER_WRITE)
-                == core::RepoPermissionsBitMask::OWNER_WRITE);
-    ui->ownerExecuteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::OWNER_EXECUTE)
-                == core::RepoPermissionsBitMask::OWNER_EXECUTE);
+    setPermissionsCheckBoxes(value,
+                             ui->uidCheckBox, core::RepoPermissionsBitMask::UID_BIT,
+                             ui->gidCheckBox, core::RepoPermissionsBitMask::GID_BIT,
+                             ui->stickyBitCheckBox, core::RepoPermissionsBitMask::STICKY_BIT);
     //--------------------------------------------------------------------------
-    ui->groupReadCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::GROUP_READ)
-                == core::RepoPermissionsBitMask::GROUP_READ);
-    ui->groupWriteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::GROUP_WRITE)
-                == core::RepoPermissionsBitMask::GROUP_WRITE);
-    ui->groupExecuteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::GROUP_EXECUTE)
-                == core::RepoPermissionsBitMask::GROUP_EXECUTE);
+    setPermissionsCheckBoxes(value,
+                             ui->ownerReadCheckBox, core::RepoPermissionsBitMask::OWNER_READ,
+                             ui->ownerWriteCheckBox, core::RepoPermissionsBitMask::OWNER_WRITE,
+                             ui->ownerExecuteCheckBox, core::RepoPermissionsBitMask::OWNER_EXECUTE);
     //--------------------------------------------------------------------------
-    ui->publicReadCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::PUBLIC_READ)
-                == core::RepoPermissionsBitMask::PUBLIC_READ);
-    ui->publicWriteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::PUBLIC_WRITE)
-                == core::RepoPermissionsBitMask::PUBLIC_WRITE);
-    ui->publicExecuteCheckBox->setChecked(
-                (value & core::RepoPermissionsBitMask::PUBLIC_EXECUTE)
-                == core::RepoPermissionsBitMask::PUBLIC_EXECUTE);
+    setPermissionsCheckBoxes(value,
+                             ui->groupReadCheckBox, core::RepoPermissionsBitMask::GROUP_READ,
+                             ui->groupWriteCheckBox, core::RepoPermissionsBitMask::GROUP_WRITE,
+                             ui->groupExecuteCheckBox, core::RepoPermissionsBitMask::GROUP_EXECUTE);
+    //--------------------------------------------------------------------------
+    setPermissionsCheckBoxes(value,
+                             ui->publicReadCheckBox, core::RepoPermissionsBitMask::PUBLIC_READ,
+                             ui->publicWriteCheckBox, core::RepoPermissionsBitMask::PUBLIC_WRITE,
+                             ui->publicExecuteCheckBox, core::RepoPermissionsBitMask::PUBLIC_EXECUTE);
 }
 
-void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal(const QString &text)
+void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal(const QString &value)
 {
-    int offset = 1;
-    for (int i = 0; i < text.size() && i < 4; ++i)
-    {
-        QChar c = text.at(i);
-        if (c.isDigit())
-            updatePermissionsOctal(i + offset, c.digitValue());
-    }
+    disconnectPermissionsOctal();
+
+    std::string octal = value.toStdString();
+    for (int i = 0; i < 4 - value.size(); ++i)
+        octal += "0";
+    updatePermissionsOctal(core::RepoProjectSettings::stringToOctal(octal));
+    connectPermissionsOctal();
 }
 
-
-void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal(int index, int value)
-{
-    switch (index)
-    {
-    case BITS :
-        setOctal(ui->uidCheckBox,
-                 ui->gidCheckBox,
-                 ui->stickyBitCheckBox, value);
-        break;
-    case OWNER :
-        setOctal(ui->ownerReadCheckBox,
-                 ui->ownerWriteCheckBox,
-                 ui->ownerExecuteCheckBox, value);
-        break;
-    case GROUP :
-        setOctal(ui->groupReadCheckBox,
-                 ui->groupWriteCheckBox,
-                 ui->groupExecuteCheckBox, value);
-        break;
-    case PUBLIC :
-        setOctal(ui->publicReadCheckBox,
-                 ui->publicWriteCheckBox,
-                 ui->publicExecuteCheckBox, value);
-        break;
-    }
-}
-
-
-unsigned int repo::gui::RepoProjectSettingsDialog::getOctal(
+unsigned short repo::gui::RepoProjectSettingsDialog::getOctal(
         const QCheckBox *r,
         const QCheckBox *w,
         const QCheckBox *x)
 {
-    unsigned int value = 0;
+    unsigned short value = 0;
     value += r->isChecked() ? core::RepoRWXPermissionsBitMask::READ : 0;
     value += w->isChecked() ? core::RepoRWXPermissionsBitMask::WRITE : 0;
     value += x->isChecked() ? core::RepoRWXPermissionsBitMask::EXECUTE : 0;
@@ -197,15 +143,27 @@ void repo::gui::RepoProjectSettingsDialog::setOctal(
     x->setChecked(value & core::RepoRWXPermissionsBitMask::EXECUTE);
 }
 
-void repo::gui::RepoProjectSettingsDialog::connectPermissionsOctal(
-        const QCheckBox *four,
-        const QCheckBox *two,
-        const QCheckBox *one)
+void repo::gui::RepoProjectSettingsDialog::connectPermissionsOctal()
 {
-    QObject::connect(four, SIGNAL(toggled(bool)),
-                     this, SLOT(updatePermissionsOctal()));
-    QObject::connect(two, SIGNAL(toggled(bool)),
-                     this, SLOT(updatePermissionsOctal()));
-    QObject::connect(one, SIGNAL(toggled(bool)),
-                     this, SLOT(updatePermissionsOctal()));
+    for (QCheckBox *checkBox : checkboxes)
+        QObject::connect(checkBox, SIGNAL(toggled(bool)),
+                         this, SLOT(updatePermissionsOctal()));
+}
+
+void repo::gui::RepoProjectSettingsDialog::disconnectPermissionsOctal()
+{
+    for (QCheckBox *checkBox : checkboxes)
+        QObject::disconnect(checkBox, SIGNAL(toggled(bool)),
+                         this, SLOT(updatePermissionsOctal()));
+}
+
+void repo::gui::RepoProjectSettingsDialog::setPermissionsCheckBoxes(
+        unsigned short octal,
+        QCheckBox *r, unsigned short rMask,
+        QCheckBox *w, unsigned short wMask,
+        QCheckBox *x, unsigned short xMask)
+{
+    r->setChecked((octal & rMask) == rMask);
+    w->setChecked((octal & wMask) == wMask);
+    x->setChecked((octal & xMask) == xMask);
 }

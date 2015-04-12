@@ -149,6 +149,15 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
     //--------------------------------------------------------------------------
+    // User Management...
+    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
+    ui->actionUserManager->setIcon(RepoFontAwesome::getUserManagerIcon());
+
+    // Project Manager...
+    QObject::connect(ui->actionProject_Manager, SIGNAL(triggered()), this,
+                     SLOT(openProjectManager()));
+
+    //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
@@ -188,13 +197,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Tools
     //
     //--------------------------------------------------------------------------
-    // User Management...
-    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
-    ui->actionUserManager->setIcon(RepoFontAwesome::getManagerIcon());
-
-    // Project Manager...
-    QObject::connect(ui->actionProject_Manager, SIGNAL(triggered()), this,
-                     SLOT(openProjectManager()));
 
     // Metadata Management...
     QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
