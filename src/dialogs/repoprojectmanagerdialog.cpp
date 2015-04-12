@@ -155,7 +155,7 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
         core::RepoProjectSettings projectSettings)
 {
-    RepoProjectDialog projectDialog(projectSettings, this);
+    RepoProjectSettingsDialog projectDialog(projectSettings, this);
     if (QDialog::Rejected == projectDialog.exec())
     {
         std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;

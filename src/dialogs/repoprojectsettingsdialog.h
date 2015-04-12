@@ -22,13 +22,14 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QDialog>
+#include <QCheckBox>
 
 //------------------------------------------------------------------------------
 // Core
 #include <RepoProjectSettings>
 
 namespace Ui {
-class RepoProjectDialog;
+class RepoProjectSettingsDialog;
 }
 
 namespace repo {
@@ -45,8 +46,28 @@ public:
             QWidget *parent = 0);
     ~RepoProjectSettingsDialog();
 
+public slots :
+
+    //! Updates permissions octal based on corresponding check boxes
+    void updatePermissionsOctal();
+
+public :
+
+    static unsigned int getOctal(
+            const QCheckBox *four,
+            const QCheckBox *two,
+            const QCheckBox *one);
+
+protected :
+
+    void connectPermissionsOctal(
+            const QCheckBox *four,
+            const QCheckBox *two,
+            const QCheckBox *one);
+
 private:
-    Ui::RepoProjectDialog *ui;
+
+    Ui::RepoProjectSettingsDialog *ui;
 
 }; // end class
 
