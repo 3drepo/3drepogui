@@ -105,6 +105,24 @@ void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
     ui->treeView->resizeColumnToContents(Columns::USERS);
 }
 
+repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProject()
+{
+    return getProject(ui->treeView->selectionModel()->currentIndex());
+}
+
+repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProject(const QModelIndex &index)
+{
+    core::RepoProjectSettings projectSettings;
+    if (index.isValid())
+    {
+        QModelIndex userIndex = index.sibling(index.row(), Columns::PROJECT);
+        projectSettings = userIndex.data(Qt::UserRole+1).value<core::RepoProjectSettings>();
+    }
+    return projectSettings;
+}
+
+
+
 void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 {
     if (cancelAllThreads())
@@ -153,7 +171,7 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 }
 
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
-        core::RepoProjectSettings projectSettings)
+        const core::RepoProjectSettings &projectSettings)
 {
     RepoProjectSettingsDialog projectDialog(projectSettings, this);
     if (QDialog::Rejected == projectDialog.exec())

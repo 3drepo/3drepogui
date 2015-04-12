@@ -46,6 +46,18 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
                 ui->publicReadCheckBox,
                 ui->publicWriteCheckBox,
                 ui->publicExecuteCheckBox);
+
+    if (!projectSettings.isEmpty())
+    {
+        ui->nameLineEdit->setText(QString::fromStdString(projectSettings.getProject()));
+        ui->descriptionLineEdit->setText(QString::fromStdString(projectSettings.getDescription()));
+        ui->typeComboBox->setCurrentText(QString::fromStdString(projectSettings.getType()));
+        ui->ownerComboBox->setCurrentText(QString::fromStdString(projectSettings.getOwner()));
+        ui->groupComboBox->setCurrentText(QString::fromStdString(projectSettings.getGroup()));
+    }
+    else
+        ui->typeComboBox->setCurrentText(tr("Architectural"));
+
 }
 
 repo::gui::RepoProjectSettingsDialog::~RepoProjectSettingsDialog()

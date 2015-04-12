@@ -50,9 +50,13 @@ public slots :
 
     void clear(bool resizeColumns = false);
 
-    void edit() {}
+    void edit() { showEditDialog(getProject()); }
 
-    void edit(const QModelIndex &index) {}
+    void edit(const QModelIndex &index) { showEditDialog(getProject(index)); }
+
+    core::RepoProjectSettings getProject();
+
+    core::RepoProjectSettings getProject(const QModelIndex &index);
 
     void refresh(const core::RepoBSON &command = core::RepoBSON());
 
@@ -60,7 +64,7 @@ public slots :
 
     void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }
 
-    void showEditDialog(core::RepoProjectSettings);
+    void showEditDialog(const repo::core::RepoProjectSettings &);
 };
 
 } // end namespace gui
