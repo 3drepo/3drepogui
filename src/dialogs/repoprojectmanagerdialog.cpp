@@ -18,6 +18,7 @@
 
 #include "repoprojectmanagerdialog.h"
 #include "ui_repoabstractmanagerdialog.h"
+#include "repoprojectsettingsdialog.h"
 
 repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
         const RepoIDBCache *cache,
@@ -148,6 +149,21 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
         ui->hostComboBox->setEnabled(false);
         ui->databaseComboBox->setEnabled(false);
         threadPool.start(worker);
+    }
+}
+
+void repo::gui::RepoProjectManagerDialog::showEditDialog(
+        core::RepoProjectSettings projectSettings)
+{
+    RepoProjectDialog projectDialog(projectSettings, this);
+    if (QDialog::Rejected == projectDialog.exec())
+    {
+        std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        // Create or update project
+        refresh();
     }
 }
 

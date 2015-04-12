@@ -167,6 +167,9 @@ void repo::gui::RepoAbstractManagerDialog::initialize()
 
     QObject::connect(ui->editPushButton, SIGNAL(pressed()),
                      this, SLOT(edit()));
+
+    QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
+                     this, SLOT(refresh()));
 }
 
 void repo::gui::RepoAbstractManagerDialog::setComboBox(

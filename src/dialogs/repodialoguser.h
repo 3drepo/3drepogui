@@ -59,7 +59,8 @@ class RepoDialogUser : public QDialog
 public:
 
     //! Explicit constructor.
-    explicit RepoDialogUser(core::RepoUser user,
+    explicit RepoDialogUser(
+            core::RepoUser user,
             const std::map<string, std::list<string> > &databasesWithProjects,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);

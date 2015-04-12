@@ -58,7 +58,9 @@ public slots :
 
     void removeItem() {}
 
-    void showEditDialog() {}
+    void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }
+
+    void showEditDialog(core::RepoProjectSettings);
 };
 
 } // end namespace gui
