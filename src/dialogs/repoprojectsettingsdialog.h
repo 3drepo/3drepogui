@@ -40,6 +40,9 @@ class RepoProjectSettingsDialog : public QDialog
 {
     Q_OBJECT
 
+    enum Permissions { BITS, OWNER, GROUP, PUBLIC };
+
+
 public:
     explicit RepoProjectSettingsDialog(
             core::RepoProjectSettings projectSettings,
@@ -48,15 +51,30 @@ public:
 
 public slots :
 
-    //! Updates permissions octal based on corresponding check boxes
+    //! Updates permissions octal based on corresponding check boxes.
     void updatePermissionsOctal();
+
+    //! Updates permissions octal based on corresponding value.
+    void updatePermissionsOctal(unsigned short value);
+
+    //! Updates permissions octal based on corresponding text.
+    void updatePermissionsOctal(const QString &text);
+
+    //! Updates permissions octal based on index in Permissions enum.
+    void updatePermissionsOctal(int index, int value);
 
 public :
 
     static unsigned int getOctal(
-            const QCheckBox *four,
-            const QCheckBox *two,
-            const QCheckBox *one);
+            const QCheckBox *r,
+            const QCheckBox *w,
+            const QCheckBox *x);
+
+    static void setOctal(
+            QCheckBox *r,
+            QCheckBox *w,
+            QCheckBox *x,
+            int value);
 
 protected :
 
