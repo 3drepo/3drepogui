@@ -29,7 +29,7 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
 
     //--------------------------------------------------------------------------
     // Users
-    model->setColumnCount(6);
+    model->setColumnCount(7);
     model->setHeaderData(
                 Columns::PROJECT,
                 Qt::Horizontal,
@@ -42,6 +42,10 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
                 Columns::OWNER,
                 Qt::Horizontal,
                 tr("Owner"));
+    model->setHeaderData(
+                Columns::GROUP,
+                Qt::Horizontal,
+                tr("Group"));
     model->setHeaderData(
                 Columns::PERMISSIONS,
                 Qt::Horizontal,
@@ -81,6 +85,9 @@ void repo::gui::RepoProjectManagerDialog::addProjectSettings(
     // Owner
     row.append(createItem(QString::fromStdString(projectSettings.getOwner())));
 
+    // Group
+    row.append(createItem(QString::fromStdString(projectSettings.getGroup())));
+
     // Permissions
     row.append(createItem(QString::fromStdString(projectSettings.getPermissionsString())));
 
@@ -98,6 +105,8 @@ void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
 {
     RepoAbstractManagerDialog::clear(resizeColumns);
 
+    ui->treeView->resizeColumnToContents(Columns::OWNER);
+    ui->treeView->resizeColumnToContents(Columns::GROUP);
     ui->treeView->resizeColumnToContents(Columns::PERMISSIONS);
     ui->treeView->resizeColumnToContents(Columns::TYPE);
     ui->treeView->resizeColumnToContents(Columns::USERS);

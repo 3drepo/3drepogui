@@ -35,7 +35,7 @@ class RepoProjectManagerDialog : public RepoAbstractManagerDialog
 {    
     Q_OBJECT
 
-    enum Columns { PROJECT, DESCRIPTION, OWNER, PERMISSIONS, TYPE, USERS };
+    enum Columns { PROJECT, DESCRIPTION, OWNER, GROUP, PERMISSIONS, TYPE, USERS };
 
 public:
 

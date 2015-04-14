@@ -27,6 +27,8 @@
 #include <QThreadPool>
 #include <QItemSelection>
 #include <QComboBox>
+#include <QMenu>
+#include <QWidgetAction>
 
 //------------------------------------------------------------------------------
 // Core
@@ -102,6 +104,9 @@ public slots :
     //! Shows edit dialog.
     virtual void showEditDialog() = 0;
 
+    //! Shows custom context menu for treeView.
+    virtual void showCustomContextMenu(const QPoint &);
+
 public :
 
     //! Creates a default non-editable item from a given string.
@@ -111,9 +116,6 @@ public :
     static QStandardItem *createItem(const QVariant &);
 
 protected :
-
-    //! Sets default connections.
-    void initialize();
 
     void setComboBox(
             QComboBox *comboBox,
