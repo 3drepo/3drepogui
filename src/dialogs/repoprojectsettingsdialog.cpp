@@ -37,7 +37,7 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
     QObject::connect(ui->octalLineEdit, SIGNAL(textEdited(const QString &)),
                      this, SLOT(updatePermissionsOctal(const QString &)));
 
-    if (!projectSettings.isEmpty())
+    if (!projectSettings.isOk())
     {
         ui->nameLineEdit->setText(QString::fromStdString(projectSettings.getProject()));
         ui->descriptionLineEdit->setText(QString::fromStdString(projectSettings.getDescription()));
