@@ -20,6 +20,7 @@
 #define REPO_PROJECT_MANAGER_DIALOG_H
 
 #include <QObject>
+#include <QMessageBox>
 
 #include "repoabstractmanagerdialog.h"
 #include "../workers/repoworkerprojectsettings.h"
@@ -60,6 +61,7 @@ public slots :
 
     void refresh(const core::RepoBSON &command = core::RepoBSON());
 
+    //! Removes currently selected item if any.
     void removeItem();
 
     void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }

@@ -170,22 +170,21 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 
 void repo::gui::RepoProjectManagerDialog::removeItem()
 {
-//    core::RepoProjectSettings projectSettings = this->getProjectSettings();
-//    int ret = QMessageBox::warning(this,
-//        tr("Remove project settings?"),
-//        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProject()) + "'?",
-//        tr("&Yes"),
-//        tr("&No"),
-//        QString::null, 1, 1);
-//    switch(ret)
-//        {
-//            case 0: // yes
-//                refresh(projectSettings.drop());
-//                break;
-//            case 1: // no
-//                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
-//                break;
-//        }
+    core::RepoProjectSettings projectSettings = this->getProjectSettings();
+    switch(QMessageBox::warning(this,
+        tr("Remove project settings?"),
+        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProject()) + "'?",
+        tr("&Yes"),
+        tr("&No"),
+        QString::null, 1, 1))
+        {
+            case 0: // yes
+                refresh(projectSettings.drop());
+                break;
+            case 1: // no
+                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
+                break;
+        }
 }
 
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
