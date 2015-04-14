@@ -73,6 +73,9 @@ public :
             QCheckBox *x,
             int value);
 
+    //! Returns upsert command bson.
+    core::RepoBSON getCommand() const;
+
 protected :
 
     void connectPermissionsOctal();

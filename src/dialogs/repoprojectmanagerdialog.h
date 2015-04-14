@@ -50,17 +50,17 @@ public slots :
 
     void clear(bool resizeColumns = false);
 
-    void edit() { showEditDialog(getProject()); }
+    void edit() { showEditDialog(getProjectSettings()); }
 
-    void edit(const QModelIndex &index) { showEditDialog(getProject(index)); }
+    void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
 
-    core::RepoProjectSettings getProject();
+    core::RepoProjectSettings getProjectSettings();
 
-    core::RepoProjectSettings getProject(const QModelIndex &index);
+    core::RepoProjectSettings getProjectSettings(const QModelIndex &index);
 
     void refresh(const core::RepoBSON &command = core::RepoBSON());
 
-    void removeItem() {}
+    void removeItem();
 
     void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }
 

@@ -103,12 +103,12 @@ void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
     ui->treeView->resizeColumnToContents(Columns::USERS);
 }
 
-repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProject()
+repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
 {
-    return getProject(ui->treeView->selectionModel()->currentIndex());
+    return getProjectSettings(ui->treeView->selectionModel()->currentIndex());
 }
 
-repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProject(const QModelIndex &index)
+repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
 {
     core::RepoProjectSettings projectSettings;
     if (index.isValid())
@@ -168,6 +168,26 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
     }
 }
 
+void repo::gui::RepoProjectManagerDialog::removeItem()
+{
+//    core::RepoProjectSettings projectSettings = this->getProjectSettings();
+//    int ret = QMessageBox::warning(this,
+//        tr("Remove project settings?"),
+//        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProject()) + "'?",
+//        tr("&Yes"),
+//        tr("&No"),
+//        QString::null, 1, 1);
+//    switch(ret)
+//        {
+//            case 0: // yes
+//                refresh(projectSettings.drop());
+//                break;
+//            case 1: // no
+//                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
+//                break;
+//        }
+}
+
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
         const core::RepoProjectSettings &projectSettings)
 {
@@ -179,7 +199,7 @@ void repo::gui::RepoProjectManagerDialog::showEditDialog(
     else // QDialog::Accepted
     {
         // Create or update project
-        refresh();
+        refresh(projectDialog.getCommand());
     }
 }
 
