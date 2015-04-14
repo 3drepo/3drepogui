@@ -30,6 +30,7 @@ repo::gui::RepoFilterableTreeWidget::RepoFilterableTreeWidget(QWidget *parent)
     model = new QStandardItemModel(this);
     setProxyModel();
     ui->progressBar->hide();
+    setCollapsedUI();
 }
 
 repo::gui::RepoFilterableTreeWidget::~RepoFilterableTreeWidget()
@@ -45,6 +46,30 @@ repo::gui::RepoFilterableTreeWidget::~RepoFilterableTreeWidget()
     proxy = 0;
 }
 
+void repo::gui::RepoFilterableTreeWidget::setCollapsedUI()
+{
+    this->layout()->setContentsMargins(0,0,0,0);
+    this->layout()->setSpacing(0);
+    ui->lineEdit->setFrame(false);
+    ui->treeView->setFrameShape(QFrame::NoFrame);
+    ui->treeView->setLineWidth(0);
+}
+
+void repo::gui::RepoFilterableTreeWidget::setExpandedUI()
+{
+    this->layout()->setContentsMargins(9,9,9,9);
+    this->layout()->setSpacing(6);
+    ui->lineEdit->setFrame(true);
+    ui->treeView->setFrameShape(QFrame::StyledPanel);
+    ui->treeView->setLineWidth(1);
+}
+
+void repo::gui::RepoFilterableTreeWidget::clear()
+{
+    model->removeRows(0, model->rowCount());
+    ui->lineEdit->clear();
+}
+
 QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar() const
 {
     return ui->progressBar;
@@ -58,7 +83,7 @@ QItemSelectionModel* repo::gui::RepoFilterableTreeWidget::getSelectionModel() co
 void repo::gui::RepoFilterableTreeWidget::setHeaders(const QList<QString>& headers)
 {
     model->setColumnCount(headers.size());
-    for (unsigned int i = 0; i < headers.size(); ++i)
+    for (int i = 0; i < headers.size(); ++i)
         model->setHeaderData(i, Qt::Horizontal, headers[i]);
 }
 

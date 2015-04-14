@@ -74,10 +74,14 @@ public slots:
     //! Shows a connection dialog and connects to the specified database.
     void connect();
 
+    //! Returns a menu with currently available panels.
     QMenu* createPanelsMenu();
 
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void drop();
+
+    //! Federates multiple projects and calls commit.
+    void federate();
 
     //! Fetches head revision from selected DB and branch.
     void fetchHead();

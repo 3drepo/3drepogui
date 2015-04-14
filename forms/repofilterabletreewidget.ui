@@ -15,37 +15,37 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>6</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>9</number>
    </property>
    <item>
     <widget class="repo::gui::RepoLineEdit" name="lineEdit">
      <property name="frame">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QTreeView" name="treeView">
      <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
      </property>
      <property name="lineWidth">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>

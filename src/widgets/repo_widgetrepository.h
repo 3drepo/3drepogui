@@ -93,8 +93,12 @@ public slots :
     //! Returns a list of available hosts.
     virtual QList<QString> getHosts() const;
 
-    /*! Returns a copy of a selected connection. It is necessary to reconnect
-     *	and reauthenticate.
+    //! Returns a list of available projects in a given database (a subset of all collections).
+    virtual QList<QString> getProjects(const QString &host, const QString &database) const;
+
+    /*!
+     * Returns a copy of a selected connection. It is necessary to reconnect
+     * and reauthenticate.
      */
     core::MongoClientWrapper getSelectedConnection() const { return mongo; }
 
@@ -106,6 +110,8 @@ public slots :
 
     //! Returns selected database, empty string if none selected.
     QString getSelectedDatabase() const;
+
+    //--------------------------------------------------------------------------
 
 public slots :
 

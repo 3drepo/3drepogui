@@ -23,9 +23,14 @@
 #include <RepoWrapperMongo>
 
 //------------------------------------------------------------------------------
+// GUI
+#include "../primitives/repo_fontawesome.h"
+
+//------------------------------------------------------------------------------
 // Qt
 #include <QList>
 #include <QString>
+#include <QComboBox>
 
 namespace repo {
 namespace gui {
@@ -40,8 +45,8 @@ public:
 
     //! Returns a list of available collections.
     virtual QList<QString> getCollections(
-            const QString& host,
-            const QString& database) const = 0;
+            const QString &host,
+            const QString &database) const = 0;
 
     //! Returns connection corresponding to given host.
     virtual core::MongoClientWrapper getConnection(const QString &host) const = 0;
@@ -51,6 +56,9 @@ public:
 
     //! Returns a list of available hosts.
     virtual QList<QString> getHosts() const = 0;
+
+    //! Returns a list of available projects (a subset of all collections in a given database).
+    virtual QList<QString> getProjects(const QString &host, const QString &database) const = 0;
 
     //! Refreshes cache.
     virtual void refresh() = 0;
@@ -63,6 +71,46 @@ public:
 
     //! Returns selected host.
     virtual QString getSelectedHost() const = 0;
+
+
+    //--------------------------------------------------------------------------
+    //
+    // Helpers
+    //
+    //--------------------------------------------------------------------------
+
+public :
+
+    virtual void setHostsComboBox(QComboBox *comboBox) const
+    {
+        setComboBox(comboBox,
+                    RepoFontAwesome::getHostIcon(),
+                    getHosts(),
+                    getSelectedHost());
+    }
+
+    virtual void setDatabasesComboBox(QComboBox *comboBox) const
+    {
+        setComboBox(comboBox,
+                    RepoFontAwesome::getDatabaseIcon(),
+                    getDatabases(getSelectedHost()),
+                    getSelectedDatabase());
+    }
+
+    //! Populates given combo box with given items.
+    virtual void setComboBox(
+            QComboBox *comboBox,
+            const QIcon &icon,
+            const QList<QString> &list,
+            const QString selected) const
+    {
+        for (int i = 0; i < list.size(); ++i)
+        {
+            comboBox->addItem(icon, list[i]);
+            if (selected == list[i])
+                comboBox->setCurrentIndex(i);
+        }
+    }
 
 };
 

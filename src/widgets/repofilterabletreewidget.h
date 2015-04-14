@@ -48,11 +48,19 @@ public:
 
 public slots:
 
+    //! Makes the visual layout compacted without borders.
+    void setCollapsedUI();
+
+    //! Makes the visual layout expanded with borders and spacing.
+    void setExpandedUI();
+
     void addTopLevelRow(const QList<QStandardItem*>& row)
     { model->invisibleRootItem()->appendRow(row); }
 
     void addTopLevelRow(QStandardItem* item)
     { model->invisibleRootItem()->appendRow(item); }
+
+    void clear();
 
 public:
 

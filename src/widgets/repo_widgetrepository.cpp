@@ -94,7 +94,7 @@ QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host
         databasesModel->invisibleRootItem()->hasChildren())
     {
         QStandardItem *hostItem = databasesModel->invisibleRootItem()->child(0,0);
-        //  QStandardItem *hostItem = databasesModel->findChild<QStandardItem*>(host, Qt::FindDirectChildrenOnly);
+
         if (hostItem)
         {
             for (int i = 0; i < hostItem->rowCount(); ++i)
@@ -126,6 +126,26 @@ QList<QString> repo::gui::RepoWidgetRepository::getHosts() const
     return hosts;
 }
 
+QList<QString> repo::gui::RepoWidgetRepository::getProjects(
+        const QString &host,
+        const QString &database) const
+{
+    QSet<QString> projects; // project names have to be unique within a single database.
+
+    // TODO: add mutliple hosts support!
+//    QList<QStandardItem *> hostItems = databasesModel->findItems(host);
+
+    QList<QStandardItem *> databaseItems = databasesModel->findItems(database, Qt::MatchRecursive | Qt::MatchExactly);
+    if (databaseItems.size() > 0 && databaseItems[0])
+    {
+       QStandardItem *databaseItem = databaseItems[0];
+       for (int i = 0; i < databaseItem->rowCount(); ++i)
+       {
+           projects << databaseItem->child(i, 0)->text();
+       }
+    }
+    return projects.toList();
+}
 
 void repo::gui::RepoWidgetRepository::refresh()
 {

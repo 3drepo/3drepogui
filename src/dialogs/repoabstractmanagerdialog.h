@@ -117,14 +117,6 @@ public :
 
 protected :
 
-    void setComboBox(
-            QComboBox *comboBox,
-            const QIcon &icon,
-            const QList<QString> &list,
-            const QString selected);
-
-protected :
-
     //! Model of the users table.
     QStandardItemModel *model;
 

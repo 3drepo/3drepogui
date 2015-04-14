@@ -52,6 +52,7 @@
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
+#include "dialogs/repofederationdialog.h"
 
 //------------------------------------------------------------------------------
 
@@ -147,6 +148,10 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Commit
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
+
+    // Federate
+    QObject::connect(ui->actionFederate, SIGNAL(triggered()),
+                     this, SLOT(federate()));
 
     //--------------------------------------------------------------------------
     // User Management...
@@ -465,6 +470,12 @@ void repo::gui::RepoGUI::drop()
                 break;
             }
     }
+}
+
+void repo::gui::RepoGUI::federate()
+{
+    RepoFederationDialog fed(ui->widgetRepository, this);
+    fed.exec();
 }
 
 void repo::gui::RepoGUI::fetchHead()

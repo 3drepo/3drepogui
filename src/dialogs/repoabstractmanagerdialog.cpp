@@ -31,17 +31,8 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getManagerIcon());
 
-    //--------------------------------------------------------------------------
-    QList<QString> hosts = dbCache->getHosts();
-    QString selectedHost = dbCache->getSelectedHost();    
-    setComboBox(ui->hostComboBox, RepoFontAwesome::getHostIcon(),
-                hosts, selectedHost);
-
-    //--------------------------------------------------------------------------
-    QList<QString> databases = dbCache->getDatabases(dbCache->getSelectedHost());
-    QString selectedDatabase = dbCache->getSelectedDatabase();
-    setComboBox(ui->databaseComboBox, RepoFontAwesome::getDatabaseIcon(),
-                databases, selectedDatabase);
+    dbCache->setHostsComboBox(ui->hostComboBox);
+    dbCache->setDatabasesComboBox(ui->databaseComboBox);
 
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(this);
@@ -195,19 +186,3 @@ QStandardItem *repo::gui::RepoAbstractManagerDialog::createItem(
     item->setData(data);
     return item;
 }
-
-void repo::gui::RepoAbstractManagerDialog::setComboBox(
-        QComboBox *comboBox,
-        const QIcon &icon,
-        const QList<QString> &list,
-        const QString selected)
-{
-    for (int i = 0; i < list.size(); ++i)
-    {
-        comboBox->addItem(icon, list[i]);
-        if (selected == list[i])
-            comboBox->setCurrentIndex(i);
-    }
-}
-
-

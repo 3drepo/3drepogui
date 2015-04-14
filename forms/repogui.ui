@@ -53,6 +53,7 @@
     <addaction name="actionSwitch"/>
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
+    <addaction name="actionFederate"/>
     <addaction name="separator"/>
     <addaction name="actionUserManager"/>
     <addaction name="actionProject_Manager"/>
@@ -503,6 +504,11 @@
    </property>
    <property name="text">
     <string>New Project...</string>
+   </property>
+  </action>
+  <action name="actionFederate">
+   <property name="text">
+    <string>Federate...</string>
    </property>
   </action>
  </widget>

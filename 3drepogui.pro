@@ -72,56 +72,58 @@ HEADERS  += src/repogui.h \
             src/dialogs/repodialogabout.h \
             src/dialogs/repoabstractmanagerdialog.h \
             src/dialogs/repoprojectmanagerdialog.h \
-    src/workers/repoworkerprojectsettings.h \
-    src/primitives/repoidbcache.h \
-    src/dialogs/repoprojectsettingsdialog.h \
-    src/widgets/repo_clickabletreeview.h
+            src/workers/repoworkerprojectsettings.h \
+            src/primitives/repoidbcache.h \
+            src/dialogs/repoprojectsettingsdialog.h \
+            src/widgets/repo_clickabletreeview.h \
+            src/dialogs/repofederationdialog.h
 
-SOURCES += src/main.cpp\
-           src/repogui.cpp \
-           src/primitives/repo_fontawesome.cpp \
-           src/dialogs/repo_dialogconnect.cpp \
-           src/dialogs/repo_dialogcommit.cpp \
-           src/dialogs/repo_dialoghistory.cpp \
-           src/widgets/repo_widgetrepository.cpp \
-           src/widgets/repo_lineedit.cpp \
-           src/widgets/repo_textbrowser.cpp \
-           src/widgets/repo_mdiarea.cpp \
-           src/widgets/repo_mdisubwindow.cpp \
-           src/renderers/repo_glcwidget.cpp \
-           src/workers/repo_workerdatabases.cpp \
-           src/workers/repo_worker_abstract.cpp \
-           src/workers/repo_workercommit.cpp \
-           src/workers/repo_workercollection.cpp \
-           src/workers/repo_worker_assimp.cpp \
-           src/workers/repo_workerfetchrevision.cpp \
-           src/workers/repo_workerhistory.cpp \
-           src/workers/repo_workerusers.cpp \
-           src/primitives/repo_sortfilterproxymodel.cpp \
-           src/primitives/repo_glccamera.cpp \
-           src/conversion/repo_transcoder_assimp.cpp \
-           src/conversion/repo_transcoder_graph_scene.cpp \
-           src/conversion/repo_transcoder_helpers.cpp \
-           src/renderers/repo_oculus.cpp \
-           src/dialogs/repodialogoculus.cpp \
-           src/dialogs/repodialogusermanager.cpp \
-           src/dialogs/repodialoguser.cpp \
-           src/primitives/repocomboboxeditor.cpp \
-           src/primitives/repocomboboxdelegate.cpp \
-           src/dialogs/repodialogsettings.cpp \
-           src/widgets/repowidgetassimpflags.cpp \
-           src/reposettings.cpp \
-           src/widgets/repofilterabletreewidget.cpp \
-           src/widgets/reposelectiontreedockwidget.cpp \
+SOURCES +=  src/main.cpp\
+            src/repogui.cpp \
+            src/primitives/repo_fontawesome.cpp \
+            src/dialogs/repo_dialogconnect.cpp \
+            src/dialogs/repo_dialogcommit.cpp \
+            src/dialogs/repo_dialoghistory.cpp \
+            src/widgets/repo_widgetrepository.cpp \
+            src/widgets/repo_lineedit.cpp \
+            src/widgets/repo_textbrowser.cpp \
+            src/widgets/repo_mdiarea.cpp \
+            src/widgets/repo_mdisubwindow.cpp \
+            src/renderers/repo_glcwidget.cpp \
+            src/workers/repo_workerdatabases.cpp \
+            src/workers/repo_worker_abstract.cpp \
+            src/workers/repo_workercommit.cpp \
+            src/workers/repo_workercollection.cpp \
+            src/workers/repo_worker_assimp.cpp \
+            src/workers/repo_workerfetchrevision.cpp \
+            src/workers/repo_workerhistory.cpp \
+            src/workers/repo_workerusers.cpp \
+            src/primitives/repo_sortfilterproxymodel.cpp \
+            src/primitives/repo_glccamera.cpp \
+            src/conversion/repo_transcoder_assimp.cpp \
+            src/conversion/repo_transcoder_graph_scene.cpp \
+            src/conversion/repo_transcoder_helpers.cpp \
+            src/renderers/repo_oculus.cpp \
+            src/dialogs/repodialogoculus.cpp \
+            src/dialogs/repodialogusermanager.cpp \
+            src/dialogs/repodialoguser.cpp \
+            src/primitives/repocomboboxeditor.cpp \
+            src/primitives/repocomboboxdelegate.cpp \
+            src/dialogs/repodialogsettings.cpp \
+            src/widgets/repowidgetassimpflags.cpp \
+            src/reposettings.cpp \
+            src/widgets/repofilterabletreewidget.cpp \
+            src/widgets/reposelectiontreedockwidget.cpp \
             src/primitives/repo_color.cpp \
             src/renderers/repooculustexturerenderer.cpp \
             src/renderers/repo_webview.cpp \
             src/dialogs/repodialogabout.cpp \
             src/dialogs/repoabstractmanagerdialog.cpp \
             src/dialogs/repoprojectmanagerdialog.cpp \
-    src/workers/repoworkerprojectsettings.cpp \
-    src/dialogs/repoprojectsettingsdialog.cpp \
-    src/widgets/repo_clickabletreeview.cpp
+            src/workers/repoworkerprojectsettings.cpp \
+            src/dialogs/repoprojectsettingsdialog.cpp \
+            src/widgets/repo_clickabletreeview.cpp \
+            src/dialogs/repofederationdialog.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -137,7 +139,8 @@ FORMS    += forms/repogui.ui \
             forms/repo_webview.ui \
             forms/repodialogabout.ui \
             forms/repoabstractmanagerdialog.ui \
-            forms/repoprojectsettingsdialog.ui
+            forms/repoprojectsettingsdialog.ui \
+            forms/repofederationdialog.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

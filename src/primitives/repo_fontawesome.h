@@ -32,6 +32,8 @@
 #include <QDebug>
 #include <QFile>
 #include <QFontDatabase>
+#include <QApplication>
+#include <QStyle>
 //------------------------------------------------------------------------------
 #include <iostream>
 
@@ -79,7 +81,7 @@ public:
 
     //! Returns pre-defined server icon.
     static QIcon getHostIcon()
-    { return getIconStatic(fa_laptop); }
+    { return QApplication::style()->standardIcon(QStyle::SP_ComputerIcon); } // getIconStatic(fa_laptop); }
 
     //! Returns pre-defined branch icon.
     static QIcon getBranchIcon()
@@ -87,7 +89,7 @@ public:
 
     //! Returns pre-defined database icon.
     static QIcon getDatabaseIcon()
-    { return getIconStatic(fa_database); }
+    { return QApplication::style()->standardIcon(QStyle::SP_DriveHDIcon); } // getIconStatic(fa_database); }
 
     //! Returns pre-defined project icon.
     static QIcon getProjectIcon()
