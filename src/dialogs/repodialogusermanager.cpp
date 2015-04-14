@@ -220,7 +220,7 @@ void repo::gui::RepoDialogUserManager::removeItem()
         QString::null, 1, 1))
         {
             case 0: // yes
-                refresh(user.dropUser());
+                refresh(user.drop());
                 break;
             case 1: // no
                 std::cout << tr("Remove user warning box cancelled by user.").toStdString() << std::endl;

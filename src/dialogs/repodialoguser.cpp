@@ -443,8 +443,8 @@ repo::core::RepoBSON repo::gui::RepoDialogUser::getCommand() const
                 avatar);
 
     return newUser.getUsername() != user.getUsername()
-            ? newUser.createUser()
-            : newUser.updateUser();
+            ? newUser.create()
+            : newUser.update();
 }
 
 void repo::gui::RepoDialogUser::setAvatar(const core::RepoImage &image)
