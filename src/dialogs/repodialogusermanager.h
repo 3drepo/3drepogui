@@ -25,6 +25,8 @@
 #include <QSortFilterProxyModel>
 #include <QThreadPool>
 #include <QItemSelection>
+#include <QMessageBox>
+
 //------------------------------------------------------------------------------
 // Core
 #include <RepoWrapperMongo>
@@ -34,17 +36,15 @@
 // GUI
 #include "../workers/repo_workerusers.h"
 #include "repodialoguser.h"
-
-namespace Ui {
-    class RepoDialogUserManager;
-}
+#include "repoabstractmanagerdialog.h"
+#include "../primitives/repoidbcache.h"
 
 Q_DECLARE_METATYPE(repo::core::RepoUser)
 
 namespace repo {
 namespace gui {
 
-class RepoDialogUserManager : public QDialog
+class RepoDialogUserManager : public RepoAbstractManagerDialog
 {
     Q_OBJECT
 
@@ -53,26 +53,12 @@ class RepoDialogUserManager : public QDialog
 public:
 
     explicit RepoDialogUserManager(
-            const core::MongoClientWrapper &mongo,
-            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
+            const RepoIDBCache *dbCache,
             QWidget *parent = 0);
+
     ~RepoDialogUserManager();
 
-    //! Clears the users model.
-    void clearUsersModel();
-
-    //! Returns icon associated with this dialog.
-    static QIcon getIcon();
-
-signals :
-
-    //! Emitted whenever running threads are to be cancelled.
-    void cancel();
-
 public slots:
-
-    //! Called when loading is finished.
-    void finish();
 
     //! Adds a fresh list of custom roles.
     void addCustomRoles(const std::list<std::string> &);
@@ -83,17 +69,11 @@ public slots:
     //! Adds user to the list of users.
     void addUser(const core::RepoUser &user);
 
-    //! Cancels all running threads and waits for their completion.
-    bool cancelAllThreads();
-
-    //! Forces refresh.
-    int exec();
-
     //! Updates selected user.
-    void editUser();
+    void edit();
 
     //! Updates user based on model index.
-    void editUser(const QModelIndex &index);
+    void edit(const QModelIndex &index);
 
     //! Returns a currently selected user if any.
     core::RepoUser getUser();
@@ -107,21 +87,11 @@ public slots:
     //! Drops user from the database.
     void removeItem();
 
-    //! Selects the data from the given item.
-    void select(const QItemSelection &, const QItemSelection &);
+    //! Shows the user dialog and saves edits to the database.
+    void showEditDialog() {  showEditDialog(core::RepoUser()); }
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog(const core::RepoUser &user = core::RepoUser());
-
-    //! Sets the number of users shown in the "Showing x of y" label.
-    void updateCountLabel() const;
-
-private :
-
-    QStandardItem *createItem(const QString &);
-
-    QStandardItem *createItem(const QVariant &);
-
+    void showEditDialog(const core::RepoUser &user);
 
 private:
 
@@ -130,24 +100,6 @@ private:
 
     //! Mapping of databases to their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;
-
-    //! Model of the users table.
-    QStandardItemModel *model;
-
-    //! Proxy model for users table to enable filtering.
-    QSortFilterProxyModel *proxy;
-
-    //! Threadpool for this object only.
-    QThreadPool threadPool;
-
-    //! Mongo connector.
-    core::MongoClientWrapper mongo;
-
-    //! Database the users are being set on.
-    std::string database;
-
-    //! Ui var.
-    Ui::RepoDialogUserManager *ui;
 };
 
 } // end namespace gui

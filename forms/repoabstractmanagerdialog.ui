@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoDialogUserManager</class>
- <widget class="QDialog" name="RepoDialogUserManager">
+ <class>RepoAbstractManagerDialog</class>
+ <widget class="QDialog" name="RepoAbstractManagerDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>542</width>
+    <width>555</width>
     <height>417</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>User Manager</string>
+   <string>Manager</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -72,7 +72,10 @@
           <widget class="repo::gui::RepoLineEdit" name="filterLineEdit"/>
          </item>
          <item>
-          <widget class="QTreeView" name="treeView">
+          <widget class="repo::gui::RepoClickableTreeView" name="treeView">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -254,13 +257,18 @@
    <extends>QLineEdit</extends>
    <header>../widgets/repo_lineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoClickableTreeView</class>
+   <extends>QTreeView</extends>
+   <header>../widgets/repo_clickabletreeview.h</header>
+  </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoDialogUserManager</receiver>
+   <receiver>RepoAbstractManagerDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -276,7 +284,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoDialogUserManager</receiver>
+   <receiver>RepoAbstractManagerDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

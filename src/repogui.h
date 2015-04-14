@@ -121,6 +121,9 @@ public slots:
     //! Opens user management dialog box.
     void openUserManager() const;
 
+    //! Opens project management dialog box.
+    void openProjectManager() const;
+
     void optimizeGraph();
 
     //! Refreshes currently connected database.

@@ -41,6 +41,7 @@
 #include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
+#include "dialogs/repoprojectmanagerdialog.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
@@ -50,7 +51,7 @@
 #include "renderers/repooculustexturerenderer.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
-
+#include "dialogs/repoabstractmanagerdialog.h"
 
 //------------------------------------------------------------------------------
 
@@ -148,6 +149,15 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
     //--------------------------------------------------------------------------
+    // User Management...
+    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
+    ui->actionUserManager->setIcon(RepoFontAwesome::getUserManagerIcon());
+
+    // Project Manager...
+    QObject::connect(ui->actionProject_Manager, SIGNAL(triggered()), this,
+                     SLOT(openProjectManager()));
+
+    //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
@@ -187,9 +197,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     // Tools
     //
     //--------------------------------------------------------------------------
-    // User Management...
-    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
-    ui->actionUserManager->setIcon(RepoDialogUserManager::getIcon());
 
     // Metadata Management...
     QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
@@ -754,9 +761,15 @@ void repo::gui::RepoGUI::openSupportEmail() const
 
 void repo::gui::RepoGUI::openUserManager() const
 {
-    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    RepoDialogUserManager um(mongo, mongo.ADMIN_DATABASE, (QWidget*) this);
+//    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+    RepoDialogUserManager um(ui->widgetRepository, (QWidget*) this);
     um.exec();
+}
+
+void repo::gui::RepoGUI::openProjectManager() const
+{
+    RepoProjectManagerDialog pm(ui->widgetRepository, (QWidget*) this);
+    pm.exec();
 }
 
 void repo::gui::RepoGUI::refresh()

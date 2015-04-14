@@ -54,6 +54,9 @@
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
     <addaction name="separator"/>
+    <addaction name="actionUserManager"/>
+    <addaction name="actionProject_Manager"/>
+    <addaction name="separator"/>
     <addaction name="actionDrop"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -94,9 +97,6 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionUserManager"/>
-    <addaction name="actionProject_Manager"/>
-    <addaction name="separator"/>
     <addaction name="actionMetadataManager"/>
     <addaction name="actionOptimize_Graph"/>
     <addaction name="separator"/>
@@ -490,6 +490,19 @@
   <action name="actionProject_Manager">
    <property name="text">
     <string>Project Manager...</string>
+   </property>
+  </action>
+  <action name="actionNew_User">
+   <property name="text">
+    <string>New User...</string>
+   </property>
+  </action>
+  <action name="actionNew_Project">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>New Project...</string>
    </property>
   </action>
  </widget>
