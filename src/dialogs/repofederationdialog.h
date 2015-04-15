@@ -50,9 +50,15 @@ public slots :
 
     void addAvailableProject(const QString &);
 
+    void addProjectsToFederation();
+
     int exec();
 
     void refresh();
+
+    void refreshCache() { dbCache->refresh(); }
+
+    void removeProjectsFromFederation();
 
 private:
 

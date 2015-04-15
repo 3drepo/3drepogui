@@ -26,14 +26,14 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     ui->setupUi(this);
     //--------------------------------------------------------------------------
 	// Set database model and create headers
-	databasesModel = new QStandardItemModel(this); 
+    databasesModel = new QStandardItemModel((QWidget*)this);
     databasesModel->setColumnCount(4);
 	databasesModel->setHeaderData(RepoDatabasesColumns::NAME, Qt::Horizontal, QObject::tr("Name"));
 	databasesModel->setHeaderData(RepoDatabasesColumns::COUNT, Qt::Horizontal, QObject::tr("Count"));
 	databasesModel->setHeaderData(RepoDatabasesColumns::SIZE, Qt::Horizontal, QObject::tr("Size"));
     databasesModel->setHeaderData(RepoDatabasesColumns::ALLOCATED, Qt::Horizontal, QObject::tr("Allocated"));
 
-	databasesProxyModel = new RepoSortFilterProxyModel(this, false);
+    databasesProxyModel = new RepoSortFilterProxyModel((QWidget*)this, false);
 	enableFiltering(
         ui->databasesTreeView,
 		databasesModel, 
@@ -43,13 +43,13 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
     //--------------------------------------------------------------------------
 	// Set collection model and create headers
-	collectionModel = new QStandardItemModel(this); 
+    collectionModel = new QStandardItemModel((QWidget*)this);
 	collectionModel->setColumnCount(3);
 	collectionModel->setHeaderData(RepoCollectionColumns::DOCUMENT, Qt::Horizontal, QObject::tr("Document"));
 	collectionModel->setHeaderData(RepoCollectionColumns::VALUE, Qt::Horizontal, QObject::tr("Value"));
 	collectionModel->setHeaderData(RepoCollectionColumns::TYPE, Qt::Horizontal, QObject::tr("Type"));
 
-	collectionProxyModel = new RepoSortFilterProxyModel(this, true);
+    collectionProxyModel = new RepoSortFilterProxyModel((QWidget*)this, true);
 	enableFiltering(
         ui->collectionTreeView,
 		collectionModel, 
@@ -138,11 +138,16 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
     QList<QStandardItem *> databaseItems = databasesModel->findItems(database, Qt::MatchRecursive | Qt::MatchExactly);
     if (databaseItems.size() > 0 && databaseItems[0])
     {
-       QStandardItem *databaseItem = databaseItems[0];
-       for (int i = 0; i < databaseItem->rowCount(); ++i)
-       {
-           projects << databaseItem->child(i, 0)->text();
-       }
+        QStandardItem *databaseItem = databaseItems[0];
+        for (int i = 0; i < databaseItem->rowCount(); ++i)
+        {
+            QString collection = databaseItem->child(i, 0)->text();
+            int index = collection.lastIndexOf(QString(".") + REPO_COLLECTION_SCENE);
+            if (index >= 0)
+            {
+                projects << collection.left(index);
+            }
+        }
     }
     return projects.toList();
 }

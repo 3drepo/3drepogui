@@ -37,7 +37,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTreeView" name="treeView">
+    <widget class="repo::gui::RepoClickableTreeView" name="treeView">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -78,6 +78,11 @@
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
    <header>../widgets/repo_lineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::RepoClickableTreeView</class>
+   <extends>QTreeView</extends>
+   <header>../widgets/repo_clickabletreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

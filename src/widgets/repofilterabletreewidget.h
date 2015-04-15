@@ -24,6 +24,7 @@
 #include <QSortFilterProxyModel>
 #include <QProgressBar>
 #include <QAbstractItemView>
+#include <QTreeView>
 
 namespace Ui {
     class RepoFilterableTreeWidget;
@@ -60,22 +61,38 @@ public slots:
     void addTopLevelRow(QStandardItem* item)
     { model->invisibleRootItem()->appendRow(item); }
 
+    void expandTopLevelItems();
+
     void clear();
 
 public:
 
+    //--------------------------------------------------------------------------
+    //
+    // Getters
+    //
+    //--------------------------------------------------------------------------
+
+    QFont getTreeFont() const;
+
     //! Returns standard item model of the tree view
-    QStandardItemModel* getModel() const
+    QStandardItemModel *getModel() const
     { return model; }
 
     //! Returns filter proxy model of the tree view.
-    QSortFilterProxyModel* getProxyModel() const
+    QSortFilterProxyModel *getProxyModel() const
     { return proxy; }
 
     //! Returns progress bar.
-    QProgressBar* getProgressBar() const;
+    QProgressBar *getProgressBar() const;
 
-    QItemSelectionModel* getSelectionModel() const;
+    QItemSelectionModel *getSelectionModel() const;
+
+    //--------------------------------------------------------------------------
+    //
+    // Setters
+    //
+    //--------------------------------------------------------------------------
 
     //! Sets the headers on this model.
     void setHeaders(const QList<QString>& headers);
@@ -130,6 +147,21 @@ public:
     //! Items cannot be selected.
     void setNoSelection()
     { setSelectionMode(QAbstractItemView::NoSelection); }
+
+    void setRootIsDecorated(bool on);
+
+    //--------------------------------------------------------------------------
+    //
+    // Static helpers
+    //
+    //--------------------------------------------------------------------------
+
+    //! Returns a standard item.
+    static QStandardItem *createItem(
+            const QString& text,
+            const QVariant& data = QVariant(),
+            Qt::Alignment alignment = Qt::AlignLeft,
+            bool enabled = true);
 
 private:
 

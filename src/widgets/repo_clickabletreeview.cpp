@@ -50,3 +50,9 @@ void repo::gui::RepoClickableTreeView::mouseDoubleClickEvent(QMouseEvent *e)
         emit doubleClicked(QModelIndex());
     }
 }
+
+QFont repo::gui::RepoClickableTreeView::getFont() const
+{
+    QStyleOptionViewItem options = viewOptions();
+    return options.font;
+}

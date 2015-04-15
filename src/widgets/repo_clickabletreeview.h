@@ -48,6 +48,11 @@ public slots:
 
     void resetDoubleClickMutex();
 
+public :
+
+    //! Returns font of the tree view.
+    QFont getFont() const;
+
 protected :
 
     virtual void mouseDoubleClickEvent(QMouseEvent*);

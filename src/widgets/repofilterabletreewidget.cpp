@@ -64,10 +64,20 @@ void repo::gui::RepoFilterableTreeWidget::setExpandedUI()
     ui->treeView->setLineWidth(1);
 }
 
+void repo::gui::RepoFilterableTreeWidget::expandTopLevelItems()
+{
+    ui->treeView->expandToDepth(1);
+}
+
 void repo::gui::RepoFilterableTreeWidget::clear()
 {
     model->removeRows(0, model->rowCount());
     ui->lineEdit->clear();
+}
+
+QFont repo::gui::RepoFilterableTreeWidget::getTreeFont() const
+{
+    return ui->treeView->getFont();
 }
 
 QProgressBar* repo::gui::RepoFilterableTreeWidget::getProgressBar() const
@@ -109,4 +119,24 @@ void repo::gui::RepoFilterableTreeWidget::setProxyModel(QSortFilterProxyModel* p
 void repo::gui::RepoFilterableTreeWidget::setSelectionMode(QAbstractItemView::SelectionMode mode)
 {
     ui->treeView->setSelectionMode(mode);
+}
+
+void repo::gui::RepoFilterableTreeWidget::setRootIsDecorated(bool on)
+{
+    ui->treeView->setRootIsDecorated(on);
+}
+
+QStandardItem *repo::gui::RepoFilterableTreeWidget::createItem(
+    const QString& text,
+    const QVariant& data,
+    Qt::Alignment alignment,
+    bool enabled)
+{
+    QStandardItem* item = new QStandardItem(text);
+    item->setData(data);
+    item->setEditable(false);
+    item->setTextAlignment(alignment);
+    item->setEnabled(enabled);
+    item->setToolTip(text);
+    return item;
 }

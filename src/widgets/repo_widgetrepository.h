@@ -61,7 +61,7 @@ class RepoWidgetRepository : public QWidget, public RepoIDBCache
 public :
 
 	//! Constructor
-	RepoWidgetRepository(QWidget* parent = 0);
+    explicit RepoWidgetRepository(QWidget* parent = 0);
 
 	//! Desctructor, removes the custom title bar widget.
 	~RepoWidgetRepository();

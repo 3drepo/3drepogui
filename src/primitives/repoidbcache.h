@@ -48,6 +48,8 @@ public:
             const QString &host,
             const QString &database) const = 0;
 
+public :
+
     //! Returns connection corresponding to given host.
     virtual core::MongoClientWrapper getConnection(const QString &host) const = 0;
 
@@ -81,36 +83,16 @@ public:
 
 public :
 
-    virtual void setHostsComboBox(QComboBox *comboBox) const
-    {
-        setComboBox(comboBox,
-                    RepoFontAwesome::getHostIcon(),
-                    getHosts(),
-                    getSelectedHost());
-    }
+    virtual void setHostsComboBox(QComboBox *comboBox) const;
 
-    virtual void setDatabasesComboBox(QComboBox *comboBox) const
-    {
-        setComboBox(comboBox,
-                    RepoFontAwesome::getDatabaseIcon(),
-                    getDatabases(getSelectedHost()),
-                    getSelectedDatabase());
-    }
+    virtual void setDatabasesComboBox(QComboBox *comboBox) const;
 
     //! Populates given combo box with given items.
     virtual void setComboBox(
             QComboBox *comboBox,
             const QIcon &icon,
             const QList<QString> &list,
-            const QString selected) const
-    {
-        for (int i = 0; i < list.size(); ++i)
-        {
-            comboBox->addItem(icon, list[i]);
-            if (selected == list[i])
-                comboBox->setCurrentIndex(i);
-        }
-    }
+            const QString selected) const;
 
 };
 

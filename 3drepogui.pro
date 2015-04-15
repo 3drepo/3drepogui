@@ -123,7 +123,8 @@ SOURCES +=  src/main.cpp\
             src/workers/repoworkerprojectsettings.cpp \
             src/dialogs/repoprojectsettingsdialog.cpp \
             src/widgets/repo_clickabletreeview.cpp \
-            src/dialogs/repofederationdialog.cpp
+            src/dialogs/repofederationdialog.cpp \
+    src/primitives/repoidbcache.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
