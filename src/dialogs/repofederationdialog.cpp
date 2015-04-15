@@ -46,7 +46,6 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
 
 
     QStandardItem* item = RepoFilterableTreeWidget::createItem("<root>");
-    item->setEnabled(false);
     ui->federatedWidget->addTopLevelRow(item);
 
     //--------------------------------------------------------------------------
@@ -126,6 +125,9 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
             row << RepoFilterableTreeWidget::createItem(selectedIndex.data().toString());
             row << RepoFilterableTreeWidget::createItem("master");
             row << RepoFilterableTreeWidget::createItem("head");
+
+
+
             ui->federatedWidget->getModel()->invisibleRootItem()->child(0)->appendRow(row);
             ui->federatedWidget->expandTopLevelItems();
         }
