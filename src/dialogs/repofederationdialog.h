@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QStandardItem>
 #include <QModelIndexList>
+#include <QDialogButtonBox>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -69,6 +70,7 @@ public slots :
     QStandardItem *getCurrentFederatedItem() const;
 
     QModelIndexList getAvailableSelection() const;
+
     QModelIndexList getFederatedSelection() const;
 
 private:

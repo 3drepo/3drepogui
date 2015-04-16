@@ -20,6 +20,7 @@
 #include "ui_repofederationdialog.h"
 
 #include "../primitives/repo_fontawesome.h"
+#include "../primitives/repocomboboxdelegate.h"
 
 const QString repo::gui::RepoFederationDialog::ROOT_STRING = "<root>";
 
@@ -39,6 +40,8 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     ui->federatedWidget->setExpandedUI();
     ui->federatedWidget->setExtendedSelection();
     ui->federatedWidget->setRootIsDecorated(true);
+
+    ui->buttonBox->button(QDialogButtonBox::StandardButton::Ok)->setText(tr("Next"));
 
     //--------------------------------------------------------------------------
 
@@ -118,9 +121,10 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
             QList<QStandardItem*> row;
             row << RepoFilterableTreeWidget::createItem(selectedIndex.data().toString());
             row << RepoFilterableTreeWidget::createItem("master");
+            row[1]->setEditable(true);
             row << RepoFilterableTreeWidget::createItem("head");
+            row[2]->setEditable(true);
             item->appendRow(row);
-
         }
         ui->federatedWidget->expandItem(item);
     }

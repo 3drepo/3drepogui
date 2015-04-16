@@ -32,10 +32,10 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
     const QString &database,
     const QString &project,
     const QString &branch,
-    const core::RepoGraphAbstract *scene,
+    const core::RepoNodeAbstractSet &nodes,
     core::RepoNodeRevision *revision)
 	: QDialog(parent, flags)
-	, scene(scene)
+    , nodes(nodes)
 	, revision(revision)
     , ui(new Ui::RepoDialogCommit)
 {
@@ -45,11 +45,11 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
 	//this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
 	model = new QStandardItemModel(0, 5, this); // 0 row, 5 cols 
-    model->setHeaderData(0, Qt::Horizontal, tr("Name"));
-    model->setHeaderData(1, Qt::Horizontal, tr("Type"));
-    model->setHeaderData(2, Qt::Horizontal, tr("Status"));
-    model->setHeaderData(3, Qt::Horizontal, tr("Unique ID"));
-    model->setHeaderData(4, Qt::Horizontal, tr("Shared ID"));
+    model->setHeaderData(Columns::NAME, Qt::Horizontal, tr("Name"));
+    model->setHeaderData(Columns::TYPE, Qt::Horizontal, tr("Type"));
+    model->setHeaderData(Columns::STATUS, Qt::Horizontal, tr("Status"));
+    model->setHeaderData(Columns::UID, Qt::Horizontal, tr("Unique ID"));
+    model->setHeaderData(Columns::SID, Qt::Horizontal, tr("Shared ID"));
 	
     //--------------------------------------------------------------------------
 	proxyModel = new QSortFilterProxyModel(this);
@@ -138,9 +138,7 @@ int repo::gui::RepoDialogCommit::exec()
 //------------------------------------------------------------------------------
 void repo::gui::RepoDialogCommit::setModifiedObjects()
 {	
-    std::set<repo::core::RepoNodeAbstract*> modifiedObjects;
-    if (scene)
-        modifiedObjects = scene->getNodes();
+    core::RepoNodeAbstractSet modifiedObjects = nodes;
 
     //--------------------------------------------------------------------------
 	// Number of changes
@@ -154,20 +152,28 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 	QList<QStandardItem *> row;
 	QStandardItem *item;
 
-    std::set<repo::core::RepoNodeAbstract *>::const_iterator it;
-
+    core::RepoNodeAbstractSet::const_iterator it;
     for (it = modifiedObjects.begin(); it != modifiedObjects.end(); ++it)
     {
         core::RepoNodeAbstract *node = *it;
 		row.clear();
+
+        QVariant var;
+        var.setValue(node);
+
         //----------------------------------------------------------------------
 		// Name
 		item = new QStandardItem(QString::fromStdString(node->getName()));
+        item->setData(var);
 		item->setCheckable(true);
 		item->setCheckState(Qt::Checked);
 		item->setTristate(false);
 		item->setEditable(false);
 		row.append(item);
+
+        std::string type = node->getType();
+        if (type == REPO_NODE_TYPE_METADATA)
+            item->setIcon(RepoFontAwesome::getMetadataIcon());
 
         //----------------------------------------------------------------------
 		// Type		
@@ -210,6 +216,19 @@ QString repo::gui::RepoDialogCommit::getCurrentDatabaseName() const
 QString repo::gui::RepoDialogCommit::getCurrentProjectName() const
 {
     return ui->projectComboBox->currentText();
+}
+
+
+repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() const
+{
+    core::RepoNodeAbstractSet nodes;
+    for (int i = 0; i < model->rowCount(); ++i)
+    {
+        QStandardItem *item = model->invisibleRootItem()->child(i,Columns::NAME);
+        if (item->checkState() != Qt::CheckState::Unchecked)
+            nodes.insert(item->data().value<core::RepoNodeAbstract*>());
+    }
+    return nodes;
 }
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const

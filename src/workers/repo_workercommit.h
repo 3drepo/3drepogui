@@ -45,8 +45,8 @@ public :
         const core::MongoClientWrapper &mongo,
         const QString &database,
         const QString& project,
-        const core::RepoGraphHistory *history,
-        const core::RepoGraphScene *scene);
+        const core::RepoNodeRevision *revision,
+        const core::RepoNodeAbstractSet &nodes);
 
     //! Destructor
 	~RepoWorkerCommit();
@@ -74,19 +74,19 @@ public :
 private :
 
 	//! Name of the database to commit to.
-    const QString database;
+    const std::string database;
 
     //! Name of the project to commit to.
-    const QString project;
+    const std::string project;
 
     /*!
      * Revision history to be committed. This is commited first in case of
      * a connection loss.
      */
-    const core::RepoGraphHistory *history;
+    const core::RepoNodeRevision *revision;
 	
-	//! Scene to be committed.
-    const core::RepoGraphScene *scene;
+    //! Nodes to be committed.
+    core::RepoNodeAbstractSet nodes;
 	
 	//! MongoDB connection to commit to.
     core::MongoClientWrapper mongo;

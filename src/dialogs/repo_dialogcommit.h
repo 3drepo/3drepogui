@@ -31,6 +31,7 @@
 #include <RepoWrapperMongo>
 #include <RepoGraphAbstract>
 #include <RepoNodeRevision>
+#include <RepoNodeAbstract>
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
@@ -44,6 +45,8 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
+Q_DECLARE_METATYPE(repo::core::RepoNodeAbstract*)
+
 /*!
  * Commit dialog which enables users to confirm those nodes that are to be 
  * committed to the repository. The dialog modifies the "revision" object 
@@ -52,6 +55,8 @@ namespace gui {
 class RepoDialogCommit : public QDialog
 {
 	Q_OBJECT
+
+    enum Columns { NAME, TYPE, STATUS, UID, SID };
 
 public:
 
@@ -66,14 +71,13 @@ public:
 	 * scene graph nodes to be commited. Use Qt::Window for flag to enable
 	 * dialog to have minimize/maximize buttons.
 	 */
-	RepoDialogCommit(
-        const core::MongoClientWrapper& server,
+    RepoDialogCommit(const core::MongoClientWrapper& server,
         QWidget* parent = 0,
         Qt::WindowFlags flags = 0,
-        const QString &database = "",
-        const QString& project = "",
-        const QString &branch = "",
-        const core::RepoGraphAbstract *scene = 0,
+        const QString &database = QString(),
+        const QString &project = QString(),
+        const QString &branch = QString(),
+        const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
         core::RepoNodeRevision *revision = 0);
 
     //--------------------------------------------------------------------------
@@ -94,6 +98,8 @@ public:
     QString getCurrentDatabaseName() const;
 
     QString getCurrentProjectName() const;
+
+    core::RepoNodeAbstractSet getNodesToCommit() const;
 
 public slots:
 
@@ -120,7 +126,7 @@ private:
 	repo::core::RepoNodeRevision *revision;
 
 	//! Scene from which the nodes to be committed come (based on info from revision object).
-	const repo::core::RepoGraphAbstract *scene;
+    core::RepoNodeAbstractSet nodes;
 
 	//! Data model to list commit table.
 	QStandardItemModel *model;

@@ -106,6 +106,9 @@ public:
     static QIcon getUserManagerIcon()
     { return getIconStatic(fa_users); }
 
+    static QIcon getMetadataIcon()
+    { return QApplication::style()->standardIcon(QStyle::SP_FileIcon); }
+
     //--------------------------------------------------------------------------
 
 	QIcon getIcon(int iconOn);
