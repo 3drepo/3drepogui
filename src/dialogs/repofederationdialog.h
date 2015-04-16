@@ -22,6 +22,8 @@
 //------------------------------------------------------------------------------
 // Qt
 #include <QDialog>
+#include <QStandardItem>
+#include <QModelIndexList>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -38,6 +40,8 @@ class RepoFederationDialog : public QDialog
 {
     Q_OBJECT
 
+    enum Columns { PROJECT = 0, BRANCH = 1, REVISION = 2 };
+
 public:
 
     explicit RepoFederationDialog(
@@ -45,6 +49,8 @@ public:
             QWidget *parent = 0);
 
     ~RepoFederationDialog();
+
+    static const QString ROOT_STRING;
 
 public slots :
 
@@ -59,6 +65,11 @@ public slots :
     void refreshCache() { dbCache->refresh(); }
 
     void removeProjectsFromFederation();
+
+    QStandardItem *getCurrentFederatedItem() const;
+
+    QModelIndexList getAvailableSelection() const;
+    QModelIndexList getFederatedSelection() const;
 
 private:
 

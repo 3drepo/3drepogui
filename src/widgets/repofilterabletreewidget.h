@@ -61,7 +61,11 @@ public slots:
     void addTopLevelRow(QStandardItem* item)
     { model->invisibleRootItem()->appendRow(item); }
 
-    void expandTopLevelItems();
+    void expandTopLevelItems() const;
+
+    void expandItem(const QStandardItem *item) const;
+
+    void selectRow(const QStandardItem *item) const;
 
     void clear();
 
@@ -87,6 +91,10 @@ public:
     QProgressBar *getProgressBar() const;
 
     QItemSelectionModel *getSelectionModel() const;
+
+    QModelIndexList getCurrentSelection() const;
+
+    QTreeView *getTreeView() const;
 
     //--------------------------------------------------------------------------
     //

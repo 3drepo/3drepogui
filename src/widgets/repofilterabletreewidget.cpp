@@ -64,9 +64,14 @@ void repo::gui::RepoFilterableTreeWidget::setExpandedUI()
     ui->treeView->setLineWidth(1);
 }
 
-void repo::gui::RepoFilterableTreeWidget::expandTopLevelItems()
+void repo::gui::RepoFilterableTreeWidget::expandTopLevelItems() const
 {
     ui->treeView->expandToDepth(1);
+}
+
+void repo::gui::RepoFilterableTreeWidget::expandItem(const QStandardItem *item) const
+{
+    ui->treeView->expand(proxy->mapFromSource(model->indexFromItem(item)));
 }
 
 void repo::gui::RepoFilterableTreeWidget::clear()
@@ -74,6 +79,14 @@ void repo::gui::RepoFilterableTreeWidget::clear()
     model->removeRows(0, model->rowCount());
     ui->lineEdit->clear();
 }
+
+void repo::gui::RepoFilterableTreeWidget::selectRow(const QStandardItem *item) const
+{
+    getSelectionModel()->setCurrentIndex(proxy->mapFromSource(model->indexFromItem(item)),
+                                         QItemSelectionModel::Select | QItemSelectionModel::Rows);
+}
+
+//------------------------------------------------------------------------------
 
 QFont repo::gui::RepoFilterableTreeWidget::getTreeFont() const
 {
@@ -90,11 +103,21 @@ QItemSelectionModel* repo::gui::RepoFilterableTreeWidget::getSelectionModel() co
     return ui->treeView->selectionModel();
 }
 
+QModelIndexList repo::gui::RepoFilterableTreeWidget::getCurrentSelection() const
+{
+    return getProxyModel()->mapSelectionToSource(getSelectionModel()->selection()).indexes();
+}
+
 void repo::gui::RepoFilterableTreeWidget::setHeaders(const QList<QString>& headers)
 {
     model->setColumnCount(headers.size());
     for (int i = 0; i < headers.size(); ++i)
         model->setHeaderData(i, Qt::Horizontal, headers[i]);
+}
+
+QTreeView * repo::gui::RepoFilterableTreeWidget::getTreeView() const
+{
+    return ui->treeView;
 }
 
 void repo::gui::RepoFilterableTreeWidget::setProxyModel(QSortFilterProxyModel* proxy)

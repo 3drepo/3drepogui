@@ -21,6 +21,8 @@
 
 #include "../primitives/repo_fontawesome.h"
 
+const QString repo::gui::RepoFederationDialog::ROOT_STRING = "<root>";
+
 repo::gui::RepoFederationDialog::RepoFederationDialog(
         RepoIDBCache *dbCache,
         QWidget *parent)
@@ -32,21 +34,16 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     ui->setupUi(this);
     ui->availableWidget->setExpandedUI();
     ui->availableWidget->setExtendedSelection();
-    ui->availableWidget->setRootIsDecorated(false);
+    ui->availableWidget->setRootIsDecorated(true);
 
     ui->federatedWidget->setExpandedUI();
     ui->federatedWidget->setExtendedSelection();
-    ui->federatedWidget->setRootIsDecorated(false);
+    ui->federatedWidget->setRootIsDecorated(true);
 
     //--------------------------------------------------------------------------
 
     dbCache->setHostsComboBox(ui->hostComboBox);
     dbCache->setDatabasesComboBox(ui->databaseComboBox);
-
-
-
-    QStandardItem* item = RepoFilterableTreeWidget::createItem("<root>");
-    ui->federatedWidget->addTopLevelRow(item);
 
     //--------------------------------------------------------------------------
 
@@ -113,24 +110,19 @@ void repo::gui::RepoFederationDialog::addAvailableProject(const QString &project
 
 void repo::gui::RepoFederationDialog::addProjectsToFederation()
 {
-    QItemSelection selection = ui->availableWidget->getProxyModel()->mapSelectionToSource(
-                ui->availableWidget->getSelectionModel()->selection());
-
-    for (QModelIndex selectedIndex : selection.indexes())
+    QStandardItem *item = getCurrentFederatedItem();
+    if (item)
     {
-        QStandardItem *selectedItem = ui->availableWidget->getModel()->item(selectedIndex.row(), selectedIndex.column());
-        if (selectedItem)
+        for (QModelIndex selectedIndex : getAvailableSelection())
         {
             QList<QStandardItem*> row;
             row << RepoFilterableTreeWidget::createItem(selectedIndex.data().toString());
             row << RepoFilterableTreeWidget::createItem("master");
             row << RepoFilterableTreeWidget::createItem("head");
+            item->appendRow(row);
 
-
-
-            ui->federatedWidget->getModel()->invisibleRootItem()->child(0)->appendRow(row);
-            ui->federatedWidget->expandTopLevelItems();
         }
+        ui->federatedWidget->expandItem(item);
     }
 }
 
@@ -154,18 +146,43 @@ void repo::gui::RepoFederationDialog::refresh()
 void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
 {
     QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
-    QModelIndexList selectedIndexes =
-                ui->federatedWidget->getProxyModel()->mapSelectionToSource(
-                ui->federatedWidget->getSelectionModel()->selection()).indexes();
+    QModelIndexList selectedIndexes = getFederatedSelection();
 
-    while (selectedIndexes.size() > 0)
+    while (!selectedIndexes.empty())
     {
         QModelIndex selectedIndex = selectedIndexes[0];
-        federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
-
-        selectedIndexes = ui->federatedWidget->getProxyModel()->mapSelectionToSource(
-                    ui->federatedWidget->getSelectionModel()->selection()).indexes();
+//        if (selectedIndex.data() == ROOT_STRING)
+//            ui->federatedWidget->getSelectionModel()->select(selectedIndex, QItemSelectionModel::Deselect);
+//        else
+            federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        selectedIndexes = getFederatedSelection();
     }
-
 }
 
+
+QStandardItem *repo::gui::RepoFederationDialog::getCurrentFederatedItem() const
+{
+    QModelIndex proxyCurrent = ui->federatedWidget->getSelectionModel()->currentIndex();
+    QStandardItem *item = 0;
+    if (proxyCurrent.isValid())
+    {
+        QModelIndex modelCurrent = ui->federatedWidget->getProxyModel()->mapToSource(proxyCurrent);
+        QModelIndex modelCurrentFirstColumn = modelCurrent.sibling(modelCurrent.row(), Columns::PROJECT);
+        item = ui->federatedWidget->getModel()->itemFromIndex(modelCurrentFirstColumn);
+    }
+    else
+        item = ui->federatedWidget->getModel()->invisibleRootItem();
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+QModelIndexList repo::gui::RepoFederationDialog::getAvailableSelection() const
+{
+    return ui->availableWidget->getCurrentSelection();
+}
+
+QModelIndexList repo::gui::RepoFederationDialog::getFederatedSelection() const
+{
+    return ui->federatedWidget->getCurrentSelection();
+}
