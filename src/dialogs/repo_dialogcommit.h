@@ -36,6 +36,7 @@
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
 #include "../widgets/repo_lineedit.h"
+#include "../primitives/repoidbcache.h"
 //------------------------------------------------------------------------------
 
 namespace Ui {
@@ -71,11 +72,10 @@ public:
 	 * scene graph nodes to be commited. Use Qt::Window for flag to enable
 	 * dialog to have minimize/maximize buttons.
 	 */
-    RepoDialogCommit(const core::MongoClientWrapper& server,
+    RepoDialogCommit(
         QWidget* parent = 0,
         Qt::WindowFlags flags = 0,
-        const QString &database = QString(),
-        const QString &project = QString(),
+        RepoIDBCache *dbCache = 0,
         const QString &branch = QString(),
         const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
         core::RepoNodeRevision *revision = 0);
@@ -112,6 +112,14 @@ public slots:
 
     void updateCountLabel() const;
 
+    void updateHosts();
+
+    void updateDatabases();
+
+    void updateProjects();
+
+    void updateBranches();
+
 private :
 
     //! Extracts modified objects from the revision and scene to list in change table.
@@ -133,6 +141,8 @@ private:
 
 	//! Proxy model to enable table sorting.
 	QSortFilterProxyModel *proxyModel;
+
+    RepoIDBCache *dbCache;
 };
 
 } // end namespace gui

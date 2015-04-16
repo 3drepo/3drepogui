@@ -59,7 +59,6 @@ public slots :
 	 */
 	void run();
 
-
 public :
 
     /*!

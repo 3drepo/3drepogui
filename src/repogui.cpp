@@ -348,11 +348,9 @@ void repo::gui::RepoGUI::commit()
         history->setCommitRevision(revision);
 
         repo::gui::RepoDialogCommit commitDialog(
-            mongo,
             this,
             Qt::Window,
-            database,
-            project,
+            ui->widgetRepository,
             "master", // TODO: get currently active branch from QSettings
             repoScene->getNodes(),
             revision);
@@ -369,7 +367,7 @@ void repo::gui::RepoGUI::commit()
                         commitDialog.getCurrentDatabaseName(),
                         commitDialog.getCurrentProjectName(),
                         history->getCommitRevision(),
-                        commitDialog.getNodesToCommit()); // TODO: get
+                        commitDialog.getNodesToCommit());
 
             QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
             QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
@@ -382,7 +380,7 @@ void repo::gui::RepoGUI::commit()
     }
     else
     {
-        repo::gui::RepoDialogCommit commitDialog(mongo, this, Qt::Window, database, project, "master");
+        repo::gui::RepoDialogCommit commitDialog(this, Qt::Window, ui->widgetRepository, "master");
         commitDialog.exec();        
     }
 }

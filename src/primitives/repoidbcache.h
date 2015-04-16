@@ -74,6 +74,9 @@ public :
     //! Returns selected host.
     virtual QString getSelectedHost() const = 0;
 
+    //! Returns selected project.
+    virtual QString getSelectedProject() const = 0;
+
 
     //--------------------------------------------------------------------------
     //
@@ -87,12 +90,14 @@ public :
 
     virtual void setDatabasesComboBox(QComboBox *comboBox) const;
 
+    virtual void setProjectsComboBox(QComboBox *comboBox) const;
+
     //! Populates given combo box with given items.
     virtual void setComboBox(
             QComboBox *comboBox,
             const QIcon &icon,
             const QList<QString> &list,
-            const QString selected) const;
+            const QString &selected = QString()) const;
 
 };
 

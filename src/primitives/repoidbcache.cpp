@@ -33,11 +33,19 @@ void repo::gui::RepoIDBCache::setDatabasesComboBox(QComboBox *comboBox) const
                 getSelectedDatabase());
 }
 
+void repo::gui::RepoIDBCache::setProjectsComboBox(QComboBox *comboBox) const
+{
+    setComboBox(comboBox,
+                RepoFontAwesome::getProjectIcon(),
+                getProjects(getSelectedHost(), getSelectedDatabase()),
+                getSelectedProject());
+}
+
 void repo::gui::RepoIDBCache::setComboBox(
         QComboBox *comboBox,
         const QIcon &icon,
         const QList<QString> &list,
-        const QString selected) const
+        const QString &selected) const
 {
     for (int i = 0; i < list.size(); ++i)
     {

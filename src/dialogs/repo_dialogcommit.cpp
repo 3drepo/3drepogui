@@ -26,17 +26,17 @@
 #include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &server,
+repo::gui::RepoDialogCommit::RepoDialogCommit(
     QWidget *parent,
     Qt::WindowFlags flags,
-    const QString &database,
-    const QString &project,
+    RepoIDBCache *dbCache,
     const QString &branch,
     const core::RepoNodeAbstractSet &nodes,
     core::RepoNodeRevision *revision)
 	: QDialog(parent, flags)
     , nodes(nodes)
 	, revision(revision)
+    , dbCache(dbCache)
     , ui(new Ui::RepoDialogCommit)
 {
     ui->setupUi(this);
@@ -79,19 +79,14 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(const core::MongoClientWrapper &se
                 branch);
 
     //--------------------------------------------------------------------------
-    // Add DB connections to selector
-    // TODO: for loop to add multiple servers
-    ui->serverComboBox->addItem(
-                RepoFontAwesome::getHostIcon(),
-                QString::fromStdString(server.getHostAndPort()));
 
-    ui->databaseComboBox->addItem(
-                RepoFontAwesome::getDatabaseIcon(),
-                database);
+    QObject::connect(ui->databaseComboBox,
+                     SIGNAL(currentIndexChanged(const QString &)),
+                     this, SLOT(updateProjects()));
+    QObject::connect(ui->projectComboBox,
+                     SIGNAL(currentIndexChanged(const QString &)),
+                     this, SLOT(updateBranches()));
 
-    ui->projectComboBox->addItem(
-                RepoFontAwesome::getProjectIcon(),
-                project);
 }
 
 //------------------------------------------------------------------------------
@@ -117,10 +112,20 @@ QIcon repo::gui::RepoDialogCommit::getIcon()
 
 //------------------------------------------------------------------------------
 int repo::gui::RepoDialogCommit::exec()
-{
+{    
     //--------------------------------------------------------------------------
 	// Blocking operation
 	this->setCursor(Qt::WaitCursor);
+    // TODO: make into asynchronous worker
+
+    // Cascading updates: change of host triggers change of databases and
+    // that of projects and that of branches.
+    updateHosts();
+
+    // Set the currently selected project instead of the very first one.
+    ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
+    ui->projectComboBox->setCurrentText(dbCache->getSelectedProject());
+
 	setModifiedObjects();
 	this->setCursor(Qt::ArrowCursor);
 
@@ -133,6 +138,46 @@ int repo::gui::RepoDialogCommit::exec()
 		revision->setMessage(getMessage().toStdString());
 	}
 	return result;
+}
+
+void repo::gui::RepoDialogCommit::updateHosts()
+{
+    if (dbCache)
+    {
+        ui->serverComboBox->clear();
+        dbCache->setHostsComboBox(ui->serverComboBox);
+        updateDatabases();
+    }
+}
+
+void repo::gui::RepoDialogCommit::updateDatabases()
+{
+    if (dbCache)
+    {
+        ui->databaseComboBox->clear();
+        dbCache->setComboBox(ui->databaseComboBox,
+                    RepoFontAwesome::getDatabaseIcon(),
+                    dbCache->getDatabases(ui->serverComboBox->currentText()));
+        updateProjects();
+    }
+}
+
+void repo::gui::RepoDialogCommit::updateProjects()
+{
+    if (dbCache)
+    {
+        ui->projectComboBox->clear();
+        dbCache->setComboBox(ui->projectComboBox,
+                    RepoFontAwesome::getProjectIcon(),
+                    dbCache->getProjects(ui->serverComboBox->currentText(),
+                    ui->databaseComboBox->currentText()));
+        updateBranches();
+    }
+}
+
+void repo::gui::RepoDialogCommit::updateBranches()
+{
+    // TODO: load branches depending on the selected project
 }
 
 //------------------------------------------------------------------------------
