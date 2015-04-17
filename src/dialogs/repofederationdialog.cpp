@@ -22,8 +22,6 @@
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repocomboboxdelegate.h"
 
-const QString repo::gui::RepoFederationDialog::ROOT_STRING = "<root>";
-
 repo::gui::RepoFederationDialog::RepoFederationDialog(
         RepoIDBCache *dbCache,
         QWidget *parent)
@@ -116,12 +114,28 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
     QStandardItem *item = getCurrentFederatedItem();
     if (item)
     {
+        std::string database = ui->databaseComboBox->currentText().toStdString();
         for (QModelIndex selectedIndex : getAvailableSelection())
-        {
-            QList<QStandardItem*> row;
-            row << RepoFilterableTreeWidget::createItem(selectedIndex.data().toString());
+        {            
+            QString project = selectedIndex.data().toString();
+
+            //------------------------------------------------------------------
+
+            RepoTransRefPair p;
+            p.first = new core::RepoNodeTransformation();
+            p.second = new core::RepoNodeReference(database, project.toStdString());
+            QVariant var;
+            var.setValue(p);
+
+            //------------------------------------------------------------------
+
+            QList<QStandardItem*> row;            
+            row << RepoFilterableTreeWidget::createItem(project);
+            row[0]->setData(var);
+
             row << RepoFilterableTreeWidget::createItem("master");
             row[1]->setEditable(true);
+
             row << RepoFilterableTreeWidget::createItem("head");
             row[2]->setEditable(true);
             item->appendRow(row);
@@ -152,13 +166,11 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
     QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
     QModelIndexList selectedIndexes = getFederatedSelection();
 
-    while (!selectedIndexes.empty())
+    bool isRemoved = true;
+    while (!selectedIndexes.empty() && isRemoved)
     {
         QModelIndex selectedIndex = selectedIndexes[0];
-//        if (selectedIndex.data() == ROOT_STRING)
-//            ui->federatedWidget->getSelectionModel()->select(selectedIndex, QItemSelectionModel::Deselect);
-//        else
-            federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
         selectedIndexes = getFederatedSelection();
     }
 }
@@ -189,4 +201,45 @@ QModelIndexList repo::gui::RepoFederationDialog::getAvailableSelection() const
 QModelIndexList repo::gui::RepoFederationDialog::getFederatedSelection() const
 {
     return ui->federatedWidget->getCurrentSelection();
+}
+
+repo::core::RepoGraphScene *repo::gui::RepoFederationDialog::getFederation()
+{
+    core::RepoGraphScene *scene = new core::RepoGraphScene();
+
+
+    getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem(),
+                                    scene->getRoot());
+
+    scene->getRoot()->setName("<root>");
+    scene->printDAG();
+    return scene;
+}
+
+void repo::gui::RepoFederationDialog::getFederationRecursively(
+        QStandardItem *parentItem,
+        core::RepoNodeAbstract *parentNode)
+{
+    if (parentItem && parentNode)
+    {
+        for (int i = 0; i < parentItem->rowCount(); ++i)
+        {
+            QStandardItem *childItem = parentItem->child(i, Columns::PROJECT);
+
+            RepoTransRefPair p =
+                    childItem->data(Qt::UserRole+1).value<RepoTransRefPair>();
+            core::RepoNodeTransformation *t = p.first;
+            parentNode->addChild(t);
+            t->addParent(parentNode);
+            t->setName("<identity>");
+
+            core::RepoNodeReference *ref = p.second;
+            t->addChild(ref);
+            ref->addParent(t);
+
+            //------------------------------------------------------------------
+            // Recursive call (base case is not having any more children (rows)
+            getFederationRecursively(childItem, t);
+        }
+    }
 }

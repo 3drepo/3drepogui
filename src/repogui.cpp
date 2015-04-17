@@ -474,6 +474,8 @@ void repo::gui::RepoGUI::federate()
 {
     RepoFederationDialog fed(ui->widgetRepository, this);
     fed.exec();
+
+    fed.getFederation();
 }
 
 void repo::gui::RepoGUI::fetchHead()
