@@ -95,9 +95,11 @@ public:
 	//! Returns the default green icon for the commit dialog.
 	static QIcon getIcon();
 
-    QString getCurrentDatabaseName() const;
+    QString getCurrentHost() const;
 
-    QString getCurrentProjectName() const;
+    QString getCurrentDatabase() const;
+
+    QString getCurrentProject() const;
 
     core::RepoNodeAbstractSet getNodesToCommit() const;
 

@@ -24,10 +24,12 @@
 // Core
 #include <RepoWrapperMongo>
 #include <RepoGraphScene>
+#include <RepoNodeRevision>
 //------------------------------------------------------------------------------
 // GUI
 
 #include "renderers/repo_glcwidget.h"
+#include "widgets/repo_mdisubwindow.h"
 //------------------------------------------------------------------------------
 
 
@@ -70,6 +72,10 @@ public slots:
 
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
+
+    void commit(const core::RepoNodeAbstractSet &nodes,
+                core::RepoNodeRevision *revision,
+                repo::gui::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.
     void connect();

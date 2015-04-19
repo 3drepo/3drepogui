@@ -324,64 +324,73 @@ void repo::gui::RepoGUI::commit()
     RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     const RepoGLCWidget *widget = getActiveWidget();
 
-    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
+
+    core::RepoNodeAbstractSet nodes;
+    core::RepoNodeRevision* revision = 0;
 
     if (activeWindow && widget)
     {
         const core::RepoGraphScene *repoScene = widget->getRepoScene();
-        // TODO: fix !!!
-        std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
+        nodes = repoScene->getNodes();
 
+        // TODO: fix !!!
         if (project.isEmpty())
         {
             QFileInfo path(activeWindow->windowTitle());
             project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
         }
 
-        repo::core::RepoGraphHistory* history = new repo::core::RepoGraphHistory();
-        std::string username = mongo.getUsername(database.toStdString());
+        core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
+        core::RepoGraphHistory* history = new core::RepoGraphHistory();
 
-        core::RepoNodeRevision* revision = new core::RepoNodeRevision(username);
+        revision = new core::RepoNodeRevision(mongo.getUsername(database.toStdString()));
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
+    }   
 
-        repo::gui::RepoDialogCommit commitDialog(
-            this,
-            Qt::Window,
-            ui->widgetRepository,
-            "master", // TODO: get currently active branch from QSettings
-            repoScene->getNodes(),
-            revision);
-        commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + project);
+    commit(nodes, revision, activeWindow);
+}
 
-        if(!commitDialog.exec())
-            std::cout << "Commit dialog cancelled by user" << std::endl;
-        else // Clicked "OK"
-        {
-            //------------------------------------------------------------------
-            // Establish and connect the new worker.
-            RepoWorkerCommit *worker = new RepoWorkerCommit(
-                        mongo,
-                        commitDialog.getCurrentDatabaseName(),
-                        commitDialog.getCurrentProjectName(),
-                        history->getCommitRevision(),
-                        commitDialog.getNodesToCommit());
+void repo::gui::RepoGUI::commit(
+        const core::RepoNodeAbstractSet &nodes,
+        core::RepoNodeRevision* revision,
+        RepoMdiSubWindow *activeWindow)
+{
+    std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
-            QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
-            //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+    repo::gui::RepoDialogCommit commitDialog(
+                this,
+                Qt::Window,
+                ui->widgetRepository,
+                "master", // TODO: get currently active branch from QSettings
+                nodes,
+                revision);
+//    commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + project);
 
-            //------------------------------------------------------------------
-            // Fire up the asynchronous calculation.
-            QThreadPool::globalInstance()->start(worker);
-        }
-    }
-    else
+    if(!commitDialog.exec())
+        std::cout << "Commit dialog cancelled by user" << std::endl;
+    else // Clicked "OK"
     {
-        repo::gui::RepoDialogCommit commitDialog(this, Qt::Window, ui->widgetRepository, "master");
-        commitDialog.exec();        
+        //----------------------------------------------------------------------
+        // Establish and connect the new worker.
+        RepoWorkerCommit *worker = new RepoWorkerCommit(
+                     ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
+                    commitDialog.getCurrentDatabase(),
+                    commitDialog.getCurrentProject(),
+                    revision,
+                    commitDialog.getNodesToCommit());
+
+        if (activeWindow)
+            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+
+        QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+        //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+
+        //----------------------------------------------------------------------
+        // Fire up the asynchronous calculation.
+        QThreadPool::globalInstance()->start(worker);
     }
 }
 
@@ -475,7 +484,19 @@ void repo::gui::RepoGUI::federate()
     RepoFederationDialog fed(ui->widgetRepository, this);
     fed.exec();
 
-    fed.getFederation();
+    core::RepoGraphScene *scene = fed.getFederation();
+
+    // TODO: diff the scene with previous to get current, added, deleted and modified nodes.
+    std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
+    std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
+
+    core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+//    revision->setCurrentUniqueIDs(nodes);
+
+    core::RepoNodeAbstractSet nodesSet;
+    for (const core::RepoNodeAbstract *node : nodes)
+        nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
+    commit(nodesSet, revision);
 }
 
 void repo::gui::RepoGUI::fetchHead()
@@ -494,7 +515,7 @@ repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
 {
     RepoGLCWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoGLCWidget *>();
     if (!widget)
-        std::cerr << "A 3D window has to be open." << std::endl;
+        std::cerr << tr("A 3D window has to be open.").toStdString() << std::endl;
     return widget;
 }
 

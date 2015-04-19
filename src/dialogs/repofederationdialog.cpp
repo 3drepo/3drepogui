@@ -39,6 +39,11 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     ui->federatedWidget->setExtendedSelection();
     ui->federatedWidget->setRootIsDecorated(true);
 
+//    ui->federatedWidget->getTreeView()->setDragEnabled(true);
+//    ui->federatedWidget->getTreeView()->viewport()->setAcceptDrops(true);
+//    ui->federatedWidget->getTreeView()->setDropIndicatorShown(true);
+//    ui->federatedWidget->getTreeView()->setDragDropMode(QAbstractItemView::InternalMove);
+
     ui->buttonBox->button(QDialogButtonBox::StandardButton::Ok)->setText(tr("Next"));
 
     //--------------------------------------------------------------------------
@@ -205,14 +210,12 @@ QModelIndexList repo::gui::RepoFederationDialog::getFederatedSelection() const
 
 repo::core::RepoGraphScene *repo::gui::RepoFederationDialog::getFederation()
 {
+    // TODO: update scene to add the nodes into nodesByUniqueID map!
     core::RepoGraphScene *scene = new core::RepoGraphScene();
-
-
     getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem(),
                                     scene->getRoot());
-
     scene->getRoot()->setName("<root>");
-    scene->printDAG();
+
     return scene;
 }
 
@@ -231,7 +234,7 @@ void repo::gui::RepoFederationDialog::getFederationRecursively(
             core::RepoNodeTransformation *t = p.first;
             parentNode->addChild(t);
             t->addParent(parentNode);
-            t->setName("<identity>");
+            t->setName("<transformation>");
 
             core::RepoNodeReference *ref = p.second;
             t->addChild(ref);
