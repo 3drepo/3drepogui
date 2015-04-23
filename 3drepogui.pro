@@ -144,7 +144,7 @@ FORMS    += forms/repogui.ui \
             forms/repoabstractmanagerdialog.ui \
             forms/repoprojectsettingsdialog.ui \
             forms/repofederationdialog.ui \
-    src/widgets/repo_transformationwidget.ui
+            forms/repo_transformationwidget.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

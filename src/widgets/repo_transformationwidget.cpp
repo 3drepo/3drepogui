@@ -19,14 +19,14 @@
 #include "repo_transformationwidget.h"
 #include "ui_repo_transformationwidget.h"
 
-RepoTransformationWidget::RepoTransformationWidget(QWidget *parent) :
+repo::gui::RepoTransformationWidget::RepoTransformationWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RepoTransformationWidget)
 {
     ui->setupUi(this);
 }
 
-RepoTransformationWidget::~RepoTransformationWidget()
+repo::gui::RepoTransformationWidget::~RepoTransformationWidget()
 {
     delete ui;
 }

@@ -16,14 +16,17 @@
  */
 
 
-#ifndef REPO_TRANSFORMATIONWIDGET_H
-#define REPO_TRANSFORMATIONWIDGET_H
+#ifndef REPO_TRANSFORMATION_WIDGET_H
+#define REPO_TRANSFORMATION_WIDGET_H
 
 #include <QWidget>
 
 namespace Ui {
 class RepoTransformationWidget;
 }
+
+namespace repo {
+namespace gui {
 
 class RepoTransformationWidget : public QWidget
 {
@@ -35,6 +38,10 @@ public:
 
 private:
     Ui::RepoTransformationWidget *ui;
+
 };
 
-#endif // REPO_TRANSFORMATIONWIDGET_H
+} // end namespace gui
+} // end namespace repo
+
+#endif // REPO_TRANSFORMATION_WIDGET_H
