@@ -25,17 +25,29 @@
 #include <QStandardItem>
 #include <QModelIndexList>
 #include <QDialogButtonBox>
+#include <QPair>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repoidbcache.h"
 
+//------------------------------------------------------------------------------
+// Core
+#include <RepoGraphScene>
+#include <RepoNodeAbstract>
+#include <RepoNodeTransformation>
+#include <RepoNodeReference>
+
 namespace Ui {
-class RepoFederationDialog;
+    class RepoFederationDialog;
 }
 
 namespace repo {
 namespace gui {
+
+typedef QPair<core::RepoNodeTransformation*, core::RepoNodeReference* > RepoTransRefPair;
+
+Q_DECLARE_METATYPE(RepoTransRefPair)
 
 class RepoFederationDialog : public QDialog
 {
@@ -50,8 +62,6 @@ public:
             QWidget *parent = 0);
 
     ~RepoFederationDialog();
-
-    static const QString ROOT_STRING;
 
 public slots :
 
@@ -72,6 +82,14 @@ public slots :
     QModelIndexList getAvailableSelection() const;
 
     QModelIndexList getFederatedSelection() const;
+
+    core::RepoGraphScene *getFederation();
+
+protected :
+
+    void getFederationRecursively(
+            QStandardItem *parentItem,
+            core::RepoNodeAbstract *parentNode);
 
 private:
 

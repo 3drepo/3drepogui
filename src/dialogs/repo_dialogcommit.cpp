@@ -185,6 +185,9 @@ void repo::gui::RepoDialogCommit::updateBranches()
 //------------------------------------------------------------------------------
 void repo::gui::RepoDialogCommit::setModifiedObjects()
 {	
+    // TODO: make into asynchronous worker
+
+
     core::RepoNodeAbstractSet modifiedObjects = nodes;
 
     //--------------------------------------------------------------------------
@@ -255,12 +258,17 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 	}	
 }
 
-QString repo::gui::RepoDialogCommit::getCurrentDatabaseName() const
+QString repo::gui::RepoDialogCommit::getCurrentHost() const
+{
+    return ui->serverComboBox->currentText();
+}
+
+QString repo::gui::RepoDialogCommit::getCurrentDatabase() const
 {
     return ui->databaseComboBox->currentText();
 }
 
-QString repo::gui::RepoDialogCommit::getCurrentProjectName() const
+QString repo::gui::RepoDialogCommit::getCurrentProject() const
 {
     return ui->projectComboBox->currentText();
 }
