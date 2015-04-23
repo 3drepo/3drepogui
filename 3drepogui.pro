@@ -76,7 +76,8 @@ HEADERS  += src/repogui.h \
             src/primitives/repoidbcache.h \
             src/dialogs/repoprojectsettingsdialog.h \
             src/widgets/repo_clickabletreeview.h \
-            src/dialogs/repofederationdialog.h
+            src/dialogs/repofederationdialog.h \
+    src/widgets/repo_transformationwidget.h
 
 SOURCES +=  src/main.cpp\
             src/repogui.cpp \
@@ -124,7 +125,8 @@ SOURCES +=  src/main.cpp\
             src/dialogs/repoprojectsettingsdialog.cpp \
             src/widgets/repo_clickabletreeview.cpp \
             src/dialogs/repofederationdialog.cpp \
-    src/primitives/repoidbcache.cpp
+    src/primitives/repoidbcache.cpp \
+    src/widgets/repo_transformationwidget.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -141,7 +143,8 @@ FORMS    += forms/repogui.ui \
             forms/repodialogabout.ui \
             forms/repoabstractmanagerdialog.ui \
             forms/repoprojectsettingsdialog.ui \
-            forms/repofederationdialog.ui
+            forms/repofederationdialog.ui \
+    src/widgets/repo_transformationwidget.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html

@@ -118,13 +118,15 @@ int repo::gui::RepoDialogCommit::exec()
 	this->setCursor(Qt::WaitCursor);
     // TODO: make into asynchronous worker
 
+    // Set the currently selected project instead of the very first one.
+    ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
+    ui->projectComboBox->setCurrentText(dbCache->getSelectedProject());
+
     // Cascading updates: change of host triggers change of databases and
     // that of projects and that of branches.
     updateHosts();
 
-    // Set the currently selected project instead of the very first one.
-    ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
-    ui->projectComboBox->setCurrentText(dbCache->getSelectedProject());
+
 
 	setModifiedObjects();
 	this->setCursor(Qt::ArrowCursor);
