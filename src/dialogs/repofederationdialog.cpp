@@ -199,8 +199,9 @@ void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
 
 void repo::gui::RepoFederationDialog::showTransformationDialog()
 {
-    RepoTransformationDialog d(getCurrentFederatedTransformation());
-    d.exec();
+    RepoTransformationDialog *d = new RepoTransformationDialog(getCurrentFederatedTransformation());
+    d->exec();
+    delete d;
 }
 
 
