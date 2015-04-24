@@ -97,6 +97,10 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
                      this, SLOT(removeProjectsFromFederation()));
 
 
+    QObject::connect(ui->federatedWidget->getTreeView(), SIGNAL(customContextMenuRequested(QPoint)),
+        this, SLOT(showFederationMenu(QPoint)));
+
+
 
 }
 
@@ -178,6 +182,12 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
         isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
         selectedIndexes = getFederatedSelection();
     }
+}
+
+void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &)
+{
+   RepoTransformationWidget g;
+   g.exec();
 }
 
 

@@ -38,6 +38,9 @@
    </item>
    <item>
     <widget class="repo::gui::RepoClickableTreeView" name="treeView">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>

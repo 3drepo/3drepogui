@@ -20,7 +20,7 @@
 #include "ui_repo_transformationwidget.h"
 
 repo::gui::RepoTransformationWidget::RepoTransformationWidget(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::RepoTransformationWidget)
 {
     ui->setupUi(this);

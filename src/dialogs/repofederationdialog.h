@@ -30,6 +30,8 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repoidbcache.h"
+#include "repo_genericdialog.h"
+#include "../widgets/repo_transformationwidget.h"
 
 //------------------------------------------------------------------------------
 // Core
@@ -76,6 +78,10 @@ public slots :
     void refreshCache() { dbCache->refresh(); }
 
     void removeProjectsFromFederation();
+
+    void showFederationMenu(const QPoint &);
+
+    //--------------------------------------------------------------------------
 
     QStandardItem *getCurrentFederatedItem() const;
 

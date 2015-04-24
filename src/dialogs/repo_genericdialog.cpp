@@ -16,32 +16,30 @@
  */
 
 
-#ifndef REPO_TRANSFORMATION_WIDGET_H
-#define REPO_TRANSFORMATION_WIDGET_H
+#include "repo_genericdialog.h"
+#include "ui_repo_genericdialog.h"
 
-#include <QDialog>
+repo::gui::RepoGenericDialog::RepoGenericDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::RepoGenericDialog)
+{
+    ui->setupUi(this);
 
-namespace Ui {
-class RepoTransformationWidget;
+    RepoTransformationWidget *w = new RepoTransformationWidget();
+
+    QWidget *previous = ui->widget;
+    this->layout()->removeWidget(ui->widget);
+    this->layout()->removeWidget(ui->buttonBox);
+
+    this->layout()->addWidget(w);
+    this->layout()->addWidget(ui->buttonBox);
+
+    delete ui->widget;
+
+
 }
 
-namespace repo {
-namespace gui {
-
-class RepoTransformationWidget : public QDialog
+repo::gui::RepoGenericDialog::~RepoGenericDialog()
 {
-    Q_OBJECT
-
-public:
-    explicit RepoTransformationWidget(QWidget *parent = 0);
-    ~RepoTransformationWidget();
-
-private:
-    Ui::RepoTransformationWidget *ui;
-
-};
-
-} // end namespace gui
-} // end namespace repo
-
-#endif // REPO_TRANSFORMATION_WIDGET_H
+    delete ui;
+}

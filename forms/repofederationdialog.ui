@@ -166,7 +166,11 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="repo::gui::RepoFilterableTreeWidget" name="federatedWidget" native="true"/>
+          <widget class="repo::gui::RepoFilterableTreeWidget" name="federatedWidget" native="true">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

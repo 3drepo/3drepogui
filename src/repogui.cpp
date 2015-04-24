@@ -482,21 +482,22 @@ void repo::gui::RepoGUI::drop()
 void repo::gui::RepoGUI::federate()
 {
     RepoFederationDialog fed(ui->widgetRepository, this);
-    fed.exec();
+    if (fed.exec())
+    {
+        core::RepoGraphScene *scene = fed.getFederation();
 
-    core::RepoGraphScene *scene = fed.getFederation();
+        // TODO: diff the scene with previous to get current, added, deleted and modified nodes.
+        std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
+        std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
 
-    // TODO: diff the scene with previous to get current, added, deleted and modified nodes.
-    std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
-    std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
+        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+    //    revision->setCurrentUniqueIDs(nodes);
 
-    core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
-//    revision->setCurrentUniqueIDs(nodes);
-
-    core::RepoNodeAbstractSet nodesSet;
-    for (const core::RepoNodeAbstract *node : nodes)
-        nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
-    commit(nodesSet, revision);
+        core::RepoNodeAbstractSet nodesSet;
+        for (const core::RepoNodeAbstract *node : nodes)
+            nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
+        commit(nodesSet, revision);
+    }
 }
 
 void repo::gui::RepoGUI::fetchHead()
