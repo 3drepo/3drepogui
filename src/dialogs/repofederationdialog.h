@@ -26,12 +26,14 @@
 #include <QModelIndexList>
 #include <QDialogButtonBox>
 #include <QPair>
+#include <QMenu>
+#include <QTreeView>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repoidbcache.h"
 #include "repo_genericdialog.h"
-#include "../widgets/repo_transformationwidget.h"
+#include "../dialogs/repo_transformationdialog.h"
 
 //------------------------------------------------------------------------------
 // Core
@@ -47,7 +49,7 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-typedef QPair<core::RepoNodeTransformation*, core::RepoNodeReference* > RepoTransRefPair;
+typedef QPair<core::RepoNodeTransformation, core::RepoNodeReference> RepoTransRefPair;
 
 Q_DECLARE_METATYPE(RepoTransRefPair)
 
@@ -81,9 +83,13 @@ public slots :
 
     void showFederationMenu(const QPoint &);
 
+    void showTransformationDialog();
+
     //--------------------------------------------------------------------------
 
     QStandardItem *getCurrentFederatedItem() const;
+
+    core::RepoNodeTransformation getCurrentFederatedTransformation() const;
 
     QModelIndexList getAvailableSelection() const;
 

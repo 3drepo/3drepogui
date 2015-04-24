@@ -21,7 +21,7 @@
 
 #include <QDialog>
 
-#include "../widgets/repo_transformationwidget.h"
+#include "../dialogs/repo_transformationdialog.h"
 
 namespace Ui {
 class RepoGenericDialog;

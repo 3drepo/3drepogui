@@ -131,8 +131,8 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
             //------------------------------------------------------------------
 
             RepoTransRefPair p;
-            p.first = new core::RepoNodeTransformation();
-            p.second = new core::RepoNodeReference(database, project.toStdString());
+            p.first = core::RepoNodeTransformation("<transformation>");
+            p.second = core::RepoNodeReference(database, project.toStdString());
             QVariant var;
             var.setValue(p);
 
@@ -184,10 +184,23 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
     }
 }
 
-void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &)
+void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
 {
-   RepoTransformationWidget g;
-   g.exec();
+    QTreeView *treeView = ui->federatedWidget->getTreeView();
+    QMenu menu(treeView);
+
+    QAction *action = menu.addAction(
+                tr("Edit Transformation"),
+                this,
+                SLOT(showTransformationDialog()));
+    action->setEnabled(ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0);
+    menu.exec(treeView->mapToGlobal(point));
+}
+
+void repo::gui::RepoFederationDialog::showTransformationDialog()
+{
+    RepoTransformationDialog d(getCurrentFederatedTransformation());
+    d.exec();
 }
 
 
@@ -204,6 +217,19 @@ QStandardItem *repo::gui::RepoFederationDialog::getCurrentFederatedItem() const
     else
         item = ui->federatedWidget->getModel()->invisibleRootItem();
     return item;
+}
+
+repo::core::RepoNodeTransformation repo::gui::RepoFederationDialog::getCurrentFederatedTransformation() const
+{
+    QStandardItem *item = getCurrentFederatedItem();
+    core::RepoNodeTransformation transformation;
+    if (item)
+    {
+        RepoTransRefPair p =
+            getCurrentFederatedItem()->data(Qt::UserRole+1).value<RepoTransRefPair>();
+        transformation = p.first;
+    }
+    return transformation;
 }
 
 //------------------------------------------------------------------------------
@@ -241,12 +267,11 @@ void repo::gui::RepoFederationDialog::getFederationRecursively(
 
             RepoTransRefPair p =
                     childItem->data(Qt::UserRole+1).value<RepoTransRefPair>();
-            core::RepoNodeTransformation *t = p.first;
+            core::RepoNodeTransformation *t = new core::RepoNodeTransformation(p.first);
             parentNode->addChild(t);
             t->addParent(parentNode);
-            t->setName("<transformation>");
 
-            core::RepoNodeReference *ref = p.second;
+            core::RepoNodeReference *ref = new core::RepoNodeReference(p.second);
             t->addChild(ref);
             ref->addParent(t);
 

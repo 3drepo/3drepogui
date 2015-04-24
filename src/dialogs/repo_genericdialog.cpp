@@ -25,18 +25,6 @@ repo::gui::RepoGenericDialog::RepoGenericDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    RepoTransformationWidget *w = new RepoTransformationWidget();
-
-    QWidget *previous = ui->widget;
-    this->layout()->removeWidget(ui->widget);
-    this->layout()->removeWidget(ui->buttonBox);
-
-    this->layout()->addWidget(w);
-    this->layout()->addWidget(ui->buttonBox);
-
-    delete ui->widget;
-
-
 }
 
 repo::gui::RepoGenericDialog::~RepoGenericDialog()
