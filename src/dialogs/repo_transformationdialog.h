@@ -80,6 +80,10 @@ public slots :
 
     void rotateZ(double radians);
 
+    void inverse();
+
+    void transpose();
+
 private:
 
     Ui::RepoTransformationDialog *ui;

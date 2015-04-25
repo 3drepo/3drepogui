@@ -42,6 +42,12 @@ repo::gui::RepoTransformationDialog::RepoTransformationDialog(
 
     QObject::connect(ui->rotateZpushButton, &QPushButton::pressed,
                      this, &RepoTransformationDialog::rotateZ90);
+
+    QObject::connect(ui->inversePushButton, &QPushButton::pressed,
+                     this, &RepoTransformationDialog::inverse);
+
+    QObject::connect(ui->transposePushButton, &QPushButton::pressed,
+                     this, &RepoTransformationDialog::transpose);
 }
 
 repo::gui::RepoTransformationDialog::~RepoTransformationDialog()
@@ -144,3 +150,13 @@ void repo::gui::RepoTransformationDialog::rotateZ(double radians)
     setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, aiMatrix4x4()));
 }
 
+
+void repo::gui::RepoTransformationDialog::inverse()
+{
+    setMatrix(getMatrix().Inverse());
+}
+
+void repo::gui::RepoTransformationDialog::transpose()
+{
+    setMatrix(getMatrix().Transpose());
+}
