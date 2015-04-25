@@ -20,6 +20,9 @@
 #define REPO_TRANSFORMATION_DIALOG_H
 
 
+#include <math.h>
+#define _USE_MATH_DEFINES
+
 //------------------------------------------------------------------------------
 // Qt
 #include <QDialog>
@@ -50,12 +53,32 @@ public slots :
 
     void setIdentity();
 
+    void setName(const std::string &name);
+
+    void setMatrix(const aiMatrix4x4 &matrix);
+
     void setMatrix(double a1, double a2, double a3, double a4,
                    double b1, double b2, double b3, double b4,
                    double c1, double c2, double c3, double c4,
                    double d1, double d2, double d3, double d4);
 
     core::RepoNodeTransformation getTransformation();
+
+    aiMatrix4x4 getMatrix() const;
+
+    std::string getName() const;
+
+    void rotateX90() { rotateX(M_PI/2); }
+
+    void rotateX(double radians);
+
+    void rotateY90() { rotateY(M_PI/2); }
+
+    void rotateY(double radians);
+
+    void rotateZ90() { rotateZ(M_PI/2); }
+
+    void rotateZ(double radians);
 
 private:
 

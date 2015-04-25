@@ -27,11 +27,21 @@ repo::gui::RepoTransformationDialog::RepoTransformationDialog(
     , transformation(transformation)
 {
     ui->setupUi(this);
-    ui->nameLineEdit->setText(QString::fromStdString(transformation.getName()));
-    aiMatrix4x4 a = transformation.getMatrix();
+
+    setName(transformation.getName());
+    setMatrix(transformation.getMatrix());
 
     QObject::connect(ui->identityPushButton, &QPushButton::pressed,
                      this, &RepoTransformationDialog::setIdentity);
+
+    QObject::connect(ui->rotateXpushButton, &QPushButton::pressed,
+                     this, &RepoTransformationDialog::rotateX90);
+
+    QObject::connect(ui->rotateYpushButton, &QPushButton::pressed,
+                     this, &RepoTransformationDialog::rotateY90);
+
+    QObject::connect(ui->rotateZpushButton, &QPushButton::pressed,
+                     this, &RepoTransformationDialog::rotateZ90);
 }
 
 repo::gui::RepoTransformationDialog::~RepoTransformationDialog()
@@ -45,6 +55,19 @@ void repo::gui::RepoTransformationDialog::setIdentity()
               0.0, 1.0, 0.0, 0.0,
               0.0, 0.0, 1.0, 0.0,
               0.0, 0.0, 0.0, 1.0);
+}
+
+void repo::gui::RepoTransformationDialog::setName(const std::string &name)
+{
+    ui->nameLineEdit->setText(QString::fromStdString(name));
+}
+
+void repo::gui::RepoTransformationDialog::setMatrix(const aiMatrix4x4 &m)
+{
+    setMatrix(m.a1,m.a2, m.a3, m.a4,
+              m.b1, m.b2, m.b3, m.b4,
+              m.c1, m.c2, m.c3, m.c4,
+              m.d1, m.d2, m.d3, m.d4);
 }
 
 void repo::gui::RepoTransformationDialog::setMatrix(
@@ -76,5 +99,48 @@ void repo::gui::RepoTransformationDialog::setMatrix(
 
 repo::core::RepoNodeTransformation repo::gui::RepoTransformationDialog::getTransformation()
 {
-    return core::RepoNodeTransformation();// transformation;
+    transformation.setName(getName());
+    transformation.setMatrix(getMatrix());
+    return transformation;
 }
+
+aiMatrix4x4 repo::gui::RepoTransformationDialog::getMatrix() const
+{
+    return aiMatrix4x4(ui->a1DoubleSpinBox->value(),
+                  ui->a2DoubleSpinBox->value(),
+                  ui->a3DoubleSpinBox->value(),
+                  ui->a4DoubleSpinBox->value(),
+                  ui->b1DoubleSpinBox->value(),
+                  ui->b2DoubleSpinBox->value(),
+                  ui->b3DoubleSpinBox->value(),
+                  ui->b4DoubleSpinBox->value(),
+                  ui->c1DoubleSpinBox->value(),
+                  ui->c2DoubleSpinBox->value(),
+                  ui->c3DoubleSpinBox->value(),
+                  ui->c4DoubleSpinBox->value(),
+                  ui->d1DoubleSpinBox->value(),
+                  ui->d2DoubleSpinBox->value(),
+                  ui->d3DoubleSpinBox->value(),
+                  ui->d4DoubleSpinBox->value());
+}
+
+std::string repo::gui::RepoTransformationDialog::getName() const
+{
+    return ui->nameLineEdit->text().toStdString();
+}
+
+void repo::gui::RepoTransformationDialog::rotateX(double radians)
+{
+    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, aiMatrix4x4()));
+}
+
+void repo::gui::RepoTransformationDialog::rotateY(double radians)
+{
+    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, aiMatrix4x4()));
+}
+
+void repo::gui::RepoTransformationDialog::rotateZ(double radians)
+{
+    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, aiMatrix4x4()));
+}
+

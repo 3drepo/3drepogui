@@ -186,21 +186,43 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
 
 void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
 {
+
+    bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
     QTreeView *treeView = ui->federatedWidget->getTreeView();
     QMenu menu(treeView);
 
     QAction *action = menu.addAction(
-                tr("Edit Transformation"),
+                tr("Transformation..."),
                 this,
                 SLOT(showTransformationDialog()));
-    action->setEnabled(ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0);
+    action->setEnabled(on);
+
+    QAction *remove = menu.addAction(
+                tr("Remove"),
+                this,
+                SLOT(removeProjectsFromFederation()));
+    remove->setEnabled(on);
+
     menu.exec(treeView->mapToGlobal(point));
 }
 
 void repo::gui::RepoFederationDialog::showTransformationDialog()
 {
-    RepoTransformationDialog *d = new RepoTransformationDialog(getCurrentFederatedTransformation());
-    d->exec();
+    RepoTransformationDialog *d = new RepoTransformationDialog(getCurrentFederatedTransformation(), this);
+    if (d->exec())
+    {
+        core::RepoNodeTransformation transformation = d->getTransformation();
+        for (QModelIndex selectedIndex :getFederatedSelection())
+        {
+            RepoTransRefPair p =
+                    selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
+            p.first = transformation;
+
+            QVariant var;
+            var.setValue(p);
+            ui->federatedWidget->getModel()->setData(selectedIndex, var,Qt::UserRole+1);
+        }
+    }
     delete d;
 }
 
