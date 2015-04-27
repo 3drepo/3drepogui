@@ -89,19 +89,14 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(refresh()));
 
-
     QObject::connect(ui->addPushButton, SIGNAL(pressed()),
                      this, SLOT(addProjectsToFederation()));
 
     QObject::connect(ui->removePushButton, SIGNAL(pressed()),
                      this, SLOT(removeProjectsFromFederation()));
 
-
     QObject::connect(ui->federatedWidget->getTreeView(), SIGNAL(customContextMenuRequested(QPoint)),
         this, SLOT(showFederationMenu(QPoint)));
-
-
-
 }
 
 repo::gui::RepoFederationDialog::~RepoFederationDialog()
@@ -197,6 +192,8 @@ void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
                 SLOT(showTransformationDialog()));
     action->setEnabled(on);
 
+    menu.addSeparator();
+
     QAction *remove = menu.addAction(
                 tr("Remove"),
                 this,
@@ -216,6 +213,8 @@ void repo::gui::RepoFederationDialog::showTransformationDialog()
         {
             RepoTransRefPair p =
                     selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
+
+            transformation.setRandomIDs();
             p.first = transformation;
 
             QVariant var;

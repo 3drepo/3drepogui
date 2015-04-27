@@ -19,9 +19,9 @@
 #ifndef REPO_TRANSFORMATION_DIALOG_H
 #define REPO_TRANSFORMATION_DIALOG_H
 
-
-#include <math.h>
 #define _USE_MATH_DEFINES
+#include <cmath>
+#include <math.h>
 
 //------------------------------------------------------------------------------
 // Qt
