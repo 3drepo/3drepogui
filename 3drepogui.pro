@@ -78,7 +78,8 @@ HEADERS  += src/repogui.h \
             src/widgets/repo_clickabletreeview.h \
             src/dialogs/repofederationdialog.h \
             src/dialogs/repo_genericdialog.h \
-            src/dialogs/repo_transformationdialog.h
+            src/dialogs/repo_transformationdialog.h \
+    src/renderers/repo_fpscounter.h
 
 SOURCES +=  src/main.cpp\
             src/repogui.cpp \
@@ -128,7 +129,8 @@ SOURCES +=  src/main.cpp\
             src/dialogs/repofederationdialog.cpp \
             src/primitives/repoidbcache.cpp \
             src/dialogs/repo_genericdialog.cpp \
-            src/dialogs/repo_transformationdialog.cpp
+            src/dialogs/repo_transformationdialog.cpp \
+    src/renderers/repo_fpscounter.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \

@@ -18,6 +18,7 @@
 
 #include "repo_glcwidget.h"
 #include "../primitives/repo_fontawesome.h"
+#include "../primitives/repo_color.h"
 //------------------------------------------------------------------------------
 #include <iostream>
 //------------------------------------------------------------------------------
@@ -75,8 +76,6 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	, shaderID(0)
 	, isInfoVisible(true)
 	, renderingFlag(glc::ShadingFlag)
-	, fpsCounter(0)
-	, fps(0)
     , repoScene(0)
 {
     //--------------------------------------------------------------------------
@@ -186,8 +185,10 @@ void repo::gui::RepoGLCWidget::initializeGL()
 
 	initializeShaders();
 
-	// FPS time (t0) in milliseconds
-    fpsTimeZero = std::chrono::steady_clock::now();
+    //--------------------------------------------------------------------------
+    // Initialize fps counter
+    fpsCounter.initialize();
+    GLC_RenderStatistics::setActivationFlag(true);
 }
 
 void repo::gui::RepoGLCWidget::initializeShaders()
@@ -254,6 +255,8 @@ void repo::gui::RepoGLCWidget::paintGL()
 {
 	try
 	{
+        GLC_RenderStatistics::reset();
+
         //----------------------------------------------------------------------
 		// Calculate camera's depth of view
 		glcViewport.setDistMinAndMax(glcWorld.boundingBox());
@@ -353,16 +356,10 @@ void repo::gui::RepoGLCWidget::paintGL()
 
 void repo::gui::RepoGLCWidget::paintInfo()
 {
+    static QLocale locale;
     //--------------------------------------------------------------------------
 	// FPS calculations
-	fpsCounter++;
-    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-    double elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(now - fpsTimeZero).count();
-	if (elapsedTime > 1) {
-		fps = (float)fpsCounter / elapsedTime;
-		fpsCounter = 0;
-        fpsTimeZero = now;
-	}
+    fpsCounter.increment();
 
     //--------------------------------------------------------------------------
 	// Display info area
@@ -382,19 +379,42 @@ void repo::gui::RepoGLCWidget::paintInfo()
     //--------------------------------------------------------------------------
 	QSize screenSize(size());
 	int screenHeight = screenSize.height();
-	float panelRatio = static_cast<float>(screenHeight - 4) / screenHeight;
-	double displayRatio = static_cast<double>(screenSize.height()) /
-		static_cast<double>(screenSize.width());
+    float panelRatio = (float)(screenHeight - 4) / screenHeight;
+    double displayRatio = (double)(screenSize.height()) /
+        (double)(screenSize.width());
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBlendFunc(GL_ONE,GL_SRC_ALPHA);
 
     //--------------------------------------------------------------------------
-	// Display the frame rate
+    // Display panel
+    float panelRat = (float)2.f / screenHeight;
+    qglColor(QColor(5, 5, 50, 128));
+    glBegin(GL_QUADS);
+        glVertex2f(-1.f,0.1f);
+        glVertex2f( 1.f,0.1f);
+        glVertex2f( 1.f,1.f);
+        glVertex2f(-1.f,1.f);
+    glEnd();
+
+    //--------------------------------------------------------------------------
+    // Display the frame rate and other stats
 	qglColor(Qt::gray);
-	QString fpsString(QString::number(fps, 'f', 2) + QString(" fps"));
-	renderText(10, screenSize.height() - 10, fpsString);
+    renderText(9, 16, tr("Components: ") +
+               locale.toString((uint)GLC_RenderStatistics::bodyCount()));
+    renderText(9, 32, tr("Triangles: ") +
+               locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
+    renderText(9, 48, fpsCounter.getFPSString());
 
 
+
+    //--------------------------------------------------------------------------
+    // Display selection
+    qglColor(RepoColor(1.0,0.5,0.0));
+    if(glcWorld.selectionSize() == 1)
+    {
+        QString selectionName(glcWorld.selectedOccurenceList().first()->name());
+        renderText(9, screenSize.height() - 9, tr("Selected: ") + selectionName);
+    }
 
 	GLC_Matrix4x4 uiMatrix(glcViewport.cameraHandle()->viewMatrix());
 	// Change matrix to follow camera orientation
