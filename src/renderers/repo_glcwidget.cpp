@@ -615,8 +615,7 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceRenderProperties(
         const QString &occurrenceName,
         const GLC_RenderProperties &properties)
 {
-    GLC_StructOccurence * oc;
-
+    GLC_StructOccurence *oc;
     QHash<QString, GLC_StructOccurence *>::iterator it =
             glcOccurrences.find(occurrenceName);
 
@@ -798,13 +797,10 @@ void repo::gui::RepoGLCWidget::addBoundingBox(
     // Rotate and translate the box by the transformation matrix
     box.multMatrix(GLC_Matrix4x4(&transformationMatrix[0]));
 
-    // Create GLC_Box from a Bounding box
-    //GLC_3DViewInstance box(GLC_Factory::instance()->createBox(glcWorld.boundingBox()));
-
     // Replace GLC_Box default material
-    GLC_Material * pRedMaterial= new GLC_Material(Qt::gray);
-    pRedMaterial->setOpacity(0.1);
-    box.geomAt(0)->replaceMasterMaterial(pRedMaterial);
+    GLC_Material * material= new GLC_Material(Qt::gray);
+    material->setOpacity(0.1);
+    box.geomAt(0)->replaceMasterMaterial(material);
 
     // Add the box to the collection
     glcViewCollection.add(box);

@@ -53,6 +53,7 @@
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
 #include "dialogs/repofederationdialog.h"
+#include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
 
@@ -622,79 +623,7 @@ void repo::gui::RepoGUI::open3DDiff()
             ui->actionLink->setChecked(true);
             ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 
-
-            core::Repo3DDiff diff(widgetA->getRepoScene(), widgetB->getRepoScene());
-
-            // TODO: make asynchronous
-            diff.diff();
-
-            core::RepoSelfSimilarSet selfSimilarSetA = diff.getSelfSimilarSetA();
-            std::string currentKey("");
-            RepoColor color;
-
-            for (auto it = selfSimilarSetA.begin(); it != selfSimilarSetA.end(); ++it)
-            {
-                if((currentKey.compare(it->first)))
-                {
-                    currentKey = it->first;
-                    color = RepoColor::getNext();
-                }
-
-                //				QMetaObject::invokeMethod(
-                //					widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-                //					Q_ARG(QString, QString::fromStdString(it->second->getName())),
-                //					Q_ARG(qreal, 0.9),
-                //					Q_ARG(QColor, color));
-
-                core::RepoPCA pca = ((core::RepoNodeMesh*)(it->second))->getPCA();
-                const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
-                const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
-                const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
-
-                widgetA->addBoundingBox(
-                            pca.getUVWBoundingBox().getLengthX(),
-                            pca.getUVWBoundingBox().getLengthY(),
-                            pca.getUVWBoundingBox().getLengthZ(),
-                            pca.getXYZTransformationMatrix());
-
-                std::cerr << "[" << it->first << "]" << it->second->getName();
-
-                std::cerr << "\n";
-            }
-            widgetA->updateGL();
-
-
-            //------------------------------------------------------------------
-
-            core::RepoSelfSimilarSet selfSimilarSetB = diff.getSelfSimilarSetB();
-            for (auto it = selfSimilarSetB.begin(); it != selfSimilarSetB.end(); ++it)
-            {
-				if(currentKey.compare(it->first))
-				{
-					currentKey = it->first;
-	                color = RepoColor::getNext();
-				}
-
-                std::cerr << "bucket #" << currentKey << " contains:";
-
-//				QMetaObject::invokeMethod(
-//					widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-//					Q_ARG(QString, QString::fromStdString(it->second->getName())),
-//					Q_ARG(qreal, 0.9),
-//					Q_ARG(QColor, color));
-				std::cerr << "[" << it->first << "] " << it->second->getName();
-
-                core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);
-
-
-                widgetB->addBoundingBox(mesh->getBoundingBox().getLengthX(),
-                                        mesh->getBoundingBox().getLengthY(),
-                                        mesh->getBoundingBox().getLengthZ(),
-                                        mesh->getBoundingBox().getTransformationMatrix());
-
-                std::cerr << "\n";
-              }
-              widgetB->updateGL();
+            Repo3DDiffRenderer(widgetA, widgetB);
         }
     }
     else
