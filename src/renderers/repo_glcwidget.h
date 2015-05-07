@@ -116,6 +116,8 @@ public slots :
 	//
     //--------------------------------------------------------------------------
 
+    void broadcastCameraChange();
+
 	//! Sets the camera of the view.
 	void setCamera(const GLC_Camera&);
 
@@ -211,6 +213,8 @@ public :
 
 	//! Removes and deletes all bounding boxes.
 	void clearBoundingBoxes();
+
+    void toggleOctree();
 
     void select(GLC_uint selectionID,
                 bool multiSelection = false,

@@ -614,17 +614,11 @@ void repo::gui::RepoGUI::open3DDiff()
 
         if (widgetA && widgetB)
         {
-
-//            core::Repo3DDiff diff;
-//            diff.diff(oldScene->getRepoScene(), newScene->getRepoScene());
-
-
             // TODO: make asynchronous as trees can be very large
-            addSelectionTree(widgetA, Qt::LeftDockWidgetArea);
-            addSelectionTree(widgetB, Qt::RightDockWidgetArea);
+            //            addSelectionTree(widgetA, Qt::LeftDockWidgetArea);
+            //            addSelectionTree(widgetB, Qt::RightDockWidgetArea);
 
             ui->mdiArea->maximizeSubWindows();
-
             ui->actionLink->setChecked(true);
             ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 
@@ -635,52 +629,22 @@ void repo::gui::RepoGUI::open3DDiff()
             diff.diff();
 
             core::RepoSelfSimilarSet selfSimilarSetA = diff.getSelfSimilarSetA();
-			std::string currentKey("");
-			RepoColor color;
+            std::string currentKey("");
+            RepoColor color;
 
             for (auto it = selfSimilarSetA.begin(); it != selfSimilarSetA.end(); ++it)
             {
-				if((currentKey.compare(it->first)))
-				{
-					currentKey = it->first;
-	                color = RepoColor::getNext();
-				}
+                if((currentKey.compare(it->first)))
+                {
+                    currentKey = it->first;
+                    color = RepoColor::getNext();
+                }
 
-
-//                RepoColor color;
-//                for (auto it = selfSimilarSetA.begin(i); it != selfSimilarSetA.end(i); ++it)
-//                {
-//                    if (!color.isValid())
-//                         color = RepoColor::getNext();
-
-//                    QMetaObject::invokeMethod(
-//                        widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-//                        Q_ARG(QString, QString::fromStdString((*it)->getName())),
-//                        Q_ARG(qreal, 0.9),
-//                        Q_ARG(QColor, color));
-//                    std::cerr << " " << (*it)->getName();
-
-//                    core::RepoPCA pca = ((core::RepoNodeMesh*)(*it))->getPCA();
-//                    //---------------------------------------------------------------------
-//                    // Add bounding boxes.
-//                    const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
-//                    const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
-//                    const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
-//                    widgetA->addBoundingBox(lx, ly, lz, pca.getTransformationMatrix());
-
-//                    std::cerr << std::endl;
-//                    std::cerr << "Principals: " << lx << ", " << ly << ", " << lz << "   " << std::endl;
-//                    std::cerr << "BB: " << pca.getUVWBoundingBox().getLengthX() << ", " << pca.getUVWBoundingBox().getLengthY() << ", " << pca.getUVWBoundingBox().getLengthZ() << std::endl;
-
-//                }
-
-                std::cerr << "bucket #" << currentKey << " contains:";
-
-				QMetaObject::invokeMethod(
-					widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-					Q_ARG(QString, QString::fromStdString(it->second->getName())),
-					Q_ARG(qreal, 0.9),
-					Q_ARG(QColor, color));
+                //				QMetaObject::invokeMethod(
+                //					widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+                //					Q_ARG(QString, QString::fromStdString(it->second->getName())),
+                //					Q_ARG(qreal, 0.9),
+                //					Q_ARG(QColor, color));
 
                 core::RepoPCA pca = ((core::RepoNodeMesh*)(it->second))->getPCA();
                 const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
@@ -693,10 +657,10 @@ void repo::gui::RepoGUI::open3DDiff()
                             pca.getUVWBoundingBox().getLengthZ(),
                             pca.getXYZTransformationMatrix());
 
-				std::cerr << "[" << it->first << "]" << it->second->getName();
+                std::cerr << "[" << it->first << "]" << it->second->getName();
 
                 std::cerr << "\n";
-              }
+            }
             widgetA->updateGL();
 
 
@@ -713,11 +677,11 @@ void repo::gui::RepoGUI::open3DDiff()
 
                 std::cerr << "bucket #" << currentKey << " contains:";
 
-				QMetaObject::invokeMethod(
-					widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-					Q_ARG(QString, QString::fromStdString(it->second->getName())),
-					Q_ARG(qreal, 0.9),
-					Q_ARG(QColor, color));
+//				QMetaObject::invokeMethod(
+//					widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
+//					Q_ARG(QString, QString::fromStdString(it->second->getName())),
+//					Q_ARG(qreal, 0.9),
+//					Q_ARG(QColor, color));
 				std::cerr << "[" << it->first << "] " << it->second->getName();
 
                 core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);

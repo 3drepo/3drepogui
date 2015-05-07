@@ -288,5 +288,6 @@ repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() 
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const
 {
-    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxyModel->rowCount()).arg(model->rowCount()));
+    static QLocale locale;
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(locale.toString(proxyModel->rowCount())).arg(locale.toString(model->rowCount())));
 }
