@@ -162,12 +162,17 @@ void repo::gui::RepoGLCWidget::initializeGL()
 
     //--------------------------------------------------------------------------
 	// Enable VBOs and other settings.
+    GLC_State::setVboSupport();
 	GLC_State::setVboUsage(isAdvancedGPU);
-	GLC_State::setDefaultOctreeDepth(10);
+    GLC_State::setDefaultOctreeDepth(8);
 	GLC_State::setPixelCullingUsage(true);
 	GLC_State::setFrustumCullingUsage(true);
 	GLC_State::setSpacePartionningUsage(true);
 	GLC_State::setCacheUsage(true);
+    GLC_State::setFrameBufferBlitSupport();
+    GLC_State::setPointSpriteSupport();
+    GLC_State::setFrameBufferSupport();
+    glcViewport.setMinimumPixelCullingSize(3);
 
 
 	//glEnable(GL_CULL_FACE);
@@ -385,36 +390,38 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBlendFunc(GL_ONE,GL_SRC_ALPHA);
 
-    //--------------------------------------------------------------------------
-    // Display panel
-    float panelRat = (float)2.f / screenHeight;
-    qglColor(QColor(5, 5, 50, 128));
-    glBegin(GL_QUADS);
-        glVertex2f(-1.f,0.1f);
-        glVertex2f( 1.f,0.1f);
-        glVertex2f( 1.f,1.f);
-        glVertex2f(-1.f,1.f);
-    glEnd();
 
-    //--------------------------------------------------------------------------
-    // Display the frame rate and other stats
-	qglColor(Qt::gray);
-    renderText(9, 16, tr("Components: ") +
-               locale.toString((uint)GLC_RenderStatistics::bodyCount()));
-    renderText(9, 32, tr("Triangles: ") +
-               locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
-    renderText(9, 48, fpsCounter.getFPSString());
+    //        //--------------------------------------------------------------------------
+    //        // Display panel
+    //        float panelRat = 1.0f - ((float)42/ screenHeight);
+    //        qglColor(QColor(5, 58, 165, 30));
+    //        glBegin(GL_QUADS);
+    //            glVertex2f(-1.f,1.0f);
+    //            glVertex2f( 1.f,1.0f);
+    //            glVertex2f( 1.f,panelRat);
+    //            glVertex2f(-1.f,panelRat);
+    //        glEnd();
 
 
+    //----------------------------------------------------------------------
+    // Display stats
+    qglColor(Qt::gray);
+    QString selectionName;
+    if(glcWorld.selectionSize() > 0)
+        selectionName = glcWorld.selectedOccurenceList().first()->name();
+    renderText(9, 14, QString() +
+               QChar(0x25B2) + " " +
+               locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()) +
+               + " in " +
+               locale.toString((uint)GLC_RenderStatistics::bodyCount())
+               + " objects");
+    renderText(screenSize.width() - 50, 14, fpsCounter.getFPSString());
 
     //--------------------------------------------------------------------------
     // Display selection
-    qglColor(RepoColor(1.0,0.5,0.0));
-    if(glcWorld.selectionSize() == 1)
-    {
-        QString selectionName(glcWorld.selectedOccurenceList().first()->name());
-        renderText(9, screenSize.height() - 9, tr("Selected: ") + selectionName);
-    }
+    if(glcWorld.selectionSize() > 0)
+        renderText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
+
 
 	GLC_Matrix4x4 uiMatrix(glcViewport.cameraHandle()->viewMatrix());
 	// Change matrix to follow camera orientation
@@ -693,6 +700,9 @@ void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 {
 	this->glcWorld = glcWorld;
+    this->glcWorld.collection()->setLodUsage(true, &glcViewport);
+    this->glcWorld.collection()->setSpacePartitionningUsage(true);
+    this->glcWorld.collection()->setVboUsage(true);
 	glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());
 	setCamera(ISO);
 	extractMeshes(this->glcWorld.rootOccurence());
@@ -1044,10 +1054,10 @@ void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
 	QMouseEvent *pMouseEvent)
 {
 	setAutoBufferSwap(false);
-	glcWorld.collection()->setLodUsage(true, &glcViewport);
+//	glcWorld.collection()->setLodUsage(true, &glcViewport);
 	GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
 	GLC_uint pickupID = glcViewport.selectOnPreviousRender(x, y);
-	glcWorld.collection()->setLodUsage(false, &glcViewport);
+//	glcWorld.collection()->setLodUsage(false, &glcViewport);
     select(selectionID, multiSelection);
 }
 

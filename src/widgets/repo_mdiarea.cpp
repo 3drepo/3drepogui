@@ -56,7 +56,8 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 
 
     //--------------------------------------------------------------------------
-	// FPS testing only
+    // FPS testing only
+    // Do not use in production as it keeps redrawing constantly
 //    if (QGuiApplication::screens().size() > 0)
 //        fpsTimer.start(1/(QGuiApplication::screens()[0]->refreshRate()) * 1000);
 }
