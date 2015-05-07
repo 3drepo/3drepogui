@@ -412,9 +412,9 @@ void repo::gui::RepoGLCWidget::paintInfo()
     renderText(9, 14, QString() +
                QChar(0x25B2) + " " +
                locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()) +
-               + " in " +
-               locale.toString((uint)GLC_RenderStatistics::bodyCount())
-               + " objects");
+               tr(" in ") +
+               locale.toString((uint)GLC_RenderStatistics::bodyCount()) +
+               tr(" objects"));
     renderText(screenSize.width() - 50, 14, fpsCounter.getFPSString());
 
     //--------------------------------------------------------------------------
