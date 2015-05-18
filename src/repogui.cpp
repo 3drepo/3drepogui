@@ -325,7 +325,6 @@ void repo::gui::RepoGUI::commit()
     const RepoGLCWidget *widget = getActiveWidget();
 
     QString database = ui->widgetRepository->getSelectedDatabase();
-    QString project = ui->widgetRepository->getSelectedProject();
 
     core::RepoNodeAbstractSet nodes;
     core::RepoNodeRevision* revision = 0;
@@ -334,22 +333,13 @@ void repo::gui::RepoGUI::commit()
     {
         const core::RepoGraphScene *repoScene = widget->getRepoScene();
         nodes = repoScene->getNodes();
-
-        // TODO: fix !!!
-        if (project.isEmpty())
-        {
-            QFileInfo path(activeWindow->windowTitle());
-            project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
-        }
-
         core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
         core::RepoGraphHistory* history = new core::RepoGraphHistory();
 
         revision = new core::RepoNodeRevision(mongo.getUsername(database.toStdString()));
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
-    }   
-
+    }
     commit(nodes, revision, activeWindow);
 }
 
@@ -379,7 +369,7 @@ void repo::gui::RepoGUI::commit(
                      ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
                     commitDialog.getCurrentDatabase(),
                     commitDialog.getCurrentProject(),
-                    revision,
+                    commitDialog.getRevision(),
                     commitDialog.getNodesToCommit());
 
         if (activeWindow)

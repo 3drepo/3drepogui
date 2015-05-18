@@ -103,6 +103,8 @@ public:
 
     core::RepoNodeAbstractSet getNodesToCommit() const;
 
+    core::RepoNodeRevision *getRevision();
+
 public slots:
 
 	/*! 
