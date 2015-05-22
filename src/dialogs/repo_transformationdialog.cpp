@@ -137,17 +137,20 @@ std::string repo::gui::RepoTransformationDialog::getName() const
 
 void repo::gui::RepoTransformationDialog::rotateX(double radians)
 {
-    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, aiMatrix4x4()));
+	aiMatrix4x4 tmp;
+    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, tmp));
 }
 
 void repo::gui::RepoTransformationDialog::rotateY(double radians)
 {
-    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, aiMatrix4x4()));
+	aiMatrix4x4 tmp;
+    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, tmp));
 }
 
 void repo::gui::RepoTransformationDialog::rotateZ(double radians)
 {
-    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, aiMatrix4x4()));
+	aiMatrix4x4 tmp;
+    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, tmp));
 }
 
 

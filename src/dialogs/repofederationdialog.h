@@ -46,12 +46,12 @@ namespace Ui {
     class RepoFederationDialog;
 }
 
-namespace repo {
-namespace gui {
-
-typedef QPair<core::RepoNodeTransformation, core::RepoNodeReference> RepoTransRefPair;
+typedef QPair<repo::core::RepoNodeTransformation, repo::core::RepoNodeReference> RepoTransRefPair;
 
 Q_DECLARE_METATYPE(RepoTransRefPair)
+
+namespace repo {
+namespace gui {
 
 class RepoFederationDialog : public QDialog
 {
