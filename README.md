@@ -3,6 +3,9 @@
 
 Cross-platform C++ GUI written in Qt.
 
+## License
+This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html). Should you require a commercial license, please contact [support@3drepo.org](mailto:support@3drepo.org)
+
 ## Dependencies
 
 - [3D Repo Core master branch](https://github.com/3drepo/3drepocore)

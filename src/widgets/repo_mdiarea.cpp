@@ -56,16 +56,15 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 
 
     //--------------------------------------------------------------------------
-	// FPS testing only
-	fpsTimer = new QTimer();
+    // FPS testing only
+    // Do not use in production as it keeps redrawing constantly
 //    if (QGuiApplication::screens().size() > 0)
-//		fpsTimer->start((1/QGuiApplication::screens()[0]->refreshRate()) * 1000);
+//        fpsTimer.start(1/(QGuiApplication::screens()[0]->refreshRate()) * 1000);
 }
 
 repo::gui::RepoMdiArea::~RepoMdiArea()
 {
-	fpsTimer->stop();
-	delete fpsTimer;
+    fpsTimer.stop();
 }
 
 //------------------------------------------------------------------------------
@@ -198,7 +197,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 	repoSubWindow->show();
 
 	QObject::connect(
-		fpsTimer, &QTimer::timeout,
+        &fpsTimer, &QTimer::timeout,
         repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
 
 	this->update();
@@ -219,7 +218,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	repoSubWindow->show();
 
 	QObject::connect(
-			fpsTimer, &QTimer::timeout,
+            &fpsTimer, &QTimer::timeout,
             repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
 
     //--------------------------------------------------------------------------
@@ -251,7 +250,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	repoSubWindow->show();
 
 	QObject::connect(
-			fpsTimer, &QTimer::timeout,
+            &fpsTimer, &QTimer::timeout,
 			repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::updateGL);
 
 	this->update();

@@ -171,7 +171,7 @@ private :
 	QImage logo;
 
 	//! FPS timer
-	QTimer* fpsTimer;
+    QTimer fpsTimer;
 
 };
 

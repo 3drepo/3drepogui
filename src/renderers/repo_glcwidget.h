@@ -23,8 +23,10 @@
 // Core
 #include "graph/repo_graph_scene.h"
 
-#include <ctime>
-#include <chrono>
+//------------------------------------------------------------------------------
+// GUI
+#include "repo_fpscounter.h"
+
 //------------------------------------------------------------------------------
 #include <QGLWidget>
 //------------------------------------------------------------------------------
@@ -113,6 +115,8 @@ public slots :
 	// Slots
 	//
     //--------------------------------------------------------------------------
+
+    void broadcastCameraChange();
 
 	//! Sets the camera of the view.
 	void setCamera(const GLC_Camera&);
@@ -209,6 +213,8 @@ public :
 
 	//! Removes and deletes all bounding boxes.
 	void clearBoundingBoxes();
+
+    void toggleOctree();
 
     void select(GLC_uint selectionID,
                 bool multiSelection = false,
@@ -331,14 +337,8 @@ protected :
 	//! Rendering flag.
 	glc::RenderFlag renderingFlag;
 
-	//! Counter of rendered frames.
-	unsigned int fpsCounter;
+    RepoFPSCounter fpsCounter;
 
-	//! Previously recorded time for fps calculation.
-    std::chrono::steady_clock::time_point fpsTimeZero;
-
-	//! Number of frames rendered per second.
-	float fps;
 
 }; // end class
 
