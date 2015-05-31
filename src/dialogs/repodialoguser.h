@@ -28,12 +28,14 @@
 #include <QItemEditorFactory>
 #include <QStandardItemEditorCreator>
 #include <QTreeWidgetItem>
+#include <QUuid>
 
 
 //------------------------------------------------------------------------------
 // Core
 #include <RepoUser>
 #include <RepoImage>
+#include <RepoAPIKey>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -54,7 +56,7 @@ class RepoDialogUser : public QDialog
     enum Columns { DATABASE, VALUE };
 
     //! Access rights tabs.
-    enum Tabs { PROJECTS, GROUPS, ROLES };
+    enum Tabs { PROJECTS, GROUPS, ROLES, API_KEYS };
 
 public:
 
@@ -70,6 +72,9 @@ public:
 
 public slots:
 
+    //! Adds an API Key pair to the API Keys table.
+    QTreeWidgetItem *addAPIKey(const std::pair<std::string, std::string> &);
+
     //! Adds a DB Group pair to the Groups table.
     QTreeWidgetItem *addGroup(const std::pair<std::string, std::string> &);
 
@@ -78,13 +83,13 @@ public slots:
 
     //! Adds Access Rights item depending on the specified Tab.
     QTreeWidgetItem *addItem(enum Tabs tab,
-                             const std::pair<std::string, std::string> &pair);
+                             const std::pair<std::string, std::string> &pair = std::make_pair(std::string(),std::string()));
 
     //! Adds specific item pair to a given parent tree widget.
     QTreeWidgetItem *addItem(
             const std::pair<std::string, std::string> &pair,
             QTreeWidget *parent,
-            const QHash<QString, RepoComboBoxDelegate* > &delegates);
+            const QHash<QString, RepoComboBoxDelegate* > &delegates = QHash<QString, RepoComboBoxDelegate* >());
 
     //! Adds items from a given list to a given tab tree.
     void addItems(enum Tabs tab, const std::list<std::pair<std::string, std::string> > &list);
@@ -116,6 +121,9 @@ public :
     // Getters
     //
     //--------------------------------------------------------------------------
+
+    //! Returns a list of api keys as label, key pairs.
+    std::list<std::pair<std::string, std::string> > getAPIKeys() const;
 
     //! Returns the email currently set in the dialog if any.
     std::string getEmail() const;
@@ -171,9 +179,6 @@ private:
 
     //! Email regular expression validator.
     QRegExpValidator *emailValidator;
-
-    //! Lookup table for projects delegates by database name.
-    QHash<QString, RepoComboBoxDelegate* > groupsDelegates;
 
     //! Lookup table for projects delegates by database name.
     QHash<QString, RepoComboBoxDelegate* > projectsDelegates;
