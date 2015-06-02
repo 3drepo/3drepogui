@@ -73,6 +73,10 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
         proxyModel, &QSortFilterProxyModel::rowsRemoved,
         this, &RepoDialogCommit::updateCountLabel);
 
+    QObject::connect(
+                ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
+                this, SLOT(editItem(QModelIndex)));
+
 
     ui->branchComboBox->addItem(
                 RepoFontAwesome::getBranchIcon(),
@@ -110,6 +114,30 @@ QIcon repo::gui::RepoDialogCommit::getIcon()
 		RepoFontAwesome::fa_upload, QColor(Qt::darkGreen));
 }
 
+void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
+{
+    QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
+    QStandardItem *item = model->invisibleRootItem()->child(modelIndex.row(),Columns::NAME);
+    core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
+
+    if (node->getType() == REPO_NODE_TYPE_TRANSFORMATION)
+    {
+        core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
+        if (transformation)
+        {
+            RepoTransformationDialog transformationDialog(*transformation, this);
+            if (transformationDialog.exec())
+            {
+                core::RepoNodeTransformation t = transformationDialog.getTransformation();
+                transformation->setName(t.getName());
+                transformation->setMatrix(t.getMatrix());
+                proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
+                                    QString::fromStdString(t.getName()));
+            }
+        }
+    }
+}
+
 //------------------------------------------------------------------------------
 int repo::gui::RepoDialogCommit::exec()
 {    
@@ -125,8 +153,6 @@ int repo::gui::RepoDialogCommit::exec()
     // Cascading updates: change of host triggers change of databases and
     // that of projects and that of branches.
     updateHosts();
-
-
 
 	setModifiedObjects();
 	this->setCursor(Qt::ArrowCursor);

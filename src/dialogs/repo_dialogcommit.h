@@ -26,17 +26,21 @@
 #include <QtWidgets/QDialog>
 #include <QtGui>
 #include <QStandardItemModel>
+#include <QModelIndex>
 //------------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
 #include <RepoGraphAbstract>
 #include <RepoNodeRevision>
 #include <RepoNodeAbstract>
+#include <RepoNodeTransformation>
+#include <RepoNodeTypes>
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
 #include "../widgets/repo_lineedit.h"
 #include "../primitives/repoidbcache.h"
+#include "repo_transformationdialog.h"
 //------------------------------------------------------------------------------
 
 namespace Ui {
@@ -105,11 +109,13 @@ public:
 
 public slots:
 
-	/*! 
-	 * Shows the dialog as a modal window, blocking until the user closes it. 
-	 * If the user selects to connect, the dialog saves all filled-in values
-	 * as user settings. Returns a DialogCode result.
-	 */
+    void editItem(const QModelIndex &);
+
+    /*!
+     * Shows the dialog as a modal window, blocking until the user closes it.
+     * If the user selects to connect, the dialog saves all filled-in values
+     * as user settings. Returns a DialogCode result.
+     */
 	virtual int exec();
 
     void updateCountLabel() const;
@@ -121,6 +127,8 @@ public slots:
     void updateProjects();
 
     void updateBranches();
+
+
 
 private :
 
