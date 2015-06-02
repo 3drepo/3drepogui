@@ -117,22 +117,25 @@ QIcon repo::gui::RepoDialogCommit::getIcon()
 void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 {
     QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
-    QStandardItem *item = model->invisibleRootItem()->child(modelIndex.row(),Columns::NAME);
-    core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
+    QStandardItem *item = model->item(modelIndex.row(),Columns::NAME);
 
-    if (node->getType() == REPO_NODE_TYPE_TRANSFORMATION)
+    if (item)
     {
-        core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
-        if (transformation)
+        core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
+        if (node && REPO_NODE_TYPE_TRANSFORMATION == node->getType())
         {
-            RepoTransformationDialog transformationDialog(*transformation, this);
-            if (transformationDialog.exec())
+            core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
+            if (transformation)
             {
-                core::RepoNodeTransformation t = transformationDialog.getTransformation();
-                transformation->setName(t.getName());
-                transformation->setMatrix(t.getMatrix());
-                proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
-                                    QString::fromStdString(t.getName()));
+                RepoTransformationDialog transformationDialog(*transformation, this);
+                if (transformationDialog.exec())
+                {
+                    core::RepoNodeTransformation t = transformationDialog.getTransformation();
+                    transformation->setName(t.getName());
+                    transformation->setMatrix(t.getMatrix());
+                    proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
+                                        QString::fromStdString(t.getName()));
+                }
             }
         }
     }

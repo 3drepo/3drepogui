@@ -190,7 +190,7 @@ GLC_StructOccurence* RepoTranscoderAssimp::createOccurrenceFromNode(
     // Transformation
     instance->move(toGLCMatrix(assimpNode->mTransformation));
     occurrence = new GLC_StructOccurence(instance);
-    occurrence->setName(name); // TODO: put back
+    occurrence->setName(name);
 
 
 

@@ -26,10 +26,12 @@
 //------------------------------------------------------------------------------
 // Core
 #include <RepoNodeAbstract>
+#include <RepoNodeTransformation>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "../renderers/repo_glcwidget.h"
+#include "../dialogs/repo_transformationdialog.h"
 
 namespace Ui {
     class RepoSelectionTreeDockWidget;
@@ -40,7 +42,9 @@ namespace gui {
 
 class RepoSelectionTreeDockWidget : public QDockWidget
 {
-    Q_OBJECT
+    Q_OBJECT    
+
+    enum Columns { NAME, TYPE, UID, SID };
 
 public:
 
@@ -54,6 +58,8 @@ public slots :
 
     void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
 
+    void attachPDF();
+
     void changeItem(QStandardItem*);
 
     void changeSelection(
@@ -63,9 +69,28 @@ public slots :
     void changeSelection(const QItemSelection& selection,
                          bool unselectSelected);
 
+    void editItem(const QModelIndex &) const;
+
+    void editSelectedTransformations() const;
+
+    void editSelectedItems() const;
 
     void select(const core::RepoNodeAbstract* node,
                 bool unselectSelected);
+
+    void showContextMenu(const QPoint &point);
+
+protected :
+
+    core::RepoNodeTransformation *getTransformationFromProxy(const QModelIndex &proxyIndex) const;
+
+    core::RepoNodeTransformation *getTransformationFromSource(const QModelIndex &proxyIndex) const;
+
+    core::RepoNodeAbstract *getNode(const QStandardItem *) const;
+
+    core::RepoNodeTransformation *getTransformation(const QStandardItem *) const;
+
+    std::string getType(const QStandardItem *) const;
 
 private:
 

@@ -51,10 +51,11 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     ui->filterableTreeWidget->setHeaders(headers);
     ui->filterableTreeWidget->setProxyModel(new RepoSortFilterProxyModel(this, true));
     ui->filterableTreeWidget->setExtendedSelection();
-
+    ui->filterableTreeWidget->getTreeView()->setExpandsOnDoubleClick(false);
 
     if (repoScene)
     {
+        // TODO: make asynchronous
         addNode(ui->filterableTreeWidget->getModel()->invisibleRootItem(),
             repoScene->getRoot());
     }
@@ -66,6 +67,16 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
     QObject::connect(ui->filterableTreeWidget->getModel(),
                      SIGNAL(itemChanged(QStandardItem*)),
                      this, SLOT(changeItem(QStandardItem*)));
+
+    QObject::connect(
+                ui->filterableTreeWidget->getTreeView(),
+                SIGNAL(doubleClicked(QModelIndex)),
+                this, SLOT(editItem(QModelIndex)));
+
+    QObject::connect(
+                ui->filterableTreeWidget->getTreeView(),
+                SIGNAL(customContextMenuRequested(QPoint)),
+                this, SLOT(showContextMenu(QPoint)));
 }
 
 repo::gui::RepoSelectionTreeDockWidget::~RepoSelectionTreeDockWidget()
@@ -102,7 +113,6 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
     typeItem->setToolTip(type);
     row << typeItem;
 
-
     // Unique ID
     QString uid = QString::fromStdString(
                 core::MongoClientWrapper::uuidToString(node->getUniqueID()));
@@ -121,17 +131,29 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
 
     parentItem->appendRow(row);
 
+    // Recursion
     std::set<const core::RepoNodeAbstract*> children = node->getChildren();
     std::set<const core::RepoNodeAbstract*>::iterator it;
     for (it = children.begin(); it != children.end(); ++it)
-    {
         addNode(nameItem, *it);
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::attachPDF()
+{
+    QStringList filePaths = QFileDialog::getOpenFileNames(
+        this->parentWidget(),
+        tr("Select one or more files to open"),
+        QString::null,
+        "*.pdf");
+
+    for (QString path : filePaths)
+    {
+
     }
 }
 
 void repo::gui::RepoSelectionTreeDockWidget::changeItem(QStandardItem* item)
 {
-
     QObject::disconnect(ui->filterableTreeWidget->getModel(),
                      SIGNAL(itemChanged(QStandardItem*)),
                      this, SLOT(changeItem(QStandardItem*)));
@@ -162,7 +184,7 @@ void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
     for (int i = 0; i < selectionIndexes.size(); ++i)
     {
         QModelIndex index = selectionIndexes[i];
-        if (0 == index.column()) // Name column
+        if (Columns::NAME == index.column()) // Name column
         {
             core::RepoNodeAbstract* node =
                 (core::RepoNodeAbstract*)index.data(Qt::UserRole+1).value<void*>();
@@ -179,6 +201,42 @@ void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
     if (glcWidget)
         glcWidget->repaint();
 }
+
+void repo::gui::RepoSelectionTreeDockWidget::editItem(const QModelIndex &) const
+{
+   editSelectedItems();
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::editSelectedItems() const
+{
+    std::string type = getType(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));
+    if (REPO_NODE_TYPE_TRANSFORMATION == type)
+        editSelectedTransformations();
+}
+
+void repo::gui::RepoSelectionTreeDockWidget::editSelectedTransformations() const
+{
+    core::RepoNodeTransformation *t = getTransformation(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));
+    RepoTransformationDialog transformationDialog(t ? *t : core::RepoNodeTransformation(),
+                                                  this->parentWidget());
+    if (transformationDialog.exec())
+    {
+        core::RepoNodeTransformation newT = transformationDialog.getTransformation();
+        for (QModelIndex selectedIndex : ui->filterableTreeWidget->getCurrentSelection())
+        {
+            core::RepoNodeTransformation *transformation = getTransformationFromSource(selectedIndex);
+            if (transformation)
+            {
+                transformation->setName(newT.getName());
+                transformation->setMatrix(newT.getMatrix());
+                ui->filterableTreeWidget->getModel()->setData(
+                            selectedIndex.sibling(selectedIndex.row(), Columns::NAME),
+                            QString::fromStdString(newT.getName()));
+            }
+        }
+    }
+}
+
 
 void repo::gui::RepoSelectionTreeDockWidget::select(
         const core::RepoNodeAbstract* node,
@@ -197,9 +255,67 @@ void repo::gui::RepoSelectionTreeDockWidget::select(
     }
 }
 
+void repo::gui::RepoSelectionTreeDockWidget::showContextMenu(const QPoint &point)
+{
+    bool on = ui->filterableTreeWidget->getModel()->invisibleRootItem()->rowCount() > 0;
+    bool isTransformationSelected = REPO_NODE_TYPE_TRANSFORMATION ==
+            getType(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));
+
+    QTreeView *treeView = ui->filterableTreeWidget->getTreeView();
+    QMenu menu(treeView);
+    QAction *action = menu.addAction(
+                tr("Edit Transformation..."),
+                this,
+                SLOT(editSelectedItems()));
+    action->setEnabled(on && isTransformationSelected);
+    menu.addSeparator();
+    QAction *remove = menu.addAction(
+                tr("Attach PDF..."),
+                this,
+                SLOT(attachPDF()));
+    remove->setEnabled(on);
+    menu.exec(treeView->mapToGlobal(point));
+}
 
 
+repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformationFromSource(
+        const QModelIndex &sourceIndex) const
+{
+    return getTransformation(ui->filterableTreeWidget->getItemFromSource(sourceIndex, Columns::NAME));
+}
 
+repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformationFromProxy(
+        const QModelIndex &proxyIndex) const
+{
+    return getTransformation(ui->filterableTreeWidget->getItemFromProxy(proxyIndex, Columns::NAME));
+}
+
+repo::core::RepoNodeAbstract *repo::gui::RepoSelectionTreeDockWidget::getNode(const QStandardItem * item) const
+{
+    core::RepoNodeAbstract *node = 0;
+    if (item)
+        node = (core::RepoNodeAbstract*)item->data(Qt::UserRole+1).value<void*>();
+    return node;
+}
+
+repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformation(
+        const QStandardItem *item) const
+{
+    core::RepoNodeTransformation *transformation = 0;
+    core::RepoNodeAbstract* node = getNode(item);
+    if (node && node->getType() == REPO_NODE_TYPE_TRANSFORMATION)
+        transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
+    return transformation;
+}
+
+std::string repo::gui::RepoSelectionTreeDockWidget::getType(const QStandardItem * item) const
+{
+    std::string type;
+    core::RepoNodeAbstract* node = getNode(item);
+    if (node)
+        type = node->getType();
+    return type;
+}
 
 
 

@@ -92,9 +92,19 @@ public:
 
     QItemSelectionModel *getSelectionModel() const;
 
+    QStandardItem *getCurrentItem(int column = 0) const;
+
     QModelIndexList getCurrentSelection() const;
 
     QTreeView *getTreeView() const;
+
+    //! Proxy
+    QStandardItem *getItemFromProxy(const QModelIndex &proxyIndex, int column = 0) const;
+
+    //! Model
+    QStandardItem *getItemFromSource(const QModelIndex &sourceIndex, int column = 0) const;
+
+
 
     //--------------------------------------------------------------------------
     //
