@@ -40,13 +40,9 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWra
 	historyModel = new QStandardItemModel(this); 
 	historyModel->setColumnCount(5);
     historyModel->setHeaderData(
-                RepoHistoryColumns::REVISION,
+                RepoHistoryColumns::TIMESTAMP,
                 Qt::Horizontal,
-                tr("Revision"));
-    historyModel->setHeaderData(
-                RepoHistoryColumns::BRANCH,
-                Qt::Horizontal,
-                tr("Branch"));
+                tr("Timestamp"));
     historyModel->setHeaderData(
                 RepoHistoryColumns::MESSAGE,
                 Qt::Horizontal,
@@ -56,9 +52,13 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWra
                 Qt::Horizontal,
                 tr("Author"));
     historyModel->setHeaderData(
-                RepoHistoryColumns::TIMESTAMP,
+                RepoHistoryColumns::REVISION,
                 Qt::Horizontal,
-                tr("Timestamp"));
+                tr("Revision"));
+    historyModel->setHeaderData(
+                RepoHistoryColumns::BRANCH,
+                Qt::Horizontal,
+                tr("Branch"));
 	
     //--------------------------------------------------------------------------
 	historyProxy = new QSortFilterProxyModel(this);
@@ -73,7 +73,7 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWra
 	clearHistoryModel();
 
     //--------------------------------------------------------------------------
-	revisionModel = new QStandardItemModel(this); 
+    revisionModel = new QStandardItemModel(ui->revisionTreeView);
 	revisionModel->setColumnCount(2);
     revisionModel->setHeaderData(
                 RepoRevisionColumns::SID,
@@ -103,6 +103,11 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWra
 	QObject::connect(
         ui->refreshPushButton, &QPushButton::pressed,
 		this, &RepoDialogHistory::refresh);
+
+    QObject::connect(
+                ui->historyTreeView->selectionModel(),
+                SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+                this, SLOT(changeRevision(QModelIndex,QModelIndex)));
 	
 }
 
@@ -157,20 +162,30 @@ void repo::gui::RepoDialogHistory::refresh()
 	}
 }
 
-void repo::gui::RepoDialogHistory::addRevision(
-	QVariant uid, 
-	QVariant sid, 
-	QVariant message, 
-	QVariant author, 
-	QVariant timestamp)
+void repo::gui::RepoDialogHistory::addRevision(core::RepoNodeRevision *revision)
 {
 	QList<QStandardItem *> row;	
+    QDateTime datetime;
+    datetime.setMSecsSinceEpoch(revision->getTimestamp());
+
     //--------------------------------------------------------------------------
-	row.append(createItem(uid));
-	row.append(createItem(sid));
-	row.append(createItem(message));
-	row.append(createItem(author));
-	row.append(createItem(timestamp));	
+    // Datetime
+    QStandardItem *item = createItem(QVariant(datetime));
+    item->setData(qVariantFromValue((void *) revision));
+    row.append(item);
+
+    // Message
+    row.append(createItem(QVariant(QString::fromStdString(revision->getMessage()))));
+
+    // Author
+    row.append(createItem(QVariant(QString::fromStdString(revision->getAuthor()))));
+
+    // UID
+    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getUniqueID()).c_str()))));
+
+    // SID
+    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getSharedID()).c_str()))));
+
     //--------------------------------------------------------------------------
 	historyModel->invisibleRootItem()->appendRow(row);
     //--------------------------------------------------------------------------
@@ -183,11 +198,11 @@ void repo::gui::RepoDialogHistory::clearHistoryModel()
 {
 	historyModel->removeRows(0, historyModel->rowCount());	
     //--------------------------------------------------------------------------
-    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::REVISION);
-    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::BRANCH);
+    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::TIMESTAMP);
     ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::MESSAGE);
     ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::AUTHOR);
-    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::TIMESTAMP);
+    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::REVISION);
+    ui->historyTreeView->resizeColumnToContents(RepoHistoryColumns::BRANCH);
     //--------------------------------------------------------------------------
     ui->filterLineEdit->clear();
     updateCountLabel();
@@ -198,6 +213,43 @@ void repo::gui::RepoDialogHistory::updateCountLabel()
     ui->revisionsCountLabel->setText(
                 tr("Showing %1 of %2").arg(historyProxy->rowCount()).arg(
         historyModel->rowCount()));
+}
+
+void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, const QModelIndex &)
+{    
+    // Clear any previous entries
+    revisionModel->removeRows(0, revisionModel->rowCount());
+
+
+    QModelIndex sourceIndex = historyProxy->mapToSource(current);
+    QModelIndex timestampIndex = historyModel->index(sourceIndex.row(), RepoHistoryColumns::TIMESTAMP, sourceIndex.parent());
+    QStandardItem *item = historyModel->itemFromIndex(timestampIndex);
+
+    if (item)
+    {
+        core::RepoNodeRevision *revision = 0;
+        revision = (core::RepoNodeRevision*)item->data(Qt::UserRole+1).value<void*>();
+        if (revision)
+        {
+
+            ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
+
+            // TODO: display lists of added, deleted, modified (rather than current)
+            for (boost::uuids::uuid uuid : revision->getCurrentUniqueIDs())
+            {
+                QList<QStandardItem *> row;
+
+                // UID // TODO: make SID
+                row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(uuid).c_str()))));
+
+                // Action
+                row.append(createItem(QVariant(tr("current"))));
+
+                //--------------------------------------------------------------------------
+                revisionModel->invisibleRootItem()->appendRow(row);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

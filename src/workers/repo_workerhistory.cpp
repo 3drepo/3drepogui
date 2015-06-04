@@ -45,32 +45,19 @@ void repo::gui::RepoWorkerHistory::run()
             mongo.reauthenticate(database);
 
             std::list<std::string> fields;
-            fields.push_back(REPO_NODE_LABEL_ID);
-            fields.push_back(REPO_NODE_LABEL_SHARED_ID);
-            fields.push_back(REPO_NODE_LABEL_MESSAGE);
-            fields.push_back(REPO_NODE_LABEL_AUTHOR);
-            fields.push_back(REPO_NODE_LABEL_TIMESTAMP);
 
-            //----------------------------------------------------------------------
+            //------------------------------------------------------------------
             // Retrieves all BSON objects until finished or cancelled.
             unsigned long long skip = 0;
             QDateTime datetime;
             std::auto_ptr<mongo::DBClientCursor> cursor;
-
-
             do
             {
                 for (; !cancelled && cursor.get() && cursor->more(); ++skip)
                 {
-                    core::RepoNodeRevision revision(cursor->nextSafe());
-                    datetime.setMSecsSinceEpoch(revision.getTimestamp());
-                    //--------------------------------------------------------------
-                    emit revisionFetched(
-                        QUuid(core::MongoClientWrapper::uuidToString(revision.getUniqueID()).c_str()),
-                        QUuid(core::MongoClientWrapper::uuidToString(revision.getSharedID()).c_str()),
-                        QString::fromStdString(revision.getMessage()),
-                        QString::fromStdString(revision.getAuthor()),
-                        datetime);
+                    core::RepoNodeRevision *revision = new core::RepoNodeRevision(cursor->nextSafe());
+                    //----------------------------------------------------------
+                    emit revisionFetched(revision);
                 }
                 if (!cancelled)
                     cursor = mongo.listAllTailable(

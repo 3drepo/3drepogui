@@ -96,6 +96,7 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
         name = tr("<empty>"); //QString::fromStdString(core::MongoClientWrapper::uuidToString(node->getUniqueID()));
 
     QList<QStandardItem*> row;
+    QString type = QString::fromStdString(node->getType());
 
     // Name
     QStandardItem* nameItem = new QStandardItem(name);
@@ -104,10 +105,14 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
     nameItem->setCheckable(true);
     nameItem->setData(qVariantFromValue((void *) node));
     nameItem->setCheckState(Qt::Checked);
+
+    // Icon
+    if (REPO_NODE_TYPE_METADATA == type.toStdString())
+        nameItem->setIcon(RepoFontAwesome::getMetadataIcon());
+
     row << nameItem;
 
     // Type
-    QString type = QString::fromStdString(node->getType());
     QStandardItem* typeItem = new QStandardItem(type);
     typeItem->setEditable(false);
     typeItem->setToolTip(type);
@@ -140,15 +145,36 @@ void repo::gui::RepoSelectionTreeDockWidget::addNode(
 
 void repo::gui::RepoSelectionTreeDockWidget::attachPDF()
 {
-    QStringList filePaths = QFileDialog::getOpenFileNames(
-        this->parentWidget(),
-        tr("Select one or more files to open"),
-        QString::null,
-        "*.pdf");
+    QModelIndexList currentSelection = ui->filterableTreeWidget->getCurrentSelection();
 
-    for (QString path : filePaths)
+    if (currentSelection.size() > 0)
     {
+        QStringList filePaths = QFileDialog::getOpenFileNames(
+                    this->parentWidget(),
+                    tr("Select one or more files to open"),
+                    QString::null,
+                    "*.pdf");
+        core::RepoGraphScene *repoScene = glcWidget->getRepoScene();
+        for (QString path : filePaths)
+        {
+            QFileInfo fileInfo(path);
+            core::RepoBinary bin(path.toStdString(), REPO_MEDIA_TYPE_PDF);
+            core::RepoNodeMetadata *meta = new core::RepoNodeMetadata(bin, fileInfo.baseName().toStdString(), REPO_MEDIA_TYPE_PDF);
 
+            for (QModelIndex sourceIndex : currentSelection)
+            {
+                if (sourceIndex.column() == Columns::NAME)
+                {
+                    QStandardItem *item = ui->filterableTreeWidget->getItemFromSource(sourceIndex);
+                    core::RepoNodeAbstract *parent = getNode(item);
+                    parent->addChild(meta);
+                    meta->addParent(parent);
+                    addNode(item, meta);
+                }
+            }
+            repoScene->addNodeByUniqueID(meta);
+            repoScene->addMetadata(meta);
+        }
     }
 }
 
@@ -316,8 +342,6 @@ std::string repo::gui::RepoSelectionTreeDockWidget::getType(const QStandardItem 
         type = node->getType();
     return type;
 }
-
-
 
 
 

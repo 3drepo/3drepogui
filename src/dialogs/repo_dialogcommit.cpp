@@ -251,7 +251,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 		row.append(item);
 
         std::string type = node->getType();
-        if (type == REPO_NODE_TYPE_METADATA)
+        if (REPO_NODE_TYPE_METADATA == type)
             item->setIcon(RepoFontAwesome::getMetadataIcon());
 
         //----------------------------------------------------------------------

@@ -28,9 +28,12 @@
 #include <QList>
 #include <QUuid>
 #include <QThreadPool>
+#include <QModelIndex>
 //------------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoNodeRevision>
+//------------------------------------------------------------------------------
 #include "ui_repo_dialoghistory.h"
 //------------------------------------------------------------------------------
 
@@ -46,7 +49,7 @@ class RepoDialogHistory : public QDialog
 	Q_OBJECT
 
 	//! Databases table header positions
-	enum RepoHistoryColumns { REVISION, BRANCH, MESSAGE, AUTHOR, TIMESTAMP };
+    enum RepoHistoryColumns { TIMESTAMP, MESSAGE, AUTHOR,REVISION, BRANCH };
 
 	//! Revision table header positions
 	enum RepoRevisionColumns { SID, ACTION };
@@ -81,17 +84,15 @@ public slots:
 	void refresh();
 
 	//! Adds a revision row to the history model
-	void addRevision(
-		QVariant uid, 
-		QVariant sid, 
-		QVariant message, 
-		QVariant author, 
-		QVariant timestamp);
+    void addRevision(core::RepoNodeRevision *);
 
 	//! Clears the history model (does not remove headers)
 	void clearHistoryModel();
 
+    //! Updates count label
     void updateCountLabel();
+
+    void changeRevision(const QModelIndex &current, const QModelIndex &previous);
 
 public :
 

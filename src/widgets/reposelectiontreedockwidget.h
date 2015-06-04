@@ -27,11 +27,13 @@
 // Core
 #include <RepoNodeAbstract>
 #include <RepoNodeTransformation>
+#include <RepoBinary>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "../renderers/repo_glcwidget.h"
 #include "../dialogs/repo_transformationdialog.h"
+#include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
     class RepoSelectionTreeDockWidget;

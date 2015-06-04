@@ -94,6 +94,9 @@ public:
 
     QStandardItem *getCurrentItem(int column = 0) const;
 
+    /*! Returns current selection indexes which is the number of columns by
+     * the number of rows selected.
+     */
     QModelIndexList getCurrentSelection() const;
 
     QTreeView *getTreeView() const;
