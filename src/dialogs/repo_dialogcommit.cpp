@@ -60,8 +60,6 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
 	proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
 
-    ui->splitter->setSizes(QList<int>()<< 15 << 200);
-
     //--------------------------------------------------------------------------
 	// Connect filtering text input to the filtering proxy model
 	QObject::connect(
@@ -74,6 +72,10 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
     QObject::connect(
         proxyModel, &QSortFilterProxyModel::rowsRemoved,
         this, &RepoDialogCommit::updateCountLabel);
+
+    QObject::connect(
+                ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
+                this, SLOT(editItem(QModelIndex)));
 
 
     ui->branchComboBox->addItem(
@@ -112,6 +114,33 @@ QIcon repo::gui::RepoDialogCommit::getIcon()
 		RepoFontAwesome::fa_upload, QColor(Qt::darkGreen));
 }
 
+void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
+{
+    QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
+    QStandardItem *item = model->item(modelIndex.row(),Columns::NAME);
+
+    if (item)
+    {
+        core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
+        if (node && REPO_NODE_TYPE_TRANSFORMATION == node->getType())
+        {
+            core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
+            if (transformation)
+            {
+                RepoTransformationDialog transformationDialog(*transformation, this);
+                if (transformationDialog.exec())
+                {
+                    core::RepoNodeTransformation t = transformationDialog.getTransformation();
+                    transformation->setName(t.getName());
+                    transformation->setMatrix(t.getMatrix());
+                    proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
+                                        QString::fromStdString(t.getName()));
+                }
+            }
+        }
+    }
+}
+
 //------------------------------------------------------------------------------
 int repo::gui::RepoDialogCommit::exec()
 {    
@@ -120,15 +149,13 @@ int repo::gui::RepoDialogCommit::exec()
 	this->setCursor(Qt::WaitCursor);
     // TODO: make into asynchronous worker
 
-
-    // Cascading updates: change of host triggers change of databases and
-    // that of projects and that of branches.
-    updateHosts();
-
     // Set the currently selected project instead of the very first one.
     ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
     ui->projectComboBox->setCurrentText(dbCache->getSelectedProject());
 
+    // Cascading updates: change of host triggers change of databases and
+    // that of projects and that of branches.
+    updateHosts();
 
 	setModifiedObjects();
 	this->setCursor(Qt::ArrowCursor);
@@ -224,7 +251,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 		row.append(item);
 
         std::string type = node->getType();
-        if (type == REPO_NODE_TYPE_METADATA)
+        if (REPO_NODE_TYPE_METADATA == type)
             item->setIcon(RepoFontAwesome::getMetadataIcon());
 
         //----------------------------------------------------------------------
@@ -286,12 +313,6 @@ repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() 
             nodes.insert(item->data().value<core::RepoNodeAbstract*>());
     }
     return nodes;
-}
-
-repo::core::RepoNodeRevision *repo::gui::RepoDialogCommit::getRevision()
-{
-    revision->setCurrentUniqueIDs(getNodesToCommit());
-    return revision;
 }
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const

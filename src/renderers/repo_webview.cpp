@@ -27,7 +27,6 @@ repo::gui::RepoWebView::RepoWebView(
     QWidget(parent),
     ui(new Ui::RepoWebView)
 {
-    ui->setupUi(this);
 
     // Global settings for all pages
     QWebSettings *webSettings = QWebSettings::globalSettings();
@@ -35,6 +34,9 @@ repo::gui::RepoWebView::RepoWebView(
     webSettings->setAttribute(QWebSettings::PluginsEnabled, true);
     webSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
     webSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
+
+    ui->setupUi(this);
+
 
     setAddressBar(url);
     loadFromAddressBar();

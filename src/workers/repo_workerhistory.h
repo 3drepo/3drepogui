@@ -20,6 +20,7 @@
 //-----------------------------------------------------------------------------
 // Repo Core
 #include <RepoWrapperMongo>
+#include <RepoNodeRevision>
 
 //-----------------------------------------------------------------------------
 // Repo GUI
@@ -47,12 +48,7 @@ public :
 
 signals :
 
-	void revisionFetched(
-		QVariant uid, 
-		QVariant sid, 
-		QVariant message, 
-		QVariant author, 
-		QVariant timestamp);
+    void revisionFetched(core::RepoNodeRevision *);
 
 public slots :
 

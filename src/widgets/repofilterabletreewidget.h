@@ -92,9 +92,22 @@ public:
 
     QItemSelectionModel *getSelectionModel() const;
 
+    QStandardItem *getCurrentItem(int column = 0) const;
+
+    /*! Returns current selection indexes which is the number of columns by
+     * the number of rows selected.
+     */
     QModelIndexList getCurrentSelection() const;
 
     QTreeView *getTreeView() const;
+
+    //! Proxy
+    QStandardItem *getItemFromProxy(const QModelIndex &proxyIndex, int column = 0) const;
+
+    //! Model
+    QStandardItem *getItemFromSource(const QModelIndex &sourceIndex, int column = 0) const;
+
+
 
     //--------------------------------------------------------------------------
     //

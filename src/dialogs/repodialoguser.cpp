@@ -138,6 +138,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         addItems(Tabs::PROJECTS, user.getProjectsList());
         addItems(Tabs::GROUPS, user.getGroupsList());
         addItems(Tabs::ROLES, user.getRolesList());
+        addItems(Tabs::API_KEYS, user.getAPIKeysList());
     }
 
     //--------------------------------------------------------------------------
@@ -189,13 +190,23 @@ repo::gui::RepoDialogUser::~RepoDialogUser()
     }
 }
 
+QTreeWidgetItem * repo::gui::RepoDialogUser::addAPIKey(
+        const std::pair<std::string, std::string> &apiKey)
+{
+    QTreeWidgetItem *item = addItem(
+                apiKey,
+                ui->apiKeysTreeWidget);
+    ui->apiKeysTreeWidget->scrollToItem(item);
+    ui->apiKeysTreeWidget->setCurrentItem(item, Columns::DATABASE);
+    return item;
+}
+
 QTreeWidgetItem * repo::gui::RepoDialogUser::addGroup(
         const std::pair<std::string, std::string> &group)
 {
     QTreeWidgetItem *item = addItem(
                 group,
-                ui->groupsTreeWidget,
-                groupsDelegates);
+                ui->groupsTreeWidget);
     ui->groupsTreeWidget->scrollToItem(item);
     ui->groupsTreeWidget->setCurrentItem(item, Columns::DATABASE);
     return item;
@@ -204,26 +215,41 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addGroup(
 
 QTreeWidgetItem * repo::gui::RepoDialogUser::addItem()
 {
-    std::string admin = core::MongoClientWrapper::ADMIN_DATABASE;
-    return addItem(static_cast<Tabs>(ui->accessRightsTabWidget->currentIndex()),
-                   std::make_pair(""+admin,""));
+    return addItem(static_cast<Tabs>(ui->accessRightsTabWidget->currentIndex()));
 }
 
 QTreeWidgetItem* repo::gui::RepoDialogUser::addItem(
         enum Tabs tab,
         const std::pair<std::string, std::string> &pair)
 {
+    const static std::string admin = core::MongoClientWrapper::ADMIN_DATABASE;
     QTreeWidgetItem* item = 0;
     switch(tab)
     {
     case Tabs::PROJECTS :
-       item = addProject(pair);
-       break;
+        if (pair.first.empty() && pair.second.empty())
+            item = addProject(std::make_pair(""+admin,""));
+        else
+            item = addProject(pair);
+        break;
     case Tabs::GROUPS :
-        item = addGroup(pair);
+        if (pair.first.empty() && pair.second.empty())
+            item = addGroup(std::make_pair(""+admin,"group"));
+        else
+            item = addGroup(pair);
         break;
     case Tabs::ROLES :
-        item = addRole(pair);
+        if (pair.first.empty() && pair.second.empty())
+            item = addRole(std::make_pair(""+admin,""));
+        else
+            item = addRole(pair);
+        break;
+    case Tabs::API_KEYS :
+        if (pair.first.empty() && pair.second.empty())
+            item = addAPIKey(std::make_pair("label",
+                core::RepoAPIKey().toString()));
+        else
+            item = addAPIKey(pair);
         break;
     }
     return item;
@@ -305,9 +331,12 @@ void repo::gui::RepoDialogUser::removeItem()
     case Tabs::ROLES :
         item = ui->rolesTreeWidget->currentItem();
         break;
+    case Tabs::API_KEYS :
+        item = ui->apiKeysTreeWidget->currentItem();
+        break;
     }
     if (item)
-       delete item;
+        delete item;
 }
 
 std::string repo::gui::RepoDialogUser::getEmail() const
@@ -319,6 +348,12 @@ std::string repo::gui::RepoDialogUser::getFirstName() const
 {
     return ui->firstNameLineEdit->text().toStdString();
 }
+
+std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getAPIKeys() const
+{
+    return getItems(ui->apiKeysTreeWidget);
+}
+
 
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getGroups() const
 {
@@ -440,6 +475,7 @@ repo::core::RepoBSON repo::gui::RepoDialogUser::getCommand() const
                 getProjects(),
                 getRoles(),
                 getGroups(),
+                getAPIKeys(),
                 avatar);
 
     return newUser.getUsername() != user.getUsername()

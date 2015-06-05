@@ -181,7 +181,6 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
 
 void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
 {
-
     bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
     QTreeView *treeView = ui->federatedWidget->getTreeView();
     QMenu menu(treeView);
@@ -205,11 +204,11 @@ void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
 
 void repo::gui::RepoFederationDialog::showTransformationDialog()
 {
-    RepoTransformationDialog *d = new RepoTransformationDialog(getCurrentFederatedTransformation(), this);
-    if (d->exec())
+    RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
+    if (d.exec())
     {
-        core::RepoNodeTransformation transformation = d->getTransformation();
-        for (QModelIndex selectedIndex :getFederatedSelection())
+        core::RepoNodeTransformation transformation = d.getTransformation();
+        for (QModelIndex selectedIndex : getFederatedSelection())
         {
             RepoTransRefPair p =
                     selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
@@ -222,7 +221,6 @@ void repo::gui::RepoFederationDialog::showTransformationDialog()
             ui->federatedWidget->getModel()->setData(selectedIndex, var,Qt::UserRole+1);
         }
     }
-    delete d;
 }
 
 

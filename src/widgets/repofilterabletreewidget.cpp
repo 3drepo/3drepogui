@@ -103,6 +103,19 @@ QItemSelectionModel* repo::gui::RepoFilterableTreeWidget::getSelectionModel() co
     return ui->treeView->selectionModel();
 }
 
+QStandardItem *repo::gui::RepoFilterableTreeWidget::getCurrentItem(int column) const
+{
+    QModelIndex proxyCurrent = getSelectionModel()->currentIndex();
+    QStandardItem *item = 0;
+    if (proxyCurrent.isValid())
+    {
+        QModelIndex modelCurrent = proxy->mapToSource(proxyCurrent);
+        QModelIndex modelCurrentColumn = modelCurrent.sibling(modelCurrent.row(), column);
+        item = model->itemFromIndex(modelCurrentColumn);
+    }
+    return item;
+}
+
 QModelIndexList repo::gui::RepoFilterableTreeWidget::getCurrentSelection() const
 {
     return getProxyModel()->mapSelectionToSource(getSelectionModel()->selection()).indexes();
@@ -119,6 +132,23 @@ QTreeView * repo::gui::RepoFilterableTreeWidget::getTreeView() const
 {
     return ui->treeView;
 }
+
+QStandardItem *repo::gui::RepoFilterableTreeWidget::getItemFromProxy(
+        const QModelIndex &proxyIndex, int column) const
+{
+    QModelIndex sourceIndex = proxy->mapToSource(proxyIndex);
+    return getItemFromSource(sourceIndex, column);
+}
+
+QStandardItem *repo::gui::RepoFilterableTreeWidget::getItemFromSource(
+        const QModelIndex &sourceIndex,
+        int column) const
+{
+    QModelIndex index = model->index(sourceIndex.row(), column, sourceIndex.parent());
+    return model->itemFromIndex(index);
+}
+
+
 
 void repo::gui::RepoFilterableTreeWidget::setProxyModel(QSortFilterProxyModel* proxy)
 {

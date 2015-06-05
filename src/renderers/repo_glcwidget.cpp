@@ -742,6 +742,18 @@ std::vector<std::string> repo::gui::RepoGLCWidget::getSelectionList() const
     return selectedNames;
 }
 
+repo::core::RepoNodeAbstract* repo::gui::RepoGLCWidget::getSelectedNode() const
+{
+    core::RepoNodeAbstract *node = 0;
+    if (glcWorld.selectionSize() > 0)
+    {
+        GLC_StructOccurence* o = glcWorld.selectedOccurenceList().first();
+
+    }
+
+    return node;
+}
+
 GLC_Mesh* repo::gui::RepoGLCWidget::getGLCMesh(const QString &name) const
 {
     GLC_Mesh * glcMesh = 0;

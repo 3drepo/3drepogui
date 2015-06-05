@@ -243,6 +243,9 @@ public :
 	//! Returns the list of names of selected meshes if any.
 	std::vector<std::string> getSelectionList() const;
 
+    //! Returns currently selected Repo scene node if any, NULL otherwise.
+    core::RepoNodeAbstract* getSelectedNode() const;
+
 	//! Returns the glc meshes mapped by their unique string name.
     QHash<QString, GLC_Mesh*> getGLCMeshes() const { return glcMeshes; }
 
