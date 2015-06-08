@@ -380,7 +380,7 @@ void repo::gui::RepoGUI::commit(
                      ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
                     commitDialog.getCurrentDatabase(),
                     commitDialog.getCurrentProject(),
-                    revision,
+                    commitDialog.getRevision(),
                     commitDialog.getNodesToCommit());
 
         if (activeWindow)

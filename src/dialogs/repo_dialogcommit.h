@@ -107,6 +107,8 @@ public:
 
     core::RepoNodeAbstractSet getNodesToCommit() const;
 
+    repo::core::RepoNodeRevision *getRevision();
+
 public slots:
 
     void editItem(const QModelIndex &);
