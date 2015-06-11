@@ -60,6 +60,8 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 	proxyModel->setSourceModel(model);
     ui->treeView->setModel(proxyModel);
 
+    ui->splitter->setSizes(QList<int>()<< 15 << 200);
+
     //--------------------------------------------------------------------------
 	// Connect filtering text input to the filtering proxy model
 	QObject::connect(
@@ -148,7 +150,6 @@ int repo::gui::RepoDialogCommit::exec()
 	// Blocking operation
 	this->setCursor(Qt::WaitCursor);
     // TODO: make into asynchronous worker
-
 
     // Cascading updates: change of host triggers change of databases and
     // that of projects and that of branches.
@@ -316,6 +317,12 @@ repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() 
             nodes.insert(item->data().value<core::RepoNodeAbstract*>());
     }
     return nodes;
+}
+
+repo::core::RepoNodeRevision *repo::gui::RepoDialogCommit::getRevision()
+{
+    revision->setCurrentUniqueIDs(getNodesToCommit());
+    return revision;
 }
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const
