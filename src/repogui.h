@@ -75,6 +75,7 @@ public slots:
 
     void commit(const core::RepoNodeAbstractSet &nodes,
                 core::RepoNodeRevision *revision,
+                const QString &project = QString(),
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.

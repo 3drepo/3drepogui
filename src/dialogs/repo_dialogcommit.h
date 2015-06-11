@@ -80,7 +80,7 @@ public:
         QWidget* parent = 0,
         Qt::WindowFlags flags = 0,
         RepoIDBCache *dbCache = 0,
-        const QString &branch = QString(),
+        const QString &projectName = QString(),
         const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
         core::RepoNodeRevision *revision = 0);
 
@@ -153,6 +153,8 @@ private:
 	QSortFilterProxyModel *proxyModel;
 
     RepoIDBCache *dbCache;
+
+    QString projectName;
 };
 
 } // end namespace gui

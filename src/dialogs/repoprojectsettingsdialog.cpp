@@ -149,13 +149,14 @@ repo::core::RepoBSON repo::gui::RepoProjectSettingsDialog::getCommand() const
     core::RepoProjectSettings projectSettings =
             core::RepoProjectSettings(
                 ui->nameLineEdit->text().toStdString(),
-                ui->descriptionLineEdit->text().toStdString(),
-                ui->typeComboBox->currentText().toStdString(),
                 ui->ownerComboBox->currentText().toStdString(),
                 ui->groupComboBox->currentText().toStdString(),
+                ui->typeComboBox->currentText().toStdString(),
+                ui->descriptionLineEdit->text().toStdString(),
                 getOctal(ui->ownerReadCheckBox, ui->ownerWriteCheckBox, ui->ownerExecuteCheckBox),
                 getOctal(ui->groupReadCheckBox, ui->groupWriteCheckBox, ui->groupExecuteCheckBox),
                 getOctal(ui->publicReadCheckBox, ui->publicWriteCheckBox, ui->publicExecuteCheckBox));
+
     return projectSettings.upsert();
 }
 

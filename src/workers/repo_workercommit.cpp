@@ -40,7 +40,9 @@ void repo::gui::RepoWorkerCommit::run()
     {
         if (!cancelled && mongo.reconnectAndReauthenticate(database))
         {
-            jobsCount = nodes.size() + 1; // +1 for revision entry
+            jobsCount = nodes.size();
+            jobsCount++; // +1 for revision entry and +1 project settings
+            jobsCount++;
             if (revision && nodes.size() > 0)
             {
                 //--------------------------------------------------------------
@@ -51,6 +53,17 @@ void repo::gui::RepoWorkerCommit::run()
                         core::MongoClientWrapper::getHistoryCollectionName(project);
                 std::string sceneCollection =
                         core::MongoClientWrapper::getSceneCollectionName(project);
+
+                //--------------------------------------------------------------
+                // Insert project settings object first in case of a lost connection
+                core::RepoProjectSettings projectSettings =
+                                core::RepoProjectSettings(
+                                    project,
+                                    mongo.getUsername(database));
+                // TODO: check if it already exists (eg use insert instead of upsert as this is unsafe!)
+                mongo.runCommand(database, projectSettings.upsert());
+
+
 
                 //--------------------------------------------------------------
                 // Insert the revision object first in case of a lost connection.

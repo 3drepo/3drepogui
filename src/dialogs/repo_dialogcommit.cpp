@@ -26,14 +26,14 @@
 #include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogCommit::RepoDialogCommit(
-    QWidget *parent,
+repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     Qt::WindowFlags flags,
     RepoIDBCache *dbCache,
-    const QString &branch,
+    const QString &projectName,
     const core::RepoNodeAbstractSet &nodes,
     core::RepoNodeRevision *revision)
 	: QDialog(parent, flags)
+    , projectName(projectName)
     , nodes(nodes)
 	, revision(revision)
     , dbCache(dbCache)
@@ -80,7 +80,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(
 
     ui->branchComboBox->addItem(
                 RepoFontAwesome::getBranchIcon(),
-                branch);
+                QString::fromStdString(revision->getName()));
 
     //--------------------------------------------------------------------------
 
@@ -149,13 +149,16 @@ int repo::gui::RepoDialogCommit::exec()
 	this->setCursor(Qt::WaitCursor);
     // TODO: make into asynchronous worker
 
-    // Set the currently selected project instead of the very first one.
-    ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
-    ui->projectComboBox->setCurrentText(dbCache->getSelectedProject());
 
     // Cascading updates: change of host triggers change of databases and
     // that of projects and that of branches.
     updateHosts();
+
+
+    // Set the currently selected project instead of the very first one.
+    ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
+    ui->projectComboBox->setCurrentText(projectName);
+
 
 	setModifiedObjects();
 	this->setCursor(Qt::ArrowCursor);

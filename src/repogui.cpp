@@ -351,12 +351,13 @@ void repo::gui::RepoGUI::commit()
         history->setCommitRevision(revision);
     }   
 
-    commit(nodes, revision, activeWindow);
+    commit(nodes, revision, project, activeWindow);
 }
 
 void repo::gui::RepoGUI::commit(
         const core::RepoNodeAbstractSet &nodes,
         core::RepoNodeRevision* revision,
+        const QString &project,
         RepoMdiSubWindow *activeWindow)
 {
     std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
@@ -365,10 +366,11 @@ void repo::gui::RepoGUI::commit(
                 this,
                 Qt::Window,
                 ui->widgetRepository,
-                "master", // TODO: get currently active branch from QSettings
+                project,
                 nodes,
                 revision);
-//    commitDialog.setWindowTitle(commitDialog.windowTitle() + " " + project);
+
+
 
     if(!commitDialog.exec())
         std::cout << "Commit dialog cancelled by user" << std::endl;

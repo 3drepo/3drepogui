@@ -26,6 +26,7 @@
 #include <RepoGraphScene>
 #include <RepoWrapperAssimp>
 #include <RepoWrapperMongo>
+#include <RepoProjectSettings>
 //------------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
 #include "../conversion/repo_transcoder_assimp.h"
@@ -44,7 +45,7 @@ public :
 	RepoWorkerCommit(
         const core::MongoClientWrapper &mongo,
         const QString &database,
-        const QString& project,
+        const QString &project,
         const core::RepoNodeRevision *revision,
         const core::RepoNodeAbstractSet &nodes);
 
