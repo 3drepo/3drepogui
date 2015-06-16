@@ -53,6 +53,7 @@
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
 #include "dialogs/repofederationdialog.h"
+#include "dialogs/repo_maptilesdialog.h"
 #include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
@@ -150,9 +151,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
-    // Federate
+    // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
+
+    // Add Map Tiles...
+    QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
+                     this, SLOT(addMapTiles()));
 
     //--------------------------------------------------------------------------
     // User Management...
@@ -307,6 +312,20 @@ void repo::gui::RepoGUI::about()
 {
     RepoDialogAbout aboutDialog(this);
     aboutDialog.exec();
+}
+
+void repo::gui::RepoGUI::addMapTiles()
+{
+    // Use Transformation Dialog as a guidance and inspiration
+    RepoMapTilesDialog mapTilesDialog(this);
+    mapTilesDialog.exec();
+
+    // TODO: Once done with the dialog do
+    // if (mapTilesDialog.exec())
+    // { // user clicked OK
+    //      mapTilesDialog.getMap();
+    // TODO: Commit map
+    //}
 }
 
 void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)

@@ -54,6 +54,7 @@
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
     <addaction name="actionFederate"/>
+    <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
     <addaction name="actionUserManager"/>
     <addaction name="actionProject_Manager"/>
@@ -519,8 +520,16 @@
    </property>
   </action>
   <action name="actionAttachPDF">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Attach PDF...</string>
+   </property>
+  </action>
+  <action name="actionAddMapTiles">
+   <property name="text">
+    <string>Add Map Tiles...</string>
    </property>
   </action>
  </widget>
