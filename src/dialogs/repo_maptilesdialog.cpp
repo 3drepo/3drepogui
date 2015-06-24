@@ -19,13 +19,24 @@
 #include "repo_maptilesdialog.h"
 #include "ui_repo_maptilesdialog.h"
 
-repo::gui::RepoMapTilesDialog::RepoMapTilesDialog(QWidget *parent,
-        const core::RepoMap &map)
+repo::gui::RepoMapTilesDialog::RepoMapTilesDialog(QWidget *parent)
     : QDialog(parent)
-    , map(map)
     , ui(new Ui::RepoMapTilesDialog)
 {
     ui->setupUi(this);
+
+    QIntValidator    *intValidator    = new QIntValidator(1, 100, this);
+    QDoubleValidator *doubleValidator = new QDoubleValidator(this);
+    ui->widthLineEdit->setValidator(intValidator);
+    ui->zoomLineEdit->setValidator(intValidator);
+
+
+    ui->tiltLineEdit->setValidator(doubleValidator);
+    ui->longLineEdit->setValidator(doubleValidator);
+    ui->latLineEdit ->setValidator(doubleValidator);
+    ui->cpXLineEdit ->setValidator(doubleValidator);
+    ui->cpYLineEdit ->setValidator(doubleValidator);
+    ui->cpZLineEdit ->setValidator(doubleValidator);
 }
 
 repo::gui::RepoMapTilesDialog::~RepoMapTilesDialog()
@@ -33,9 +44,19 @@ repo::gui::RepoMapTilesDialog::~RepoMapTilesDialog()
     delete ui;
 }
 
-repo::core::RepoMap repo::gui::RepoMapTilesDialog::getMap()
-{
-    // TODO: populate map object with values from the UI
-    // Remember, BSON is immutable.
-    return map;
+repo::core::RepoNodeMap* repo::gui::RepoMapTilesDialog::getMap(){
+
+
+   return new repo::core::RepoNodeMap(
+                ui->widthLineEdit->text().toStdString(),
+                ui->zoomLineEdit->text().toStdString(),
+                ui->tiltLineEdit->text().toStdString(),
+                ui->tileSizeLineEdit->text().toStdString(),
+                ui->longLineEdit->text().toStdString(),
+                ui->latLineEdit->text().toStdString(),
+                ui->cpXLineEdit->text().toStdString(),
+                ui->cpYLineEdit->text().toStdString(),
+                ui->cpZLineEdit->text().toStdString());
+
 }
+
