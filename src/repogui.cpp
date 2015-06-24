@@ -19,7 +19,6 @@
 // Qt
 #include <QMessageBox>
 #include <QtSvg>
-#include <QDebug>
 
 //------------------------------------------------------------------------------
 // Core
