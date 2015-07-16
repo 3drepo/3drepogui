@@ -29,6 +29,7 @@
 #include <RepoPCA>
 #include <RepoCSV>
 #include <RepoGraphOptimizer>
+#include <RepoNodeAbstract>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -318,14 +319,26 @@ void repo::gui::RepoGUI::addMapTiles()
 {
     // Use Transformation Dialog as a guidance and inspiration
     RepoMapTilesDialog mapTilesDialog(this);
-    mapTilesDialog.exec();
+    if(mapTilesDialog.exec()){
+        core::RepoNodeTransformation *root = new core::RepoNodeTransformation();
+        root->setName("<root>");
 
-    // TODO: Once done with the dialog do
-    // if (mapTilesDialog.exec())
-    // { // user clicked OK
-    //      mapTilesDialog.getMap();
-    // TODO: Commit map
-    //}
+        std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
+        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+
+        core::RepoNodeAbstractSet nodesSet;
+        core::RepoNodeMap *map = mapTilesDialog.getMap();
+
+        root->addChild(map);
+        map->addParent(root);
+
+        nodesSet.insert(root);
+        nodesSet.insert(map);
+
+        commit(nodesSet, revision);
+
+    }
+
 }
 
 void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)

@@ -23,7 +23,9 @@
 #include <QDialog>
 
 // Core
-#include <RepoMap>
+#include <RepoNodeMap>
+#include <RepoNodeAbstract>
+#include <RepoGraphScene>
 
 //------------------------------------------------------------------------------
 
@@ -41,18 +43,14 @@ class RepoMapTilesDialog : public QDialog
 public:
 
     explicit RepoMapTilesDialog(
-            QWidget *parent = 0,
-            const core::RepoMap &map = core::RepoMap());
+            QWidget *parent = 0);
 
     ~RepoMapTilesDialog();
-
-    core::RepoMap getMap();
+    repo::core::RepoNodeMap* getMap();
 
 private:
 
     Ui::RepoMapTilesDialog *ui;
-
-    core::RepoMap map;
 
 }; // end class
 
