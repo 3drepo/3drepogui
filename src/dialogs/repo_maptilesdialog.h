@@ -42,7 +42,7 @@ public:
 
     explicit RepoMapTilesDialog(
             QWidget *parent = 0,
-            const core::RepoMap map = core::RepoMap());
+            const core::RepoMap &map = core::RepoMap());
 
     ~RepoMapTilesDialog();
 
