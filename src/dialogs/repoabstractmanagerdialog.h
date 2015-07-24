@@ -30,9 +30,6 @@
 #include <QMenu>
 #include <QWidgetAction>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperMongo>
 
 // GUI
 #include "../primitives/repoidbcache.h"
@@ -93,7 +90,7 @@ public slots :
     virtual void updateCountLabel() const;
 
     //! Refreshes the current list
-    virtual void refresh(const core::RepoBSON &command = core::RepoBSON()) = 0;
+    virtual void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/) = 0;
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() = 0;

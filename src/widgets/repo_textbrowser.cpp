@@ -25,7 +25,7 @@
 
 repo::gui::RepoTextBrowser::RepoTextBrowser(QWidget * parent)
         : QTextBrowser(parent)
-        , RepoAbstractListener()
+        //, RepoAbstractListener()
 {
     fileWatcher = new QFileSystemWatcher(this);
 

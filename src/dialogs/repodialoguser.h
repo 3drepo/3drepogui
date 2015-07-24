@@ -30,13 +30,6 @@
 #include <QTreeWidgetItem>
 #include <QUuid>
 
-
-//------------------------------------------------------------------------------
-// Core
-#include <RepoUser>
-#include <RepoImage>
-#include <RepoAPIKey>
-
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repocomboboxeditor.h"
@@ -62,8 +55,8 @@ public:
 
     //! Explicit constructor.
     explicit RepoDialogUser(
-            core::RepoUser user,
-            const std::map<string, std::list<string> > &databasesWithProjects,
+           /* core::RepoUser user,*/
+            const std::map<std::string, std::list<std::string> > &databasesWithProjects,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
 
@@ -156,8 +149,8 @@ public :
     std::string getUsername() const;
 
 
-    //! Returns the user action command to be used with db.runCommand().
-    core::RepoBSON getCommand() const;
+    ////! Returns the user action command to be used with db.runCommand().
+    //core::RepoBSON getCommand() const;
 
     //! Returns the icon for this dialog.
     static QIcon getIcon();
@@ -170,7 +163,7 @@ public :
     //--------------------------------------------------------------------------
 
     //! Sets the avatar icon with the give image.
-    void setAvatar(const core::RepoImage &image);
+    void setAvatar(/*const core::RepoImage &image*/);
 
     //! Sets the avatar icon with the given image.
     void setAvatar(const QImage &image);
@@ -187,10 +180,10 @@ private:
     QHash<QString, RepoComboBoxDelegate* > rolesDelegates;
 
     //! User to be created or modified.
-    core::RepoUser user;
+    /*core::RepoUser user;*/
 
     //! User avatar (profile picture).
-    core::RepoImage avatar;
+   /* core::RepoImage avatar;*/
 
     //! Ui var.
     Ui::RepoDialogUser *ui;

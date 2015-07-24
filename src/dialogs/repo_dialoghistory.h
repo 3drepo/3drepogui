@@ -29,10 +29,7 @@
 #include <QUuid>
 #include <QThreadPool>
 #include <QModelIndex>
-//------------------------------------------------------------------------------
-// Repo Core
-#include <RepoWrapperMongo>
-#include <RepoNodeRevision>
+
 //------------------------------------------------------------------------------
 #include "ui_repo_dialoghistory.h"
 //------------------------------------------------------------------------------
@@ -58,7 +55,7 @@ public:
 
 	//! Constuctor
 	RepoDialogHistory(
-        const core::MongoClientWrapper &mongo,
+        //const core::MongoClientWrapper &mongo,
         const QString &database,
         const QString& project,
         QWidget *parent = 0,
@@ -83,8 +80,8 @@ public slots:
 	//! Refreshes the history model
 	void refresh();
 
-	//! Adds a revision row to the history model
-    void addRevision(core::RepoNodeRevision *);
+	////! Adds a revision row to the history model
+ //   void addRevision(core::RepoNodeRevision *);
 
 	//! Clears the history model (does not remove headers)
 	void clearHistoryModel();
@@ -122,8 +119,8 @@ private:
 	//! Model of a single revision.
     QStandardItemModel *revisionModel;
 
-	//! Client connection.
-    core::MongoClientWrapper mongo;
+	////! Client connection.
+ //   core::MongoClientWrapper mongo;
 
 	//! Database to retrieve revision history from.
 	QString database;

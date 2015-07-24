@@ -22,8 +22,6 @@
 #include "../renderers/repooculustexturerenderer.h"
 #include "../renderers/repo_webview.h"
 
-//------------------------------------------------------------------------------
-#include "../workers/repo_workerfetchrevision.h"
 
 repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
@@ -44,7 +42,7 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
     //--------------------------------------------------------------------------
 	// Needed for 3D file loading and signal passing.
 	qRegisterMetaType<GLC_World>("GLC_World&");
-	qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
+	//qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
 
 	qRegisterMetaType<QVector<GLfloat>>("QVector<GLfloat>");
 
@@ -206,7 +204,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 }
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	const repo::core::MongoClientWrapper& mongo,
+	//const repo::core::MongoClientWrapper& mongo,
 	const QString& database,
     const QString& project,
 	const QUuid& id,
@@ -223,7 +221,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
+   /* RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
@@ -231,10 +229,10 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	QObject::connect(
 		repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
 		worker, &RepoWorkerFetchRevision::cancel, Qt::DirectConnection);
-
+*/
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
-	QThreadPool::globalInstance()->start(worker);
+	/*QThreadPool::globalInstance()->start(worker);*/
 
 	this->update();
 	this->repaint();

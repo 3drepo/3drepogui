@@ -20,10 +20,6 @@
 #define REPO_GLCWIDGET_H
 
 //------------------------------------------------------------------------------
-// Core
-#include "graph/repo_graph_scene.h"
-
-//------------------------------------------------------------------------------
 // GUI
 #include "repo_fpscounter.h"
 
@@ -187,7 +183,7 @@ public :
     //--------------------------------------------------------------------------
 
     //! Sets the 3D Repo scene for this widget.
-    void setRepoScene(core::RepoGraphScene *repoScene);
+    //void setRepoScene(core::RepoGraphScene *repoScene);
 
     //! Sets the GLC World for this widget which is used for rendering purposes.
 	void setGLCWorld(GLC_World);
@@ -233,7 +229,7 @@ public :
     //--------------------------------------------------------------------------
 
 	//! Returns the 3D Repo scene of this widget.
-    core::RepoGraphScene *getRepoScene() const { return repoScene; }
+    //core::RepoGraphScene *getRepoScene() const { return repoScene; }
 
 	//! Returns the GLC World of this widget.
     GLC_World getGLCWorld() const { return glcWorld; }
@@ -244,7 +240,7 @@ public :
 	std::vector<std::string> getSelectionList() const;
 
     //! Returns currently selected Repo scene node if any, NULL otherwise.
-    core::RepoNodeAbstract* getSelectedNode() const;
+    //core::RepoNodeAbstract* getSelectedNode() const;
 
 	//! Returns the glc meshes mapped by their unique string name.
     QHash<QString, GLC_Mesh*> getGLCMeshes() const { return glcMeshes; }
@@ -293,7 +289,7 @@ protected :
     //--------------------------------------------------------------------------
 
 	//! 3D scene, the scene graph representation to store in the DB.
-    core::RepoGraphScene *repoScene;
+    //core::RepoGraphScene *repoScene;
 
 	//! 3D world, the main scene to render.
 	GLC_World glcWorld;

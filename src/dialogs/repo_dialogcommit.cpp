@@ -29,13 +29,13 @@
 repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     Qt::WindowFlags flags,
     RepoIDBCache *dbCache,
-    const QString &projectName,
+    const QString &projectName/*,
     const core::RepoNodeAbstractSet &nodes,
-    core::RepoNodeRevision *revision)
+    core::RepoNodeRevision *revision*/)
 	: QDialog(parent, flags)
     , projectName(projectName)
-    , nodes(nodes)
-	, revision(revision)
+ //   , nodes(nodes)
+	//, revision(revision)
     , dbCache(dbCache)
     , ui(new Ui::RepoDialogCommit)
 {
@@ -82,7 +82,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 
     ui->branchComboBox->addItem(
                 RepoFontAwesome::getBranchIcon(),
-                QString::fromStdString(revision->getName()));
+                QString::fromStdString(/*revision->getName()*/""));
 
     //--------------------------------------------------------------------------
 
@@ -123,7 +123,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 
     if (item)
     {
-        core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
+        /*core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
         if (node && REPO_NODE_TYPE_TRANSFORMATION == node->getType())
         {
             core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
@@ -139,7 +139,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
                                         QString::fromStdString(t.getName()));
                 }
             }
-        }
+        }*/
     }
 }
 
@@ -167,10 +167,10 @@ int repo::gui::RepoDialogCommit::exec()
     //--------------------------------------------------------------------------
 	// If user clicked OK
 	int result;
-    if (result = QDialog::exec() && revision)
+    if (result = QDialog::exec() /*&& revision*/)
 	{
 		// TODO: modify the revision object according to user selection
-		revision->setMessage(getMessage().toStdString());
+		/*revision->setMessage(getMessage().toStdString());*/
 	}
 	return result;
 }
@@ -221,74 +221,74 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
     // TODO: make into asynchronous worker
 
 
-    core::RepoNodeAbstractSet modifiedObjects = nodes;
+   /* core::RepoNodeAbstractSet modifiedObjects = nodes;*/
 
     //--------------------------------------------------------------------------
 	// Number of changes
 	QLocale locale;
-    ui->countLabel->setText(locale.toString((long long)(modifiedObjects.size()))
+  /*  ui->countLabel->setText(locale.toString((long long)(modifiedObjects.size()))
                               + " "
                               + tr("changes"));
-
+*/
     //--------------------------------------------------------------------------
 	// Populate data model
 	QList<QStandardItem *> row;
 	QStandardItem *item;
 
-    core::RepoNodeAbstractSet::const_iterator it;
-    for (it = modifiedObjects.begin(); it != modifiedObjects.end(); ++it)
-    {
-        core::RepoNodeAbstract *node = *it;
-		row.clear();
+ //   core::RepoNodeAbstractSet::const_iterator it;
+ //   for (it = modifiedObjects.begin(); it != modifiedObjects.end(); ++it)
+ //   {
+ //       core::RepoNodeAbstract *node = *it;
+	//	row.clear();
 
-        QVariant var;
-        var.setValue(node);
+ //       QVariant var;
+ //       var.setValue(node);
 
-        //----------------------------------------------------------------------
-		// Name
-		item = new QStandardItem(QString::fromStdString(node->getName()));
-        item->setData(var);
-		item->setCheckable(true);
-		item->setCheckState(Qt::Checked);
-		item->setTristate(false);
-		item->setEditable(false);
-		row.append(item);
+ //       //----------------------------------------------------------------------
+	//	// Name
+	//	item = new QStandardItem(QString::fromStdString(node->getName()));
+ //       item->setData(var);
+	//	item->setCheckable(true);
+	//	item->setCheckState(Qt::Checked);
+	//	item->setTristate(false);
+	//	item->setEditable(false);
+	//	row.append(item);
 
-        std::string type = node->getType();
-        if (REPO_NODE_TYPE_METADATA == type)
-            item->setIcon(RepoFontAwesome::getMetadataIcon());
+ //       std::string type = node->getType();
+ //       if (REPO_NODE_TYPE_METADATA == type)
+ //           item->setIcon(RepoFontAwesome::getMetadataIcon());
 
-        //----------------------------------------------------------------------
-		// Type		
-		item = new QStandardItem(QString::fromStdString(node->getType()));
-		item->setEditable(false);
-		row.append(item);
-		
-        //----------------------------------------------------------------------
-		// Status
-        item = new QStandardItem(tr("added"));
-		item->setEditable(false);
-		row.append(item);
-		
-        //----------------------------------------------------------------------
-		// UID
-        item = new QStandardItem(QString::fromStdString(
-                                      core::MongoClientWrapper::uuidToString(
-                                         node->getUniqueID())));
-		item->setEditable(false);
-		row.append(item);
-		
-        //----------------------------------------------------------------------
-		// SID
-        item = new QStandardItem(
-                    QString::fromStdString(
-                         core::MongoClientWrapper::uuidToString(node->getSharedID())));
-		item->setEditable(false);
-		row.append(item);
+ //       //----------------------------------------------------------------------
+	//	// Type		
+	//	item = new QStandardItem(QString::fromStdString(node->getType()));
+	//	item->setEditable(false);
+	//	row.append(item);
+	//	
+ //       //----------------------------------------------------------------------
+	//	// Status
+ //       item = new QStandardItem(tr("added"));
+	//	item->setEditable(false);
+	//	row.append(item);
+	//	
+ //       //----------------------------------------------------------------------
+	//	// UID
+ //       item = new QStandardItem(QString::fromStdString(
+ //                                     core::MongoClientWrapper::uuidToString(
+ //                                        node->getUniqueID())));
+	//	item->setEditable(false);
+	//	row.append(item);
+	//	
+ //       //----------------------------------------------------------------------
+	//	// SID
+ //       item = new QStandardItem(
+ //                   QString::fromStdString(
+ //                        core::MongoClientWrapper::uuidToString(node->getSharedID())));
+	//	item->setEditable(false);
+	//	row.append(item);
 
-        //----------------------------------------------------------------------
-		model->appendRow(row);
-	}	
+ //       //----------------------------------------------------------------------
+	//	model->appendRow(row);
+	//}	
 }
 
 QString repo::gui::RepoDialogCommit::getCurrentHost() const
@@ -307,23 +307,23 @@ QString repo::gui::RepoDialogCommit::getCurrentProject() const
 }
 
 
-repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() const
-{
-    core::RepoNodeAbstractSet nodes;
-    for (int i = 0; i < model->rowCount(); ++i)
-    {
-        QStandardItem *item = model->invisibleRootItem()->child(i,Columns::NAME);
-        if (item->checkState() != Qt::CheckState::Unchecked)
-            nodes.insert(item->data().value<core::RepoNodeAbstract*>());
-    }
-    return nodes;
-}
-
-repo::core::RepoNodeRevision *repo::gui::RepoDialogCommit::getRevision()
-{
-    revision->setCurrentUniqueIDs(getNodesToCommit());
-    return revision;
-}
+//repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() const
+//{
+//    core::RepoNodeAbstractSet nodes;
+//    for (int i = 0; i < model->rowCount(); ++i)
+//    {
+//        QStandardItem *item = model->invisibleRootItem()->child(i,Columns::NAME);
+//        if (item->checkState() != Qt::CheckState::Unchecked)
+//            nodes.insert(item->data().value<core::RepoNodeAbstract*>());
+//    }
+//    return nodes;
+//}
+//
+//repo::core::RepoNodeRevision *repo::gui::RepoDialogCommit::getRevision()
+//{
+//    revision->setCurrentUniqueIDs(getNodesToCommit());
+//    return revision;
+//}
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const
 {

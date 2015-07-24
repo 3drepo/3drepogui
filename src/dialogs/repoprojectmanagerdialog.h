@@ -23,10 +23,10 @@
 #include <QMessageBox>
 
 #include "repoabstractmanagerdialog.h"
-#include "../workers/repoworkerprojectsettings.h"
+//#include "../workers/repoworkerprojectsettings.h"
 #include "../primitives/repoidbcache.h"
 
-Q_DECLARE_METATYPE(repo::core::RepoProjectSettings)
+//Q_DECLARE_METATYPE(repo::core::RepoProjectSettings)
 
 namespace repo {
 namespace gui {
@@ -47,26 +47,26 @@ public:
 
 public slots :
 
-    void addProjectSettings(core::RepoProjectSettings);
+    //void addProjectSettings(/*core::RepoProjectSettings*/);
 
     void clear(bool resizeColumns = false);
 
-    void edit() { showEditDialog(getProjectSettings()); }
+    void edit() { showEditDialog(/*getProjectSettings()*/); }
 
-    void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
+    void edit(const QModelIndex &index) { showEditDialog(/*getProjectSettings(index)*/); }
 
-    core::RepoProjectSettings getProjectSettings();
+    /*core::RepoProjectSettings getProjectSettings();
 
-    core::RepoProjectSettings getProjectSettings(const QModelIndex &index);
+    core::RepoProjectSettings getProjectSettings(const QModelIndex &index);*/
 
-    void refresh(const core::RepoBSON &command = core::RepoBSON());
+    void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/);
 
     //! Removes currently selected item if any.
     void removeItem();
 
-    void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }
+    void showEditDialog() {  }
 
-    void showEditDialog(const repo::core::RepoProjectSettings &);
+    //void showEditDialog(/*const repo::core::RepoProjectSettings &*/);
 };
 
 } // end namespace gui

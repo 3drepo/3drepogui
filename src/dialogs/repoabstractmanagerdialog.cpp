@@ -96,7 +96,7 @@ repo::gui::RepoAbstractManagerDialog::~RepoAbstractManagerDialog()
 
 bool repo::gui::RepoAbstractManagerDialog::cancelAllThreads()
 {
-    emit cancel();
+    //emit cancel();
     return threadPool.waitForDone(); // msecs
 }
 

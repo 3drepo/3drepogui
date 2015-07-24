@@ -27,19 +27,15 @@
 #include <QItemSelection>
 #include <QMessageBox>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperMongo>
-#include <RepoUser>
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../workers/repo_workerusers.h"
+//#include "../workers/repo_workerusers.h"
 #include "repodialoguser.h"
 #include "repoabstractmanagerdialog.h"
 #include "../primitives/repoidbcache.h"
 
-Q_DECLARE_METATYPE(repo::core::RepoUser)
+//Q_DECLARE_METATYPE(repo::core::RepoUser)
 
 namespace repo {
 namespace gui {
@@ -67,7 +63,7 @@ public slots:
     void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
 
     //! Adds user to the list of users.
-    void addUser(const core::RepoUser &user);
+    //void addUser(/*const core::RepoUser &user*/);
 
     //! Updates selected user.
     void edit();
@@ -75,23 +71,23 @@ public slots:
     //! Updates user based on model index.
     void edit(const QModelIndex &index);
 
-    //! Returns a currently selected user if any.
-    core::RepoUser getUser();
+    ////! Returns a currently selected user if any.
+    //core::RepoUser getUser();
 
-    //! Returns a user specified by the model index.
-    core::RepoUser getUser(const QModelIndex &index);
+    ////! Returns a user specified by the model index.
+    //core::RepoUser getUser(const QModelIndex &index);
 
     //! Refreshes the current list of users by fetching from a database.
-    void refresh(const core::RepoBSON &command = core::RepoBSON());
+    void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/);
 
     //! Drops user from the database.
     void removeItem();
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog() {  showEditDialog(core::RepoUser()); }
+    void showEditDialog() {  /*showEditDialog(core::RepoUser()); */}
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog(const core::RepoUser &user);
+    //void showEditDialog(/*const core::RepoUser &user*/);
 
 private:
 

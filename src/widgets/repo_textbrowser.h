@@ -28,7 +28,7 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include <RepoAbstractListener>
+//#include <repo/lib/repo_listener_abstract.h>
 
 namespace repo {
 namespace gui {
@@ -36,7 +36,7 @@ namespace gui {
 
 class RepoTextBrowser
         : public QTextBrowser
-        , public core::RepoAbstractListener
+		//, public repo::lib::RepoAbstractListener
 {
 	Q_OBJECT
 		

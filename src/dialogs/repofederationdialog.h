@@ -35,20 +35,14 @@
 #include "repo_genericdialog.h"
 #include "../dialogs/repo_transformationdialog.h"
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoGraphScene>
-#include <RepoNodeAbstract>
-#include <RepoNodeTransformation>
-#include <RepoNodeReference>
 
 namespace Ui {
     class RepoFederationDialog;
 }
 
-typedef QPair<repo::core::RepoNodeTransformation, repo::core::RepoNodeReference> RepoTransRefPair;
+//typedef QPair<repo::core::RepoNodeTransformation, repo::core::RepoNodeReference> RepoTransRefPair;
 
-Q_DECLARE_METATYPE(RepoTransRefPair)
+//Q_DECLARE_METATYPE(RepoTransRefPair)
 
 namespace repo {
 namespace gui {
@@ -87,21 +81,21 @@ public slots :
 
     //--------------------------------------------------------------------------
 
-    QStandardItem *getCurrentFederatedItem() const;
+    //QStandardItem *getCurrentFederatedItem() const;
 
-    core::RepoNodeTransformation getCurrentFederatedTransformation() const;
+    ////core::RepoNodeTransformation getCurrentFederatedTransformation() const;
 
-    QModelIndexList getAvailableSelection() const;
+    //QModelIndexList getAvailableSelection() const;
 
-    QModelIndexList getFederatedSelection() const;
+    //QModelIndexList getFederatedSelection() const;
 
-    core::RepoGraphScene *getFederation();
+    //core::RepoGraphScene *getFederation();
 
 protected :
 
     void getFederationRecursively(
-            QStandardItem *parentItem,
-            core::RepoNodeAbstract *parentNode);
+            QStandardItem *parentItem
+           /* core::RepoNodeAbstract *parentNode*/);
 
 private:
 

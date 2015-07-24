@@ -77,7 +77,7 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
     , shaderID(0)
     , isInfoVisible(true)
     , renderingFlag(glc::ShadingFlag)
-    , repoScene(0)
+    //, repoScene(0)
 {
     //--------------------------------------------------------------------------
     // Default settings
@@ -133,9 +133,9 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
     for (int i = 0; i < shaders.size(); ++i)
         delete shaders[i];
     shaders.clear();
-
+/*
     if (repoScene)
-        delete repoScene;
+        delete repoScene;*/
 }
 
 //------------------------------------------------------------------------------
@@ -697,13 +697,13 @@ void repo::gui::RepoGLCWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
-{
-    if (this->repoScene)
-        delete this->repoScene;
-
-    this->repoScene = repoScene;
-}
+//void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
+//{
+//    if (this->repoScene)
+//        delete this->repoScene;
+//
+//    this->repoScene = repoScene;
+//}
 
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 {
@@ -742,17 +742,17 @@ std::vector<std::string> repo::gui::RepoGLCWidget::getSelectionList() const
     return selectedNames;
 }
 
-repo::core::RepoNodeAbstract* repo::gui::RepoGLCWidget::getSelectedNode() const
-{
-    core::RepoNodeAbstract *node = 0;
-    if (glcWorld.selectionSize() > 0)
-    {
-        GLC_StructOccurence* o = glcWorld.selectedOccurenceList().first();
-
-    }
-
-    return node;
-}
+//repo::core::RepoNodeAbstract* repo::gui::RepoGLCWidget::getSelectedNode() const
+//{
+//    core::RepoNodeAbstract *node = 0;
+//    if (glcWorld.selectionSize() > 0)
+//    {
+//        GLC_StructOccurence* o = glcWorld.selectedOccurenceList().first();
+//
+//    }
+//
+//    return node;
+//}
 
 GLC_Mesh* repo::gui::RepoGLCWidget::getGLCMesh(const QString &name) const
 {

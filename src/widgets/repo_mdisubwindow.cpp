@@ -76,20 +76,20 @@ void repo::gui::RepoMdiSubWindow::setWidget(const QString& windowTitle)
 void repo::gui::RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath)
 {
-    setWidget(new RepoGLCWidget(0, RepoWorkerAssimp::getFileName(filePath)));
+    setWidget(new RepoGLCWidget(0, /*RepoWorkerAssimp::getFileName(filePath)*/""));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
     // Assimp flags is a memory leak TODO: fixme!
-    RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, new RepoWidgetAssimpFlags());
+   /* RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, new RepoWidgetAssimpFlags());
 	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
 		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
-	//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+	*///connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
-	QThreadPool::globalInstance()->start(worker);
+	//QThreadPool::globalInstance()->start(worker);
 }
 
 void repo::gui::RepoMdiSubWindow::setWidget(QWidget * widget)
@@ -125,21 +125,21 @@ QWidget * repo::gui::RepoMdiSubWindow::widget() const
 }
 
 void repo::gui::RepoMdiSubWindow::finishedLoading(
-    repo::core::RepoGraphScene *repoScene,
-	GLC_World& glcWorld)
+    /*repo::core::RepoGraphScene *repoScene,
+	GLC_World& glcWorld*/)
 {
     RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());
 	if (widget)
 	{
-		if (repoScene)
+		/*if (repoScene)
             widget->setRepoScene(repoScene);
-		widget->setGLCWorld(glcWorld);
+		widget->setGLCWorld(glcWorld);*/
 	}
     else
     {
-        RepoOculus *oculusWidget = dynamic_cast<RepoOculus*>(this->widget());
+        /*RepoOculus *oculusWidget = dynamic_cast<RepoOculus*>(this->widget());
         if (oculusWidget)
-            oculusWidget->setGLCWorld(glcWorld);
+            oculusWidget->setGLCWorld(glcWorld);*/
     }
 }
 

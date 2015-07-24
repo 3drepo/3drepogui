@@ -18,17 +18,17 @@
 #include "repo_dialoghistory.h"
 //------------------------------------------------------------------------------
 #include "../primitives/repo_fontawesome.h"
-#include "../workers/repo_workerhistory.h"
+//#include "../workers/repo_workerhistory.h"
 
 //------------------------------------------------------------------------------
 
-repo::gui::RepoDialogHistory::RepoDialogHistory(const repo::core::MongoClientWrapper& mongo,
+repo::gui::RepoDialogHistory::RepoDialogHistory(/*const repo::core::MongoClientWrapper& mongo,*/
     const QString& database,
     const QString &project,
     QWidget *parent,
     Qt::WindowFlags flags)
 	: QDialog(parent, flags)
-	, mongo(mongo)
+	//, mongo(mongo)
 	, database(database)
     , project(project)
     , ui(new Ui::RepoDialogHistory)
@@ -141,56 +141,56 @@ void repo::gui::RepoDialogHistory::refresh()
 {
 	if (!database.isEmpty() && cancelAllThreads())
 	{
-        RepoWorkerHistory* worker = new RepoWorkerHistory(mongo, database, project);
-		worker->setAutoDelete(true);
+  //      RepoWorkerHistory* worker = new RepoWorkerHistory(mongo, database, project);
+		//worker->setAutoDelete(true);
 
-		// Direct connection ensures cancel signal is processed ASAP
-		QObject::connect(
-			this, &RepoDialogHistory::cancel,
-			worker, &RepoWorkerHistory::cancel, Qt::DirectConnection);
+		//// Direct connection ensures cancel signal is processed ASAP
+		//QObject::connect(
+		//	this, &RepoDialogHistory::cancel,
+		//	worker, &RepoWorkerHistory::cancel, Qt::DirectConnection);
 
-		QObject::connect(
-			worker, &RepoWorkerHistory::revisionFetched,
-			this, &RepoDialogHistory::addRevision);//, Qt::BlockingQueuedConnection);
-		
-        //----------------------------------------------------------------------
-		// Clear any previous entries : the collection model 
-		clearHistoryModel();
+		//QObject::connect(
+		//	worker, &RepoWorkerHistory::revisionFetched,
+		//	this, &RepoDialogHistory::addRevision);//, Qt::BlockingQueuedConnection);
+		//
+  //      //----------------------------------------------------------------------
+		//// Clear any previous entries : the collection model 
+		//clearHistoryModel();
 
-        //----------------------------------------------------------------------
-		threadPool.start(worker);
+  //      //----------------------------------------------------------------------
+		//threadPool.start(worker);
 	}
 }
-
-void repo::gui::RepoDialogHistory::addRevision(core::RepoNodeRevision *revision)
-{
-	QList<QStandardItem *> row;	
-    QDateTime datetime;
-    datetime.setMSecsSinceEpoch(revision->getTimestamp());
-
-    //--------------------------------------------------------------------------
-    // Datetime
-    QStandardItem *item = createItem(QVariant(datetime));
-    item->setData(qVariantFromValue((void *) revision));
-    row.append(item);
-
-    // Message
-    row.append(createItem(QVariant(QString::fromStdString(revision->getMessage()))));
-
-    // Author
-    row.append(createItem(QVariant(QString::fromStdString(revision->getAuthor()))));
-
-    // UID
-    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getUniqueID()).c_str()))));
-
-    // SID
-    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getSharedID()).c_str()))));
-
-    //--------------------------------------------------------------------------
-	historyModel->invisibleRootItem()->appendRow(row);
-    //--------------------------------------------------------------------------
-    updateCountLabel();
-}
+//
+//void repo::gui::RepoDialogHistory::addRevision(core::RepoNodeRevision *revision)
+//{
+//	QList<QStandardItem *> row;	
+//    QDateTime datetime;
+//    datetime.setMSecsSinceEpoch(revision->getTimestamp());
+//
+//    //--------------------------------------------------------------------------
+//    // Datetime
+//    QStandardItem *item = createItem(QVariant(datetime));
+//    item->setData(qVariantFromValue((void *) revision));
+//    row.append(item);
+//
+//    // Message
+//    row.append(createItem(QVariant(QString::fromStdString(revision->getMessage()))));
+//
+//    // Author
+//    row.append(createItem(QVariant(QString::fromStdString(revision->getAuthor()))));
+//
+//    // UID
+//    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getUniqueID()).c_str()))));
+//
+//    // SID
+//    row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(revision->getSharedID()).c_str()))));
+//
+//    //--------------------------------------------------------------------------
+//	historyModel->invisibleRootItem()->appendRow(row);
+//    //--------------------------------------------------------------------------
+//    updateCountLabel();
+//}
 
 //------------------------------------------------------------------------------
 
@@ -227,28 +227,28 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 
     if (item)
     {
-        core::RepoNodeRevision *revision = 0;
-        revision = (core::RepoNodeRevision*)item->data(Qt::UserRole+1).value<void*>();
-        if (revision)
-        {
+        //core::RepoNodeRevision *revision = 0;
+        //revision = (core::RepoNodeRevision*)item->data(Qt::UserRole+1).value<void*>();
+        //if (revision)
+        //{
 
-            ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
+        //    ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
 
-            // TODO: display lists of added, deleted, modified (rather than current)
-            for (boost::uuids::uuid uuid : revision->getCurrentUniqueIDs())
-            {
-                QList<QStandardItem *> row;
+        //    // TODO: display lists of added, deleted, modified (rather than current)
+        //    for (boost::uuids::uuid uuid : revision->getCurrentUniqueIDs())
+        //    {
+        //        QList<QStandardItem *> row;
 
-                // UID // TODO: make SID
-                row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(uuid).c_str()))));
+        //        // UID // TODO: make SID
+        //        row.append(createItem(QVariant(QUuid(core::MongoClientWrapper::uuidToString(uuid).c_str()))));
 
-                // Action
-                row.append(createItem(QVariant(tr("current"))));
+        //        // Action
+        //        row.append(createItem(QVariant(tr("current"))));
 
-                //--------------------------------------------------------------------------
-                revisionModel->invisibleRootItem()->appendRow(row);
-            }
-        }
+        //        //--------------------------------------------------------------------------
+        //        revisionModel->invisibleRootItem()->appendRow(row);
+        //    }
+        //}
     }
 }
 

@@ -25,11 +25,6 @@
 #include <QSettings>
 
 //------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperAssimp>
-#include <assimp/postprocess.h>
-
-//------------------------------------------------------------------------------
 // GUI
 #include "../reposettings.h"
 

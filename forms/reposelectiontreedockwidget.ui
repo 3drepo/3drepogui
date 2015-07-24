@@ -27,20 +27,9 @@
     <property name="bottomMargin">
      <number>0</number>
     </property>
-    <item>
-     <widget class="repo::gui::RepoFilterableTreeWidget" name="filterableTreeWidget" native="true"/>
-    </item>
    </layout>
   </widget>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>repo::gui::RepoFilterableTreeWidget</class>
-   <extends>QWidget</extends>
-   <header>widgets/repofilterabletreewidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

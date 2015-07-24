@@ -322,7 +322,7 @@ void repo::gui::RepoWidgetAssimpFlags::reset()
 {
     ui->calculateTangentSpaceCheckBox->setChecked(false);
 
-    ui->calculateTangentSpaceDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultCalculateTangentSpaceMaxSmoothingAngle());
+    ui->calculateTangentSpaceDoubleSpinBox->setValue(/*core::AssimpWrapper::getDefaultCalculateTangentSpaceMaxSmoothingAngle()*/1);
 
     ui->convertToUVCoordinatesCheckBox->setChecked(false);
 
@@ -330,7 +330,7 @@ void repo::gui::RepoWidgetAssimpFlags::reset()
 
     ui->deboneGroupBox->setChecked(false);
 
-    ui->deboneThresholdDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultDeboneThreshold());
+    ui->deboneThresholdDoubleSpinBox->setValue(/*core::AssimpWrapper::getDefaultDeboneThreshold()*/1);
 
     ui->deboneIfAndOnlyIfCheckBox->setChecked(false);
 
@@ -338,7 +338,7 @@ void repo::gui::RepoWidgetAssimpFlags::reset()
 
     ui->findInvalidDataGroupBox->setChecked(false);
 
-    ui->findInvalidDataAnimationAccuracyDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultFindInvalidDataAnimationAccuracy());
+    ui->findInvalidDataAnimationAccuracyDoubleSpinBox->setValue(/*core::AssimpWrapper::getDefaultFindInvalidDataAnimationAccuracy()*/1);
 
     ui->fixInfacingNormalsCheckBox->setChecked(false);
 
@@ -352,17 +352,17 @@ void repo::gui::RepoWidgetAssimpFlags::reset()
 
     ui->generateNormalsSmoothRadioButton->setChecked(false);
 
-    ui->generateNormalsSmoothDoubleSpinBox->setValue(core::AssimpWrapper::getDefaultGenerateSmoothNormalsCreaseAngle());
+    ui->generateNormalsSmoothDoubleSpinBox->setValue(/*core::AssimpWrapper::getDefaultGenerateSmoothNormalsCreaseAngle()*/1);
 
     ui->improveCacheLocalityCheckBox->setChecked(false);
 
-    ui->improveCacheLocalitySpinBox->setValue(core::AssimpWrapper::getDefaultImproveCacheLocalityVertexCacheSize());
+    ui->improveCacheLocalitySpinBox->setValue(/*core::AssimpWrapper::getDefaultImproveCacheLocalityVertexCacheSize()*/1);
 
     ui->joinIdenticalVerticesCheckBox->setChecked(false);
 
     ui->limitBoneWeightsCheckBox->setChecked(false);
 
-    ui->limitBoneWeightsSpinBox->setValue(core::AssimpWrapper::getDefaultBoneWeightsMaxWeights());
+    ui->limitBoneWeightsSpinBox->setValue(/*core::AssimpWrapper::getDefaultBoneWeightsMaxWeights()*/1);
 
     ui->makeLeftHandedCheckBox->setChecked(false);
 
@@ -418,13 +418,13 @@ void repo::gui::RepoWidgetAssimpFlags::reset()
 
     ui->splitByBoneCountCheckBox->setChecked(false);
 
-    ui->splitByBoneCountSpinBox->setValue(core::AssimpWrapper::getDefaultSplitByBoneCountMaxBones());
+    ui->splitByBoneCountSpinBox->setValue(/*core::AssimpWrapper::getDefaultSplitByBoneCountMaxBones()*/1);
 
     ui->splitLargeMeshesGroupBox->setChecked(false);
 
-    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(core::AssimpWrapper::getDefaultSplitLargeMeshesTriangleLimit());
+    ui->splitLargeMeshesTriangleLimitSpinBox->setValue(/*core::AssimpWrapper::getDefaultSplitLargeMeshesTriangleLimit()*/1);
 
-    ui->splitLargeMeshesVertexLimitSpinBox->setValue(core::AssimpWrapper::getDefaultSplitLargeMeshesVertexLimit());
+    ui->splitLargeMeshesVertexLimitSpinBox->setValue(/*core::AssimpWrapper::getDefaultSplitLargeMeshesVertexLimit()*/1);
 
     ui->triangulateCheckBox->setChecked(false);
 

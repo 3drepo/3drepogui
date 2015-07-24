@@ -20,7 +20,7 @@
 #include "ui_repodialogsettings.h"
 #include "../primitives/repo_fontawesome.h"
 
-#include "widgets/repowidgetassimpflags.h"
+//#include "widgets/repowidgetassimpflags.h"
 
 repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
     QDialog(parent),

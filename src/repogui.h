@@ -20,12 +20,6 @@
 
 #include <QMainWindow>
 #include <QGLFormat>
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperMongo>
-#include <RepoGraphScene>
-#include <RepoNodeRevision>
-//------------------------------------------------------------------------------
 // GUI
 
 #include "renderers/repo_glcwidget.h"
@@ -73,11 +67,11 @@ public slots:
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
-    void commit(const core::RepoNodeAbstractSet &nodes,
+    /*void commit(const core::RepoNodeAbstractSet &nodes,
                 core::RepoNodeRevision *revision,
                 const QString &project = QString(),
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
-
+*/
     //! Shows a connection dialog and connects to the specified database.
     void connect();
 
@@ -97,7 +91,7 @@ public slots:
     RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
-    const core::RepoGraphScene *getActiveScene();
+    //const core::RepoGraphScene *getActiveScene();
 
     //! Shows a history dialog for selected repository.
     void history();

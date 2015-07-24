@@ -78,109 +78,109 @@ const QString repo::gui::RepoSettings::VALIDATE_DATA_STRUCTURES = "validateDataS
 unsigned int repo::gui::RepoSettings::getAssimpPostProcessingFlags(
         unsigned int flag) const
 {
-    if (getCalculateTangentSpace())
-        flag |= aiProcess_CalcTangentSpace;
+    //if (getCalculateTangentSpace())
+    //    flag |= aiProcess_CalcTangentSpace;
 
-    if (getConvertToUVCoordinates())
-        flag |= aiProcess_GenUVCoords;
+    //if (getConvertToUVCoordinates())
+    //    flag |= aiProcess_GenUVCoords;
 
-    if (getDegeneratesToPointsLines())
-        flag |= aiProcess_FindDegenerates;
+    //if (getDegeneratesToPointsLines())
+    //    flag |= aiProcess_FindDegenerates;
 
-    if (getDebone())
-        flag |= aiProcess_Debone;
+    //if (getDebone())
+    //    flag |= aiProcess_Debone;
 
-    // Debone threshold
-    // Debone only if all
+    //// Debone threshold
+    //// Debone only if all
 
-    if (getFindInstances())
-        flag |= aiProcess_FindInstances;
+    //if (getFindInstances())
+    //    flag |= aiProcess_FindInstances;
 
-    if (getFindInvalidData())
-        flag |= aiProcess_FindInvalidData;
+    //if (getFindInvalidData())
+    //    flag |= aiProcess_FindInvalidData;
 
-    // Animation accuracy
+    //// Animation accuracy
 
-    if (getFixInfacingNormals())
-        flag |= aiProcess_FixInfacingNormals;
+    //if (getFixInfacingNormals())
+    //    flag |= aiProcess_FixInfacingNormals;
 
-    if (getFlipUVCoordinates())
-        flag |= aiProcess_FlipUVs;
+    //if (getFlipUVCoordinates())
+    //    flag |= aiProcess_FlipUVs;
 
-    if (getFlipWindingOrder())
-        flag |= aiProcess_FlipWindingOrder;
+    //if (getFlipWindingOrder())
+    //    flag |= aiProcess_FlipWindingOrder;
 
-    if (getGenerateNormals() && getGenerateNormalsFlat())
-        flag |= aiProcess_GenNormals;
+    //if (getGenerateNormals() && getGenerateNormalsFlat())
+    //    flag |= aiProcess_GenNormals;
 
-    if (getGenerateNormals() && getGenerateNormalsSmooth())
-        flag |= aiProcess_GenSmoothNormals;
+    //if (getGenerateNormals() && getGenerateNormalsSmooth())
+    //    flag |= aiProcess_GenSmoothNormals;
 
-    // Crease angle
+    //// Crease angle
 
-    if (getImproveCacheLocality())
-        flag |= aiProcess_ImproveCacheLocality;
+    //if (getImproveCacheLocality())
+    //    flag |= aiProcess_ImproveCacheLocality;
 
-    // Vertex cache size
+    //// Vertex cache size
 
-    if (getJoinIdenticalVertices())
-        flag |= aiProcess_JoinIdenticalVertices;
+    //if (getJoinIdenticalVertices())
+    //    flag |= aiProcess_JoinIdenticalVertices;
 
-    if (getLimitBoneWeights())
-        flag |= aiProcess_LimitBoneWeights;
+    //if (getLimitBoneWeights())
+    //    flag |= aiProcess_LimitBoneWeights;
 
-    // Max bone weights
+    //// Max bone weights
 
-    if (getMakeLeftHanded())
-        flag |= aiProcess_MakeLeftHanded;
+    //if (getMakeLeftHanded())
+    //    flag |= aiProcess_MakeLeftHanded;
 
-    if (getOptimizeMeshes())
-        flag |= aiProcess_OptimizeMeshes;
+    //if (getOptimizeMeshes())
+    //    flag |= aiProcess_OptimizeMeshes;
 
-    if (getPreTransformUVCoordinates())
-        flag |= aiProcess_TransformUVCoords;
+    //if (getPreTransformUVCoordinates())
+    //    flag |= aiProcess_TransformUVCoords;
 
-    if (getPreTransformVertices())
-        flag |= aiProcess_PreTransformVertices;
+    //if (getPreTransformVertices())
+    //    flag |= aiProcess_PreTransformVertices;
 
-    // Normalize
+    //// Normalize
 
-    if (getRemoveComponents())
-        flag |= aiProcess_RemoveComponent;
+    //if (getRemoveComponents())
+    //    flag |= aiProcess_RemoveComponent;
 
-    // !individual components!
+    //// !individual components!
 
-    if (getRemoveRedundantMaterials())
-        flag |= aiProcess_RemoveRedundantMaterials;
+    //if (getRemoveRedundantMaterials())
+    //    flag |= aiProcess_RemoveRedundantMaterials;
 
-    // Skip materials
+    //// Skip materials
 
-    if (getRemoveRedundantNodes())
-        flag |= aiProcess_OptimizeGraph;
+    //if (getRemoveRedundantNodes())
+    //    flag |= aiProcess_OptimizeGraph;
 
-    // Skip nodes
+    //// Skip nodes
 
-    if (getSortAndRemove())
-        flag |= aiProcess_SortByPType;
+    //if (getSortAndRemove())
+    //    flag |= aiProcess_SortByPType;
 
-    // Remove types
+    //// Remove types
 
-    if (getSplitByBoneCount())
-        flag |= aiProcess_SplitByBoneCount;
+    //if (getSplitByBoneCount())
+    //    flag |= aiProcess_SplitByBoneCount;
 
-    // Max bones
+    //// Max bones
 
-    if (getSplitLargeMeshes())
-        flag |= aiProcess_SplitLargeMeshes;
+    //if (getSplitLargeMeshes())
+    //    flag |= aiProcess_SplitLargeMeshes;
 
-    // Vertex limit
-    // Triangle limit
+    //// Vertex limit
+    //// Triangle limit
 
-    if (getTriangulate())
-        flag |= aiProcess_Triangulate;
+    //if (getTriangulate())
+    //    flag |= aiProcess_Triangulate;
 
-    if (getValidateDataStructures())
-        flag |= aiProcess_ValidateDataStructure;
+    //if (getValidateDataStructures())
+    //    flag |= aiProcess_ValidateDataStructure;
 
     return flag;
 }

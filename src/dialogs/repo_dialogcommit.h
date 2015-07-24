@@ -27,14 +27,7 @@
 #include <QtGui>
 #include <QStandardItemModel>
 #include <QModelIndex>
-//------------------------------------------------------------------------------
-// Repo Core
-#include <RepoWrapperMongo>
-#include <RepoGraphAbstract>
-#include <RepoNodeRevision>
-#include <RepoNodeAbstract>
-#include <RepoNodeTransformation>
-#include <RepoNodeTypes>
+
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
@@ -50,7 +43,7 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-Q_DECLARE_METATYPE(repo::core::RepoNodeAbstract*)
+//Q_DECLARE_METATYPE(repo::core::RepoNodeAbstract*)
 
 /*!
  * Commit dialog which enables users to confirm those nodes that are to be 
@@ -80,9 +73,9 @@ public:
         QWidget* parent = 0,
         Qt::WindowFlags flags = 0,
         RepoIDBCache *dbCache = 0,
-        const QString &projectName = QString(),
-        const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
-        core::RepoNodeRevision *revision = 0);
+        const QString &projectName = QString()
+/*        const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
+        core::RepoNodeRevision *revision = 0*/);
 
     //--------------------------------------------------------------------------
 	//
@@ -105,9 +98,9 @@ public:
 
     QString getCurrentProject() const;
 
-    core::RepoNodeAbstractSet getNodesToCommit() const;
+    //core::RepoNodeAbstractSet getNodesToCommit() const;
 
-    repo::core::RepoNodeRevision *getRevision();
+    //repo::core::RepoNodeRevision *getRevision();
 
 public slots:
 
@@ -142,11 +135,11 @@ private:
     //! Ui var.
     Ui::RepoDialogCommit *ui;
 		   
-	//! Revision object on which user preferences (message, nodes to commit) are set.	
-	repo::core::RepoNodeRevision *revision;
+	////! Revision object on which user preferences (message, nodes to commit) are set.	
+	//repo::core::RepoNodeRevision *revision;
 
-	//! Scene from which the nodes to be committed come (based on info from revision object).
-    core::RepoNodeAbstractSet nodes;
+	////! Scene from which the nodes to be committed come (based on info from revision object).
+ //   core::RepoNodeAbstractSet nodes;
 
 	//! Data model to list commit table.
 	QStandardItemModel *model;

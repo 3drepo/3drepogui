@@ -24,9 +24,6 @@
 #include <QDialog>
 #include <QCheckBox>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoProjectSettings>
 
 namespace Ui {
 class RepoProjectSettingsDialog;
@@ -45,7 +42,7 @@ class RepoProjectSettingsDialog : public QDialog
 
 public:
     explicit RepoProjectSettingsDialog(
-            core::RepoProjectSettings projectSettings,
+            //core::RepoProjectSettings projectSettings,
             QWidget *parent = 0);
     ~RepoProjectSettingsDialog();
 
@@ -74,7 +71,7 @@ public :
             int value);
 
     //! Returns upsert command bson.
-    core::RepoBSON getCommand() const;
+    //core::RepoBSON getCommand() const;
 
 protected :
 

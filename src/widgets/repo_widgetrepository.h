@@ -27,17 +27,10 @@
 #include <QCompleter>
 
 //------------------------------------------------------------------------------
-// Repo Core
-#include <RepoWrapperMongo>
-#include <RepoCollStats>
-
-//------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repoidbcache.h"
-#include "../workers/repo_workerdatabases.h"
-#include "../workers/repo_workercollection.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
 #include "repo_lineedit.h"
 
@@ -87,8 +80,8 @@ public slots :
     virtual QList<QString> getCollections(const QString &host, const QString &database) const
     { return QList<QString>(); }
 
-    //! Returns connection corresponding to given host.
-    virtual core::MongoClientWrapper getConnection(const QString &host) const;
+    ////! Returns connection corresponding to given host.
+    //virtual core::MongoClientWrapper getConnection(const QString &host) const;
 
     //! Returns a list of available hosts.
     virtual QList<QString> getHosts() const;
@@ -100,7 +93,7 @@ public slots :
      * Returns a copy of a selected connection. It is necessary to reconnect
      * and reauthenticate.
      */
-    core::MongoClientWrapper getSelectedConnection() const { return mongo; }
+    //core::MongoClientWrapper getSelectedConnection() const { return mongo; }
 
     //! Returns a list of available databases.
     QList<QString> getDatabases(const QString& host) const;
@@ -121,23 +114,23 @@ public slots :
 	//! Removes all threads from the thread pool and returns true if successful.
 	bool cancelAllThreads();
 
-	//! Fetches databases from the server.
-	void fetchDatabases(const repo::core::MongoClientWrapper&);
+	////! Fetches databases from the server.
+	//void fetchDatabases(const repo::core::MongoClientWrapper&);
 
 	//! Fetches currently selected collection (if any) from the server.
-	void fetchCollection();
+	//void fetchCollection();
 
-	//! Fetches collection.
-	void fetchCollection(
-		const repo::core::MongoClientWrapper& /* clientConnection */, 
-		const QString& /* database */, 
-		const QString& /* collection */);
+	////! Fetches collection.
+	//void fetchCollection(
+	//	const repo::core::MongoClientWrapper& /* clientConnection */, 
+	//	const QString& /* database */, 
+	//	const QString& /* collection */);
 
 	void addHost(QString name);
 
 	void addDatabase(QString name);
 
-    void addCollection(core::RepoCollStats stats);
+    //void addCollection(core::RepoCollStats stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 
@@ -281,8 +274,8 @@ private :
 	//! Private thread pool local to this object only.
 	QThreadPool threadPool;
 
-	//! TODO: improve (should enable multiple DB connections at once)
-    core::MongoClientWrapper mongo;
+	////! TODO: improve (should enable multiple DB connections at once)
+ //   core::MongoClientWrapper mongo;
 
     int databaseRowCounter;
 };

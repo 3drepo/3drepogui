@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #include "repogui.h"
 #include <QApplication>
 #include <QResource>
