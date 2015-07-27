@@ -329,12 +329,16 @@ void repo::gui::RepoGUI::commit()
     QString project = ui->widgetRepository->getSelectedProject();
 
     core::RepoNodeAbstractSet nodes;
+	core::RepoNodeAbstractSet nodesOptim;
     core::RepoNodeRevision* revision = 0;
 
     if (activeWindow && widget)
     {
         const core::RepoGraphScene *repoScene = widget->getRepoScene();
         nodes = repoScene->getNodes();
+
+		const core::RepoGraphScene *repoSceneOptim = widget->getRepoSceneOptim();
+		nodesOptim = repoSceneOptim->getNodes();
 
         // TODO: fix !!!
         if (project.isEmpty())
@@ -349,13 +353,14 @@ void repo::gui::RepoGUI::commit()
         revision = new core::RepoNodeRevision(mongo.getUsername(database.toStdString()));
         revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
         history->setCommitRevision(revision);
-    }   
+    }
 
-    commit(nodes, revision, project, activeWindow);
+    commit(nodes, nodesOptim, revision, project, activeWindow);
 }
 
 void repo::gui::RepoGUI::commit(
         const core::RepoNodeAbstractSet &nodes,
+        const core::RepoNodeAbstractSet &nodesOptim,
         core::RepoNodeRevision* revision,
         const QString &project,
         RepoMdiSubWindow *activeWindow)
@@ -383,7 +388,8 @@ void repo::gui::RepoGUI::commit(
                     commitDialog.getCurrentDatabase(),
                     commitDialog.getCurrentProject(),
                     commitDialog.getRevision(),
-                    commitDialog.getNodesToCommit());
+                    commitDialog.getNodesToCommit(),
+					nodesOptim);
 
         if (activeWindow)
             QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
@@ -499,7 +505,10 @@ void repo::gui::RepoGUI::federate()
         core::RepoNodeAbstractSet nodesSet;
         for (const core::RepoNodeAbstract *node : nodes)
             nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
-        commit(nodesSet, revision);
+
+        // TODO: Optimized geometry shouldn't be the same as the original
+        // but the fed is being re-written.
+        commit(nodesSet, nodesSet, revision); 
     }
 }
 

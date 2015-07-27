@@ -78,6 +78,7 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
     , isInfoVisible(true)
     , renderingFlag(glc::ShadingFlag)
     , repoScene(0)
+    , repoSceneOptim(0)
 {
     //--------------------------------------------------------------------------
     // Default settings
@@ -136,6 +137,9 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
 
     if (repoScene)
         delete repoScene;
+
+    if (repoSceneOptim)
+        delete repoSceneOptim;
 }
 
 //------------------------------------------------------------------------------
@@ -703,6 +707,14 @@ void repo::gui::RepoGLCWidget::setRepoScene(core::RepoGraphScene *repoScene)
         delete this->repoScene;
 
     this->repoScene = repoScene;
+}
+
+void repo::gui::RepoGLCWidget::setRepoSceneOptim(core::RepoGraphScene *repoSceneOptim)
+{
+    if (this->repoSceneOptim)
+        delete this->repoSceneOptim;
+
+    this->repoSceneOptim = repoSceneOptim;
 }
 
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)

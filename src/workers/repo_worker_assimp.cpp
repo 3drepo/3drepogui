@@ -175,6 +175,7 @@ void repo::gui::RepoWorkerAssimp::run()
 	emit progress(0, 0);
 
     repo::core::RepoGraphScene * repoGraphScene = 0;
+	repo::core::RepoGraphScene * repoGraphOptim = 0;
     GLC_World glcWorld;
 
     try
@@ -236,8 +237,8 @@ void repo::gui::RepoWorkerAssimp::run()
 
         importer.importModel(
             fileName,
-            fullPath.toStdString(),
-            settings.getAssimpPostProcessingFlags());
+            fullPath.toStdString());
+
         const aiScene *assimpScene = importer.getScene();
         emit progress(1, jobsCount);
 
@@ -265,17 +266,29 @@ void repo::gui::RepoWorkerAssimp::run()
                 importer.getFullFolderPath());
             emit progress(3, jobsCount);
 
+            repo::core::assimp_map assimpMap;
+
             //-------------------------------------------------------------------------
             // Repo scene graph
             const std::map<std::string, core::RepoNodeAbstract *> tex = loadTextures(
                 textures,
                 importer.getFullFolderPath());
-            repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex);
+
+            repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex, assimpMap);
             emit progress(4, jobsCount);
+
+            // Assign the unoptimized node map, and start optimization
+            importer.ApplyPostProcessing(settings.getAssimpPostProcessingFlags());
 
             //-------------------------------------------------------------------------
             // GLC World conversion
             glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
+
+            repo::core::assimp_map assimpMapOptim;
+
+            // Create new repoGraphScene with optimized map
+            repoGraphOptim = new repo::core::RepoGraphScene(assimpScene, tex, assimpMapOptim);
+            repoGraphOptim->populateOptimMaps(assimpMap, assimpMapOptim);
         }
     }
     catch (...)
@@ -287,6 +300,6 @@ void repo::gui::RepoWorkerAssimp::run()
 
 	//-------------------------------------------------------------------------
 	// Done
-	emit finished(repoGraphScene, glcWorld);
+	emit finished(repoGraphScene, repoGraphOptim, glcWorld);
 	emit RepoWorkerAbstract::finished();
 }

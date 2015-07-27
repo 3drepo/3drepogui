@@ -55,7 +55,7 @@ public :
 
 	//! Default constructor.
 	RepoMdiSubWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
-	
+
 	//! Destructor.
 	~RepoMdiSubWindow();
 
@@ -73,7 +73,7 @@ public :
     //--------------------------------------------------------------------------
 
     void setWidget(const QString& windowTitle);
-	
+
 	//! Asynchronously loads 3D file into a RepoGCLWidget.
 	/*!
 	 * Loads a 3D file from the given file path using Assimp via a separate
@@ -84,29 +84,29 @@ public :
     void setWidgetFromFile(const QString& fullFilePath);
 
 	/*!
-	 * Sets the widget as the internal widget of this subwindow. The internal 
-	 * widget is displayed in the center of the subwindow beneath the title 
-	 * bar and above the progress bar. 
+	 * Sets the widget as the internal widget of this subwindow. The internal
+	 * widget is displayed in the center of the subwindow beneath the title
+	 * bar and above the progress bar.
 	 *
-	 * RepoMdiSubWindow takes temporary ownership of the widget; you do not 
+	 * RepoMdiSubWindow takes temporary ownership of the widget; you do not
 	 * need to delete it.
 	 */
-	void setWidget(QWidget* widget);	
+	void setWidget(QWidget* widget);
 
 	//! Deletes the internal widget if any.
 	void removeWidget();
 
     //--------------------------------------------------------------------------
 	//
-	// Getters 
+	// Getters
 	//
     //--------------------------------------------------------------------------
 
 	//! Returns the current internal widget.
 	QWidget * widget() const;
 
-	/*! 
-	 * Returns the current internal widget cast to the requested type, 
+	/*!
+	 * Returns the current internal widget cast to the requested type,
 	 * potentially NULL (if not set or not of the desired type).
 	 */
 	template <class T>
@@ -117,15 +117,18 @@ public :
 public slots :
 
 	//! Sets the two scene representations on the widget.
-	void finishedLoading(repo::core::RepoGraphScene *, GLC_World &);
+	void finishedLoading(
+		repo::core::RepoGraphScene *,
+		repo::core::RepoGraphScene *,
+		GLC_World &);
 
-	/*! 
+	/*!
 	 * Updates the current state of the progress bar with the values specified.
 	 * This method makes the progress bar visible unless the value is non-zero
 	 * and equals the maximum in which case the progress bar is hidden.
 	 */
 	void progress(int value, int maximum);
-	
+
 private :
 
     //--------------------------------------------------------------------------

@@ -22,17 +22,19 @@ repo::gui::RepoWorkerCommit::RepoWorkerCommit(
     const QString &database,
     const QString &project,
     const core::RepoNodeRevision *revision,
-    const core::RepoNodeAbstractSet &nodes)
-	: mongo(mongo) 
+    const core::RepoNodeAbstractSet &nodes,
+    const core::RepoNodeAbstractSet &nodesOptim)
+    : mongo(mongo)
     , database(sanitizeDatabaseName(database).toStdString())
     , project(sanitizeCollectionName(project).toStdString())
     , revision(revision)
     , nodes(nodes)
+    , nodesOptim(nodesOptim)
 {}
 
 repo::gui::RepoWorkerCommit::~RepoWorkerCommit() {}
 
-void repo::gui::RepoWorkerCommit::run() 
+void repo::gui::RepoWorkerCommit::run()
 {
     std::cout << tr("Uploading, please wait...").toStdString() << std::endl;
     int jobsCount = 0;
@@ -41,6 +43,7 @@ void repo::gui::RepoWorkerCommit::run()
         if (!cancelled && mongo.reconnectAndReauthenticate(database))
         {
             jobsCount = nodes.size();
+            jobsCount = nodesOptim.size();
             jobsCount++; // +1 for revision entry and +1 project settings
             jobsCount++;
             if (revision && nodes.size() > 0)
@@ -53,6 +56,8 @@ void repo::gui::RepoWorkerCommit::run()
                         core::MongoClientWrapper::getHistoryCollectionName(project);
                 std::string sceneCollection =
                         core::MongoClientWrapper::getSceneCollectionName(project);
+				std::string stashCollection =
+						core::MongoClientWrapper::getRepoStashCollectionName(project);
 
                 //--------------------------------------------------------------
                 // Insert project settings object first in case of a lost connection
@@ -62,8 +67,6 @@ void repo::gui::RepoWorkerCommit::run()
                                     mongo.getUsername(database));
                 // TODO: check if it already exists (eg use insert instead of upsert as this is unsafe!)
                 mongo.runCommand(database, projectSettings.upsert());
-
-
 
                 //--------------------------------------------------------------
                 // Insert the revision object first in case of a lost connection.
@@ -84,8 +87,24 @@ void repo::gui::RepoWorkerCommit::run()
                     emit progress(++counter, jobsCount);
                 }
 
+                //--------------------------------------------------------------
+                // Insert optimized graph records one-by-one
+                for (it = nodesOptim.begin(); it != nodesOptim.end(); ++it)
+                {
+                    const core::RepoNodeAbstract *node = *it;
+                    (*it)->setRevisionID(revision->getUniqueID());
+
+                    mongo::BSONObj nodeObj = node->toBSONObj();
+
+                    if (nodeObj.objsize() > 16777216) // 16MB
+                        std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
+                    else
+                        mongo.insertRecord(database, stashCollection, nodeObj);
+                    emit progress(++counter, jobsCount);
+                }
+
+               }
             }
-        }
     }
     catch (std::exception e)
     {

@@ -34,8 +34,8 @@
 
 namespace repo {
 namespace gui {
-	 
-class RepoWorkerCommit : public RepoWorkerAbstract 
+
+class RepoWorkerCommit : public RepoWorkerAbstract
 {
 	Q_OBJECT
 
@@ -47,14 +47,15 @@ public :
         const QString &database,
         const QString &project,
         const core::RepoNodeRevision *revision,
-        const core::RepoNodeAbstractSet &nodes);
+        const core::RepoNodeAbstractSet &nodes,
+        const core::RepoNodeAbstractSet &nodesOptim);
 
     //! Destructor
 	~RepoWorkerCommit();
 
 public slots :
 
-	/*! 
+	/*!
      * Commits the scene nodes and emits signals as the commit progresses and
      * once it is finished.
 	 */
@@ -70,7 +71,7 @@ public :
 
     //! See http://docs.mongodb.org/manual/reference/limits/#Restriction-on-Collection-Names
     static QString sanitizeCollectionName(const QString &collection);
-	
+
 private :
 
 	//! Name of the database to commit to.
@@ -84,10 +85,13 @@ private :
      * a connection loss.
      */
     const core::RepoNodeRevision *revision;
-	
+
     //! Nodes to be committed.
     core::RepoNodeAbstractSet nodes;
-	
+
+    //! Optimized set of nodes to be committed.
+    core::RepoNodeAbstractSet nodesOptim;
+
 	//! MongoDB connection to commit to.
     core::MongoClientWrapper mongo;
 

@@ -27,6 +27,8 @@
 //-----------------------------------------------------------------------------
 #include "assimpwrapper.h"
 #include "graph/repo_graph_scene.h"
+
+#include <boost/bimap/bimap.hpp>
 //-----------------------------------------------------------------------------
 #include <QImage>
 
@@ -79,7 +81,7 @@ public slots :
 signals :
 
 	//! Emitted when loading is finished. Passes Repo scene and GLC world.
-	void finished(repo::core::RepoGraphScene *, GLC_World &);
+	void finished(repo::core::RepoGraphScene *, repo::core::RepoGraphScene *, GLC_World &);
 
 private :
 

@@ -189,6 +189,9 @@ public :
     //! Sets the 3D Repo scene for this widget.
     void setRepoScene(core::RepoGraphScene *repoScene);
 
+    //! Sets the optimized 3D Repo scene for this widget.
+    void setRepoSceneOptim(core::RepoGraphScene *repoSceneOptim);
+
     //! Sets the GLC World for this widget which is used for rendering purposes.
 	void setGLCWorld(GLC_World);
 
@@ -234,6 +237,9 @@ public :
 
 	//! Returns the 3D Repo scene of this widget.
     core::RepoGraphScene *getRepoScene() const { return repoScene; }
+
+	//! Returns the optimized 3D Repo scene of this widget.
+    core::RepoGraphScene *getRepoSceneOptim() const { return repoSceneOptim; }
 
 	//! Returns the GLC World of this widget.
     GLC_World getGLCWorld() const { return glcWorld; }
@@ -294,6 +300,9 @@ protected :
 
 	//! 3D scene, the scene graph representation to store in the DB.
     core::RepoGraphScene *repoScene;
+
+	//! 3D scene, the optimized scene graph representation to store in the DB.
+    core::RepoGraphScene *repoSceneOptim;
 
 	//! 3D world, the main scene to render.
 	GLC_World glcWorld;

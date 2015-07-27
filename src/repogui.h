@@ -74,6 +74,7 @@ public slots:
     void commit();
 
     void commit(const core::RepoNodeAbstractSet &nodes,
+		        const core::RepoNodeAbstractSet &nodesOptim,
                 core::RepoNodeRevision *revision,
                 const QString &project = QString(),
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
