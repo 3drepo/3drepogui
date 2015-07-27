@@ -16,9 +16,16 @@
  */
 
 
-#include "repogui.h"
+
 #include <QApplication>
 #include <QResource>
+
+#include <repo/repo_controller.h>
+#include <repo/lib/repo_listener_abstract.h>
+
+#include "repogui.h"
+#include "repo/logger/repo_logger.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -29,7 +36,12 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("3D Repo GUI");
     QCoreApplication::setApplicationVersion("0.0.1");
 
-    repo::gui::RepoGUI w;
+	std::vector<repo::lib::RepoAbstractListener*> listeners;
+	listeners.push_back(repo::logger::RepoLogger::getInstance());
+
+	repo::RepoController *controller = new repo::RepoController(listeners);
+
+    repo::gui::RepoGUI w(controller);
     w.show();
     w.startup();
 

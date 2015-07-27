@@ -27,6 +27,10 @@
 #include <QCompleter>
 
 //------------------------------------------------------------------------------
+// Repo Core
+#include <repo/repo_controller.h>
+
+//------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
 #include "../primitives/repo_fontawesome.h"
@@ -114,8 +118,8 @@ public slots :
 	//! Removes all threads from the thread pool and returns true if successful.
 	bool cancelAllThreads();
 
-	////! Fetches databases from the server.
-	//void fetchDatabases(const repo::core::MongoClientWrapper&);
+	//! Fetches databases from the server.
+	void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
 
 	//! Fetches currently selected collection (if any) from the server.
 	//void fetchCollection();
@@ -130,7 +134,7 @@ public slots :
 
 	void addDatabase(QString name);
 
-    //void addCollection(core::RepoCollStats stats);
+    void addCollection(const repo::core::model::bson::CollectionStats &stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 
@@ -274,8 +278,8 @@ private :
 	//! Private thread pool local to this object only.
 	QThreadPool threadPool;
 
-	////! TODO: improve (should enable multiple DB connections at once)
- //   core::MongoClientWrapper mongo;
+    repo::RepoController *controller;
+	repo::RepoToken      *token;
 
     int databaseRowCounter;
 };

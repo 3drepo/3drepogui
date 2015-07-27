@@ -25,7 +25,7 @@ unix:!macx:QT += x11extras
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = 3drepogui
-TEMPLATE = app
+TEMPLATE =vcapp
 
 INCLUDEPATH += src
 
@@ -79,8 +79,8 @@ HEADERS  += src/repogui.h \
             src/dialogs/repofederationdialog.h \
             src/dialogs/repo_genericdialog.h \
             src/dialogs/repo_transformationdialog.h \
-    src/renderers/repo_fpscounter.h \
-    src/renderers/repo_3ddiffrenderer.h
+            src/renderers/repo_fpscounter.h \
+            src/renderers/repo_3ddiffrenderer.h
 
 SOURCES +=  src/main.cpp\
             src/repogui.cpp \

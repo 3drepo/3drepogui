@@ -20,6 +20,10 @@
 
 #include <QMainWindow>
 #include <QGLFormat>
+
+// CORE
+#include <repo/repo_controller.h>
+
 // GUI
 
 #include "renderers/repo_glcwidget.h"
@@ -44,10 +48,21 @@ class RepoGUI : public QMainWindow
 public:
 
     //! Explicit default constructor
-    explicit RepoGUI(QWidget *parent = 0);
+    explicit RepoGUI(
+		repo::RepoController *controller,
+		QWidget *parent = 0);
 
     //! Destructor
     ~RepoGUI();
+
+	/**
+	* returns controller to library
+	* @return instance of RepoController
+	*/
+	repo::RepoController* getController()
+	{
+		return controller;
+	}
 
 public slots:
 
@@ -180,10 +195,12 @@ protected :
     void storeSettings();
 
 private:
+	//! Controller to talk to the core
+	repo::RepoController *controller;
 
     //! UI var.
     Ui::RepoGUI *ui;
-
+	
     //! Panels menu (dockable widgets and toolbars)
     QMenu *panelsMenu;
 

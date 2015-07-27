@@ -53,7 +53,7 @@ repo::gui::RepoTextBrowser::~RepoTextBrowser()
     watchedFiles.clear();
 }
 
-void repo::gui::RepoTextBrowser::messageGenerated(const std::string &msg)
+void repo::gui::RepoTextBrowser::newMessageReceived(const std::string &msg)
 { 
     QMetaObject::invokeMethod(this, "append", Qt::AutoConnection,
         Q_ARG(QString, QString::fromStdString(msg)));

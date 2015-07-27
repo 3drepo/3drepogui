@@ -17,6 +17,8 @@
 
 #include "repo_widgetrepository.h"
 
+#include "../repo/workers/repo_worker_database.h"
+
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     : QWidget(parent)
@@ -169,64 +171,65 @@ bool repo::gui::RepoWidgetRepository::cancelAllThreads()
 
 //------------------------------------------------------------------------------
 
-//void repo::gui::RepoWidgetRepository::fetchDatabases(
-//        const repo::core::MongoClientWrapper& mongo)
-//{
-//    //--------------------------------------------------------------------------
-//	// Cancel any previously running threads.
-//	if (cancelAllThreads())
-//	{
-//		this->mongo = mongo;
-//
-//        std::cout << "Fetching databases..." << std::endl;
-//				
-//        //----------------------------------------------------------------------
-//		RepoWorkerDatabases * worker = new RepoWorkerDatabases(mongo);	
-//		worker->setAutoDelete(true);
-//
-//        //----------------------------------------------------------------------
-//		// Direct connection ensures cancel signal is processed ASAP
-//		QObject::connect(
-//			this, &RepoWidgetRepository::cancel,
-//			worker, &RepoWorkerDatabases::cancel, Qt::DirectConnection);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::hostFetched,
-//			this, &RepoWidgetRepository::addHost);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::databaseFetched,
-//			this, &RepoWidgetRepository::addDatabase);
-//
-//        QObject::connect(
-//                    worker, &RepoWorkerDatabases::databaseFinished,
-//                    this, &RepoWidgetRepository::incrementDatabaseRow);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::collectionFetched,
-//			this, &RepoWidgetRepository::addCollection);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::finished,
-//            ui->databasesProgressBar, &QProgressBar::hide);
-//		
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::progressRangeChanged,
-//            ui->databasesProgressBar, &QProgressBar::setRange);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::progressValueChanged,
-//            ui->databasesProgressBar, &QProgressBar::setValue);
-//
-//        //----------------------------------------------------------------------
-//		// Clear any previous entries in the databases and collection models
-//		clearDatabaseModel();
-//
-//        //----------------------------------------------------------------------
-//        ui->databasesProgressBar->show();
-//		threadPool.start(worker);	
-//	}
-//}
+void repo::gui::RepoWidgetRepository::fetchDatabases(
+        repo::RepoController *controller, repo::RepoToken *token)
+{
+    //--------------------------------------------------------------------------
+	// Cancel any previously running threads.
+	if (cancelAllThreads())
+	{
+		this->controller = controller;
+		this->token      = token;
+
+        std::cout << "Fetching databases..." << std::endl;
+				
+        //----------------------------------------------------------------------
+		repo::worker::DatabaseWorker * worker = new repo::worker::DatabaseWorker(controller, token);
+		worker->setAutoDelete(true);
+
+        //----------------------------------------------------------------------
+		// Direct connection ensures cancel signal is processed ASAP
+		QObject::connect(
+			this, &RepoWidgetRepository::cancel,
+			worker, &repo::worker::DatabaseWorker::cancel, Qt::DirectConnection);
+
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::hostFetched,
+			this, &RepoWidgetRepository::addHost);
+
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::databaseFetched,
+			this, &RepoWidgetRepository::addDatabase);
+
+        QObject::connect(
+			worker, &repo::worker::DatabaseWorker::databaseFinished,
+                    this, &RepoWidgetRepository::incrementDatabaseRow);
+
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::collectionFetched,
+			this, &RepoWidgetRepository::addCollection);
+
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::finished,
+            ui->databasesProgressBar, &QProgressBar::hide);
+		
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::progressRangeChanged,
+            ui->databasesProgressBar, &QProgressBar::setRange);
+
+		QObject::connect(
+			worker, &repo::worker::DatabaseWorker::progressValueChanged,
+            ui->databasesProgressBar, &QProgressBar::setValue);
+
+        //----------------------------------------------------------------------
+		// Clear any previous entries in the databases and collection models
+		clearDatabaseModel();
+
+        //----------------------------------------------------------------------
+        ui->databasesProgressBar->show();
+		threadPool.start(worker);	
+	}
+}
 //
 //void repo::gui::RepoWidgetRepository::fetchCollection()
 //{	
@@ -322,50 +325,51 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 
 //------------------------------------------------------------------------------
 
-//void repo::gui::RepoWidgetRepository::addCollection(core::RepoCollStats stats)
-//{
-//    QString collection = QString::fromStdString(stats.getCollection());
-//    unsigned long long count = stats.getCount();
-//    unsigned long long size = stats.getActualSizeOnDisk();
-//    unsigned long long allocated = stats.getStorageSize();
-//
-//    if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
-//		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
-//	{
-//        //----------------------------------------------------------------------
-//		// Append to the bottom most database
-//        QList<QStandardItem * > row;
-//		row.append(createItem(collection));
-//        row.at(0)->setIcon(getIcon(collection));
-//
-//        row.append(createItem(toLocaleString(count), count, Qt::AlignRight));
-//        row.append(createItem(toFileSize(size), size, Qt::AlignRight));
-//        row.append(createItem(toFileSize(allocated), allocated, Qt::AlignRight));
-//        if (QStandardItem *database = host->child(databaseRowCounter, RepoDatabasesColumns::NAME))
-//			database->appendRow(row);
-//
-//        //----------------------------------------------------------------------
-//		// Increase count and size on the bottom most database
-//        if (QStandardItem *databaseCount = host->child(databaseRowCounter, RepoDatabasesColumns::COUNT))
-//			setItemCount(databaseCount, databaseCount->data().toULongLong() + count);
-//        if (QStandardItem *databaseSize = host->child(databaseRowCounter, RepoDatabasesColumns::SIZE))
-//			setItemSize(databaseSize, databaseSize->data().toULongLong() + size);
-//        if (QStandardItem *databaseAllocated = host->child(databaseRowCounter, RepoDatabasesColumns::ALLOCATED))
-//            setItemSize(databaseAllocated, databaseAllocated->data().toULongLong() + allocated);
-//		
-//        //----------------------------------------------------------------------
-//		// Increase count and size on the bottom most host
-//        if (QStandardItem *hostCount = databasesModel->invisibleRootItem()->child(
-//			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::COUNT))
-//			setItemCount(hostCount, hostCount->data().toULongLong() + count);	
-//        if (QStandardItem *hostSize = databasesModel->invisibleRootItem()->child(
-//			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::SIZE))
-//            setItemSize(hostSize, hostSize->data().toULongLong() + size);
-//        if (QStandardItem *hostAllocated = databasesModel->invisibleRootItem()->child(
-//            databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::ALLOCATED))
-//            setItemSize(hostAllocated, hostAllocated->data().toULongLong() + allocated);
-//	}
-//}
+void repo::gui::RepoWidgetRepository::addCollection(
+	const repo::core::model::bson::CollectionStats &stats)
+{
+    QString collection = QString::fromStdString(stats.getCollection());
+    uint64_t count = stats.getCount();
+    uint64_t size = stats.getActualSizeOnDisk();
+    uint64_t allocated = stats.getStorageSize();
+
+    if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
+		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
+	{
+        //----------------------------------------------------------------------
+		// Append to the bottom most database
+        QList<QStandardItem * > row;
+		row.append(createItem(collection));
+        row.at(0)->setIcon(getIcon(collection));
+
+        row.append(createItem(toLocaleString(count), count, Qt::AlignRight));
+        row.append(createItem(toFileSize(size), size, Qt::AlignRight));
+        row.append(createItem(toFileSize(allocated), allocated, Qt::AlignRight));
+        if (QStandardItem *database = host->child(databaseRowCounter, RepoDatabasesColumns::NAME))
+			database->appendRow(row);
+
+        //----------------------------------------------------------------------
+		// Increase count and size on the bottom most database
+        if (QStandardItem *databaseCount = host->child(databaseRowCounter, RepoDatabasesColumns::COUNT))
+			setItemCount(databaseCount, databaseCount->data().toULongLong() + count);
+        if (QStandardItem *databaseSize = host->child(databaseRowCounter, RepoDatabasesColumns::SIZE))
+			setItemSize(databaseSize, databaseSize->data().toULongLong() + size);
+        if (QStandardItem *databaseAllocated = host->child(databaseRowCounter, RepoDatabasesColumns::ALLOCATED))
+            setItemSize(databaseAllocated, databaseAllocated->data().toULongLong() + allocated);
+		
+        //----------------------------------------------------------------------
+		// Increase count and size on the bottom most host
+        if (QStandardItem *hostCount = databasesModel->invisibleRootItem()->child(
+			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::COUNT))
+			setItemCount(hostCount, hostCount->data().toULongLong() + count);	
+        if (QStandardItem *hostSize = databasesModel->invisibleRootItem()->child(
+			databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::SIZE))
+            setItemSize(hostSize, hostSize->data().toULongLong() + size);
+        if (QStandardItem *hostAllocated = databasesModel->invisibleRootItem()->child(
+            databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::ALLOCATED))
+            setItemSize(hostAllocated, hostAllocated->data().toULongLong() + allocated);
+	}
+}
 
 void repo::gui::RepoWidgetRepository::addKeyValuePair(
 	QVariant document, 
@@ -607,14 +611,14 @@ void repo::gui::RepoWidgetRepository::setItem(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, unsigned long long value)
+void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, uint64_t value)
 {
     setItem(item, toLocaleString(value), value);
 }
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, unsigned long long value)
+void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, uint64_t value)
 {
     setItem(item, toFileSize(value), value);
 }
@@ -647,7 +651,7 @@ QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
 	return icon;
 }
 
-QString repo::gui::RepoWidgetRepository::toFileSize(unsigned long long int bytes)
+QString repo::gui::RepoWidgetRepository::toFileSize(uint64_t bytes)
  {
     QString value;
     if (0 != bytes)

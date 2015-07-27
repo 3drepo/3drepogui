@@ -22,7 +22,6 @@
 
 //------------------------------------------------------------------------------
 // New Core
-//#include <repo/repo_controller.h>
 
 
 //------------------------------------------------------------------------------
@@ -37,6 +36,7 @@
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
 #include "dialogs/repoprojectmanagerdialog.h"
+#include "repo/logger/repo_logger.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
@@ -56,19 +56,19 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 
-repo::gui::RepoGUI::RepoGUI(QWidget *parent)
+repo::gui::RepoGUI::RepoGUI(
+	repo::RepoController *controller,
+	QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RepoGUI)
+	, controller(controller)
     , panelsMenu(0)
 {
     ui->setupUi(this);
     restoreSettings();
 
-	
-	//std::vector<repo::lib::RepoAbstractListener*> listeners;
-	//listeners.push_back(ui->logTextBrowser);
-	//repo::RepoController controller(listeners);
-	//core::RepoLogger::instance().addListener(ui->logTextBrowser);
+	//Subscribe logger to broadcaster who taps into repo bouncer library logs
+	repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
 
 
     QIcon icon(":/images/3drepo-icon.svg");
@@ -406,31 +406,29 @@ void repo::gui::RepoGUI::connect()
     }
     else
     {
-        // TODO move mongo creation outside of this main GUI to repository widget
-        // or similar
+        // if not successfully connected
 
+		std::string errMsg;
 
-				
-//        core::MongoClientWrapper mongo;
-//
-//        //----------------------------------------------------------------------
-//        // if not successfully connected
-//        if (!mongo.connect(
-//                    connectionDialog.getHost().toStdString(),
-//                    connectionDialog.getPort()))
-//        {
-//            std::cerr << "Connection error" << std::endl;
-//        }
-//        else
-//        {
-//            if (!connectionDialog.getUsername().isEmpty())
-//            {
-//                mongo.authenticate(
-//                    connectionDialog.getUsername().toStdString(),
-//                    connectionDialog.getPassword().toStdString());
-//            }
-////            ui->widgetRepository->fetchDatabases(mongo);
-//
+		repo::RepoToken* connectionToken =
+			controller->authenticateToAdminDatabaseMongo(
+			errMsg, 
+			connectionDialog.getHost().toStdString(), 
+			connectionDialog.getPort(),
+			connectionDialog.getUsername().toStdString(), 
+			connectionDialog.getPassword().toStdString());
+
+		if (connectionToken)
+		{
+			//connection/authentication success
+			ui->widgetRepository->fetchDatabases(controller, connectionToken);
+		}
+		else
+		{
+			//connection/authentication failed
+			std::cerr << "Connection error:" << errMsg << std::endl;
+		}
+
 //            //-----------------------------------------------------------------
 //            // enable buttons
 //            ui->actionRefresh->setEnabled(true);
