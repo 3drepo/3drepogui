@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RepoMapTilesDialog</class>
+ <widget class="QDialog" name="RepoMapTilesDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>457</width>
+    <height>288</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Map Tiles</string>
+     </property>
+     <widget class="QLabel" name="widthLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>50</y>
+        <width>41</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Width</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tiltLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>80</y>
+        <width>41</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tilt</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="tileSizeLabel">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>50</y>
+        <width>51</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Tile Size</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="zoomLabel">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>80</y>
+        <width>51</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Zoom</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="longLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>110</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Longitude</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="latLabel">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>110</y>
+        <width>61</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Latitude</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="coordLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>140</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Centre Point</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="coordLabel_2">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>170</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="coordLabel_3">
+      <property name="geometry">
+       <rect>
+        <x>160</x>
+        <y>170</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Y</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="coordLabel_4">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>170</y>
+        <width>21</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Z</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="tileSizeLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>50</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="zoomLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>80</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="widthLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>50</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="tiltLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>80</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="longLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>110</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="latLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>110</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="cpXLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>40</x>
+        <y>170</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="cpYLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>170</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="cpZLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>170</y>
+        <width>101</width>
+        <height>22</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="ButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>widthLineEdit</tabstop>
+  <tabstop>tileSizeLineEdit</tabstop>
+  <tabstop>tiltLineEdit</tabstop>
+  <tabstop>zoomLineEdit</tabstop>
+  <tabstop>longLineEdit</tabstop>
+  <tabstop>latLineEdit</tabstop>
+  <tabstop>cpXLineEdit</tabstop>
+  <tabstop>cpYLineEdit</tabstop>
+  <tabstop>cpZLineEdit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>RepoMapTilesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>RepoMapTilesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

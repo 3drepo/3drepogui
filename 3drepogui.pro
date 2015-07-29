@@ -80,7 +80,8 @@ HEADERS  += src/repogui.h \
             src/dialogs/repo_genericdialog.h \
             src/dialogs/repo_transformationdialog.h \
     src/renderers/repo_fpscounter.h \
-    src/renderers/repo_3ddiffrenderer.h
+    src/renderers/repo_3ddiffrenderer.h \
+    src/dialogs/repo_maptilesdialog.h
 
 SOURCES +=  src/main.cpp\
             src/repogui.cpp \
@@ -132,7 +133,8 @@ SOURCES +=  src/main.cpp\
             src/dialogs/repo_genericdialog.cpp \
             src/dialogs/repo_transformationdialog.cpp \
     src/renderers/repo_fpscounter.cpp \
-    src/renderers/repo_3ddiffrenderer.cpp
+    src/renderers/repo_3ddiffrenderer.cpp \
+    src/dialogs/repo_maptilesdialog.cpp
 
 FORMS    += forms/repogui.ui \
             forms/repo_dialogconnect.ui \
@@ -151,7 +153,8 @@ FORMS    += forms/repogui.ui \
             forms/repoprojectsettingsdialog.ui \
             forms/repofederationdialog.ui \
             forms/repo_transformationdialog.ui \
-            forms/repo_genericdialog.ui
+            forms/repo_genericdialog.ui \
+            forms/repo_maptilesdialog.ui
 
 
 # http://qt-project.org/doc/qt-5/resources.html
