@@ -68,16 +68,17 @@ public slots :
 signals :
 
 	//! Emitted when loading is finished. Passes Repo scene and GLC world.
-	void finished(repo::core::RepoGraphScene*, GLC_World&);
+	void finished(repo::core::RepoGraphScene*, repo::core::RepoGraphScene*, GLC_World&);
 
 private :
 
-    core::RepoGraphScene *fetchSceneRecursively(
+    void fetchSceneRecursively(
             const std::string &database,
             const std::string& project,
             const std::string &uuid,
             bool isHeadRevision,
-            core::RepoGraphScene *masterSceneGraph,
+            core::RepoGraphScene *&masterSceneGraph,
+            core::RepoGraphScene *&optimizedMasterSceneGraph,
             core::RepoNodeReference *referenceNode);
 
 	//! Client connection

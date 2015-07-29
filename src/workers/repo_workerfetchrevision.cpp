@@ -52,6 +52,7 @@ void repo::gui::RepoWorkerFetchRevision::run()
 
 	GLC_World glcWorld;
     core::RepoGraphScene *masterSceneGraph = 0;
+    core::RepoGraphScene *optimizedMasterSceneGraph = 0;
 
     try
     {
@@ -61,12 +62,13 @@ void repo::gui::RepoWorkerFetchRevision::run()
         }
         else
         {
-             masterSceneGraph = fetchSceneRecursively(
+             fetchSceneRecursively(
                 database,
                 project,
                 id.toString().toStdString(),
                 headRevision,
-                NULL,
+                masterSceneGraph,
+                optimizedMasterSceneGraph,
                 NULL);
 
             //----------------------------------------------------------------------
@@ -74,16 +76,16 @@ void repo::gui::RepoWorkerFetchRevision::run()
             // TODO: code in direct conversion from RepoSceneGraph to GLC_World
             // to avoid intermediary Assimp aiScene conversion!
             aiScene* scene = new aiScene();
-            if (!cancelled && masterSceneGraph)
+            if (!cancelled && optimizedMasterSceneGraph)
             {
-                masterSceneGraph->toAssimp(scene);
+                optimizedMasterSceneGraph->toAssimp(scene);
                 emit progress(done++, jobsCount);
 
                 //------------------------------------------------------------------
                 // Convert raw textures into QImages
                 std::map<std::string, QImage> namedTextures;
                 std::vector<repo::core::RepoNodeTexture*> textures =
-                        masterSceneGraph->getTextures();
+                        optimizedMasterSceneGraph->getTextures();
                 for (unsigned int i = 0; !cancelled && i < textures.size(); ++i)
                 {
                     repo::core::RepoNodeTexture* repoTex = textures[i];
@@ -108,16 +110,17 @@ void repo::gui::RepoWorkerFetchRevision::run()
     //--------------------------------------------------------------------------
 	emit progress(jobsCount, jobsCount);
     //--------------------------------------------------------------------------
-    emit finished(masterSceneGraph, glcWorld);
+    emit finished(masterSceneGraph, optimizedMasterSceneGraph, glcWorld);
 	emit RepoWorkerAbstract::finished();
 }
 
-repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
+void repo::gui::RepoWorkerFetchRevision::fetchSceneRecursively(
         const std::string &database,
         const string &project,
         const std::string &uuid,
         bool isHeadRevision,
-        core::RepoGraphScene *masterSceneGraph,
+        core::RepoGraphScene *&masterSceneGraph,
+        core::RepoGraphScene *&optimizedMasterSceneGraph,
         core::RepoNodeReference *referenceNode)
 {
     std::cout << "Fetching: " << database << " " << uuid << std::endl;
@@ -154,7 +157,24 @@ repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecurs
             uuid,
             fieldsToReturn);
 
-   // std::cout << bson.toString(false, true) << std::endl;
+    std::string revisionID = repo::core::RepoTranscoderString::toString(repo::core::RepoTranscoderBSON::retrieve(revisionBSON.getField(REPO_NODE_LABEL_ID)));
+
+    fieldsToReturn.clear();
+    fieldsToReturn.push_back(REPO_NODE_LABEL_ID);
+
+    // See if there is a stashed optimized version available
+    mongo::BSONObj stash = mongo.findOneByRevID(
+        database,
+        core::MongoClientWrapper::getRepoStashCollectionName(project),
+        revisionID,
+        REPO_NODE_LABEL_ID,
+        fieldsToReturn);
+
+
+    // -------------------------------------------------------------------------------------
+    // First load the unoptimized scene for the tree
+    // -------------------------------------------------------------------------------------
+
     mongo::BSONArray array = mongo::BSONArray(revisionBSON.getObjectField(REPO_NODE_LABEL_CURRENT_UNIQUE_IDS));
     //----------------------------------------------------------------------
     emit progress(done++, jobsCount);
@@ -186,10 +206,9 @@ repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecurs
         std::cerr << "Deprecated DB retrieval" << std::endl;
         mongo.fetchEntireCollection(database,  core::MongoClientWrapper::getSceneCollectionName(project), data);
     }
+
     //----------------------------------------------------------------------
-
     emit progress(done++, jobsCount);
-
     //----------------------------------------------------------------------
     // Convert to Repo scene graph
     std::vector<core::RepoNodeAbstract *> references;
@@ -220,6 +239,77 @@ repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecurs
     }
 
 
+    // -------------------------------------------------------------------------------------
+    // Then load the optimized scene
+    // -------------------------------------------------------------------------------------
+
+    if (!stash.isEmpty())
+    {
+        data.clear();
+
+        //----------------------------------------------------------------------
+        emit progress(done++, jobsCount);
+        //----------------------------------------------------------------------
+
+        if (!cancelled && fieldsCount > 0)
+        {
+            jobsCount += fieldsCount; // This is the upper bound on the optimized graph
+            unsigned long long retrieved = 0;
+            std::auto_ptr<mongo::DBClientCursor> cursor;
+            do
+            {
+                for (; !cancelled && cursor.get() && cursor->more(); ++retrieved)
+                {
+                    data.push_back(cursor->nextSafe().copy());
+                    emit progress(done++, jobsCount);
+                }
+                if (!cancelled)
+                    cursor = mongo.findAllByRevID(
+                        database,
+                        core::MongoClientWrapper::getRepoStashCollectionName(project),
+                        revisionID,
+                        retrieved);
+            }
+            while (!cancelled && cursor.get() && cursor->more());
+        }
+        else
+        {
+            std::cerr << "Deprecated DB retrieval" << std::endl;
+            mongo.fetchEntireCollection(database,  core::MongoClientWrapper::getSceneCollectionName(project), data);
+        }
+
+        //----------------------------------------------------------------------
+        emit progress(done++, jobsCount);
+        //----------------------------------------------------------------------
+
+        // Convert to Repo scene graph
+        if (!cancelled)
+        {
+            core::RepoGraphScene *childSceneGraph = new core::RepoGraphScene(data);
+            emit progress(done++, jobsCount);
+
+            //----------------------------------------------------------------------
+            if (childSceneGraph)
+            {
+                if (optimizedMasterSceneGraph == NULL)
+                    optimizedMasterSceneGraph = childSceneGraph;
+                else
+                {
+                    // Append child scene graph to the master graph, this
+                    // clears the childSceneGraph blank
+                    optimizedMasterSceneGraph->append(referenceNode, childSceneGraph);
+
+                    // Delete the remaining empty graph.
+                    delete childSceneGraph;
+                }
+            }
+            emit progress(done++, jobsCount);
+        }
+    } else {
+        // If the stash doesn't exist then send the unoptimized graph
+        optimizedMasterSceneGraph = masterSceneGraph; 
+    }
+
     //--------------------------------------------------------------------------
     //
     // FEDERATION
@@ -233,16 +323,16 @@ repo::core::RepoGraphScene* repo::gui::RepoWorkerFetchRevision::fetchSceneRecurs
 
         // Recursion
         std::string refUuuid = core::RepoTranscoderString::toString(reference->getRevisionID());
+
         fetchSceneRecursively(
                     database,
                     reference->getProject(),
                     refUuuid,
                     !reference->getIsUniqueID(),
                     masterSceneGraph,
+                    optimizedMasterSceneGraph,
                     reference);
 
         emit progress(done++, jobsCount);
     }
-
-    return masterSceneGraph;
 }

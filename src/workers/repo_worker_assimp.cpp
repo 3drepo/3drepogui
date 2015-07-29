@@ -239,6 +239,8 @@ void repo::gui::RepoWorkerAssimp::run()
             fileName,
             fullPath.toStdString());
 
+		importer.ApplyPostProcessing(aiProcess_Triangulate | aiProcess_GenNormals);
+
         const aiScene *assimpScene = importer.getScene();
         emit progress(1, jobsCount);
 
@@ -280,15 +282,15 @@ void repo::gui::RepoWorkerAssimp::run()
             // Assign the unoptimized node map, and start optimization
             importer.ApplyPostProcessing(settings.getAssimpPostProcessingFlags());
 
-            //-------------------------------------------------------------------------
-            // GLC World conversion
-            glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
-
-            repo::core::assimp_map assimpMapOptim;
+             repo::core::assimp_map assimpMapOptim;
 
             // Create new repoGraphScene with optimized map
             repoGraphOptim = new repo::core::RepoGraphScene(assimpScene, tex, assimpMapOptim);
             repoGraphOptim->populateOptimMaps(assimpMap, assimpMapOptim);
+
+           //-------------------------------------------------------------------------
+            // GLC World conversion
+            glcWorld = RepoTranscoderAssimp::toGLCWorld(assimpScene, textures);
         }
     }
     catch (...)

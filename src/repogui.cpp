@@ -335,7 +335,7 @@ void repo::gui::RepoGUI::addMapTiles()
         nodesSet.insert(root);
         nodesSet.insert(map);
 
-        commit(nodesSet, revision);
+        commit(nodesSet, nodesSet, revision);
 
     }
 
