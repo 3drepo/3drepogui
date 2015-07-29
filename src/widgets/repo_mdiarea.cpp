@@ -204,7 +204,8 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 }
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	//const repo::core::MongoClientWrapper& mongo,
+	const repo::RepoController *controller,
+	const repo::RepoToken      * token,
 	const QString& database,
     const QString& project,
 	const QUuid& id,

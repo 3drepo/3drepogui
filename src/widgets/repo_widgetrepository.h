@@ -85,7 +85,7 @@ public slots :
     { return QList<QString>(); }
 
     ////! Returns connection corresponding to given host.
-    //virtual core::MongoClientWrapper getConnection(const QString &host) const;
+    virtual repo::RepoToken* getConnection(const QString &host) const;
 
     //! Returns a list of available hosts.
     virtual QList<QString> getHosts() const;
@@ -97,7 +97,7 @@ public slots :
      * Returns a copy of a selected connection. It is necessary to reconnect
      * and reauthenticate.
      */
-    //core::MongoClientWrapper getSelectedConnection() const { return mongo; }
+	repo::RepoToken* getSelectedConnection() const { return token; }
 
     //! Returns a list of available databases.
     QList<QString> getDatabases(const QString& host) const;
@@ -122,13 +122,12 @@ public slots :
 	void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
 
 	//! Fetches currently selected collection (if any) from the server.
-	//void fetchCollection();
+	void fetchCollection();
 
 	////! Fetches collection.
-	//void fetchCollection(
-	//	const repo::core::MongoClientWrapper& /* clientConnection */, 
-	//	const QString& /* database */, 
-	//	const QString& /* collection */);
+	void fetchCollection(
+		const QString& /* database */, 
+		const QString& /* collection */);
 
 	void addHost(QString name);
 

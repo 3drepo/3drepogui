@@ -422,6 +422,14 @@ void repo::gui::RepoGUI::connect()
 		{
 			//connection/authentication success
 			ui->widgetRepository->fetchDatabases(controller, connectionToken);
+			//-----------------------------------------------------------------
+			// enable buttons
+			ui->actionRefresh->setEnabled(true);
+			ui->actionHead->setEnabled(true);
+			ui->actionHistory->setEnabled(true);
+			ui->actionCommit->setEnabled(true);
+			ui->actionDrop->setEnabled(true);
+
 		}
 		else
 		{
@@ -429,14 +437,7 @@ void repo::gui::RepoGUI::connect()
 			std::cerr << "Connection error:" << errMsg << std::endl;
 		}
 
-//            //-----------------------------------------------------------------
-//            // enable buttons
-//            ui->actionRefresh->setEnabled(true);
-//            ui->actionHead->setEnabled(true);
-//            ui->actionHistory->setEnabled(true);
-//            ui->actionCommit->setEnabled(true);
-//            ui->actionDrop->setEnabled(true);
-//        }
+        
     }
 }
 
@@ -507,7 +508,8 @@ void repo::gui::RepoGUI::fetchHead()
 {
     // Head revision from master branch
     ui->mdiArea->addSubWindow(
-                0,//ui->widgetRepository->getSelectedConnection(),
+				controller,
+                ui->widgetRepository->getSelectedConnection(),
                 ui->widgetRepository->getSelectedDatabase(),
                 ui->widgetRepository->getSelectedProject());
 

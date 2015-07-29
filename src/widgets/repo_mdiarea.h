@@ -22,6 +22,8 @@
 #include "repo_mdisubwindow.h"
 #include "../renderers/repo_glcwidget.h"
 //------------------------------------------------------------------------------
+#include <repo/repo_controller.h>
+//------------------------------------------------------------------------------
 #include <GLC_World>
 //------------------------------------------------------------------------------
 #include <QtGui>
@@ -81,7 +83,9 @@ public :
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * from the database given a database.
 	 */
-    RepoMdiSubWindow* addSubWindow(/*const repo::core::MongoClientWrapper& mongo,*/
+    RepoMdiSubWindow* addSubWindow(
+		const repo::RepoController *controller,
+		const repo::RepoToken      * token,
         const QString& database,
         const QString &project,
         const QUuid& id = QUuid(),

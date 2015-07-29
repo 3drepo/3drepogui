@@ -18,6 +18,7 @@
 #include "repo_widgetrepository.h"
 
 #include "../repo/workers/repo_worker_database.h"
+#include "../repo/workers/repo_worker_collection.h"
 
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
@@ -108,12 +109,12 @@ QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host
     return databases;
 }
 
-//repo::core::MongoClientWrapper  repo::gui::RepoWidgetRepository::getConnection(
-//        const QString &host) const
-//{
-//    // TODO: implement multiple host connections.
-//    return getSelectedConnection();
-//}
+repo::RepoToken*  repo::gui::RepoWidgetRepository::getConnection(
+        const QString &host) const
+{
+    // TODO: implement multiple host connections.
+    return getSelectedConnection();
+}
 
 QList<QString> repo::gui::RepoWidgetRepository::getHosts() const
 {
@@ -158,7 +159,7 @@ void repo::gui::RepoWidgetRepository::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,
     // all get refreshes
-    //fetchDatabases(getSelectedConnection());
+    fetchDatabases(controller, getSelectedConnection());
 }
 
 //------------------------------------------------------------------------------
@@ -230,54 +231,55 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(
 		threadPool.start(worker);	
 	}
 }
-//
-//void repo::gui::RepoWidgetRepository::fetchCollection()
-//{	
-//	fetchCollection(getSelectedConnection(), getSelectedDatabase(), getSelectedCollection());
-//}
-////------------------------------------------------------------------------------
-//
-//void repo::gui::RepoWidgetRepository::fetchCollection(
-//	const repo::core::MongoClientWrapper& mongo, 
-//	const QString& database, 
-//	const QString& collection)
-//{
-//	if (!database.isEmpty() && !collection.isEmpty()) //&& cancelAllThreads())
-//	{
-//        std::cout << "Fetching collection..." << std::endl;
-//		RepoWorkerCollection* worker = new RepoWorkerCollection(mongo, database, collection);	
-//		worker->setAutoDelete(true);
-//
-//		// Direct connection ensures cancel signal is processed ASAP
-//		QObject::connect(
-//			this, &RepoWidgetRepository::cancel,
-//			worker, &RepoWorkerCollection::cancel, Qt::DirectConnection);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerCollection::keyValuePairAdded,
-//			this, &RepoWidgetRepository::addKeyValuePair);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::finished,
-//            ui->collectionProgressBar, &QProgressBar::hide);
-//		
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::progressRangeChanged,
-//            ui->collectionProgressBar, &QProgressBar::setRange);
-//
-//		QObject::connect(
-//			worker, &RepoWorkerDatabases::progressValueChanged,
-//            ui->collectionProgressBar, &QProgressBar::setValue);
-//		
-//        //----------------------------------------------------------------------
-//		// Clear any previous entries in the collection model 
-//		clearCollectionModel();
-//
-//        //----------------------------------------------------------------------
-//        ui->collectionProgressBar->show();
-//		threadPool.start(worker);
-//	}
-//}
+
+void repo::gui::RepoWidgetRepository::fetchCollection()
+{	
+	fetchCollection(getSelectedDatabase(), getSelectedCollection());
+}
+
+//------------------------------------------------------------------------------
+
+void repo::gui::RepoWidgetRepository::fetchCollection(
+	const QString& database, 
+	const QString& collection)
+{
+	if (!database.isEmpty() && !collection.isEmpty()) //&& cancelAllThreads())
+	{
+        std::cout << "Fetching collection..." << std::endl;
+		repo::worker::CollectionWorker* worker = new repo::worker::CollectionWorker
+			(controller, token, database.toStdString(), collection.toStdString());
+		worker->setAutoDelete(true);
+
+		// Direct connection ensures cancel signal is processed ASAP
+		QObject::connect(
+			this, &RepoWidgetRepository::cancel,
+			worker, &repo::worker::CollectionWorker::cancel, Qt::DirectConnection);
+
+		QObject::connect(
+			worker, &repo::worker::CollectionWorker::keyValuePairAdded,
+			this, &RepoWidgetRepository::addKeyValuePair);
+
+		QObject::connect(
+			worker, &repo::worker::CollectionWorker::finished,
+            ui->collectionProgressBar, &QProgressBar::hide);
+		
+		QObject::connect(
+			worker, &repo::worker::CollectionWorker::progressRangeChanged,
+            ui->collectionProgressBar, &QProgressBar::setRange);
+
+		QObject::connect(
+			worker, &repo::worker::CollectionWorker::progressValueChanged,
+            ui->collectionProgressBar, &QProgressBar::setValue);
+		
+        //----------------------------------------------------------------------
+		// Clear any previous entries in the collection model 
+		clearCollectionModel();
+
+        //----------------------------------------------------------------------
+        ui->collectionProgressBar->show();
+		threadPool.start(worker);
+	}
+}
 
 //------------------------------------------------------------------------------
 
@@ -423,14 +425,14 @@ void repo::gui::RepoWidgetRepository::clearCollectionModel()
 
 void repo::gui::RepoWidgetRepository::changeTab(int index)
 {
-	//if (0 == index)
-	//{
-	//	cancelAllThreads();
-	//}
-	//else if (1 == index)
-	//{
-	//	fetchCollection();
-	//}
+	if (0 == index)
+	{
+		cancelAllThreads();
+	}
+	else if (1 == index)
+	{
+		fetchCollection();
+	}
 
 }
 

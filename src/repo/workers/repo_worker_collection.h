@@ -1,5 +1,5 @@
 /**
-*  Copyright (C) 2015 3D Repo Ltd
+*  Copyright (C) 2014 3D Repo Ltd
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU Affero General Public License as
@@ -16,13 +16,14 @@
 */
 
 
-#ifndef REPO_WORKER_DATABASES_H
-#define REPO_WORKER_DATABASES_H
+#ifndef REPO_WORKER_COLLECTION_H
+#define REPO_WORKER_COLLECTION_H
 
 //------------------------------------------------------------------------------
 // Core
 #include <repo/repo_controller.h>
-#include <repo/core/model/bson/repo_bson_collection_stats.h>
+#include <repo/core/model/bson/repo_bson.h>
+
 
 //------------------------------------------------------------------------------
 // Repo GUI
@@ -32,48 +33,56 @@ namespace repo {
 	namespace worker {
 
 		/*!
-		* Worker class to that fetches individual databases from given Mongo client.
+		* Worker class that fetches individual objects in a given db.collection from Mongo.
 		*/
-		class DatabaseWorker : public RepoAbstractWorker {
+		class CollectionWorker : public RepoAbstractWorker {
 
 			Q_OBJECT
 
 		public:
 
-			//! Default worker constructor.
-			DatabaseWorker(repo::RepoController *controller, repo::RepoToken *token);
+			/*!
+			* Default worker constructor.
+			*/
+			CollectionWorker(
+				repo::RepoController *controller, 
+				repo::RepoToken      *token,
+				const std::string    &database,
+				const std::string    &collection);
 
 			//! Default empty destructor.
-			~DatabaseWorker();
+			~CollectionWorker();
 
 		signals:
 
-			void hostFetched(QString host);
-
-			void databaseFetched(QString database);
-
-			void collectionFetched(repo::core::model::bson::CollectionStats stats);
+			void keyValuePairAdded(
+				QVariant /* key */,
+				QVariant /* value */,
+				QVariant /* type */,
+				unsigned int /* depth */);
 
 			public slots :
 
-			/*!
-			* Loads individual databases and for each propagates their collections to
-			* the given tree model.
-			*/
 			void run();
 
-		signals:
-
-			//! Emitted when a single database processing is finished
-			void databaseFinished(const QString &dbName);
-
 		private:
+
+			void decodeRecords(const repo::core::model::bson::RepoBSON &bson, unsigned int depth);
+
 			repo::RepoController *controller;
 			repo::RepoToken      *token;
+
+			//! Database in Mongo to fetch data from.
+			std::string database;
+
+			//! Collection in the database to fetch data from.
+			std::string collection;
+
 
 		}; // end class
 
 	} // end namespace worker
 } // end namespace repo
 
-#endif // end REPO_WORKER_DATABASES_H
+#endif // end REPO_WORKER_COLLECTION_H
+
