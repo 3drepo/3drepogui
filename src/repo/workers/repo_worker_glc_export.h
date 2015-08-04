@@ -108,9 +108,14 @@ namespace repo {
 				);
 
 			QVector<GLfloat> createGLCVector(
+				const std::vector<repo_vector2d_t> *vec
+				);
+
+			QVector<GLfloat> createGLCVector(
 				const std::vector<repo_color4d_t> *col
 				);
 
+			QColor toQColor(const std::vector<float> &c, float scale = 1.f);
 			//! Number of jobs to be completed.
 			uint32_t jobsCount;
 

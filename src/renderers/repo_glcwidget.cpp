@@ -715,9 +715,9 @@ void repo::gui::RepoGLCWidget::setRepoScene(repo::manipulator::graph::RepoScene 
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 {
 	repo::logger::RepoLogger::getInstance()->messageGenerated("Setting GLC World...");
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World empty:" + std::to_string(glcWorld.isEmpty()));
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World size:" + std::to_string(glcWorld.size()));
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World #vertex:" + std::to_string(glcWorld.numberOfVertex()));
+	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World empty: " + std::to_string(glcWorld.isEmpty()));
+	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World size: " + std::to_string(glcWorld.size()));
+	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World #vertex: " + std::to_string(glcWorld.numberOfVertex()));
 	this->glcWorld = glcWorld;
 	this->glcWorld.collection()->setLodUsage(true, &glcViewport);
 	this->glcWorld.collection()->setVboUsage(true);

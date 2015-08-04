@@ -30,6 +30,8 @@
 
 #include "repo_subscriber_abstract.h"
 
+#define repoLog(MSG) repo::logger::RepoLogger::getInstance()->messageGenerated(MSG)
+
 namespace repo{
 	namespace logger{
 		class RepoLogger : public repo::lib::RepoAbstractListener
