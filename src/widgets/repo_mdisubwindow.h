@@ -18,14 +18,12 @@
 #ifndef REPO_MDI_SUB_WINDOW_H
 #define REPO_MDI_SUB_WINDOW_H
 
-////------------------------------------------------------------------------------
-//// Core
-//#include "graph/repo_graph_scene.h"
-//
-////------------------------------------------------------------------------------
-//// GUI
-//#include "../workers/repo_worker_assimp.h"
-//#include "../workers/repo_workerfetchrevision.h"
+//------------------------------------------------------------------------------
+// Core
+#include <repo/manipulator/graph/repo_scene.h>
+
+//------------------------------------------------------------------------------
+// GUI
 
 //------------------------------------------------------------------------------
 #include <GLC_World>
@@ -117,7 +115,9 @@ public :
 public slots :
 
 	//! Sets the two scene representations on the widget.
-	void finishedLoading(/*repo::core::RepoGraphScene *, GLC_World &*/);
+	void finishedLoadingScene(repo::manipulator::graph::RepoScene *);
+
+	void finishedLoadingGLC(repo::manipulator::graph::RepoScene *, GLC_World &);
 
 	/*! 
 	 * Updates the current state of the progress bar with the values specified.

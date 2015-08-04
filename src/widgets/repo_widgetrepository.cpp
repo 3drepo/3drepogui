@@ -415,6 +415,7 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 void repo::gui::RepoWidgetRepository::clearCollectionModel()
 {
 	collectionModel->removeRows(0, collectionModel->rowCount());	
+
     //--------------------------------------------------------------------------
     ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::VALUE);
     ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::TYPE);

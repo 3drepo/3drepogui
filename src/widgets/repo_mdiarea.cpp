@@ -16,6 +16,7 @@
  */
 
 #include "repo_mdiarea.h"
+#include "../repo/workers/repo_worker_scene_graph.h"
 #include "../renderers/repo_glcwidget.h"
 
 #include "../renderers/repo_oculus.h"
@@ -204,7 +205,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 }
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	const repo::RepoController *controller,
+	repo::RepoController *controller,
 	const repo::RepoToken      * token,
 	const QString& database,
     const QString& project,
@@ -222,18 +223,19 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-   /* RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
-	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
-		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
+   repo::worker::SceneGraphWorker* worker = 
+	   new repo::worker::SceneGraphWorker(controller, token, database, project, id, headRevision);
+	connect(worker, SIGNAL(finished(repo::manipulator::graph::RepoScene *)),
+		repoSubWindow, SLOT(finishedLoadingScene(repo::manipulator::graph::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
 
 	QObject::connect(
 		repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
-		worker, &RepoWorkerFetchRevision::cancel, Qt::DirectConnection);
-*/
+		worker, &repo::worker::SceneGraphWorker::cancel, Qt::DirectConnection);
+
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
-	/*QThreadPool::globalInstance()->start(worker);*/
+	QThreadPool::globalInstance()->start(worker);
 
 	this->update();
 	this->repaint();

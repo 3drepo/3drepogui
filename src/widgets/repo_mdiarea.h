@@ -84,7 +84,7 @@ public :
 	 * from the database given a database.
 	 */
     RepoMdiSubWindow* addSubWindow(
-		const repo::RepoController *controller,
+		repo::RepoController *controller,
 		const repo::RepoToken      * token,
         const QString& database,
         const QString &project,
