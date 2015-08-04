@@ -46,7 +46,7 @@ public:
 		, transformation(transformation)
 		, GLC_Geometry("Camera", true){};
 
-	~RepoGLCCamera(){ GLC_Geometry::~GLC_Geometry(); };
+	~RepoGLCCamera(){ };
 
 	//! Returns a bounding box of this wireframe camera representation
 	const GLC_BoundingBox& boundingBox()
@@ -174,15 +174,15 @@ void GLCExportWorker::run()
 
 		//--------------------------------------------------------------------------
 		emit progress(jobsCount, jobsCount);
-		repo::logger::RepoLogger::getInstance()->messageGenerated("DeuBG: size of pre world is " + std::to_string(glcWorld->size()));
+		repoLog("DeuBG: size of pre world is " + std::to_string(glcWorld->size()));
 		GLC_World wholeGraph = glcWorld ? GLC_World(*glcWorld) : GLC_World();
 		//--------------------------------------------------------------------------
 
 		emit finished(scene, wholeGraph);
-		repo::logger::RepoLogger::getInstance()->messageGenerated("Emitted, size of world is " + std::to_string(wholeGraph.size()) + ", returning");
+		repoLog("Emitted, size of world is " + std::to_string(wholeGraph.size()) + ", returning");
 	}
 	else{
-		repo::logger::RepoLogger::getInstance()->messageGenerated("Trying to produce a GLC representation with a nullptr to scene!");
+		repoLog("Trying to produce a GLC representation with a nullptr to scene!");
 	}
 	emit RepoAbstractWorker::finished();
 }
@@ -301,7 +301,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 				for (auto &parent : parents)
 				{
 					//Map the material to all parent UUIDs
-					if (parentToGLCCameras.find(parent) == parentToGLCMeshes.end())
+					if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
 					{
 						parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
 					}
@@ -314,10 +314,10 @@ GLC_World* GLCExportWorker::createGLCWorld(
 		}
 	}
 
-	repo::logger::RepoLogger::getInstance()->messageGenerated("Debug: " + std::to_string(nmeshes) + " meshes");
-	repo::logger::RepoLogger::getInstance()->messageGenerated("Debug: " + std::to_string(nmaterials) + " mats");
-	repo::logger::RepoLogger::getInstance()->messageGenerated("Debug: " + std::to_string(ntexture) + " textures");
-	repo::logger::RepoLogger::getInstance()->messageGenerated("Debug: " + std::to_string(ncameras) + " ncameras");
+	repoLog("Debug: " + std::to_string(nmeshes) + " meshes");
+	repoLog("Debug: " + std::to_string(nmaterials) + " mats");
+	repoLog("Debug: " + std::to_string(ntexture) + " textures");
+	repoLog("Debug: " + std::to_string(ncameras) + " ncameras");
 
 	//------------------------------------------------------------------
 	// GLC World conversion - recursion to obtain the whole tree
@@ -347,7 +347,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 	GLC_StructOccurence* occurrence = nullptr;
 	if (node)
 	{
-		repo::logger::RepoLogger::getInstance()->messageGenerated("Debug: node type: " + node->getType());
+		repoLog("Debug: node type: " + node->getType());
 		repoModel::NodeType type = node->getTypeAsEnum();
 		repoUUID sharedID = node->getSharedID();
 
@@ -381,45 +381,54 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 					}
 				}
 
+
+				if (pRep)
+				{
+					pRep->clean();
+					if (pRep->isEmpty())
+					{
+						repoLog("Empty geometry in node " + name.toStdString());
+						//delete pRep;
+						pRep = 0;
+						instance = new GLC_StructInstance(new GLC_StructReference(name));
+					}
+					else{
+						instance = new GLC_StructInstance(new GLC_StructReference(pRep));
+					}
+				}
+				else
+				{
+					std::cerr << "NULL geometry in node " << name.toStdString() << std::endl;
+					instance = new GLC_StructInstance(new GLC_StructReference(name));
+				}
 			}
 
+			//FIXME: instance is overridden by camera if there is a mesh + camera under the same transformation!
 			it = glcCamerasMap.find(sharedID);
 			if (it != glcCamerasMap.end())
 			{
 				//has cameras
-				for (auto glcCamera : it->second)
+				for (auto &glcCamera : it->second)
 				{
 					if (glcCamera)
 					{
-						if (pRep)
-							// instead of merging pRep
-							pRep->merge(glcCamera);
-						else
-							pRep = new GLC_3DRep(*glcCamera);
+
+						instance = new GLC_StructInstance(new GLC_StructReference(new GLC_3DRep(*glcCamera)));
+						//if (pRep)
+						//	// instead of merging pRep
+						//	pRep->merge(glcCamera);
+						//else
+						//	pRep = new GLC_3DRep(*glcCamera);
 					}
 
 				}
 			}
-
-			if (pRep)
+			
+			if (!instance)
 			{
-				pRep->clean();
-				if (pRep->isEmpty())
-				{
-					std::cerr << "Empty geometry in node " << name.toStdString() << std::endl;
-					delete pRep;
-					pRep = 0;
-					instance = new GLC_StructInstance(new GLC_StructReference(name));
-				}
-				else{
-					instance = new GLC_StructInstance(new GLC_StructReference(pRep));
-				}
-			}
-			else
-			{
-				//nothing
 				instance = new GLC_StructInstance(new GLC_StructReference(name));
 			}
+
 			//-------------------------------------------------------------------------
 			// Transformation
 			instance->move(GLC_Matrix4x4(&((repoModel::TransformationNode*)node)->getTransMatrix().at(0)));
@@ -496,6 +505,8 @@ GLC_3DRep* GLCExportWorker::convertGLCCamera(
 
 		// Camera wireframe representation
 		RepoGLCCamera *repoGLCCam = new RepoGLCCamera(glcPosition, depth, halfWidth, halfHeight, glcMatrix);
+
+
 		glcCamera = new GLC_3DRep(repoGLCCam);
 
 		glcCamera->setName(QString::fromStdString(camera->getName().c_str()));
