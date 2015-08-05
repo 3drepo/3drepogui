@@ -174,9 +174,6 @@ void GLCExportWorker::run()
 
 		//--------------------------------------------------------------------------
 		emit progress(jobsCount, jobsCount);
-		repoLog("DeuBG: size of pre world is " + std::to_string(glcWorld->size()));
-
-
 		QString rootName;
 
 		if (scene)
@@ -201,7 +198,6 @@ void GLCExportWorker::run()
 		//--------------------------------------------------------------------------
 
 		emit finished(scene, wholeGraph);
-		repoLog("Emitted, size of world is " + std::to_string(wholeGraph.size()) + ", returning");
 	}
 	else{
 		repoLog("Trying to produce a GLC representation with a nullptr to scene!");
@@ -213,8 +209,6 @@ GLC_World* GLCExportWorker::createGLCWorld(
 	repo::manipulator::graph::RepoScene *scene)
 {
 
-	//FIXME: to remove
-	int nmeshes = 0, nmaterials = 0, ncameras = 0, ntexture = 0;
 	//-----
 	GLC_World* glcWorld = nullptr;
 	//------------------------------------------------------------------
@@ -241,7 +235,6 @@ GLC_World* GLCExportWorker::createGLCWorld(
 					//Map the texture to all parent UUIDs
 					parentToGLCTexture[parent].push_back(glcTexture);
 				}
-				++ntexture;
 			}
 
 		}
@@ -271,7 +264,6 @@ GLC_World* GLCExportWorker::createGLCWorld(
 					//Map the material to all parent UUIDs
 					parentToGLCMaterial[parent].push_back(glcMat);
 				}
-				++nmaterials;
 			}
 
 		}
@@ -302,7 +294,6 @@ GLC_World* GLCExportWorker::createGLCWorld(
 					//Map the mesh to all parent UUIDs
 					parentToGLCMeshes[parent].push_back(glcMesh);
 				}
-				++nmeshes;
 			}
 		}
 	}
@@ -330,16 +321,10 @@ GLC_World* GLCExportWorker::createGLCWorld(
 					//Map the mesh to all parent UUIDs
 					parentToGLCCameras[parent].push_back(glcCamera);
 				}
-				++ncameras;
 			}
 
 		}
 	}
-
-	repoLog("Debug: " + std::to_string(nmeshes) + " meshes");
-	repoLog("Debug: " + std::to_string(nmaterials) + " mats");
-	repoLog("Debug: " + std::to_string(ntexture) + " textures");
-	repoLog("Debug: " + std::to_string(ncameras) + " ncameras");
 
 	//------------------------------------------------------------------
 	// GLC World conversion - recursion to obtain the whole tree
@@ -369,7 +354,6 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 	GLC_StructOccurence* occurrence = nullptr;
 	if (node)
 	{
-		repoLog("Debug: node type: " + node->getType());
 		repoModel::NodeType type = node->getTypeAsEnum();
 		repoUUID sharedID = node->getSharedID();
 
@@ -552,15 +536,12 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 		glcMat->setName(QString(material->getName().c_str()));
 		repo_material_t repoMat = material->getMaterialStruct();
 
-		repoLog("------Material " + material->getName() + " --------------");
 		//-------------------------------------------------------------------------
 		// Ambient
 		if (repoMat.ambient.size() >= 3)
 		{
 			QColor ambientCol = toQColor(repoMat.ambient);
 			glcMat->setAmbientColor(ambientCol);
-
-			repoLog("Ambient: " + ambientCol.name().toStdString());
 		}
 
 		//-------------------------------------------------------------------------
@@ -569,9 +550,6 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 		{
 			QColor diffuse = toQColor(repoMat.diffuse);
 			glcMat->setDiffuseColor(diffuse);
-
-
-			repoLog("diffuse: " + diffuse.name().toStdString());
 		}
 
 		//-------------------------------------------------------------------------
@@ -580,9 +558,6 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 		{
 			QColor emissive = toQColor(repoMat.emissive);
 			glcMat->setEmissiveColor(emissive);
-
-			repoLog("emissive: " + emissive.name().toStdString());
-
 		}
 
 		//-------------------------------------------------------------------------
@@ -593,7 +568,6 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 			float shininess = std::min(repoMat.shininess / 128.0, 1.0);
 			glcMat->setShininess(shininess);
 
-			repoLog("shininess : " + std::to_string(shininess));
 		}
 
 		//-------------------------------------------------------------------------
@@ -607,7 +581,6 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 			specCol.push_back(shininessStrength);
 			QColor specular = toQColor(specCol);
 			glcMat->setSpecularColor(specular);
-			repoLog("specular: " + specular.name().toStdString());
 		}
 
 		//-------------------------------------------------------------------------
@@ -615,7 +588,6 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 		if (repoMat.opacity == repoMat.opacity)
 		{
 			glcMat->setOpacity(repoMat.opacity);
-			repoLog("opacity : " + std::to_string(repoMat.opacity));
 		}
 
 	
@@ -624,16 +596,9 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 		std::map<repoUUID, std::vector<GLC_Texture*>>::iterator mapIt = mapTexture.find(material->getSharedID());
 		if (mapIt != mapTexture.end())
 		{
-			repoLog("has texture");
 			//FIXME: only takes in 1 texture.
 			glcMat->setTexture((GLC_Texture*)mapIt->second.at(0));
 		}
-		else
-		{
-			repoLog("no texture");
-		}
-
-		repoLog("-------------------------------------");
 	}
 
 	return glcMat;
@@ -657,18 +622,11 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		if (glcVec.size() > 0)
 			glcMesh->addVertice(glcVec);
 
-		std::ofstream myfile;
-
-		repoLog("size of vertices = " + std::to_string(glcVec.size()));
-
-
 		//Normals
 		std::vector<repo_vector_t> * normal3d = mesh->getNormals();
 		QVector<GLfloat> glcNorm = createGLCVector(normal3d);
 		if (glcNorm.size() > 0)
 			glcMesh->addNormals(glcNorm);
-
-		repoLog("size of normals = " + std::to_string(glcNorm.size()));
 
 		if (normal3d)
 			delete normal3d;
@@ -683,8 +641,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			glcMesh->addColors(glcCol);
 		}
 
-		repoLog("size of colors = " + std::to_string(glcCol.size()));
-
 		if (colors)
 			delete colors;
 
@@ -696,15 +652,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 		if (glcFaces.size() > 0)
 		{
-
-			myfile.open("faces.txt");
-
-
-			for (int i = 0; i < glcFaces.size(); ++i)
-			{
-				myfile << glcFaces.at(i)<< "\n";
-			}
-			myfile.close();
 			GLC_Material* material = nullptr;
 			std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 				mapMaterials.find(mesh->getSharedID());
@@ -713,10 +660,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				//FIXME: assume 1 material only
 				material = (GLC_Material*)mapIt->second.at(0);
 			}
-			if (material)
-			{
-				repoLog("mesh : " + mesh->getName() + " material: " + material->name().toStdString());
-			}
 			glcMesh->addTriangles(material, glcFaces);
 
 			//---------------------------------------------------------------------
@@ -724,7 +667,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			// Since GLC_Lib renders only triangles, the wireframe for polygon
 			// faces has to be created separately.
 			GLfloatVector faceVertices;
-			myfile.open("polygon_wireframe.txt");
 			for (auto &face : *faces)
 			{
 				for (uint32_t j = 0; j < face.numIndices; ++j)
@@ -732,13 +674,11 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 					//FIXME: this is assuming order in assimp's mVertice = vector3d's order
 					repo_vector_t vertex = vector3d->at(face.indices[j]);
 					faceVertices << vertex.x << vertex.y << vertex.z;
-					myfile << vertex.x  << ", " << vertex.y << ", " << vertex.z << "\n";
 				}
 
 				glcMesh->addVerticeGroup(faceVertices);
 				faceVertices.clear();
 			}
-			myfile.close();
 		}
 
 		std::vector<repo_vector2d_t>* uvVectors = mesh->getUVChannels();
