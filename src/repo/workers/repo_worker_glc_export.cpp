@@ -696,8 +696,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			delete vector3d;
 		if (faces)
 			delete faces;
+
+		glcMesh->finish();
 	}
-	glcMesh->finish();
+
 
 
 	GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
@@ -728,7 +730,7 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
 
 			//---------------------------------------------------------------------
 			// GLC 2.5.0 can render only up to triangles,
-			// hence triangulate all non-tri faces
+			 //hence triangulate all non-tri faces
 			if (glcFaceIndices.size() > 3)
 				glc::triangulatePolygon(&glcFaceIndices, vertices.toList());
 
