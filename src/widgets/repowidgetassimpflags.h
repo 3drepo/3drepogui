@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+//FIXME: RENAME!!!
 #ifndef REPO_WIDGET_ASSIMP_FLAGS_H
 #define REPO_WIDGET_ASSIMP_FLAGS_H
 

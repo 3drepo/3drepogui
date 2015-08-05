@@ -77,7 +77,7 @@ public :
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * using Assimp library from the given full file path.
 	 */
-    RepoMdiSubWindow* addSubWindow(const QString&);
+	RepoMdiSubWindow* addSubWindow(repo::RepoController * controller, const QString& path);
 
 	/*!
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread

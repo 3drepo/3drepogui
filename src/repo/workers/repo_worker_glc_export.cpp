@@ -394,7 +394,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 					if (pRep->isEmpty())
 					{
 						repoLog("Empty geometry in node " + name.toStdString());
-						//delete pRep;
+						delete pRep;
 						pRep = 0;
 						instance = new GLC_StructInstance(new GLC_StructReference(name));
 					}

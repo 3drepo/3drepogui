@@ -188,10 +188,11 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWidget(QWidget* widge
 }
 
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
+	repo::RepoController *controller,
     const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidgetFromFile(fullPath);
+    repoSubWindow->setWidgetFromFile(fullPath, controller);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 

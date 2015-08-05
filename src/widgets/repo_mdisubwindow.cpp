@@ -16,6 +16,7 @@
  */
 
 #include "repo_mdisubwindow.h"
+#include "../widgets/repowidgetassimpflags.h"
 #include "../renderers/repo_glcwidget.h"
 #include "../primitives/repo_fontawesome.h"
 
@@ -23,6 +24,11 @@
 
 #include "../repo/workers/repo_worker_glc_export.h"
 #include "../repo/logger/repo_logger.h"
+
+#include "../repo/workers/repo_worker_file_import.h"
+
+#include <boost/filesystem.hpp>
+
 using namespace repo::gui;
 
 RepoMdiSubWindow::RepoMdiSubWindow(
@@ -78,22 +84,22 @@ void RepoMdiSubWindow::setWidget(const QString& windowTitle)
 }
 
 void RepoMdiSubWindow::setWidgetFromFile(
-    const QString& filePath)
+    const QString& filePath, repo::RepoController *controller)
 {
-    setWidget(new RepoGLCWidget(0, /*RepoWorkerAssimp::getFileName(filePath)*/""));
+	boost::filesystem::path filePathPath(filePath.toStdString());
+    setWidget(new RepoGLCWidget(0, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    // Assimp flags is a memory leak TODO: fixme!
-   /* RepoWorkerAssimp *worker = new RepoWorkerAssimp(filePath, new RepoWidgetAssimpFlags());
-	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
-		this, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
+	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller/*, new RepoWidgetAssimpFlags()*/);
+	connect(worker, SIGNAL(finished(repo::manipulator::graph::RepoScene *)),
+		this, SLOT(finishedLoadingScene(repo::manipulator::graph::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
-	*///connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+	//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
-	//QThreadPool::globalInstance()->start(worker);
+	QThreadPool::globalInstance()->start(worker);
 }
 
 void RepoMdiSubWindow::setWidget(QWidget * widget)
@@ -131,7 +137,7 @@ QWidget * RepoMdiSubWindow::widget() const
 void RepoMdiSubWindow::finishedLoadingScene(
     repo::manipulator::graph::RepoScene *repoScene)
 {
-	repo::logger::RepoLogger::getInstance()->messageGenerated("finished loading repo scene");
+	repoLog("finished loading repo scene");
 	//We have a scene, fire up the GLC worker to get a GLC World representation
 	//--------------------------------------------------------------------------
 	// Establish and connect the new worker.

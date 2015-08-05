@@ -20,7 +20,7 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include <repo/manipulator/graph/repo_scene.h>
+#include <repo/repo_controller.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -79,7 +79,7 @@ public :
      * progress of individual processes and format conversions
 	 * from Assimp aiScene to GLC_World and RepoGraphScene.
 	 */
-    void setWidgetFromFile(const QString& fullFilePath);
+	void setWidgetFromFile(const QString& fullFilePath, repo::RepoController *controller);
 
 	/*!
 	 * Sets the widget as the internal widget of this subwindow. The internal 
