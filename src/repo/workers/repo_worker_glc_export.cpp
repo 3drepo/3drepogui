@@ -46,7 +46,7 @@ public:
 		, transformation(transformation)
 		, GLC_Geometry("Camera", true){};
 
-	~RepoGLCCamera(){ };
+	~RepoGLCCamera(){};
 
 	//! Returns a bounding box of this wireframe camera representation
 	const GLC_BoundingBox& boundingBox()
@@ -175,7 +175,29 @@ void GLCExportWorker::run()
 		//--------------------------------------------------------------------------
 		emit progress(jobsCount, jobsCount);
 		repoLog("DeuBG: size of pre world is " + std::to_string(glcWorld->size()));
+
+
+		QString rootName;
+
+		if (scene)
+			rootName = QString(scene->getRoot()->getName().c_str());
+
+		if (glcWorld)
+		{
+			glcWorld->setRootName(rootName);
+			//---------------------------------------------------------------------
+			// Clean and update positions
+			glcWorld->rootOccurence()->removeEmptyChildren();
+			glcWorld->rootOccurence()->updateChildrenAbsoluteMatrix();
+		}
+
 		GLC_World wholeGraph = glcWorld ? GLC_World(*glcWorld) : GLC_World();
+
+		if (glcWorld)
+		{
+			glcWorld->clear();
+			delete glcWorld;
+		}
 		//--------------------------------------------------------------------------
 
 		emit finished(scene, wholeGraph);
@@ -369,7 +391,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			if (it != glcMeshesMap.end())
 			{
 				//has meshes
-				for (auto glcMesh : it->second)
+				for (auto &glcMesh : it->second)
 				{
 					if (glcMesh)
 					{
@@ -431,7 +453,9 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 
 			//-------------------------------------------------------------------------
 			// Transformation
-			instance->move(GLC_Matrix4x4(&((repoModel::TransformationNode*)node)->getTransMatrix().at(0)));
+			GLC_Matrix4x4 transMat(&((repoModel::TransformationNode*)node)->getTransMatrix().at(0));
+			instance->move(transMat);
+
 			occurrence = new GLC_StructOccurence(instance);
 			occurrence->setName(name);
 
