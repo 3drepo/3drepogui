@@ -109,11 +109,11 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
 
     ui->removeRedundantMaterialsGroupBox->setChecked(settings.getRemoveRedundantMaterials());
 
-    ui->removeRedundantMaterialsSkipLineEdit->setText(settings.getRemoveRedundantMaterialsSkip());
+    ui->removeRedundantMaterialsSkipLineEdit->setText(QString(settings.getRemoveRedundantMaterialsSkip().c_str()));
 
     ui->removeRedundantNodesGroupBox->setChecked(settings.getRemoveRedundantNodes());
 
-    ui->removeRedundantNodesSkipLineEdit->setText(settings.getRemoveRedundantNodesSkip());
+    ui->removeRedundantNodesSkipLineEdit->setText(QString(settings.getRemoveRedundantNodesSkip().c_str()));
 
     ui->sortAndRemoveGroupBox->setChecked(settings.getSortAndRemove());
 

@@ -410,9 +410,9 @@ public :
      * Returns a space-separated string of materials names to be skipped set in
      * settings. Defaults to empty string.
      */
-    QString getRemoveRedundantMaterialsSkip() const
+    std::string getRemoveRedundantMaterialsSkip() const
     { 
-		return value(QString(REMOVE_REDUNDANT_MATERIALS_SKIP.c_str()), QString(repoDefaultRemoveRedundantMaterialsSkip.c_str())).toString();
+		return value(QString(REMOVE_REDUNDANT_MATERIALS_SKIP.c_str()), QString(repoDefaultRemoveRedundantMaterialsSkip.c_str())).toString().toStdString();
 	}
 
     /*!
@@ -428,9 +428,9 @@ public :
      * Returns a space-separated string of node names to be skipped set in
      * settings. Defaults to empty string.
      */
-    QString getRemoveRedundantNodesSkip() const
+    std::string getRemoveRedundantNodesSkip() const
     { 
-		return value(QString(REMOVE_REDUNDANT_NODES_SKIP.c_str()), QString(repoDefaultRemoveRedundantNodesSkip.c_str())).toString();
+		return value(QString(REMOVE_REDUNDANT_NODES_SKIP.c_str()), QString(repoDefaultRemoveRedundantNodesSkip.c_str())).toString().toStdString();
 	}
 
     /*!
