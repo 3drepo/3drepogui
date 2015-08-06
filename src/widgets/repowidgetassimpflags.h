@@ -47,6 +47,8 @@ public:
 
     explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
 
+	RepoSettings* getSettings() const { return settings; }
+
     ~RepoWidgetAssimpFlags();
 
 public slots :
@@ -79,7 +81,7 @@ private :
     Ui::RepoWidgetAssimpFlags *ui;
 
     //! Persistent application settings.
-    RepoSettings settings;
+    RepoSettings *settings;
 
 };
 

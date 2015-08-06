@@ -25,11 +25,11 @@ using namespace repo::worker;
 
 
 repo::worker::FileImportWorker::FileImportWorker(const std::string & fullPath,
-	repo::RepoController *controller/*,
-	const RepoWidgetAssimpFlags* assimpFlagsWidget*/)
+	repo::RepoController *controller,
+	const repo::gui::RepoWidgetAssimpFlags* assimpFlagsWidget)
 	: fullPath(fullPath)
 	, controller(controller)
-	//, assimpFlagsWidget(assimpFlagsWidget)
+	, settings(assimpFlagsWidget->getSettings())
 	, RepoAbstractWorker() {}
 
 repo::worker::FileImportWorker::~FileImportWorker() {}
@@ -43,7 +43,7 @@ void repo::worker::FileImportWorker::run()
 
 	repoLog("loading repoScene from file");
 	repo::manipulator::graph::RepoScene * repoGraphScene 
-		= controller->loadSceneFromFile(fullPath);
+		= controller->loadSceneFromFile(fullPath, settings);
 	emit progress(jobsCount, jobsCount);
 	repoLog("done.");
 	//-------------------------------------------------------------------------

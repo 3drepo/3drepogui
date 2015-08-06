@@ -26,7 +26,7 @@
 namespace repo {
 namespace gui {
 
-class RepoSettings : public QSettings, repo::manipulator::modelconvertor::ModelImportConfig
+class RepoSettings : public QSettings, public repo::manipulator::modelconvertor::ModelImportConfig
 {
 
 public:
