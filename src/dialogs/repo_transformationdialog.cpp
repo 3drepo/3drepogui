@@ -32,7 +32,7 @@ repo::gui::RepoTransformationDialog::RepoTransformationDialog(
     ui->setupUi(this);
 
     setName(transformation.getName());
-    setMatrix(transformation.getTransMatrix());
+    setMatrix(transformation.getTransMatrix(false));
 
     QObject::connect(ui->identityPushButton, &QPushButton::pressed,
                      this, &RepoTransformationDialog::setIdentity);
@@ -246,19 +246,28 @@ void repo::gui::RepoTransformationDialog::inverse()
 {
 
 	//Use QMatrix instead of implementing something complicated myself..
+
 	std::vector<float> m = getMatrix();
 	QMatrix4x4 qMat(&m[0]);
 	memcpy(&m.at(0), qMat.inverted().data(), sizeof(float) * 16);
+	//Transposing as QMatrix transposed the matrix so we need to flip it again
+	transposeMat(m);
 	setMatrix(m);
 }
 
 void repo::gui::RepoTransformationDialog::transpose()
 {
-	std::vector<float> mat = getMatrix();
+	std::vector<float> m = getMatrix();
+	transposeMat(m);
+	setMatrix(m);
+}
+
+void repo::gui::RepoTransformationDialog::transposeMat(std::vector<float> &mat)
+{
 
 	for (uint32_t row = 0; row < 3; row++)
 	{
-		for (uint32_t col = row+1; col < 4; col++)
+		for (uint32_t col = row + 1; col < 4; col++)
 		{
 			uint32_t index = row * 4 + col; //if index is 3 . (row = 0, col = 3)
 			uint32_t swapTo = col * 4 + row; // swap is 12
@@ -269,6 +278,4 @@ void repo::gui::RepoTransformationDialog::transpose()
 
 		}
 	}
-
-	setMatrix(mat);
 }

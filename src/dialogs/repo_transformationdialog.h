@@ -85,6 +85,7 @@ public slots :
     void inverse();
 
     void transpose();
+	void transposeMat(std::vector<float> &mat);
 
 private:
 
