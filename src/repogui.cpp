@@ -352,37 +352,40 @@ void repo::gui::RepoGUI::commit(
         repo::manipulator::graph::RepoScene *scene,
         RepoMdiSubWindow *activeWindow)
 {
-    std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 
-    repo::gui::RepoDialogCommit commitDialog(
-                this,
-                Qt::Window,
-                ui->widgetRepository,
-                scene);
+	if (activeWindow)
+	{
+		std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
+		repo::gui::RepoDialogCommit commitDialog(
+			this,
+			Qt::Window,
+			ui->widgetRepository,
+			scene);
 
 
 
-    if(!commitDialog.exec())
-        std::cout << "Commit dialog cancelled by user" << std::endl;
-    else // Clicked "OK"
-    {
-        //----------------------------------------------------------------------
-        // Establish and connect the new worker.
-		repo::worker::CommitWorker *worker = new repo::worker::CommitWorker(
-					controller,
-                    ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
-                    scene);
+		if (!commitDialog.exec())
+			std::cout << "Commit dialog cancelled by user" << std::endl;
+		else // Clicked "OK"
+		{
+			//----------------------------------------------------------------------
+			// Establish and connect the new worker.
+			repo::worker::CommitWorker *worker = new repo::worker::CommitWorker(
+				controller,
+				ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
+				scene);
 
-        if (activeWindow)
-            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+			if (activeWindow)
+				QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
 
-        QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
-        //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+			QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+			//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
-        //----------------------------------------------------------------------
-        // Fire up the asynchronous calculation.
-        QThreadPool::globalInstance()->start(worker);
-    }
+			//----------------------------------------------------------------------
+			// Fire up the asynchronous calculation.
+			QThreadPool::globalInstance()->start(worker);
+		}
+	}
 }
 
 void repo::gui::RepoGUI::connect()
@@ -524,10 +527,9 @@ repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
 
 void repo::gui::RepoGUI::history()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    QString project = ui->widgetRepository->getSelectedProject();
-    //core::MongoClientWrapper mongo =
-    //        ui->widgetRepository->getSelectedConnection();
+    QString          database = ui->widgetRepository->getSelectedDatabase();
+    QString          project  = ui->widgetRepository->getSelectedProject();
+    repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
     //RepoDialogHistory historyDialog(mongo, database, project, this);
 
     //if(!historyDialog.exec()) // if not OK
