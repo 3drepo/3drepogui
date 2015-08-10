@@ -265,7 +265,7 @@ void repo::gui::RepoTransformationDialog::transpose()
 
 			float tmp = mat[swapTo];
 			mat[swapTo] = mat[index];
-			mat[index] = mat[swapTo];
+			mat[index] = tmp;
 
 		}
 	}
