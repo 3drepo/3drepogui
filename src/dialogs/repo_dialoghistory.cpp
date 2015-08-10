@@ -241,8 +241,7 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 
             ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
 
-            // TODO: display lists of added, deleted, modified (rather than current)
-            for (repoUUID uuid : revision->getCurrentIDs())
+			for (repoUUID uuid : revision->getAddedIDs())
             {
 				QList<QStandardItem *> row;
 
@@ -250,11 +249,40 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
 
 				// Action
-				row.append(createItem(QVariant(tr("current"))));
+				row.append(createItem(QVariant(tr("Added"))));
 
 				//--------------------------------------------------------------------------
 				revisionModel->invisibleRootItem()->appendRow(row);
             }
+
+			for (repoUUID uuid : revision->getDeletedIDs())
+			{
+				QList<QStandardItem *> row;
+
+				// UID // TODO: make SID
+				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
+
+				// Action
+				row.append(createItem(QVariant(tr("Deleted"))));
+
+				//--------------------------------------------------------------------------
+				revisionModel->invisibleRootItem()->appendRow(row);
+			}
+
+
+			for (repoUUID uuid : revision->getModifiedIDs())
+			{
+				QList<QStandardItem *> row;
+
+				// UID // TODO: make SID
+				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
+
+				// Action
+				row.append(createItem(QVariant(tr("Modified"))));
+
+				//--------------------------------------------------------------------------
+				revisionModel->invisibleRootItem()->appendRow(row);
+			}
         }
     }
 }
