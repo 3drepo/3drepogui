@@ -19,17 +19,20 @@
 #include "repo_transformationdialog.h"
 #include "ui_repo_transformationdialog.h"
 
+#include <repo/core/model/bson/repo_bson_factory.h>
+#include <qmatrix4x4.h>
+
 repo::gui::RepoTransformationDialog::RepoTransformationDialog(
-        /*const core::RepoNodeTransformation &transformation,*/
+	const repo::core::model::bson::TransformationNode &transformation,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoTransformationDialog)
-    //, transformation(transformation)
+    , transformation(transformation)
 {
     ui->setupUi(this);
 
-    //setName(transformation.getName());
-    //setMatrix(transformation.getMatrix());
+    setName(transformation.getName());
+    setMatrix(transformation.getTransMatrix());
 
     QObject::connect(ui->identityPushButton, &QPushButton::pressed,
                      this, &RepoTransformationDialog::setIdentity);
@@ -67,14 +70,18 @@ void repo::gui::RepoTransformationDialog::setName(const std::string &name)
 {
     ui->nameLineEdit->setText(QString::fromStdString(name));
 }
-//
-//void repo::gui::RepoTransformationDialog::setMatrix(const aiMatrix4x4 &m)
-//{
-//    setMatrix(m.a1,m.a2, m.a3, m.a4,
-//              m.b1, m.b2, m.b3, m.b4,
-//              m.c1, m.c2, m.c3, m.c4,
-//              m.d1, m.d2, m.d3, m.d4);
-//}
+
+void repo::gui::RepoTransformationDialog::setMatrix(const std::vector<float> &m)
+{
+	if (m.size() >=16)
+	{
+		setMatrix( m[0] , m[1] , m[2] , m[3] ,
+			       m[4] , m[5] , m[6] , m[7] ,
+			       m[8] , m[9] , m[10], m[11],
+			       m[12], m[13], m[14], m[15]);
+	}
+    
+}
 
 void repo::gui::RepoTransformationDialog::setMatrix(
         double a1, double a2, double a3, double a4,
@@ -103,63 +110,165 @@ void repo::gui::RepoTransformationDialog::setMatrix(
     ui->d4DoubleSpinBox->setValue(d4);
 }
 
-//repo::core::RepoNodeTransformation repo::gui::RepoTransformationDialog::getTransformation()
-//{
-//    transformation.setName(getName());
-//    transformation.setMatrix(getMatrix());
-//    return transformation;
-//}
+repo::core::model::bson::TransformationNode* repo::gui::RepoTransformationDialog::getTransformation()
+{
+	return repo::core::model::bson::RepoBSONFactory::makeTransformationNode(getMatrix2D(), getName());
+}
 
-//aiMatrix4x4 repo::gui::RepoTransformationDialog::getMatrix() const
-//{
-//    return aiMatrix4x4(ui->a1DoubleSpinBox->value(),
-//                  ui->a2DoubleSpinBox->value(),
-//                  ui->a3DoubleSpinBox->value(),
-//                  ui->a4DoubleSpinBox->value(),
-//                  ui->b1DoubleSpinBox->value(),
-//                  ui->b2DoubleSpinBox->value(),
-//                  ui->b3DoubleSpinBox->value(),
-//                  ui->b4DoubleSpinBox->value(),
-//                  ui->c1DoubleSpinBox->value(),
-//                  ui->c2DoubleSpinBox->value(),
-//                  ui->c3DoubleSpinBox->value(),
-//                  ui->c4DoubleSpinBox->value(),
-//                  ui->d1DoubleSpinBox->value(),
-//                  ui->d2DoubleSpinBox->value(),
-//                  ui->d3DoubleSpinBox->value(),
-//                  ui->d4DoubleSpinBox->value());
-//}
+std::vector<float> repo::gui::RepoTransformationDialog::getMatrix() const
+{
+	std::vector<float> mat;
+	mat.push_back(ui->a1DoubleSpinBox->value());
+	mat.push_back(ui->a2DoubleSpinBox->value());
+	mat.push_back(ui->a3DoubleSpinBox->value());
+	mat.push_back(ui->a4DoubleSpinBox->value());
+	mat.push_back(ui->b1DoubleSpinBox->value());
+	mat.push_back(ui->b2DoubleSpinBox->value());
+	mat.push_back(ui->b3DoubleSpinBox->value());
+	mat.push_back(ui->b4DoubleSpinBox->value());
+	mat.push_back(ui->c1DoubleSpinBox->value());
+	mat.push_back(ui->c2DoubleSpinBox->value());
+	mat.push_back(ui->c3DoubleSpinBox->value());
+	mat.push_back(ui->c4DoubleSpinBox->value());
+	mat.push_back(ui->d1DoubleSpinBox->value());
+	mat.push_back(ui->d2DoubleSpinBox->value());
+	mat.push_back(ui->d3DoubleSpinBox->value());
+	mat.push_back(ui->d4DoubleSpinBox->value());
+
+	return mat;
+}
+
+std::vector<std::vector<float>> repo::gui::RepoTransformationDialog::getMatrix2D() const
+{
+	std::vector<std::vector<float>> mat;
+
+	std::vector<float> rowA;
+	rowA.push_back(ui->a1DoubleSpinBox->value());
+	rowA.push_back(ui->a2DoubleSpinBox->value());
+	rowA.push_back(ui->a3DoubleSpinBox->value());
+	rowA.push_back(ui->a4DoubleSpinBox->value());
+	mat.push_back(rowA);
+
+	std::vector<float> rowB;
+	rowB.push_back(ui->b1DoubleSpinBox->value());
+	rowB.push_back(ui->b2DoubleSpinBox->value());
+	rowB.push_back(ui->b3DoubleSpinBox->value());
+	rowB.push_back(ui->b4DoubleSpinBox->value());
+	mat.push_back(rowB);
+
+	std::vector<float> rowC;
+	rowC.push_back(ui->c1DoubleSpinBox->value());
+	rowC.push_back(ui->c2DoubleSpinBox->value());
+	rowC.push_back(ui->c3DoubleSpinBox->value());
+	rowC.push_back(ui->c4DoubleSpinBox->value());
+	mat.push_back(rowC);
+
+	std::vector<float> rowD;
+	rowD.push_back(ui->d1DoubleSpinBox->value());
+	rowD.push_back(ui->d2DoubleSpinBox->value());
+	rowD.push_back(ui->d3DoubleSpinBox->value());
+	rowD.push_back(ui->d4DoubleSpinBox->value());
+	mat.push_back(rowD);
+
+	return mat;
+}
 
 std::string repo::gui::RepoTransformationDialog::getName() const
 {
     return ui->nameLineEdit->text().toStdString();
 }
 
-void repo::gui::RepoTransformationDialog::rotateX(double radians)
+//void repo::gui::RepoTransformationDialog::rotateX(double radians)
+//{
+//	/*aiMatrix4x4 tmp;
+//    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, tmp));*/
+//}
+//
+//void repo::gui::RepoTransformationDialog::rotateY(double radians)
+//{
+//	/*aiMatrix4x4 tmp;
+//    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, tmp));*/
+//}
+//
+//void repo::gui::RepoTransformationDialog::rotateZ(double radians)
+//{
+//	/*aiMatrix4x4 tmp;
+//    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, tmp));*/
+//}
+
+void repo::gui::RepoTransformationDialog::rotateX90()
 {
-	/*aiMatrix4x4 tmp;
-    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, tmp));*/
+	std::vector<float> mat = getMatrix();
+	//essentially, swap col 2 and 3.
+
+	for (uint32_t row = 0; row < 4; row++)
+	{
+		float tmp = mat[row * 4 + 1];
+		mat[row * 4 + 1] = mat[row * 4 + 2];
+		mat[row * 4 + 2] = tmp;
+	}
+
+	setMatrix(mat);
+}	
+
+void repo::gui::RepoTransformationDialog::rotateY90()
+{
+	std::vector<float> mat = getMatrix();
+	//essentially, swap col 1 and 3.
+
+	for (uint32_t row = 0; row < 4; row++)
+	{
+		float tmp = mat[row * 4];
+		mat[row * 4] = mat[row * 4 + 2];
+		mat[row * 4 + 2] = tmp;
+	}
+
+	setMatrix(mat);
 }
 
-void repo::gui::RepoTransformationDialog::rotateY(double radians)
+void repo::gui::RepoTransformationDialog::rotateZ90()
 {
-	/*aiMatrix4x4 tmp;
-    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, tmp));*/
-}
+	std::vector<float> mat = getMatrix();
+	//essentially, swap col 1 and 2.
 
-void repo::gui::RepoTransformationDialog::rotateZ(double radians)
-{
-	/*aiMatrix4x4 tmp;
-    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, tmp));*/
+	for (uint32_t row = 0; row < 4; row++)
+	{
+		float tmp = mat[row * 4];
+		mat[row * 4] = mat[row * 4 + 1];
+		mat[row * 4 + 1] = tmp;
+	}
+
+	setMatrix(mat);
 }
 
 
 void repo::gui::RepoTransformationDialog::inverse()
 {
-    //setMatrix(getMatrix().Inverse());
+
+	//Use QMatrix instead of implementing something complicated myself..
+	std::vector<float> m = getMatrix();
+	QMatrix4x4 qMat(&m[0]);
+	memcpy(&m.at(0), qMat.inverted().data(), sizeof(float) * 16);
+	setMatrix(m);
 }
 
 void repo::gui::RepoTransformationDialog::transpose()
 {
-    //setMatrix(getMatrix().Transpose());
+	std::vector<float> mat = getMatrix();
+
+	for (uint32_t row = 0; row < 3; row++)
+	{
+		for (uint32_t col = row+1; col < 4; col++)
+		{
+			uint32_t index = row * 4 + col; //if index is 3 . (row = 0, col = 3)
+			uint32_t swapTo = col * 4 + row; // swap is 12
+
+			float tmp = mat[swapTo];
+			mat[swapTo] = mat[index];
+			mat[index] = mat[swapTo];
+
+		}
+	}
+
+	setMatrix(mat);
 }

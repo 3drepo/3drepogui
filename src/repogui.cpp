@@ -41,7 +41,7 @@
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
-//#include "workers/repo_workercommit.h"
+#include "repo/workers/repo_worker_commit.h"
 #include "renderers/repo_oculus.h"
 #include "renderers/repooculustexturerenderer.h"
 #include "primitives/repo_fontawesome.h"
@@ -327,74 +327,63 @@ void repo::gui::RepoGUI::commit()
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
 
-    //core::RepoNodeAbstractSet nodes;
-    //core::RepoNodeRevision* revision = 0;
+    
+	repo::manipulator::graph::RepoScene *repoScene;
 
-    //if (activeWindow && widget)
-    //{
-    //    const core::RepoGraphScene *repoScene = widget->getRepoScene();
-    //    nodes = repoScene->getNodes();
+    if (activeWindow && widget)
+    {
+        repoScene = widget->getRepoScene();
+        
+        // TODO: fix !!!
+        if (project.isEmpty())
+        {
+            QFileInfo path(activeWindow->windowTitle());
+            project = path.completeBaseName();
+			repoScene->setDatabaseAndProjectName(database.toStdString(), project.toStdString());
+        }
 
-    //    // TODO: fix !!!
-    //    if (project.isEmpty())
-    //    {
-    //        QFileInfo path(activeWindow->windowTitle());
-    //        project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
-    //    }
+        repo::RepoToken *token = ui->widgetRepository->getSelectedConnection();
+    }   
 
-    //    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    //    core::RepoGraphHistory* history = new core::RepoGraphHistory();
-
-    //    revision = new core::RepoNodeRevision(mongo.getUsername(database.toStdString()));
-    //    revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
-    //    history->setCommitRevision(revision);
-    //}   
-
-    //commit(nodes, revision, project, activeWindow);
+    commit(repoScene, activeWindow);
 }
-//
-//void repo::gui::RepoGUI::commit(
-//        const core::RepoNodeAbstractSet &nodes,
-//        core::RepoNodeRevision* revision,
-//        const QString &project,
-//        RepoMdiSubWindow *activeWindow)
-//{
-//    std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
-//
-//    repo::gui::RepoDialogCommit commitDialog(
-//                this,
-//                Qt::Window,
-//                ui->widgetRepository,
-//                project,
-//                nodes,
-//                revision);
-//
-//
-//
-//    if(!commitDialog.exec())
-//        std::cout << "Commit dialog cancelled by user" << std::endl;
-//    else // Clicked "OK"
-//    {
-//        //----------------------------------------------------------------------
-//        // Establish and connect the new worker.
-//        RepoWorkerCommit *worker = new RepoWorkerCommit(
-//                     ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
-//                    commitDialog.getCurrentDatabase(),
-//                    commitDialog.getCurrentProject(),
-//                    commitDialog.getRevision(),
-//                    commitDialog.getNodesToCommit());
-//
-//        if (activeWindow)
-//            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
-//
-//        QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
-//        //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
-//
-//        //----------------------------------------------------------------------
-//        // Fire up the asynchronous calculation.
-//        QThreadPool::globalInstance()->start(worker);
-//    }
-//}
+
+void repo::gui::RepoGUI::commit(
+        repo::manipulator::graph::RepoScene *scene,
+        RepoMdiSubWindow *activeWindow)
+{
+    std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
+
+    repo::gui::RepoDialogCommit commitDialog(
+                this,
+                Qt::Window,
+                ui->widgetRepository,
+                scene);
+
+
+
+    if(!commitDialog.exec())
+        std::cout << "Commit dialog cancelled by user" << std::endl;
+    else // Clicked "OK"
+    {
+        //----------------------------------------------------------------------
+        // Establish and connect the new worker.
+		repo::worker::CommitWorker *worker = new repo::worker::CommitWorker(
+					controller,
+                    ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
+                    scene);
+
+        if (activeWindow)
+            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+
+        QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+        //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+
+        //----------------------------------------------------------------------
+        // Fire up the asynchronous calculation.
+        QThreadPool::globalInstance()->start(worker);
+    }
+}
 
 void repo::gui::RepoGUI::connect()
 {

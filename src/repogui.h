@@ -82,11 +82,9 @@ public slots:
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
-    /*void commit(const core::RepoNodeAbstractSet &nodes,
-                core::RepoNodeRevision *revision,
-                const QString &project = QString(),
+	void commit(repo::manipulator::graph::RepoScene *scene,
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
-*/
+
     //! Shows a connection dialog and connects to the specified database.
     void connect();
 
