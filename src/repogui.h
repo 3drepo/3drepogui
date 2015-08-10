@@ -104,7 +104,7 @@ public slots:
     RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
-    //const core::RepoGraphScene *getActiveScene();
+    const repo::manipulator::graph::RepoScene*getActiveScene();
 
     //! Shows a history dialog for selected repository.
     void history();

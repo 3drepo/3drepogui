@@ -517,34 +517,34 @@ repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
     return widget;
 }
 
-//const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
-//{
-//    const core::RepoGraphScene *scene = 0;
-//    if (const RepoGLCWidget *widget = getActiveWidget())
-//        scene = widget->getRepoScene();
-//    return scene;
-//}
+const repo::manipulator::graph::RepoScene* repo::gui::RepoGUI::getActiveScene()
+{
+	const repo::manipulator::graph::RepoScene *scene = 0;
+    if (const RepoGLCWidget *widget = getActiveWidget())
+        scene = widget->getRepoScene();
+    return scene;
+}
 
 void repo::gui::RepoGUI::history()
 {
     QString          database = ui->widgetRepository->getSelectedDatabase();
     QString          project  = ui->widgetRepository->getSelectedProject();
     repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
-    //RepoDialogHistory historyDialog(mongo, database, project, this);
+	RepoDialogHistory historyDialog(controller, token, database, project, this);
 
-    //if(!historyDialog.exec()) // if not OK
-    //    std::cout << "Revision History dialog cancelled by user." << std::endl;
-    //else
-    //{
-    //    QList<QUuid> revisions = historyDialog.getSelectedRevisions();
-    //    for (QList<QUuid>::iterator uid = revisions.begin();
-    //         uid != revisions.end();
-    //         ++uid)
-    //        ui->mdiArea->addSubWindow(mongo, database, project, *uid, false);
-    //    //---------------------------------------------------------------------
-    //    // make sure to hook controls if chain is on
-    //    ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
-    //}
+    if(!historyDialog.exec()) // if not OK
+        std::cout << "Revision History dialog cancelled by user." << std::endl;
+    else
+    {
+        QList<QUuid> revisions = historyDialog.getSelectedRevisions();
+        for (QList<QUuid>::iterator uid = revisions.begin();
+             uid != revisions.end();
+             ++uid)
+            ui->mdiArea->addSubWindow(controller, token, database, project, *uid, false);
+        //---------------------------------------------------------------------
+        // make sure to hook controls if chain is on
+        ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
+    }
 }
 
 void repo::gui::RepoGUI::loadFile(const QString &filePath)
