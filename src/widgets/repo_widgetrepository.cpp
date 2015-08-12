@@ -19,6 +19,7 @@
 
 #include "../repo/workers/repo_worker_database.h"
 #include "../repo/workers/repo_worker_collection.h"
+#include "../repo/logger/repo_logger.h"
 
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
@@ -145,11 +146,11 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
         for (int i = 0; i < databaseItem->rowCount(); ++i)
         {
             QString collection = databaseItem->child(i, 0)->text();
-            //int index = collection.lastIndexOf(QString(".") + REPO_COLLECTION_SCENE);
-           /* if (index >= 0)
+            int index = collection.lastIndexOf(QString(".") + REPO_COLLECTION_SCENE);
+            if (index >= 0)
             {
                 projects << collection.left(index);
-            }*/
+            }
         }
     }
     return projects.toList();

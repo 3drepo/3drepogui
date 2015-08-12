@@ -21,8 +21,11 @@
 
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repocomboboxdelegate.h"
+#include "../repo/logger/repo_logger.h"
 
-repo::gui::RepoFederationDialog::RepoFederationDialog(
+using namespace repo::gui;
+
+RepoFederationDialog::RepoFederationDialog(
         RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
@@ -31,13 +34,13 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
 
 {
     ui->setupUi(this);
-   /* ui->availableWidget->setExpandedUI();
+    ui->availableWidget->setExpandedUI();
     ui->availableWidget->setExtendedSelection();
     ui->availableWidget->setRootIsDecorated(true);
 
     ui->federatedWidget->setExpandedUI();
     ui->federatedWidget->setExtendedSelection();
-    ui->federatedWidget->setRootIsDecorated(true);*/
+    ui->federatedWidget->setRootIsDecorated(true);
 
 //    ui->federatedWidget->getTreeView()->setDragEnabled(true);
 //    ui->federatedWidget->getTreeView()->viewport()->setAcceptDrops(true);
@@ -57,7 +60,7 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     ui->removePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_arrow_left));
 
 
-    /*QStandardItemModel *availableModel = ui->availableWidget->getModel();
+    QStandardItemModel *availableModel = ui->availableWidget->getModel();
     availableModel->setColumnCount(1);
     availableModel->setHeaderData(
                 0,
@@ -65,9 +68,9 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
                 tr("Project"));
 
 
-    QStandardItemModel *federatedModel = ui->federatedWidget->getModel();*/
-   /* federatedModel->setColumnCount(3);*/
-    /*federatedModel->setHeaderData(
+    QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
+    federatedModel->setColumnCount(3);
+    federatedModel->setHeaderData(
                 0,
                 Qt::Horizontal,
                 tr("Project"));
@@ -78,7 +81,7 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     federatedModel->setHeaderData(
                 2,
                 Qt::Horizontal,
-                tr("Revision"));*/
+                tr("Revision"));
 
     QObject::connect(ui->refreshPushButton, SIGNAL(pressed()),
                      this, SLOT(refresh()));
@@ -95,95 +98,96 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
     QObject::connect(ui->removePushButton, SIGNAL(pressed()),
                      this, SLOT(removeProjectsFromFederation()));
 
-    //QObject::connect(ui->federatedWidget->getTreeView(), SIGNAL(customContextMenuRequested(QPoint)),
-    //    this, SLOT(showFederationMenu(QPoint)));
+    QObject::connect(ui->federatedWidget->getTreeView(), SIGNAL(customContextMenuRequested(QPoint)),
+        this, SLOT(showFederationMenu(QPoint)));
 }
 
-repo::gui::RepoFederationDialog::~RepoFederationDialog()
+RepoFederationDialog::~RepoFederationDialog()
 {
     delete ui;
 }
 
-void repo::gui::RepoFederationDialog::addAvailableProject(const QString &project)
+void RepoFederationDialog::addAvailableProject(const QString &project)
 {
     QStandardItem *item = new QStandardItem(project);
     item->setEditable(false);
     item->setToolTip(project);
-    //ui->availableWidget->addTopLevelRow(item);
+    ui->availableWidget->addTopLevelRow(item);
 }
 
 
-void repo::gui::RepoFederationDialog::addProjectsToFederation()
+void RepoFederationDialog::addProjectsToFederation()
 {
-    //QStandardItem *item = getCurrentFederatedItem();
-    //if (item)
-    //{
-    //    std::string database = ui->databaseComboBox->currentText().toStdString();
-    //   /* for (QModelIndex selectedIndex : getAvailableSelection())
-    //    {            
-    //        QString project = selectedIndex.data().toString();*/
+    QStandardItem *item = getCurrentFederatedItem();
+    if (item)
+    {
+        std::string database = ui->databaseComboBox->currentText().toStdString();
+        for (QModelIndex selectedIndex : getAvailableSelection())
+        {            
+            QString project = selectedIndex.data().toString();
 
-    //        //------------------------------------------------------------------
+            //------------------------------------------------------------------
 
-    //        //RepoTransRefPair p;
-    //        //p.first = core::RepoNodeTransformation("<transformation>");
-    //        //p.second = core::RepoNodeReference(database, project.toStdString());
-    //        //QVariant var;
-    //        //var.setValue(p);
+            RepoTransRefPair p;
+			p.first = repo::core::model::bson::RepoBSONFactory::makeTransformationNode();
+			p.second = repo::core::model::bson::RepoBSONFactory::makeReferenceNode(database, project.toStdString());
+            QVariant var;
+            var.setValue(p);
 
-    //        //------------------------------------------------------------------
+            //------------------------------------------------------------------
 
-    //        //QList<QStandardItem*> row;            
-    //        //row << RepoFilterableTreeWidget::createItem(project);
-    //        ////row[0]->setData(var);
+            QList<QStandardItem*> row;            
+            row << RepoFilterableTreeWidget::createItem(project);
+            row[0]->setData(var);
 
-    //        //row << RepoFilterableTreeWidget::createItem("master");
-    //        //row[1]->setEditable(true);
+            row << RepoFilterableTreeWidget::createItem("master");
+            row[1]->setEditable(true);
 
-    //        //row << RepoFilterableTreeWidget::createItem("head");
-    //        //row[2]->setEditable(true);
-    //        //item->appendRow(row);
-    //    //}
-    //    //ui->federatedWidget->expandItem(item);
-    //}
+            row << RepoFilterableTreeWidget::createItem("head");
+            row[2]->setEditable(true);
+            item->appendRow(row);
+        }
+        ui->federatedWidget->expandItem(item);
+    }
 }
 
-int repo::gui::RepoFederationDialog::exec()
+int RepoFederationDialog::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void repo::gui::RepoFederationDialog::refresh()
+void RepoFederationDialog::refresh()
 {
-    //ui->availableWidget->clear();
+    ui->availableWidget->clear();
 
     // TODO: make multithreaded
     QStringList availableProjects = dbCache->getProjects(ui->hostComboBox->currentText(), ui->databaseComboBox->currentText());
+
     for (QString project : availableProjects)
         addAvailableProject(project);
 }
 
 
-void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
+void RepoFederationDialog::removeProjectsFromFederation()
 {
-    //QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
-    //QModelIndexList selectedIndexes = getFederatedSelection();
+    QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
+    QModelIndexList selectedIndexes = getFederatedSelection();
 
-    //bool isRemoved = true;
-    //while (!selectedIndexes.empty() && isRemoved)
-    //{
-    //    QModelIndex selectedIndex = selectedIndexes[0];
-    //    //isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
-    //    selectedIndexes = getFederatedSelection();
-    //}
+    bool isRemoved = true;
+    while (!selectedIndexes.empty() && isRemoved)
+    {
+        QModelIndex selectedIndex = selectedIndexes[0];
+        //isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        selectedIndexes = getFederatedSelection();
+    }
 }
 
-void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
+void RepoFederationDialog::showFederationMenu(const QPoint &point)
 {
-    //bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
-    //QTreeView *treeView = ui->federatedWidget->getTreeView();
-    /*QMenu menu(treeView);
+    bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
+    QTreeView *treeView = ui->federatedWidget->getTreeView();
+    QMenu menu(treeView);
 
     QAction *action = menu.addAction(
                 tr("Transformation..."),
@@ -199,107 +203,97 @@ void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
                 SLOT(removeProjectsFromFederation()));
     remove->setEnabled(on);
 
-    menu.exec(treeView->mapToGlobal(point));*/
+    menu.exec(treeView->mapToGlobal(point));
 }
 
-void repo::gui::RepoFederationDialog::showTransformationDialog()
+void RepoFederationDialog::showTransformationDialog()
 {
-    //RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
-    //if (d.exec())
-    //{
-    //   /* core::RepoNodeTransformation transformation = d.getTransformation();
-    //    for (QModelIndex selectedIndex : getFederatedSelection())
-    //    {
-    //        RepoTransRefPair p =
-    //                selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
+    RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
+    if (d.exec())
+    {
+		repo::core::model::bson::TransformationNode transformation = d.getTransformation();
+        for (QModelIndex selectedIndex : getFederatedSelection())
+        {
+            RepoTransRefPair p =
+                    selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
 
-    //        transformation.setRandomIDs();
-    //        p.first = transformation;
+            p.first = transformation;
 
-    //        QVariant var;
-    //        var.setValue(p);
-    //        ui->federatedWidget->getModel()->setData(selectedIndex, var,Qt::UserRole+1);*/
-    //    }
-    //}
+            QVariant var;
+            var.setValue(p);
+            ui->federatedWidget->getModel()->setData(selectedIndex, var,Qt::UserRole+1);
+        }
+    }
 }
 
 
-//QStandardItem *repo::gui::RepoFederationDialog::getCurrentFederatedItem() const
-//{
-//    //QModelIndex proxyCurrent = ui->federatedWidget->getSelectionModel()->currentIndex();
-//    QStandardItem *item = 0;
-//    //if (proxyCurrent.isValid())
-//    //{
-//    //    QModelIndex modelCurrent = ui->federatedWidget->getProxyModel()->mapToSource(proxyCurrent);
-//    //    QModelIndex modelCurrentFirstColumn = modelCurrent.sibling(modelCurrent.row(), Columns::PROJECT);
-//    //    item = ui->federatedWidget->getModel()->itemFromIndex(modelCurrentFirstColumn);
-//    //}
-//    //else
-//    //    item = ui->federatedWidget->getModel()->invisibleRootItem();
-//    return item;
-//}
-//
-//repo::core::RepoNodeTransformation repo::gui::RepoFederationDialog::getCurrentFederatedTransformation() const
-//{
-//    QStandardItem *item = getCurrentFederatedItem();
-//    core::RepoNodeTransformation transformation;
-//    if (item)
-//    {
-//        RepoTransRefPair p =
-//            getCurrentFederatedItem()->data(Qt::UserRole+1).value<RepoTransRefPair>();
-//        transformation = p.first;
-//    }
-//    return transformation;
-//}
+QStandardItem *RepoFederationDialog::getCurrentFederatedItem() const
+{
+    QModelIndex proxyCurrent = ui->federatedWidget->getSelectionModel()->currentIndex();
+    QStandardItem *item = 0;
+    if (proxyCurrent.isValid())
+    {
+        QModelIndex modelCurrent = ui->federatedWidget->getProxyModel()->mapToSource(proxyCurrent);
+        QModelIndex modelCurrentFirstColumn = modelCurrent.sibling(modelCurrent.row(), Columns::PROJECT);
+        item = ui->federatedWidget->getModel()->itemFromIndex(modelCurrentFirstColumn);
+    }
+    else
+        item = ui->federatedWidget->getModel()->invisibleRootItem();
+    return item;
+}
+
+repo::core::model::bson::TransformationNode RepoFederationDialog::getCurrentFederatedTransformation() const
+{
+    QStandardItem *item = getCurrentFederatedItem();
+	repo::core::model::bson::TransformationNode transformation;
+    if (item)
+    {
+        RepoTransRefPair p =
+            getCurrentFederatedItem()->data(Qt::UserRole+1).value<RepoTransRefPair>();
+        transformation = p.first;
+    }
+    return transformation;
+}
 
 //------------------------------------------------------------------------------
 
-//QModelIndexList repo::gui::RepoFederationDialog::getAvailableSelection() const
-//{
-//    //return ui->availableWidget->getCurrentSelection();
-//	return 0;
-//}
-
-//QModelIndexList repo::gui::RepoFederationDialog::getFederatedSelection() const
-//{
-//    //return ui->federatedWidget->getCurrentSelection();
-//	return 0;
-//}
-
-//repo::core::RepoGraphScene *repo::gui::RepoFederationDialog::getFederation()
-//{
-//    // TODO: update scene to add the nodes into nodesByUniqueID map!
-//    core::RepoGraphScene *scene = new core::RepoGraphScene();
-//    getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem(),
-//                                    scene->getRoot());
-//    scene->getRoot()->setName("<root>");
-//
-//    return scene;
-//}
-
-void repo::gui::RepoFederationDialog::getFederationRecursively(
-        QStandardItem *parentItem
-        /*core::RepoNodeAbstract *parentNode*/)
+QModelIndexList RepoFederationDialog::getAvailableSelection() const
 {
-   /* if (parentItem && parentNode)
-    {*/
-        //for (int i = 0; i < parentItem->rowCount(); ++i)
-        //{
-        //    QStandardItem *childItem = parentItem->child(i, Columns::PROJECT);
+    return ui->availableWidget->getCurrentSelection();
+}
 
-        //    RepoTransRefPair p =
-        //            childItem->data(Qt::UserRole+1).value<RepoTransRefPair>();
-        //    core::RepoNodeTransformation *t = new core::RepoNodeTransformation(p.first);
-        //    parentNode->addChild(t);
-        //    t->addParent(parentNode);
+QModelIndexList RepoFederationDialog::getFederatedSelection() const
+{
+    return ui->federatedWidget->getCurrentSelection();
+}
 
-        //    core::RepoNodeReference *ref = new core::RepoNodeReference(p.second);
-        //    t->addChild(ref);
-        //    ref->addParent(t);
+std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> RepoFederationDialog::getFederation()
+{
 
-        //    //------------------------------------------------------------------
-        //    // Recursive call (base case is not having any more children (rows)
-        //    getFederationRecursively(childItem, t);
-        //}
-    //}
+	return getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem());
+}
+
+std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>
+	RepoFederationDialog::getFederationRecursively(
+        QStandardItem *parentItem)
+{
+	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> fedMap;
+	if (parentItem)
+	{
+		for (int i = 0; i < parentItem->rowCount(); ++i)
+		{
+			QStandardItem *childItem = parentItem->child(i, Columns::PROJECT);
+
+			RepoTransRefPair p =
+				childItem->data(Qt::UserRole + 1).value<RepoTransRefPair>();
+			fedMap[p.first] = p.second;
+			//------------------------------------------------------------------
+			// Recursive call (base case is not having any more children (rows)
+			std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>  childmap
+				= getFederationRecursively(childItem);
+			fedMap.insert(childmap.begin(), childmap.end());
+		}
+	}
+
+	return fedMap;
 }

@@ -352,8 +352,8 @@ void repo::gui::RepoGUI::commit(
         repo::manipulator::graph::RepoScene *scene,
         RepoMdiSubWindow *activeWindow)
 {
-
-	if (activeWindow)
+	
+	if (scene)
 	{
 		std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 		repo::gui::RepoDialogCommit commitDialog(
@@ -387,6 +387,7 @@ void repo::gui::RepoGUI::commit(
 		}
 	}
 }
+
 
 void repo::gui::RepoGUI::connect()
 {
@@ -480,19 +481,14 @@ void repo::gui::RepoGUI::federate()
     RepoFederationDialog fed(ui->widgetRepository, this);
     if (fed.exec())
     {
-    //    core::RepoGraphScene *scene = fed.getFederation();
+		repo::manipulator::graph::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
 
-    //    // TODO: diff the scene with previous to get current, added, deleted and modified nodes.
-    //    std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
-    //    std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
-
-    //    core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
-    ////    revision->setCurrentUniqueIDs(nodes);
-
-    //    core::RepoNodeAbstractSet nodesSet;
-    //    for (const core::RepoNodeAbstract *node : nodes)
-    //        nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
-    //    commit(nodesSet, revision);
+		repoLog("federated scene...");
+		std::stringstream sstream;
+		scene->printStatistics(sstream);
+		repoLog(sstream.str());
+		repoLog("Committing scene...");
+		commit(scene);
     }
 }
 

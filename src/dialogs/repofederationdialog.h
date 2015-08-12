@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_FEDERATION_DIALOG_H
-#define REPO_FEDERATION_DIALOG_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -35,14 +33,18 @@
 #include "repo_genericdialog.h"
 #include "../dialogs/repo_transformationdialog.h"
 
+//------------------------------------------------------------------------------
+// Core
+#include <repo/core/model/bson/repo_bson_factory.h>
+#include <repo/manipulator/graph/repo_scene.h>
 
 namespace Ui {
     class RepoFederationDialog;
 }
 
-//typedef QPair<repo::core::RepoNodeTransformation, repo::core::RepoNodeReference> RepoTransRefPair;
+typedef QPair<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> RepoTransRefPair;
 
-//Q_DECLARE_METATYPE(RepoTransRefPair)
+Q_DECLARE_METATYPE(RepoTransRefPair)
 
 namespace repo {
 namespace gui {
@@ -81,21 +83,21 @@ public slots :
 
     //--------------------------------------------------------------------------
 
-    //QStandardItem *getCurrentFederatedItem() const;
+    QStandardItem *getCurrentFederatedItem() const;
 
-    ////core::RepoNodeTransformation getCurrentFederatedTransformation() const;
+	repo::core::model::bson::TransformationNode getCurrentFederatedTransformation() const;
 
-    //QModelIndexList getAvailableSelection() const;
+    QModelIndexList getAvailableSelection() const;
 
-    //QModelIndexList getFederatedSelection() const;
+    QModelIndexList getFederatedSelection() const;
 
-    //core::RepoGraphScene *getFederation();
+	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>  getFederation();
 
 protected :
 
-    void getFederationRecursively(
-            QStandardItem *parentItem
-           /* core::RepoNodeAbstract *parentNode*/);
+	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>
+		RepoFederationDialog::getFederationRecursively(
+		QStandardItem *parentItem);
 
 private:
 
@@ -107,4 +109,3 @@ private:
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_FEDERATION_DIALOG_H

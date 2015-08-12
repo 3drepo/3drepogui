@@ -129,7 +129,8 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
                 RepoTransformationDialog transformationDialog(*transformation, this);
 				if (transformationDialog.exec())
 				{
-					repo::core::model::bson::TransformationNode *t = transformationDialog.getTransformation();
+					repo::core::model::bson::TransformationNode *t = 
+						new repo::core::model::bson::TransformationNode(transformationDialog.getTransformation());
 					if (t)
 					{
 						scene->modifyNode(transformation->getSharedID(), t);

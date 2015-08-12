@@ -61,7 +61,7 @@ public slots :
                    double c1, double c2, double c3, double c4,
                    double d1, double d2, double d3, double d4);
 
-	repo::core::model::bson::TransformationNode* getTransformation();
+	repo::core::model::bson::TransformationNode getTransformation();
 
     std::vector<float> getMatrix() const;
 

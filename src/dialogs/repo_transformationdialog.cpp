@@ -110,7 +110,7 @@ void repo::gui::RepoTransformationDialog::setMatrix(
     ui->d4DoubleSpinBox->setValue(d4);
 }
 
-repo::core::model::bson::TransformationNode* repo::gui::RepoTransformationDialog::getTransformation()
+repo::core::model::bson::TransformationNode repo::gui::RepoTransformationDialog::getTransformation()
 {
 	return repo::core::model::bson::RepoBSONFactory::makeTransformationNode(getMatrix2D(), getName());
 }
