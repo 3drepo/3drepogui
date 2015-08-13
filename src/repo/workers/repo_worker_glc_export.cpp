@@ -21,6 +21,8 @@
 #include "../logger/repo_logger.h"
 #include <maths/glc_geomtools.h>
 
+#include <sstream>
+
 using namespace repo::worker;
 namespace repoModel = repo::core::model::bson;
 //------------------------------------------------------------------------------
@@ -211,6 +213,18 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 	//-----
 	GLC_World* glcWorld = nullptr;
+	if (!cancelled && scene && scene->hasRoot()){
+		glcWorld = new GLC_World(convertSceneToOccurance(scene));
+	}
+
+	return glcWorld;
+}
+
+
+GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
+	repo::manipulator::graph::RepoScene *scene)
+{
+
 	//------------------------------------------------------------------
 	// Allocate Textures
 	std::map<repoUUID, std::vector<GLC_Texture*>> parentToGLCTexture;
@@ -269,8 +283,6 @@ GLC_World* GLCExportWorker::createGLCWorld(
 		}
 	}
 
-
-
 	//-------------------------------------------------------------------------
 	// Allocate Meshes
 
@@ -326,15 +338,8 @@ GLC_World* GLCExportWorker::createGLCWorld(
 		}
 	}
 
-	//------------------------------------------------------------------
-	// GLC World conversion - recursion to obtain the whole tree
-	if (!cancelled && scene && scene->hasRoot()){
-		glcWorld = new GLC_World(createOccurrenceFromNode(scene, scene->getRoot(), parentToGLCMeshes, parentToGLCCameras));
-	}
-
-	return glcWorld;
+	return createOccurrenceFromNode(scene, scene->getRoot(), parentToGLCMeshes, parentToGLCCameras);
 }
-
 
 GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 	repo::manipulator::graph::RepoScene                     *scene,
@@ -362,11 +367,11 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 		{
 			/**
 			* Base on the assumption, there are only 2 types of nodes that we need to deal with
-			* TRANSFORMATION - kind all its children meshes/cameras and add them into the instance
+			* TRANSFORMATION - find all its children meshes/cameras and add them into the instance
 			* REFERENCE - Create another GLC world out of that referenced scene
 			* Meshes/Materials/Textures should be already set up to be dealt with at it's
 			* parent transformation.
-			* Anything else is probably not rendering related(?) and should be ignored
+			* Anything else is (probably) not rendering related(?) and should be ignored
 			*/
 		case repoModel::NodeType::TRANSFORMATION:
 		{
@@ -449,14 +454,12 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			repo::manipulator::graph::RepoScene *refScene = scene->getSceneFromReference(node->getSharedID());
 			if (refScene)
 			{
-				GLC_StructOccurence *childOccurance = createOccurrenceFromNode(
-					refScene,
-					refScene->getRoot(),
-					glcMeshesMap,
-					glcCamerasMap,
-					false);
-				if (childOccurance)
-					occurrence = childOccurance;
+				repoLog("refScene exists, printing stats...");
+				std::stringstream sstream;
+
+				refScene->printStatistics(sstream);
+	
+				occurrence = convertSceneToOccurance(refScene);
 			}
 
 			break;

@@ -70,6 +70,13 @@ namespace repo {
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
 				const bool                                        &countJob=true);
 
+			
+			/**
+			* Convert a repo scene to a GLC occurance structure of nodes.
+			*/
+			GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
+				repo::manipulator::graph::RepoScene *scene);
+
 		signals:
 
 			//! Emitted when loading is finished. Passes Repo scene and GLC world.
