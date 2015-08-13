@@ -447,6 +447,7 @@ void repo::gui::RepoGUI::drop()
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString collection = ui->widgetRepository->getSelectedCollection();
 
+
     if (database.isNull() || database.isEmpty())
         std::cout << "A database must be selected." << std::endl;
     else if ((database == "local" || database == "admin") && collection.isEmpty())
@@ -454,25 +455,25 @@ void repo::gui::RepoGUI::drop()
     else
     {
         QString ns = database + (!collection.isEmpty() ? "." + collection : "");
-        switch (QMessageBox::warning(this,
-            "Drop?",
-            "Are you sure you want to drop '" + ns + "'?",
-            "&Yes",
-            "&No",
-            QString::null, 1, 1))
-        {
-            case 0: // yes
+		if (!QMessageBox::warning(this,
+			"Drop?",
+			"Are you sure you want to drop '" + ns + "'?",
+			"&Yes",
+			"&No",
+			QString::null, 1, 1))
+		{
 
-                // TODO: create a DB manager separate from repositories widget.
-                //core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-                //mongo.reconnectAndReauthenticate();
-                //if (!collection.isEmpty())
-                //    mongo.dropCollection(ns.toStdString());
-                //else
-                //    mongo.dropDatabase(ns.toStdString());
-                //refresh();
-                break;
-            }
+			bool success;
+			std::string errMsg;
+			const RepoToken *token = ui->widgetRepository->getSelectedConnection();
+			// TODO: create a DB manager separate from repositories widget.
+			if (collection.isEmpty())
+				success = controller->removeDatabase(token, database.toStdString(), errMsg);
+			else
+				success = controller->removeCollection(token, database.toStdString(), collection.toStdString(), errMsg);
+
+			refresh();
+		}
     }
 }
 
