@@ -454,11 +454,6 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			repo::manipulator::graph::RepoScene *refScene = scene->getSceneFromReference(node->getSharedID());
 			if (refScene)
 			{
-				repoLog("refScene exists, printing stats...");
-				std::stringstream sstream;
-
-				refScene->printStatistics(sstream);
-	
 				occurrence = convertSceneToOccurance(refScene);
 			}
 
@@ -753,6 +748,7 @@ GLC_Texture* GLCExportWorker::convertGLCTexture(
 	if (texture)
 	{
 		std::vector<char> *data = texture->getRawData();
+
 		if (data)
 		{
 			QImage image = QImage::fromData((uchar*)&data->at(0), data->size()*sizeof(char));
