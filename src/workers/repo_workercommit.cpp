@@ -74,32 +74,58 @@ void repo::gui::RepoWorkerCommit::run()
                 emit progress(++counter, jobsCount);
 
                 core::RepoNodeAbstractSet::iterator it;
+
+
+                std::cout << "USZ: " << nodes.size() << std::endl;
                 //--------------------------------------------------------------
                 // Insert new records one-by-one
                 for (it = nodes.begin(); it != nodes.end(); ++it)
                 {
+                    std::vector<repo::core::RepoLargeFile> files;
                     const core::RepoNodeAbstract *node = *it;
-                    mongo::BSONObj nodeObj = node->toBSONObj();
+                    mongo::BSONObj nodeObj = node->toBSONObj(&files);
+
                     if (nodeObj.objsize() > 16777216) // 16MB
-                        std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
+                    {
+                        std::cerr << "Node1 '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
+                        std::cout << "NOSIZ: " << nodeObj.objsize() << std::endl;
+                        std::cout << "BLAH: " << nodeObj.toString() << std::endl;
+                    }
                     else
+                    {
+                        for (int f = 0; f < files.size(); f++)
+                            mongo.insertLargeFile(database, sceneCollection, files[f]);
+                            
                         mongo.insertRecord(database, sceneCollection, nodeObj);
+                    }
                     emit progress(++counter, jobsCount);
                 }
 
+                std::cout << "SZ: " << nodesOptim.size() << std::endl;
                 //--------------------------------------------------------------
                 // Insert optimized graph records one-by-one
                 for (it = nodesOptim.begin(); it != nodesOptim.end(); ++it)
                 {
+                    std::vector<repo::core::RepoLargeFile> files;
                     const core::RepoNodeAbstract *node = *it;
                     (*it)->setRevisionID(revision->getUniqueID());
 
-                    mongo::BSONObj nodeObj = node->toBSONObj();
+                    mongo::BSONObj nodeObj = node->toBSONObj(&files);
 
                     if (nodeObj.objsize() > 16777216) // 16MB
+                    {
                         std::cerr << "Node '" << node->getName() << "' over 16MB in size is not committed." << std::endl;
+                        std::cout << "NOSIZ: " << nodeObj.objsize() << std::endl;
+                        std::cout << "BLAH: " << nodeObj.toString() << std::endl;
+                    }
                     else
+                    {
+                        for (int f = 0; f < files.size(); f++)
+                            mongo.insertLargeFile(database, stashCollection, files[f]);
+ 
                         mongo.insertRecord(database, stashCollection, nodeObj);
+                    }
+
                     emit progress(++counter, jobsCount);
                 }
 

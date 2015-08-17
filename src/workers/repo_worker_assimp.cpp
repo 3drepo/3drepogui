@@ -235,12 +235,14 @@ void repo::gui::RepoWorkerAssimp::run()
         if (settings.getSplitByBoneCount())
             importer.setSplitByBoneCountMaxBones(settings.getSplitByBoneCountMaxBones());
 
+        std::cout << "IMPORT [" << fileName << "]" << std::endl;
+        
         importer.importModel(
             fileName,
             fullPath.toStdString());
 
-		importer.ApplyPostProcessing(aiProcess_Triangulate | aiProcess_GenNormals);
-
+		//importer.ApplyPostProcessing(aiProcess_Triangulate | aiProcess_GenNormals);
+		
         const aiScene *assimpScene = importer.getScene();
         emit progress(1, jobsCount);
 
@@ -268,6 +270,8 @@ void repo::gui::RepoWorkerAssimp::run()
                 importer.getFullFolderPath());
             emit progress(3, jobsCount);
 
+            std::cout << "Loaded textures" << std::endl;
+
             repo::core::assimp_map assimpMap;
 
             //-------------------------------------------------------------------------
@@ -276,17 +280,23 @@ void repo::gui::RepoWorkerAssimp::run()
                 textures,
                 importer.getFullFolderPath());
 
+ 			std::cout << "Loaded textures II" << std::endl;
+
             repoGraphScene = new repo::core::RepoGraphScene(assimpScene, tex, assimpMap);
             emit progress(4, jobsCount);
+
+            std::cout << "Beginning optimization ...." << std::endl;
 
             // Assign the unoptimized node map, and start optimization
             importer.ApplyPostProcessing(settings.getAssimpPostProcessingFlags());
 
-             repo::core::assimp_map assimpMapOptim;
+            repo::core::assimp_map assimpMapOptim;
 
             // Create new repoGraphScene with optimized map
             repoGraphOptim = new repo::core::RepoGraphScene(assimpScene, tex, assimpMapOptim);
             repoGraphOptim->populateOptimMaps(assimpMap, assimpMapOptim);
+
+            std::cout << "Optimized has " << assimpScene->mNumMeshes << " meshes." << std::endl;
 
            //-------------------------------------------------------------------------
             // GLC World conversion
