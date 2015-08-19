@@ -42,6 +42,7 @@
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
 #include "repo/workers/repo_worker_commit.h"
+#include "repo/workers/repo_worker_file_export.h"
 #include "renderers/repo_oculus.h"
 #include "renderers/repooculustexturerenderer.h"
 #include "primitives/repo_fontawesome.h"
@@ -624,12 +625,12 @@ void repo::gui::RepoGUI::open3DDiff()
 
 void repo::gui::RepoGUI::openFile()
 {
-    /*QStringList filePaths = QFileDialog::getOpenFileNames(
+    QStringList filePaths = QFileDialog::getOpenFileNames(
         this,
         tr("Select one or more files to open"),
         QString::null,
-        repo::core::AssimpWrapper::getImportFormats().c_str());
-    loadFiles(filePaths);*/
+		QString(controller->getSupportedImportFormats().c_str()));
+    loadFiles(filePaths);
 }
 
 void repo::gui::RepoGUI::openMetadataManager()
@@ -704,72 +705,33 @@ void repo::gui::RepoGUI::saveAs()
 {
     if (const RepoGLCWidget *widget = getActiveWidget())
     {
-        //// TODO: create export worker
-        //QString path = QFileDialog::getSaveFileName(
-        //    this,
-        //    tr("Select a file to save"),
-        //    QString(QDir::separator()) + widget->windowTitle(),
-        //    tr(core::AssimpWrapper::getExportFormats().c_str()));
-        //QFileInfo fileInfo(path);
-        //QDir directory = fileInfo.absoluteDir();
-        //QString fileExtension = fileInfo.completeSuffix();
-        //const core::RepoGraphScene *repoScene = widget->getRepoScene();
+        // TODO: create export worker
+        QString path = QFileDialog::getSaveFileName(
+            this,
+            tr("Select a file to save"),
+            QString(QDir::separator()) + widget->windowTitle(),
+			tr(controller->getSupportedExportFormats().c_str()));
+        const repo::manipulator::graph::RepoScene *repoScene = widget->getRepoScene();
+	
+		//Instantiate worker
+		repo::worker::FileExportWorker *worker = new repo::worker::FileExportWorker(
+			path.toStdString(),
+			controller,
+			repoScene);
 
-        //std::cout << "Exporting to " << path.toStdString() << std::endl;
+		QObject::connect(worker, SIGNAL(progress(int, int)), widget, SLOT(progress(int, int)));
 
-        //string embeddedTextureExtension = ".jpg";
-        //aiScene *scene = new aiScene();
-        //scene->mFlags = 0; //getPostProcessingFlags(); // TODO FIX ME!
-        //repoScene->toAssimp(scene);
-        //core::AssimpWrapper exporter;
+		QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
 
-        //bool successful = exporter.exportModel(scene,
-        //    core::AssimpWrapper::getExportFormatID(fileExtension.toStdString()),
-        //    path.toStdString(),
-        //    embeddedTextureExtension);
+		//----------------------------------------------------------------------
+		// Fire up the asynchronous calculation.
+		QThreadPool::globalInstance()->start(worker);
 
-        //if (!successful)
-        //   std::cerr << "Export unsuccessful." << std::endl;
-        //else
-        //{
-        //   std::vector<core::RepoNodeTexture *> textures = repoScene->getTextures();
-        //   for (size_t i = 0; i < textures.size(); ++i)
-        //   {
-        //       core::RepoNodeTexture *repoTex = textures[i];
-        //        const unsigned char *data = (unsigned char*) repoTex->getRawData();
-        //        QImage image = QImage::fromData(data, repoTex->getRawDataSize());
-        //        QString filename = QString::fromStdString(repoTex->getName());
-
-        //        if (scene->HasTextures())
-        //        {
-        //            string name = repoTex->getName();
-        //            name = name.substr(1, name.size()); // remove leading '*' char
-        //            filename = QString::fromStdString(name + embeddedTextureExtension);
-        //        }
-        //        QFileInfo fi(directory,filename);
-        //        image.save(fi.absoluteFilePath());
-        //    }
-        //    /* TODO: textures
-        //    const map<string, QImage> textures = widget->getTextures();
-        //    for (map<string, QImage>::const_iterator it = textures.begin(); it != textures.end(); it++)
-        //    {
-        //        QString filename(((*it).first).c_str());
-
-        //        // if embedded textures
-        //        if (scene->HasTextures())
-        //        {
-        //            string name = (*it).first;
-        //            name = name.substr(1, name.size()); // remove leading '*' char
-        //            filename = QString((name + embeddedTextureExtension).c_str());
-        //        }
-        //        QFileInfo fi(directory,filename);
-        //        QImage image = (*it).second;
-        //        image.save(fi.absoluteFilePath());
-        //    }*/
-        //    std::cout << "Export successful." << std::endl;
-    /*    }
-        delete scene;
-    */}
+	}
+	else
+	{
+		repoLog("Failed to export model: No active window found.");
+	}
 }
 
 void repo::gui::RepoGUI::saveScreenshot()
