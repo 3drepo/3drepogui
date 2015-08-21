@@ -48,10 +48,10 @@ class RepoAbstractManagerDialog : public QDialog
 public:
 
     //! Constructor.
-//    RepoAbstractManagerDialog(
-//            const core::MongoClientWrapper &mongo,
-//            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
-//            QWidget *parent = 0);
+  //  RepoAbstractManagerDialog(
+		//repo::RepoController *controller,
+		//const RepoIDBCache *dbCache,
+		//QWidget *parent = 0);
 
     //! Explicit constructor.
     explicit RepoAbstractManagerDialog(
@@ -126,6 +126,7 @@ protected :
     //! Ui var.
     Ui::RepoAbstractManagerDialog *ui;
 
+	//repo::RepoController *controller;
     const RepoIDBCache *dbCache;
 
 }; // end class

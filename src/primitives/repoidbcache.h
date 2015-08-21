@@ -20,6 +20,7 @@
 
 //------------------------------------------------------------------------------
 // Core
+#include <repo/repo_controller.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -49,8 +50,8 @@ public:
 
 public :
 
-    ////! Returns connection corresponding to given host.
-    //virtual core::MongoClientWrapper getConnection(const QString &host) const = 0;
+    //! Returns connection corresponding to given host.
+    virtual repo::RepoToken* getConnection(const QString &host) const = 0;
 
     //! Returns a list of available databases.
     virtual QList<QString> getDatabases(const QString& host) const = 0;
@@ -64,8 +65,8 @@ public :
     //! Refreshes cache.
     virtual void refresh() = 0;
 
-    ////! Returns selected connection, needs to be reconnected and reauthenticated.
-    //virtual core::MongoClientWrapper getSelectedConnection() const = 0;
+    //! Returns selected connection, needs to be reconnected and reauthenticated.
+	virtual repo::RepoToken* getSelectedConnection() const = 0;
 
     //! Returns selected database.
     virtual QString getSelectedDatabase() const = 0;

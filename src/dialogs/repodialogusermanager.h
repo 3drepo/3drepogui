@@ -30,12 +30,16 @@
 
 //------------------------------------------------------------------------------
 // GUI
-//#include "../workers/repo_workerusers.h"
 #include "repodialoguser.h"
 #include "repoabstractmanagerdialog.h"
 #include "../primitives/repoidbcache.h"
+#include "../repo/workers/repo_worker_users.h"
 
-//Q_DECLARE_METATYPE(repo::core::RepoUser)
+//------------------------------------------------------------------------------
+// CORE
+#include <repo/core/model/bson/repo_bson_user.h>
+
+Q_DECLARE_METATYPE(repo::core::model::bson::RepoUser)
 
 namespace repo {
 namespace gui {
@@ -44,11 +48,12 @@ class RepoDialogUserManager : public RepoAbstractManagerDialog
 {
     Q_OBJECT
 
-    enum Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, GROUPS, ROLES };
+	enum class Columns { ACTIVE, USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, GROUPS, ROLES };
 
 public:
 
-    explicit RepoDialogUserManager(
+	explicit RepoDialogUserManager(
+			repo::RepoController *controller,
             const RepoIDBCache *dbCache,
             QWidget *parent = 0);
 
@@ -63,7 +68,7 @@ public slots:
     void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
 
     //! Adds user to the list of users.
-    //void addUser(/*const core::RepoUser &user*/);
+    void addUser(const repo::core::model::bson::RepoUser &user);
 
     //! Updates selected user.
     void edit();
@@ -71,23 +76,30 @@ public slots:
     //! Updates user based on model index.
     void edit(const QModelIndex &index);
 
-    ////! Returns a currently selected user if any.
-    //core::RepoUser getUser();
+    //! Returns a currently selected user if any.
+	repo::core::model::bson::RepoUser getUser();
 
-    ////! Returns a user specified by the model index.
-    //core::RepoUser getUser(const QModelIndex &index);
+    //! Returns a user specified by the model index.
+	repo::core::model::bson::RepoUser getUser(const QModelIndex &index);
 
     //! Refreshes the current list of users by fetching from a database.
-    void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/);
+	void refresh()
+	{
+		refresh(repo::core::model::bson::RepoUser(), repo::worker::UsersWorker::Command::INSERT);
+	}
+
+	void refresh(
+		const repo::core::model::bson::RepoUser &user,
+		const repo::worker::UsersWorker::Command &command);
 
     //! Drops user from the database.
     void removeItem();
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog() {  /*showEditDialog(core::RepoUser()); */}
+	void showEditDialog() { showEditDialog(repo::core::model::bson::RepoUser()); }
 
     //! Shows the user dialog and saves edits to the database.
-    //void showEditDialog(/*const core::RepoUser &user*/);
+	void showEditDialog(const repo::core::model::bson::RepoUser &user);
 
 private:
 
@@ -96,6 +108,8 @@ private:
 
     //! Mapping of databases to their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;
+
+	repo::RepoController *controller;
 };
 
 } // end namespace gui

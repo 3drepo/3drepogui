@@ -34,16 +34,23 @@
 #include "ui_repodialoguser.h"
 #include "../primitives/repo_fontawesome.h"
 
+//------------------------------------------------------------------------------
+// Core
+#include <repo/core/model/bson/repo_bson_factory.h>
 
 //------------------------------------------------------------------------------
 
 repo::gui::RepoDialogUser::RepoDialogUser(
-        //core::RepoUser user,
+		const repo::RepoToken			  *token,
+		repo::RepoController              *controller,
+        const repo::core::model::bson::RepoUser &user,
         const std::map<std::string, std::list<std::string> > &databasesWithProjects,
         const std::list<std::string> &customRolesList,
         QWidget *parent)
     : QDialog(parent)
-    //, user(user)
+    , controller(controller)
+	, token(token)
+	,user(user)
     , ui(new Ui::RepoDialogUser)
 {
     ui->setupUi(this);
@@ -54,24 +61,24 @@ repo::gui::RepoDialogUser::RepoDialogUser(
                                        RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
 
-    /*if (user.isOk())
+    if (!user.isEmpty() && user.isValid())
     {
-        core::RepoImage avatarImage = user.getAvatar();
-        setAvatar(avatarImage);
+        
+		setAvatar(user.getAvatarAsRawData());
     }
-*/
+
     //--------------------------------------------------------------------------
     // Databases
     QMap<std::string, std::list<std::string> > databasesMapping(databasesWithProjects);
     std::list<std::string> databases = databasesMapping.keys().toStdList();
-    //databases.sort(core::MongoClientWrapper::caseInsensitiveStringCompare);
+    databases.sort();
 
     //--------------------------------------------------------------------------
     // DB Roles
     RepoComboBoxEditor::SeparatedEntries dbEntries;
     dbEntries << databases;
     RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
-    //dbRoleEntries << customRolesList << core::MongoClientWrapper::ANY_DATABASE_ROLES;
+    dbRoleEntries << customRolesList << controller->getStandardDatabaseRoles(token);
 
     //------------------------------------------------------------------------
     // Any DB Roles
@@ -80,7 +87,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
 
     //--------------------------------------------------------------------------
     // Admin DB Roles (any roles + admin only roles)
-    //dbRoleEntries << core::MongoClientWrapper::ADMIN_ONLY_DATABASE_ROLES;
+	dbRoleEntries << controller->getAdminDatabaseRoles(token);
     QList<RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
     adminDBRolesLists << dbEntries << dbRoleEntries;
 
@@ -112,31 +119,31 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         //----------------------------------------------------------------------
         // Roles delegate
 		RepoComboBoxDelegate *rolesDelegate =
-			//(core::MongoClientWrapper::ADMIN_DATABASE == database)?
-			new RepoComboBoxDelegate(adminDBRolesLists);
-             //: new RepoComboBoxDelegate(anyDBRolesLists);
+			(controller->getNameOfAdminDatabase(token) == database) ?
+			new RepoComboBoxDelegate(adminDBRolesLists)
+             : new RepoComboBoxDelegate(anyDBRolesLists);
         rolesDelegates.insert(qDatabase, rolesDelegate);
     }
 
     //--------------------------------------------------------------------------
     // Populate user data
-    //if (!user.isEmpty())
-    //{
-    //    ui->usernameLineEdit->setText(QString::fromStdString(user.getUsername()));      
-    //    ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
-    //    ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
-    //    ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
-    //    ui->emailLineEdit->setText(QString::fromStdString(user.getEmail()));
+    if (!user.isEmpty())
+    {
+        ui->usernameLineEdit->setText(QString::fromStdString(user.getUserName()));      
+        ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
+        ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
+        ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
+        ui->emailLineEdit->setText(QString::fromStdString(user.getEmail()));
 
-    //    ui->credentialsGroupBox->setChecked(false);
+        ui->credentialsGroupBox->setChecked(false);
 
-    //    //----------------------------------------------------------------------
-    //    // Acess Rights
-    //    addItems(Tabs::PROJECTS, user.getProjectsList());
-    //    addItems(Tabs::GROUPS, user.getGroupsList());
-    //    addItems(Tabs::ROLES, user.getRolesList());
-    //    addItems(Tabs::API_KEYS, user.getAPIKeysList());
-    //}
+        //----------------------------------------------------------------------
+        // Acess Rights
+        addItems(Tabs::PROJECTS, user.getProjectsList());
+        addItems(Tabs::GROUPS, user.getGroupsList());
+        addItems(Tabs::ROLES, user.getRolesList());
+        addItems(Tabs::API_KEYS, user.getAPIKeysList());
+    }
 
     //--------------------------------------------------------------------------
     // Connections
@@ -194,7 +201,7 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addAPIKey(
                 apiKey,
                 ui->apiKeysTreeWidget);
     ui->apiKeysTreeWidget->scrollToItem(item);
-    ui->apiKeysTreeWidget->setCurrentItem(item, Columns::DATABASE);
+	ui->apiKeysTreeWidget->setCurrentItem(item, (int)Columns::DATABASE);
     return item;
 }
 
@@ -205,7 +212,7 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addGroup(
                 group,
                 ui->groupsTreeWidget);
     ui->groupsTreeWidget->scrollToItem(item);
-    ui->groupsTreeWidget->setCurrentItem(item, Columns::DATABASE);
+	ui->groupsTreeWidget->setCurrentItem(item, (int)Columns::DATABASE);
     return item;
 }
 
@@ -216,17 +223,17 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addItem()
 }
 
 QTreeWidgetItem* repo::gui::RepoDialogUser::addItem(
-        enum Tabs tab,
+        Tabs tab,
         const std::pair<std::string, std::string> &pair)
 {
-    //const static std::string admin = core::MongoClientWrapper::ADMIN_DATABASE;
+    const static std::string admin = controller->getNameOfAdminDatabase(token);
     QTreeWidgetItem* item = 0;
-    //switch(tab)
-    /*{
+    switch(tab)
+    {
     case Tabs::PROJECTS :
-    */    //if (pair.first.empty() && pair.second.empty())
-            //item = addProject(std::make_pair(""+admin,""));
-      /*  else
+        if (pair.first.empty() && pair.second.empty())
+            item = addProject(std::make_pair(""+admin,""));
+        else
             item = addProject(pair);
         break;
     case Tabs::GROUPS :
@@ -244,11 +251,11 @@ QTreeWidgetItem* repo::gui::RepoDialogUser::addItem(
     case Tabs::API_KEYS :
         if (pair.first.empty() && pair.second.empty())
             item = addAPIKey(std::make_pair("label",
-                core::RepoAPIKey().toString()));
+			UUIDtoString(generateUUID())));
         else
             item = addAPIKey(pair);
         break;
-    }*/
+    }
     return item;
 }
 
@@ -277,7 +284,7 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addItem(
 }
 
 void repo::gui::RepoDialogUser::addItems(
-        enum Tabs tab,
+        Tabs tab,
         const std::list<std::pair<std::string, std::string> > &list)
 {
     std::list<std::pair<std::string, std::string> >::const_iterator i;
@@ -293,7 +300,7 @@ QTreeWidgetItem* repo::gui::RepoDialogUser::addProject(
                 ui->projectsTreeWidget,
                 projectsDelegates);
     ui->projectsTreeWidget->scrollToItem(item);
-    ui->projectsTreeWidget->setCurrentItem(item, Columns::DATABASE);
+	ui->projectsTreeWidget->setCurrentItem(item, (int)Columns::DATABASE);
     return item;
 }
 
@@ -305,7 +312,7 @@ QTreeWidgetItem* repo::gui::RepoDialogUser::addRole(
                 ui->rolesTreeWidget,
                 rolesDelegates);
     ui->rolesTreeWidget->scrollToItem(item);
-    ui->rolesTreeWidget->setCurrentItem(item, Columns::DATABASE);
+	ui->rolesTreeWidget->setCurrentItem(item, (int)Columns::DATABASE);
     return item;
 }
 
@@ -317,7 +324,7 @@ QIcon repo::gui::RepoDialogUser::getIcon()
 void repo::gui::RepoDialogUser::removeItem()
 {
     QTreeWidgetItem *item = 0;
-    switch(ui->accessRightsTabWidget->currentIndex())
+    switch(static_cast<Tabs>(ui->accessRightsTabWidget->currentIndex()))
     {
     case Tabs::PROJECTS :
         item = ui->projectsTreeWidget->currentItem();
@@ -363,8 +370,8 @@ std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getIt
     for (int i = 0; i < widget->topLevelItemCount(); ++i)
     {
         QTreeWidgetItem *item = widget->topLevelItem(i);
-        std::string database = item->data(Columns::DATABASE, Qt::EditRole).toString().toStdString();
-        std::string value = item->data(Columns::VALUE, Qt::EditRole).toString().toStdString();
+        std::string database = item->data((int)Columns::DATABASE, Qt::EditRole).toString().toStdString();
+		std::string value = item->data((int)Columns::VALUE, Qt::EditRole).toString().toStdString();
         list.push_back(std::make_pair(database, value));
     }
     return list;
@@ -399,7 +406,7 @@ std::string repo::gui::RepoDialogUser::getUsername() const
 void repo::gui::RepoDialogUser::updateProjectsDelegate(
         QTreeWidgetItem *current, int column)
 {
-    if (current && Columns::DATABASE == column)
+	if (current && (int)Columns::DATABASE == column)
     {
         int row = ui->projectsTreeWidget->indexOfTopLevelItem(current);
         QString database = current->data(column, Qt::EditRole).toString();
@@ -408,14 +415,14 @@ void repo::gui::RepoDialogUser::updateProjectsDelegate(
             RepoComboBoxDelegate* delegate = projectsDelegates.value(database);
             ui->projectsTreeWidget->setItemDelegateForRow(row, delegate);
         }
-        ui->projectsTreeWidget->setCurrentItem(current, Columns::VALUE);
+		ui->projectsTreeWidget->setCurrentItem(current, (int)Columns::VALUE);
     }
 }
 
 void repo::gui::RepoDialogUser::updateRolesDelegate(
         QTreeWidgetItem *current, int column)
 {
-    if (current && Columns::DATABASE == column)
+	if (current && (int)Columns::DATABASE == column)
     {
         int row = ui->rolesTreeWidget->indexOfTopLevelItem(current);        
         QString database = current->data(column, Qt::EditRole).toString();
@@ -424,7 +431,7 @@ void repo::gui::RepoDialogUser::updateRolesDelegate(
             RepoComboBoxDelegate* delegate = rolesDelegates.value(database);
             ui->rolesTreeWidget->setItemDelegateForRow(row, delegate);
         }
-        ui->rolesTreeWidget->setCurrentItem(current, Columns::VALUE);
+		ui->rolesTreeWidget->setCurrentItem(current, (int)Columns::VALUE);
     }
 }
 
@@ -457,37 +464,40 @@ void repo::gui::RepoDialogUser::openImageFileDialog()
     }
 }
 
-//repo::core::RepoBSON repo::gui::RepoDialogUser::getCommand() const
-//{
-//    // TODO: validate fields are set correctly including
-//    // non-empty selections in projects, groups and roles
-//
-//    // TODO: make sure the password has changed since the last edit.
-//    core::RepoUser newUser = core::RepoUser(
-//                getUsername(),
-//                getPassword(),
-//                getFirstName(),
-//                getLastName(),
-//                getEmail(),
-//                getProjects(),
-//                getRoles(),
-//                getGroups(),
-//                getAPIKeys(),
-//                avatar);
-//
-//    return newUser.getUsername() != user.getUsername()
-//            ? newUser.create()
-//            : newUser.update();
-//}
-//
-//void repo::gui::RepoDialogUser::setAvatar(const core::RepoImage &image)
-//{
-//    if (image.isOk())
-//    {
-//        std::vector<char> data = image.getData();
-//        setAvatar(QImage::fromData( (unsigned char*) &(data.at(0)), data.size()));
-//    }
-//}
+repo::core::model::bson::RepoUser repo::gui::RepoDialogUser::getUpdatedUser() const
+{
+    // TODO: validate fields are set correctly including
+    // non-empty selections in projects, groups and roles
+
+    // TODO: make sure the password has changed since the last edit.
+	return  repo::core::model::bson::RepoBSONFactory::makeRepoUser(
+                getUsername(),
+                getPassword(),
+                getFirstName(),
+                getLastName(),
+                getEmail(),
+                getProjects(),
+                getRoles(),
+                getGroups(),
+                getAPIKeys(),
+                avatar);
+}
+
+bool repo::gui::RepoDialogUser::isNewUser() const
+{
+	return getUsername() != user.getUserName();
+}
+
+
+
+void repo::gui::RepoDialogUser::setAvatar(const std::vector<char> &image)
+{
+    if (!image.empty())
+    {
+		QImage qimage = QImage::fromData((uchar*)&(image.at(0)), image.size());
+		setAvatar(qimage);
+    }
+}
 
 void repo::gui::RepoDialogUser::setAvatar(const QImage &image)
 {
@@ -495,14 +505,17 @@ void repo::gui::RepoDialogUser::setAvatar(const QImage &image)
     QBuffer buffer(&byteArray);
     buffer.open(QIODevice::WriteOnly);
     image.save(&buffer, "JPG"); // writes image in PNG format
-    //std::vector<char> imageBytes((unsigned char*) byteArray.constData(), (unsigned char*) byteArray.constData() + byteArray.size());
+    std::vector<char> imageBytes((unsigned char*) byteArray.constData(), 
+		(unsigned char*) byteArray.constData() + byteArray.size());
     //this->avatar = core::RepoImage(imageBytes, image.width(), image.height(), REPO_MEDIA_TYPE_JPG);
 
-    //this->avatar = core::RepoImage((unsigned char*) byteArray.constData(),
-    //                               byteArray.size(),
-    //                               image.width(),
-    //                               image.height(),
-    //                               REPO_MEDIA_TYPE_JPG);
+   /* this->avatar = core::RepoImage((unsigned char*) byteArray.constData(),
+                                   byteArray.size(),
+                                   image.width(),
+                                   image.height(),
+                                   REPO_MEDIA_TYPE_JPG);*/
 
-    //ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
+	this->avatar = imageBytes;
+
+    ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
 }
