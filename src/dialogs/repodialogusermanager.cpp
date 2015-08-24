@@ -233,7 +233,8 @@ void repo::gui::RepoDialogUserManager::removeItem()
         QString::null, 1, 1))
         {
             case 0: // yes
-				refresh(user, repo::worker::UsersWorker::Command::DROP); //FIXME get a worker to do the work, then signal finish to refresh like db widget.
+				refresh(user, repo::worker::UsersWorker::Command::DROP); 
+				//FIXME get a worker to do the work, then signal finish to refresh like db widget.
                 break;
             case 1: // no
                 std::cout << "Remove user warning box cancelled by user." << std::endl;

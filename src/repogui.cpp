@@ -23,7 +23,6 @@
 //------------------------------------------------------------------------------
 // New Core
 
-
 //------------------------------------------------------------------------------
 // GUI
 #include "repogui.h"
@@ -49,6 +48,7 @@
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
 #include "dialogs/repofederationdialog.h"
+#include "dialogs/repo_maptilesdialog.h"
 #include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
@@ -150,9 +150,13 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
-    // Federate
+    // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
+
+    // Add Map Tiles...
+    QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
+                     this, SLOT(addMapTiles()));
 
     //--------------------------------------------------------------------------
     // User Management...
@@ -307,6 +311,32 @@ void repo::gui::RepoGUI::about()
 {
     RepoDialogAbout aboutDialog(this);
     aboutDialog.exec();
+}
+
+void repo::gui::RepoGUI::addMapTiles()
+{
+    // Use Transformation Dialog as a guidance and inspiration
+    RepoMapTilesDialog mapTilesDialog(this);
+    if(mapTilesDialog.exec()){
+        core::RepoNodeTransformation *root = new core::RepoNodeTransformation();
+        root->setName("<root>");
+
+        std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
+        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
+
+        core::RepoNodeAbstractSet nodesSet;
+        core::RepoNodeMap *map = mapTilesDialog.getMap();
+
+        root->addChild(map);
+        map->addParent(root);
+
+        nodesSet.insert(root);
+        nodesSet.insert(map);
+
+        commit(nodesSet, revision);
+
+    }
+
 }
 
 void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)
