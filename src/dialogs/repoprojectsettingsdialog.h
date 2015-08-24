@@ -43,7 +43,7 @@ class RepoProjectSettingsDialog : public QDialog
 
 public:
     explicit RepoProjectSettingsDialog(
-		repo::core::model::bson::RepoProjectSettings projectSettings,
+		repo::core::model::RepoProjectSettings projectSettings,
             QWidget *parent = 0);
     ~RepoProjectSettingsDialog();
 
@@ -72,7 +72,7 @@ public :
             int value);
 
     //! Returns bson.
-	repo::core::model::bson::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const;
+	repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const;
 
 protected :
 

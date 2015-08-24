@@ -39,7 +39,7 @@
 // CORE
 #include <repo/core/model/bson/repo_bson_user.h>
 
-Q_DECLARE_METATYPE(repo::core::model::bson::RepoUser)
+Q_DECLARE_METATYPE(repo::core::model::RepoUser)
 
 namespace repo {
 namespace gui {
@@ -68,7 +68,7 @@ public slots:
     void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
 
     //! Adds user to the list of users.
-    void addUser(const repo::core::model::bson::RepoUser &user);
+    void addUser(const repo::core::model::RepoUser &user);
 
     //! Updates selected user.
     void edit();
@@ -77,29 +77,29 @@ public slots:
     void edit(const QModelIndex &index);
 
     //! Returns a currently selected user if any.
-	repo::core::model::bson::RepoUser getUser();
+	repo::core::model::RepoUser getUser();
 
     //! Returns a user specified by the model index.
-	repo::core::model::bson::RepoUser getUser(const QModelIndex &index);
+	repo::core::model::RepoUser getUser(const QModelIndex &index);
 
     //! Refreshes the current list of users by fetching from a database.
 	void refresh()
 	{
-		refresh(repo::core::model::bson::RepoUser(), repo::worker::UsersWorker::Command::INSERT);
+		refresh(repo::core::model::RepoUser(), repo::worker::UsersWorker::Command::INSERT);
 	}
 
 	void refresh(
-		const repo::core::model::bson::RepoUser &user,
+		const repo::core::model::RepoUser &user,
 		const repo::worker::UsersWorker::Command &command);
 
     //! Drops user from the database.
     void removeItem();
 
     //! Shows the user dialog and saves edits to the database.
-	void showEditDialog() { showEditDialog(repo::core::model::bson::RepoUser()); }
+	void showEditDialog() { showEditDialog(repo::core::model::RepoUser()); }
 
     //! Shows the user dialog and saves edits to the database.
-	void showEditDialog(const repo::core::model::bson::RepoUser &user);
+	void showEditDialog(const repo::core::model::RepoUser &user);
 
 private:
 

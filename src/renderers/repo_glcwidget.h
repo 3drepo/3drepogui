@@ -248,7 +248,7 @@ namespace repo {
 			std::vector<std::string> getSelectionList() const;
 
 			//! Returns currently selected Repo scene node if any, NULL otherwise.
-			repo::core::model::bson::RepoNode* getSelectedNode() const;
+			repo::core::model::RepoNode* getSelectedNode() const;
 
 			//! Returns the glc meshes mapped by their unique string name.
 			QHash<QString, GLC_Mesh*> getGLCMeshes() const { return glcMeshes; }

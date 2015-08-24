@@ -44,7 +44,7 @@ class RepoTransformationDialog : public QDialog
 public:
 
     explicit RepoTransformationDialog(
-		const repo::core::model::bson::TransformationNode &transformation = repo::core::model::bson::TransformationNode(),
+		const repo::core::model::TransformationNode &transformation = repo::core::model::TransformationNode(),
             QWidget *parent = 0);
     ~RepoTransformationDialog();
 
@@ -61,7 +61,7 @@ public slots :
                    double c1, double c2, double c3, double c4,
                    double d1, double d2, double d3, double d4);
 
-	repo::core::model::bson::TransformationNode getTransformation();
+	repo::core::model::TransformationNode getTransformation();
 
     std::vector<float> getMatrix() const;
 
@@ -91,7 +91,7 @@ private:
 
     Ui::RepoTransformationDialog *ui;
 
-	repo::core::model::bson::TransformationNode transformation;
+	repo::core::model::TransformationNode transformation;
 
 };
 

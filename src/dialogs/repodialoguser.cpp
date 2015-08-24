@@ -43,7 +43,7 @@
 repo::gui::RepoDialogUser::RepoDialogUser(
 		const repo::RepoToken			  *token,
 		repo::RepoController              *controller,
-        const repo::core::model::bson::RepoUser &user,
+        const repo::core::model::RepoUser &user,
         const std::map<std::string, std::list<std::string> > &databasesWithProjects,
         const std::list<std::string> &customRolesList,
         QWidget *parent)
@@ -464,13 +464,13 @@ void repo::gui::RepoDialogUser::openImageFileDialog()
     }
 }
 
-repo::core::model::bson::RepoUser repo::gui::RepoDialogUser::getUpdatedUser() const
+repo::core::model::RepoUser repo::gui::RepoDialogUser::getUpdatedUser() const
 {
     // TODO: validate fields are set correctly including
     // non-empty selections in projects, groups and roles
 
     // TODO: make sure the password has changed since the last edit.
-	return  repo::core::model::bson::RepoBSONFactory::makeRepoUser(
+	return  repo::core::model::RepoBSONFactory::makeRepoUser(
                 getUsername(),
                 getPassword(),
                 getFirstName(),

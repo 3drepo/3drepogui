@@ -42,7 +42,7 @@ namespace Ui {
     class RepoFederationDialog;
 }
 
-typedef QPair<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> RepoTransRefPair;
+typedef QPair<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoTransRefPair;
 
 Q_DECLARE_METATYPE(RepoTransRefPair)
 
@@ -85,17 +85,17 @@ public slots :
 
     QStandardItem *getCurrentFederatedItem() const;
 
-	repo::core::model::bson::TransformationNode getCurrentFederatedTransformation() const;
+	repo::core::model::TransformationNode getCurrentFederatedTransformation() const;
 
     QModelIndexList getAvailableSelection() const;
 
     QModelIndexList getFederatedSelection() const;
 
-	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>  getFederation();
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  getFederation();
 
 protected :
 
-	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
 		RepoFederationDialog::getFederationRecursively(
 		QStandardItem *parentItem);
 

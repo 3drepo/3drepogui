@@ -23,7 +23,7 @@
 #include <qmatrix4x4.h>
 
 repo::gui::RepoTransformationDialog::RepoTransformationDialog(
-	const repo::core::model::bson::TransformationNode &transformation,
+	const repo::core::model::TransformationNode &transformation,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoTransformationDialog)
@@ -110,9 +110,9 @@ void repo::gui::RepoTransformationDialog::setMatrix(
     ui->d4DoubleSpinBox->setValue(d4);
 }
 
-repo::core::model::bson::TransformationNode repo::gui::RepoTransformationDialog::getTransformation()
+repo::core::model::TransformationNode repo::gui::RepoTransformationDialog::getTransformation()
 {
-	return repo::core::model::bson::RepoBSONFactory::makeTransformationNode(getMatrix2D(), getName());
+	return repo::core::model::RepoBSONFactory::makeTransformationNode(getMatrix2D(), getName());
 }
 
 std::vector<float> repo::gui::RepoTransformationDialog::getMatrix() const

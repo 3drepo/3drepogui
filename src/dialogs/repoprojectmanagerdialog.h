@@ -29,7 +29,7 @@
 
 
 
-Q_DECLARE_METATYPE(repo::core::model::bson::RepoProjectSettings)
+Q_DECLARE_METATYPE(repo::core::model::RepoProjectSettings)
 
 namespace repo {
 namespace gui {
@@ -51,7 +51,7 @@ public:
 
 public slots :
 
-	void addProjectSettings(repo::core::model::bson::RepoProjectSettings);
+	void addProjectSettings(repo::core::model::RepoProjectSettings);
 
     void clear(bool resizeColumns = false);
 
@@ -59,26 +59,26 @@ public slots :
 
     void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
 
-	repo::core::model::bson::RepoProjectSettings getProjectSettings();
+	repo::core::model::RepoProjectSettings getProjectSettings();
 
-	repo::core::model::bson::RepoProjectSettings getProjectSettings(const QModelIndex &index);
+	repo::core::model::RepoProjectSettings getProjectSettings(const QModelIndex &index);
 
 	//! Refreshes the current list of users by fetching from a database.
 	void refresh()
 	{
-		refresh(repo::core::model::bson::RepoProjectSettings(), false);
+		refresh(repo::core::model::RepoProjectSettings(), false);
 	}
 
 	void repo::gui::RepoProjectManagerDialog::refresh(
-		const repo::core::model::bson::RepoProjectSettings &settings,
+		const repo::core::model::RepoProjectSettings &settings,
 		const bool                                         &isDelete);
 
     //! Removes currently selected item if any.
     void removeItem();
 
-	void showEditDialog() { showEditDialog(repo::core::model::bson::RepoProjectSettings()); }
+	void showEditDialog() { showEditDialog(repo::core::model::RepoProjectSettings()); }
 
-	void showEditDialog(const repo::core::model::bson::RepoProjectSettings &);
+	void showEditDialog(const repo::core::model::RepoProjectSettings &);
 
 private:
 	repo::RepoController *controller;

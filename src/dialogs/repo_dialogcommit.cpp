@@ -120,17 +120,17 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 
     if (item)
     {
-		repo::core::model::bson::RepoNode* node = item->data().value<repo::core::model::bson::RepoNode*>();
-		if (node && repo::core::model::bson::NodeType::TRANSFORMATION == node->getTypeAsEnum())
+		repo::core::model::RepoNode* node = item->data().value<repo::core::model::RepoNode*>();
+		if (node && repo::core::model::NodeType::TRANSFORMATION == node->getTypeAsEnum())
         {
-			repo::core::model::bson::TransformationNode *transformation = dynamic_cast<repo::core::model::bson::TransformationNode*>(node);
+			repo::core::model::TransformationNode *transformation = dynamic_cast<repo::core::model::TransformationNode*>(node);
             if (transformation)
             {
                 RepoTransformationDialog transformationDialog(*transformation, this);
 				if (transformationDialog.exec())
 				{
-					repo::core::model::bson::TransformationNode *t = 
-						new repo::core::model::bson::TransformationNode(transformationDialog.getTransformation());
+					repo::core::model::TransformationNode *t = 
+						new repo::core::model::TransformationNode(transformationDialog.getTransformation());
 					if (t)
 					{
 						scene->modifyNode(transformation->getSharedID(), t);
@@ -242,7 +242,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
    
 	for (const auto &sharedID : modifiedObjects)
     {
-        repo::core::model::bson::RepoNode *node = scene->getNodeBySharedID(sharedID);
+        repo::core::model::RepoNode *node = scene->getNodeBySharedID(sharedID);
 
 		if (!node) continue;
 

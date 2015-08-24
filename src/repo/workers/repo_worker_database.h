@@ -52,7 +52,7 @@ namespace repo {
 
 			void databaseFetched(QString database);
 
-			void collectionFetched(repo::core::model::bson::CollectionStats stats);
+			void collectionFetched(repo::core::model::CollectionStats stats);
 
 			public slots :
 

@@ -24,7 +24,7 @@
 #include <sstream>
 
 using namespace repo::worker;
-namespace repoModel = repo::core::model::bson;
+namespace repoModel = repo::core::model;
 //------------------------------------------------------------------------------
 // Core
 
@@ -343,7 +343,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 
 GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 	repo::manipulator::graph::RepoScene                     *scene,
-	const repo::core::model::bson::RepoNode                 *node,
+	const repo::core::model::RepoNode                 *node,
 	std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcMeshesMap,
 	std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcCamerasMap,
 	const bool                                              &countJob)
@@ -493,7 +493,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 }
 
 GLC_3DRep* GLCExportWorker::convertGLCCamera(
-	const repo::core::model::bson::CameraNode *camera)
+	const repo::core::model::CameraNode *camera)
 {
 	GLC_3DRep * glcCamera = nullptr;
 	if (camera)
@@ -523,7 +523,7 @@ GLC_3DRep* GLCExportWorker::convertGLCCamera(
 }
 
 GLC_Material* GLCExportWorker::convertGLCMaterial(
-	const repo::core::model::bson::MaterialNode   *material,
+	const repo::core::model::MaterialNode   *material,
 	std::map<repoUUID, std::vector<GLC_Texture*>> &mapTexture)
 {
 	GLC_Material* glcMat = nullptr;
@@ -603,7 +603,7 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 }
 
 GLC_3DRep* GLCExportWorker::convertGLCMesh(
-	const repo::core::model::bson::MeshNode        *mesh,
+	const repo::core::model::MeshNode        *mesh,
 	std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials)
 {
 	GLC_Mesh * glcMesh = new GLC_Mesh;
@@ -741,7 +741,7 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
 }
 
 GLC_Texture* GLCExportWorker::convertGLCTexture(
-	const repo::core::model::bson::TextureNode *texture)
+	const repo::core::model::TextureNode *texture)
 {
 	GLC_Texture* glcTexture = nullptr;
 

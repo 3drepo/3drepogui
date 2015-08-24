@@ -53,7 +53,7 @@ void HistoryWorker::run()
 	while (!cancelled && jobsCount > retrieved)
 	{
 
-		std::vector<repo::core::model::bson::RepoBSON> bsons =
+		std::vector<repo::core::model::RepoBSON> bsons =
 			controller->getAllFromCollectionContinuous(token, database, collection, retrieved);
 
 		for (auto &bson : bsons)
@@ -61,9 +61,9 @@ void HistoryWorker::run()
 			if (cancelled) break;
 			if (bson.isValid() && !bson.isEmpty())
 			{
-				repo::core::model::bson::RepoNode &node = (repo::core::model::bson::RepoNode)bson;
-				if (node.getTypeAsEnum() == repo::core::model::bson::NodeType::REVISION)
-					emit revisionFetched(new repo::core::model::bson::RevisionNode(bson));
+				repo::core::model::RepoNode &node = (repo::core::model::RepoNode)bson;
+				if (node.getTypeAsEnum() == repo::core::model::NodeType::REVISION)
+					emit revisionFetched(new repo::core::model::RevisionNode(bson));
 			}
 		}
 

@@ -47,7 +47,7 @@ namespace repo {
 
 		signals:
 
-			void revisionFetched(repo::core::model::bson::RevisionNode *);
+			void revisionFetched(repo::core::model::RevisionNode *);
 
 			public slots :
 

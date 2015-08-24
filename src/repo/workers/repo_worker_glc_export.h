@@ -65,7 +65,7 @@ namespace repo {
 			*/
 			GLC_StructOccurence* createOccurrenceFromNode(
 				repo::manipulator::graph::RepoScene         *scene,
-				const repo::core::model::bson::RepoNode           *node,
+				const repo::core::model::RepoNode           *node,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
 				const bool                                        &countJob=true);
@@ -89,18 +89,18 @@ namespace repo {
 				repo::manipulator::graph::RepoScene *scene);
 
 			GLC_3DRep* convertGLCCamera(
-				const repo::core::model::bson::CameraNode *camera);
+				const repo::core::model::CameraNode *camera);
 
 			GLC_Material* convertGLCMaterial(
-				const repo::core::model::bson::MaterialNode   *material,
+				const repo::core::model::MaterialNode   *material,
 				std::map<repoUUID, std::vector<GLC_Texture*>> &mapTexture);
 
 			GLC_3DRep* convertGLCMesh(
-				const repo::core::model::bson::MeshNode        *mesh,
+				const repo::core::model::MeshNode        *mesh,
 				std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials);
 
 			GLC_Texture* convertGLCTexture(
-				const repo::core::model::bson::TextureNode *texture);
+				const repo::core::model::TextureNode *texture);
 
 			QList<GLuint> createGLCFaceList(
 				const std::vector<repo_face_t> *faces,
@@ -108,7 +108,7 @@ namespace repo {
 
 			GLC_3DRep* createGLCMesh(
 				const repo::manipulator::graph::RepoScene *scene,
-				const repo::core::model::bson::MeshNode   *node);
+				const repo::core::model::MeshNode   *node);
 
 			QVector<GLfloat> createGLCVector(
 				const std::vector<repo_vector_t> *vec

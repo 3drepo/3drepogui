@@ -54,7 +54,7 @@ namespace repo {
 				const repo::RepoToken *token,
 				repo::RepoController  *controller,
 				const std::string &database,
-				const repo::core::model::bson::RepoUser &user = repo::core::model::bson::RepoUser(),
+				const repo::core::model::RepoUser &user = repo::core::model::RepoUser(),
 				const Command            &op = Command::INSERT);
 
 			//! Default empty destructor.
@@ -63,7 +63,7 @@ namespace repo {
 		signals:
 
 			//! Emitted when user is fetched.
-			void userFetched(const repo::core::model::bson::RepoUser &);
+			void userFetched(const repo::core::model::RepoUser &);
 
 			//! Emitted when all databases with associated projects are fetched.
 			void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
@@ -85,7 +85,7 @@ namespace repo {
 			const std::string database;
 
 			//! User to be create or updated or deleted in the database.
-			const repo::core::model::bson::RepoUser user;
+			const repo::core::model::RepoUser user;
 			const Command command;
 
 		}; // end class

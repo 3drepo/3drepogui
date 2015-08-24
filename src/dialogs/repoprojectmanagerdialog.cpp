@@ -70,7 +70,7 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
 repo::gui::RepoProjectManagerDialog::~RepoProjectManagerDialog() {}
 
 void repo::gui::RepoProjectManagerDialog::addProjectSettings(
-        repo::core::model::bson::RepoProjectSettings projectSettings)
+        repo::core::model::RepoProjectSettings projectSettings)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
@@ -116,19 +116,19 @@ void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
 	ui->treeView->resizeColumnToContents((int)Columns::USERS);
 }
 
-repo::core::model::bson::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
+repo::core::model::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
 {
     return getProjectSettings(ui->treeView->selectionModel()->currentIndex());
 }
 
-repo::core::model::bson::RepoProjectSettings 
+repo::core::model::RepoProjectSettings 
 	repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
 {
-	repo::core::model::bson::RepoProjectSettings projectSettings;
+	repo::core::model::RepoProjectSettings projectSettings;
     if (index.isValid())
     {
         QModelIndex userIndex = index.sibling(index.row(), (int)Columns::PROJECT);
-		projectSettings = userIndex.data(Qt::UserRole + 1).value<repo::core::model::bson::RepoProjectSettings>();
+		projectSettings = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoProjectSettings>();
     }
     return projectSettings;
 }
@@ -136,7 +136,7 @@ repo::core::model::bson::RepoProjectSettings
 
 
 void repo::gui::RepoProjectManagerDialog::refresh(
-	const repo::core::model::bson::RepoProjectSettings &settings,
+	const repo::core::model::RepoProjectSettings &settings,
 	const bool                                         &isDelete)
 {
     if (cancelAllThreads())
@@ -187,7 +187,7 @@ void repo::gui::RepoProjectManagerDialog::refresh(
 
 void repo::gui::RepoProjectManagerDialog::removeItem()
 {
-	repo::core::model::bson::RepoProjectSettings projectSettings = this->getProjectSettings();
+	repo::core::model::RepoProjectSettings projectSettings = this->getProjectSettings();
     switch(QMessageBox::warning(this,
         tr("Remove project settings?"),
         tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProjectName()) + "'?",
@@ -205,7 +205,7 @@ void repo::gui::RepoProjectManagerDialog::removeItem()
 }
 
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
-	const repo::core::model::bson::RepoProjectSettings &projectSettings)
+	const repo::core::model::RepoProjectSettings &projectSettings)
 {
     RepoProjectSettingsDialog projectDialog(projectSettings, this);
     if (QDialog::Rejected == projectDialog.exec())

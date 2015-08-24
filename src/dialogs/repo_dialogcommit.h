@@ -47,7 +47,7 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-Q_DECLARE_METATYPE(repo::core::model::bson::RepoNode*);
+Q_DECLARE_METATYPE(repo::core::model::RepoNode*);
 
 /*!fontawesome-webfont
  * Commit dialog which enables users to confirm those nodes that are to be 

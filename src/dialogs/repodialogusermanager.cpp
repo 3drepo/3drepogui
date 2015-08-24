@@ -94,7 +94,7 @@ void repo::gui::RepoDialogUserManager::addDatabasesWithProjects(
     databasesWithProjects = mapping;
 }
 
-void repo::gui::RepoDialogUserManager::addUser(const repo::core::model::bson::RepoUser &user)
+void repo::gui::RepoDialogUserManager::addUser(const repo::core::model::RepoUser &user)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
@@ -147,24 +147,24 @@ void repo::gui::RepoDialogUserManager::edit(const QModelIndex &index)
     showEditDialog(getUser(index));
 }
 
-repo::core::model::bson::RepoUser repo::gui::RepoDialogUserManager::getUser()
+repo::core::model::RepoUser repo::gui::RepoDialogUserManager::getUser()
 {
     return getUser(ui->treeView->selectionModel()->currentIndex());
 }
 
-repo::core::model::bson::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex &index)
+repo::core::model::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex &index)
 {
-	repo::core::model::bson::RepoUser user;
+	repo::core::model::RepoUser user;
     if (index.isValid())
     {
         QModelIndex userIndex = index.sibling(index.row(), (int) Columns::ACTIVE);
-		user = userIndex.data(Qt::UserRole + 1).value<repo::core::model::bson::RepoUser>();
+		user = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoUser>();
     }
     return user;
 }
 
 void repo::gui::RepoDialogUserManager::refresh(
-	const repo::core::model::bson::RepoUser &user,
+	const repo::core::model::RepoUser &user,
 	const repo::worker::UsersWorker::Command &command)
 {
 
@@ -224,7 +224,7 @@ void repo::gui::RepoDialogUserManager::refresh(
 
 void repo::gui::RepoDialogUserManager::removeItem()
 {
-	repo::core::model::bson::RepoUser user = this->getUser();
+	repo::core::model::RepoUser user = this->getUser();
     switch(QMessageBox::warning(this,
         tr("Remove user?"),
         tr("Are you sure you want to remove '") + QString::fromStdString(user.getUserName()) + "'?",
@@ -241,7 +241,7 @@ void repo::gui::RepoDialogUserManager::removeItem()
         }
 }
 
-void repo::gui::RepoDialogUserManager::showEditDialog(const repo::core::model::bson::RepoUser &user )
+void repo::gui::RepoDialogUserManager::showEditDialog(const repo::core::model::RepoUser &user )
 {
 	RepoDialogUser userDialog(dbCache->getConnection(ui->hostComboBox->currentText()),
 		controller, user, databasesWithProjects, customRolesList, this);

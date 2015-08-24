@@ -329,7 +329,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::addCollection(
-	const repo::core::model::bson::CollectionStats &stats)
+	const repo::core::model::CollectionStats &stats)
 {
     QString collection = QString::fromStdString(stats.getCollection());
     uint64_t count = stats.getCount();

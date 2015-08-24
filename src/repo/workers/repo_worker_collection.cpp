@@ -25,7 +25,7 @@
 #include <repo/core/model/repo_node_utils.h>
 
 using namespace repo::worker;
-namespace repoModel = repo::core::model::bson;
+namespace repoModel = repo::core::model;
 
 CollectionWorker::CollectionWorker(
 	repo::RepoController *controller,

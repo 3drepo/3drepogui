@@ -129,8 +129,8 @@ void RepoFederationDialog::addProjectsToFederation()
             //------------------------------------------------------------------
 
             RepoTransRefPair p;
-			p.first = repo::core::model::bson::RepoBSONFactory::makeTransformationNode();
-			p.second = repo::core::model::bson::RepoBSONFactory::makeReferenceNode(database, project.toStdString());
+			p.first = repo::core::model::RepoBSONFactory::makeTransformationNode();
+			p.second = repo::core::model::RepoBSONFactory::makeReferenceNode(database, project.toStdString());
             QVariant var;
             var.setValue(p);
 
@@ -211,7 +211,7 @@ void RepoFederationDialog::showTransformationDialog()
     RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
     if (d.exec())
     {
-		repo::core::model::bson::TransformationNode transformation = d.getTransformation();
+		repo::core::model::TransformationNode transformation = d.getTransformation();
         for (QModelIndex selectedIndex : getFederatedSelection())
         {
             RepoTransRefPair p =
@@ -242,10 +242,10 @@ QStandardItem *RepoFederationDialog::getCurrentFederatedItem() const
     return item;
 }
 
-repo::core::model::bson::TransformationNode RepoFederationDialog::getCurrentFederatedTransformation() const
+repo::core::model::TransformationNode RepoFederationDialog::getCurrentFederatedTransformation() const
 {
     QStandardItem *item = getCurrentFederatedItem();
-	repo::core::model::bson::TransformationNode transformation;
+	repo::core::model::TransformationNode transformation;
     if (item)
     {
         RepoTransRefPair p =
@@ -267,17 +267,17 @@ QModelIndexList RepoFederationDialog::getFederatedSelection() const
     return ui->federatedWidget->getCurrentSelection();
 }
 
-std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> RepoFederationDialog::getFederation()
+std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoFederationDialog::getFederation()
 {
 
 	return getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem());
 }
 
-std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>
+std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
 	RepoFederationDialog::getFederationRecursively(
         QStandardItem *parentItem)
 {
-	std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode> fedMap;
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> fedMap;
 	if (parentItem)
 	{
 		for (int i = 0; i < parentItem->rowCount(); ++i)
@@ -289,7 +289,7 @@ std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::R
 			fedMap[p.first] = p.second;
 			//------------------------------------------------------------------
 			// Recursive call (base case is not having any more children (rows)
-			std::map<repo::core::model::bson::TransformationNode, repo::core::model::bson::ReferenceNode>  childmap
+			std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  childmap
 				= getFederationRecursively(childItem);
 			fedMap.insert(childmap.begin(), childmap.end());
 		}

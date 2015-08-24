@@ -51,14 +51,14 @@ namespace repo {
 				const repo::RepoToken *token,
 				repo::RepoController  *controller,
 				const std::string &database,
-				const repo::core::model::bson::RepoProjectSettings &settings = repo::core::model::bson::RepoProjectSettings(),
+				const repo::core::model::RepoProjectSettings &settings = repo::core::model::RepoProjectSettings(),
 				const bool &isDelete = false);
 
 			//! Default empty destructor.
 			~ProjectSettingsWorker();
 		signals:
 
-			void projectSettingsFetched(repo::core::model::bson::RepoProjectSettings);
+			void projectSettingsFetched(repo::core::model::RepoProjectSettings);
 	
 		public slots :
 
@@ -74,7 +74,7 @@ namespace repo {
 			const std::string database;
 
 			//! User to be create or updated or deleted in the database.
-			const repo::core::model::bson::RepoProjectSettings settings;
+			const repo::core::model::RepoProjectSettings settings;
 			const bool isDelete;
 
 		}; // end class

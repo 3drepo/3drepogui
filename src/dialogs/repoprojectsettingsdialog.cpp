@@ -22,7 +22,7 @@
 #include <repo/core/model/bson/repo_bson_factory.h>
 
 repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
-	repo::core::model::bson::RepoProjectSettings projectSettings,
+	repo::core::model::RepoProjectSettings projectSettings,
         QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RepoProjectSettingsDialog)
@@ -123,7 +123,7 @@ void repo::gui::RepoProjectSettingsDialog::updatePermissionsOctal(const QString 
     std::string octal = value.toStdString();
     for (int i = 0; i < 4 - value.size(); ++i)
         octal += "0";
-    updatePermissionsOctal(repo::core::model::bson::RepoProjectSettings::stringToPermissionsBool(octal));
+    updatePermissionsOctal(repo::core::model::RepoProjectSettings::stringToPermissionsBool(octal));
     connectPermissionsOctal();
 }
 
@@ -133,9 +133,9 @@ unsigned short repo::gui::RepoProjectSettingsDialog::getOctal(
         const QCheckBox *x)
 {
     unsigned short value = 0;
-	value += r->isChecked() ? repo::core::model::bson::RepoProjectSettings::READVAL : 0;
-	value += w->isChecked() ? repo::core::model::bson::RepoProjectSettings::WRITEVAL : 0;
-	value += x->isChecked() ? repo::core::model::bson::RepoProjectSettings::EXECUTEVAL : 0;
+	value += r->isChecked() ? repo::core::model::RepoProjectSettings::READVAL : 0;
+	value += w->isChecked() ? repo::core::model::RepoProjectSettings::WRITEVAL : 0;
+	value += x->isChecked() ? repo::core::model::RepoProjectSettings::EXECUTEVAL : 0;
     return value;
 }
 
@@ -145,16 +145,16 @@ void repo::gui::RepoProjectSettingsDialog::setOctal(
         QCheckBox *x,
         int value)
 {
-	r->setChecked(value & repo::core::model::bson::RepoProjectSettings::READVAL);
-	w->setChecked(value & repo::core::model::bson::RepoProjectSettings::WRITEVAL);
-	x->setChecked(value & repo::core::model::bson::RepoProjectSettings::EXECUTEVAL);
+	r->setChecked(value & repo::core::model::RepoProjectSettings::READVAL);
+	w->setChecked(value & repo::core::model::RepoProjectSettings::WRITEVAL);
+	x->setChecked(value & repo::core::model::RepoProjectSettings::EXECUTEVAL);
 }
 
 
-repo::core::model::bson::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const
+repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const
 {
-	repo::core::model::bson::RepoProjectSettings projectSettings =
-		repo::core::model::bson::RepoBSONFactory::makeRepoProjectSettings(
+	repo::core::model::RepoProjectSettings projectSettings =
+		repo::core::model::RepoBSONFactory::makeRepoProjectSettings(
                 ui->nameLineEdit->text().toStdString(),
                 ui->ownerComboBox->currentText().toStdString(),
                 ui->groupComboBox->currentText().toStdString(),

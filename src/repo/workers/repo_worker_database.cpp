@@ -31,7 +31,7 @@ DatabaseWorker::DatabaseWorker(
 	token(token)
 {
 	qRegisterMetaType<QList<QPersistentModelIndex>>("QList<QPersistentModelIndex>");
-	qRegisterMetaType<repo::core::model::bson::CollectionStats>("repo::core::model::bson::CollectionStats");
+	qRegisterMetaType<repo::core::model::CollectionStats>("repo::core::model::CollectionStats");
 }
 
 DatabaseWorker::~DatabaseWorker() {}

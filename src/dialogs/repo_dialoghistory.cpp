@@ -165,7 +165,7 @@ void repo::gui::RepoDialogHistory::refresh()
 	}
 }
 
-void repo::gui::RepoDialogHistory::addRevision(repo::core::model::bson::RevisionNode *revision)
+void repo::gui::RepoDialogHistory::addRevision(repo::core::model::RevisionNode *revision)
 {
 	if (revision)
 	{
@@ -234,8 +234,8 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 
     if (item)
     {
-        repo::core::model::bson::RevisionNode *revision = 0;
-		revision = (repo::core::model::bson::RevisionNode*)item->data(Qt::UserRole + 1).value<void*>();
+        repo::core::model::RevisionNode *revision = 0;
+		revision = (repo::core::model::RevisionNode*)item->data(Qt::UserRole + 1).value<void*>();
         if (revision)
         {
 

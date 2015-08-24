@@ -29,7 +29,7 @@ ProjectSettingsWorker::ProjectSettingsWorker(
 	const repo::RepoToken                              *token,
 	repo::RepoController                               *controller,
 	const std::string                                  &database,
-	const repo::core::model::bson::RepoProjectSettings &settings,
+	const repo::core::model::RepoProjectSettings &settings,
 	const bool                                         &isDelete)
 	: token(token)
 	, controller(controller)
@@ -37,7 +37,7 @@ ProjectSettingsWorker::ProjectSettingsWorker(
 	, settings(settings)
 	, isDelete(isDelete)
 {
-	qRegisterMetaType<repo::core::model::bson::RepoProjectSettings>("repo::core::model::bson::RepoProjectSettings");
+	qRegisterMetaType<repo::core::model::RepoProjectSettings>("repo::core::model::RepoProjectSettings");
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ void ProjectSettingsWorker::run()
 	while (!cancelled && nSettings > retrieved)
 	{
 
-		std::vector<repo::core::model::bson::RepoBSON> bsons =
+		std::vector<repo::core::model::RepoBSON> bsons =
 			controller->getAllFromCollectionContinuous(token, database, REPO_COLLECTION_SETTINGS, retrieved);
 
 		for (auto bson : bsons)
@@ -96,7 +96,7 @@ void ProjectSettingsWorker::run()
 			if (cancelled) break;
 			if (bson.isValid() && !bson.isEmpty())
 			{
-				emit projectSettingsFetched(repo::core::model::bson::RepoProjectSettings(bson));
+				emit projectSettingsFetched(repo::core::model::RepoProjectSettings(bson));
 			}
 			emit progressValueChanged(jobsDone++);
 			++retrieved;

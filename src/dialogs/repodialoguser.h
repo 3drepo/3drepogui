@@ -62,7 +62,7 @@ public:
     explicit RepoDialogUser(
 			const repo::RepoToken			  *token,
 			repo::RepoController              *controller,
-			const repo::core::model::bson::RepoUser &user, 
+			const repo::core::model::RepoUser &user, 
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
@@ -157,7 +157,7 @@ public :
 
 
     //! Returns the user action command to be used with db.runCommand().
-    repo::core::model::bson::RepoUser getUpdatedUser() const;
+    repo::core::model::RepoUser getUpdatedUser() const;
 
 	//! Returns true if new user, false if it is an update of existing user
 	bool isNewUser() const;
@@ -190,7 +190,7 @@ private:
     QHash<QString, RepoComboBoxDelegate* > rolesDelegates;
 
     //! User to be created or modified.
-    repo::core::model::bson::RepoUser user;
+    repo::core::model::RepoUser user;
 
     //! User avatar (profile picture).
 	std::vector<char> avatar;

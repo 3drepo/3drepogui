@@ -67,7 +67,7 @@ namespace repo {
 
 		private:
 
-			void decodeRecords(const repo::core::model::bson::RepoBSON &bson, unsigned int depth);
+			void decodeRecords(const repo::core::model::RepoBSON &bson, unsigned int depth);
 
 			repo::RepoController *controller;
 			repo::RepoToken      *token;

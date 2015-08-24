@@ -83,7 +83,7 @@ public slots:
 	void refresh();
 
 	////! Adds a revision row to the history model
-    void addRevision(repo::core::model::bson::RevisionNode *);
+    void addRevision(repo::core::model::RevisionNode *);
 
 	//! Clears the history model (does not remove headers)
 	void clearHistoryModel();

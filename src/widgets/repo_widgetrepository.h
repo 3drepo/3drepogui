@@ -133,7 +133,7 @@ public slots :
 
 	void addDatabase(QString name);
 
-    void addCollection(const repo::core::model::bson::CollectionStats &stats);
+    void addCollection(const repo::core::model::CollectionStats &stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 

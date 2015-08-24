@@ -753,9 +753,9 @@ std::vector<std::string> repo::gui::RepoGLCWidget::getSelectionList() const
 	return selectedNames;
 }
 
-repo::core::model::bson::RepoNode* repo::gui::RepoGLCWidget::getSelectedNode() const
+repo::core::model::RepoNode* repo::gui::RepoGLCWidget::getSelectedNode() const
 {
-	repo::core::model::bson::RepoNode *node = 0;
+	repo::core::model::RepoNode *node = 0;
 	if (glcWorld.selectionSize() > 0)
 	{
 		GLC_StructOccurence* o = glcWorld.selectedOccurenceList().first();

@@ -29,7 +29,7 @@ UsersWorker::UsersWorker(
 	const repo::RepoToken                   *token,
 	repo::RepoController                    *controller,
 	const std::string                       &database,
-	const repo::core::model::bson::RepoUser &user,
+	const repo::core::model::RepoUser &user,
 	const Command                           &command)
 	: token(token)
 	, controller(controller)
@@ -37,7 +37,7 @@ UsersWorker::UsersWorker(
 	, user(user)
 	, command(command)
 {
-	qRegisterMetaType<repo::core::model::bson::RepoUser>("repo::core::model::bson::RepoUser");
+	qRegisterMetaType<repo::core::model::RepoUser>("repo::core::model::RepoUser");
 	qRegisterMetaType<std::list<std::string> >("std::list<std::string>");
 	qRegisterMetaType<std::map<std::string, std::list<std::string> > >("std::map<std::string, std::list<std::string> >");
 }
@@ -98,7 +98,7 @@ void UsersWorker::run()
 	while (!cancelled && nRoles > retrieved)
 	{
 
-		std::vector<repo::core::model::bson::RepoBSON> bsons =
+		std::vector<repo::core::model::RepoBSON> bsons =
 			controller->getAllFromCollectionContinuous(token, database, REPO_SYSTEM_ROLES, fields, REPO_LABEL_ROLE, -1, retrieved);
 
 		for (auto bson : bsons)
@@ -125,7 +125,7 @@ void UsersWorker::run()
 	while (!cancelled && nUsers > retrieved)
 	{
 
-		std::vector<repo::core::model::bson::RepoBSON> bsons =
+		std::vector<repo::core::model::RepoBSON> bsons =
 			controller->getAllFromCollectionContinuous(token, database, REPO_SYSTEM_USERS, fields, REPO_LABEL_USER, -1, retrieved);
 
 		for (auto bson : bsons)
@@ -133,7 +133,7 @@ void UsersWorker::run()
 			if (cancelled) break;
 			if (bson.isValid() && !bson.isEmpty())
 			{
-				emit userFetched(repo::core::model::bson::RepoUser(bson));
+				emit userFetched(repo::core::model::RepoUser(bson));
 			}
 			++retrieved;
 		}
