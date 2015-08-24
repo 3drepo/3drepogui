@@ -686,7 +686,7 @@ void repo::gui::RepoGUI::openUserManager() const
 
 void repo::gui::RepoGUI::openProjectManager() const
 {
-    RepoProjectManagerDialog pm(ui->widgetRepository, (QWidget*) this);
+    RepoProjectManagerDialog pm(controller, ui->widgetRepository, (QWidget*) this);
     pm.exec();
 }
 

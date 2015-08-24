@@ -19,11 +19,15 @@
 #include "repoprojectmanagerdialog.h"
 #include "ui_repoabstractmanagerdialog.h"
 #include "repoprojectsettingsdialog.h"
+#include "../repo/workers/repo_worker_project_settings.h"
+
 
 repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
-        const RepoIDBCache *cache,
-        QWidget *parent)
-    : RepoAbstractManagerDialog(cache, parent)
+	repo::RepoController *controller,
+	const RepoIDBCache *cache,
+	QWidget *parent)
+	: RepoAbstractManagerDialog(cache, parent),
+	controller(controller)
 {
     setWindowTitle("Project Manager");
 
@@ -31,183 +35,187 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
     // Users
     model->setColumnCount(7);
     model->setHeaderData(
-                Columns::PROJECT,
+                (int) Columns::PROJECT,
                 Qt::Horizontal,
                 tr("Project"));
     model->setHeaderData(
-                Columns::DESCRIPTION,
+				(int) Columns::DESCRIPTION,
                 Qt::Horizontal,
                 tr("Description"));
     model->setHeaderData(
-                Columns::OWNER,
+				(int) Columns::OWNER,
                 Qt::Horizontal,
                 tr("Owner"));
     model->setHeaderData(
-                Columns::GROUP,
+				(int) Columns::GROUP,
                 Qt::Horizontal,
                 tr("Group"));
     model->setHeaderData(
-                Columns::PERMISSIONS,
+				(int) Columns::PERMISSIONS,
                 Qt::Horizontal,
                 tr("Permissions"));
     model->setHeaderData(
-                Columns::TYPE,
+				(int) Columns::TYPE,
                 Qt::Horizontal,
                 tr("Type"));
     model->setHeaderData(
-                Columns::USERS,
+				(int) Columns::USERS,
                 Qt::Horizontal,
                 tr("Users"));
 
-    ui->treeView->sortByColumn(Columns::PROJECT, Qt::SortOrder::AscendingOrder);
+	ui->treeView->sortByColumn((int)Columns::PROJECT, Qt::SortOrder::AscendingOrder);
     clear();
 }
 
 repo::gui::RepoProjectManagerDialog::~RepoProjectManagerDialog() {}
 
-//void repo::gui::RepoProjectManagerDialog::addProjectSettings(
-//        core::RepoProjectSettings projectSettings)
-//{
-//    QList<QStandardItem *> row;
-//    //--------------------------------------------------------------------------
-//    // User object itself
-//    QVariant var;
-//    var.setValue(projectSettings);
-//
-//    // Project
-//    QStandardItem *item = createItem(QString::fromStdString(projectSettings.getProject()));
-//    item->setData(var);
-//    row.append(item);
-//
-//    // Description
-//    row.append(createItem(QString::fromStdString(projectSettings.getDescription())));
-//
-//    // Owner
-//    row.append(createItem(QString::fromStdString(projectSettings.getOwner())));
-//
-//    // Group
-//    row.append(createItem(QString::fromStdString(projectSettings.getGroup())));
-//
-//    // Permissions
-//    row.append(createItem(QString::fromStdString(projectSettings.getPermissionsString())));
-//
-//    // Type
-//    row.append(createItem(QString::fromStdString(projectSettings.getType())));
-//
-//    // Users count
-//    row.append(createItem((qulonglong)(projectSettings.getUsers().size())));
-//
-//    //--------------------------------------------------------------------------
-//    model->invisibleRootItem()->appendRow(row);
-//}
+void repo::gui::RepoProjectManagerDialog::addProjectSettings(
+        repo::core::model::bson::RepoProjectSettings projectSettings)
+{
+    QList<QStandardItem *> row;
+    //--------------------------------------------------------------------------
+    // User object itself
+    QVariant var;
+    var.setValue(projectSettings);
+
+    // Project
+    QStandardItem *item = createItem(QString::fromStdString(projectSettings.getProjectName()));
+    item->setData(var);
+    row.append(item);
+
+    // Description
+    row.append(createItem(QString::fromStdString(projectSettings.getDescription())));
+
+    // Owner
+    row.append(createItem(QString::fromStdString(projectSettings.getOwner())));
+
+    // Group
+    row.append(createItem(QString::fromStdString(projectSettings.getGroup())));
+
+    // Permissions
+    row.append(createItem(QString::fromStdString(projectSettings.getPermissionsString())));
+
+    // Type
+    row.append(createItem(QString::fromStdString(projectSettings.getType())));
+
+    // Users count
+    row.append(createItem((qulonglong)(projectSettings.getUsers().size())));
+
+    //--------------------------------------------------------------------------
+    model->invisibleRootItem()->appendRow(row);
+}
 
 void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
 {
     RepoAbstractManagerDialog::clear(resizeColumns);
 
-    ui->treeView->resizeColumnToContents(Columns::OWNER);
-    ui->treeView->resizeColumnToContents(Columns::GROUP);
-    ui->treeView->resizeColumnToContents(Columns::PERMISSIONS);
-    ui->treeView->resizeColumnToContents(Columns::TYPE);
-    ui->treeView->resizeColumnToContents(Columns::USERS);
+    ui->treeView->resizeColumnToContents((int)Columns::OWNER);
+	ui->treeView->resizeColumnToContents((int)Columns::GROUP);
+	ui->treeView->resizeColumnToContents((int)Columns::PERMISSIONS);
+	ui->treeView->resizeColumnToContents((int)Columns::TYPE);
+	ui->treeView->resizeColumnToContents((int)Columns::USERS);
 }
 
-//repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
-//{
-//    return getProjectSettings(ui->treeView->selectionModel()->currentIndex());
-//}
-
-//repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
-//{
-//    core::RepoProjectSettings projectSettings;
-//    if (index.isValid())
-//    {
-//        QModelIndex userIndex = index.sibling(index.row(), Columns::PROJECT);
-//        projectSettings = userIndex.data(Qt::UserRole+1).value<core::RepoProjectSettings>();
-//    }
-//    return projectSettings;
-//}
-
-
-
-void repo::gui::RepoProjectManagerDialog::refresh(/*const core::RepoBSON &command*/)
+repo::core::model::bson::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
 {
-    //if (cancelAllThreads())
-    //{
-    //    core::MongoClientWrapper mongo = dbCache->getConnection(ui->hostComboBox->currentText());
-    //    std::string database = ui->databaseComboBox->currentText().toStdString();
+    return getProjectSettings(ui->treeView->selectionModel()->currentIndex());
+}
 
-    //    RepoWorkerProjectSettings* worker = new RepoWorkerProjectSettings(mongo, database, command);
-    //    worker->setAutoDelete(true);
+repo::core::model::bson::RepoProjectSettings 
+	repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
+{
+	repo::core::model::bson::RepoProjectSettings projectSettings;
+    if (index.isValid())
+    {
+        QModelIndex userIndex = index.sibling(index.row(), (int)Columns::PROJECT);
+		projectSettings = userIndex.data(Qt::UserRole + 1).value<repo::core::model::bson::RepoProjectSettings>();
+    }
+    return projectSettings;
+}
 
-    //    // Direct connection ensures cancel signal is processed ASAP
-    //    QObject::connect(
-    //        this, &RepoProjectManagerDialog::cancel,
-    //        worker, &RepoWorkerProjectSettings::cancel, Qt::DirectConnection);
 
-    //    QObject::connect(
-    //        worker, &RepoWorkerProjectSettings::projectSettingsFetched,
-    //        this, &RepoProjectManagerDialog::addProjectSettings);
 
-    //    QObject::connect(
-    //        worker, &RepoWorkerProjectSettings::finished,
-    //        ui->progressBar, &QProgressBar::hide);
+void repo::gui::RepoProjectManagerDialog::refresh(
+	const repo::core::model::bson::RepoProjectSettings &settings,
+	const bool                                         &isDelete)
+{
+    if (cancelAllThreads())
+    {
+        const RepoToken *token = dbCache->getConnection(ui->hostComboBox->currentText());
+        std::string database = ui->databaseComboBox->currentText().toStdString();
 
-    //    QObject::connect(
-    //        worker, &RepoWorkerProjectSettings::finished,
-    //        this, &RepoProjectManagerDialog::finish);
+		repo::worker::ProjectSettingsWorker* worker = 
+			new repo::worker::ProjectSettingsWorker(token, controller, database, settings, isDelete);
+        worker->setAutoDelete(true);
 
-    //    QObject::connect(
-    //        worker, &RepoWorkerProjectSettings::progressRangeChanged,
-    //        ui->progressBar, &QProgressBar::setRange);
+        // Direct connection ensures cancel signal is processed ASAP
+        QObject::connect(
+            this, &RepoProjectManagerDialog::cancel,
+			worker, &repo::worker::ProjectSettingsWorker::cancel, Qt::DirectConnection);
 
-    //    QObject::connect(
-    //        worker, &RepoWorkerProjectSettings::progressValueChanged,
-    //        ui->progressBar, &QProgressBar::setValue);
+        QObject::connect(
+			worker, &repo::worker::ProjectSettingsWorker::projectSettingsFetched,
+            this, &RepoProjectManagerDialog::addProjectSettings);
 
-    //    //----------------------------------------------------------------------
-    //    // Clear any previous entries
-    //    clear();
+        QObject::connect(
+			worker, &repo::worker::ProjectSettingsWorker::finished,
+            ui->progressBar, &QProgressBar::hide);
 
-    //    //----------------------------------------------------------------------
-    //    ui->progressBar->show();
-    //    ui->hostComboBox->setEnabled(false);
-    //    ui->databaseComboBox->setEnabled(false);
-    //    threadPool.start(worker);
-    //}
+        QObject::connect(
+			worker, &repo::worker::ProjectSettingsWorker::finished,
+            this, &RepoProjectManagerDialog::finish);
+
+        QObject::connect(
+			worker, &repo::worker::ProjectSettingsWorker::progressRangeChanged,
+            ui->progressBar, &QProgressBar::setRange);
+
+        QObject::connect(
+			worker, &repo::worker::ProjectSettingsWorker::progressValueChanged,
+            ui->progressBar, &QProgressBar::setValue);
+
+        //----------------------------------------------------------------------
+        // Clear any previous entries
+        clear();
+
+        //----------------------------------------------------------------------
+        ui->progressBar->show();
+        ui->hostComboBox->setEnabled(false);
+        ui->databaseComboBox->setEnabled(false);
+        threadPool.start(worker);
+    }
 }
 
 void repo::gui::RepoProjectManagerDialog::removeItem()
 {
-    //core::RepoProjectSettings projectSettings = this->getProjectSettings();
-    //switch(QMessageBox::warning(this,
-    //    tr("Remove project settings?"),
-    //    tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProject()) + "'?",
-    //    tr("&Yes"),
-    //    tr("&No"),
-    //    QString::null, 1, 1))
-    //    {
-    //        case 0: // yes
-    //            refresh(projectSettings.drop());
-    //            break;
-    //        case 1: // no
-    //            std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
-    //            break;
-    //    }
+	repo::core::model::bson::RepoProjectSettings projectSettings = this->getProjectSettings();
+    switch(QMessageBox::warning(this,
+        tr("Remove project settings?"),
+        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProjectName()) + "'?",
+        tr("&Yes"),
+        tr("&No"),
+        QString::null, 1, 1))
+        {
+            case 0: // yes
+                refresh(projectSettings, true);
+                break;
+            case 1: // no
+                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
+                break;
+        }
 }
 
-//void repo::gui::RepoProjectManagerDialog::showEditDialog(
-//        /*const core::RepoProjectSettings &projectSettings*/)
-//{
-//    //RepoProjectSettingsDialog projectDialog(projectSettings, this);
-//    //if (QDialog::Rejected == projectDialog.exec())
-//    //{
-//    //    std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
-//    //}
-//    //else // QDialog::Accepted
-//    //{
-//    //    // Create or update project
-//    //    refresh(projectDialog.getCommand());
-//    //}
-//}
+void repo::gui::RepoProjectManagerDialog::showEditDialog(
+	const repo::core::model::bson::RepoProjectSettings &projectSettings)
+{
+    RepoProjectSettingsDialog projectDialog(projectSettings, this);
+    if (QDialog::Rejected == projectDialog.exec())
+    {
+        std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        // Create or update project
+        refresh(projectDialog.getSettings(), false);
+    }
+}
 

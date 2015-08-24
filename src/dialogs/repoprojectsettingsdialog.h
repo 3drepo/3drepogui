@@ -24,6 +24,7 @@
 #include <QDialog>
 #include <QCheckBox>
 
+#include <repo/core/model/bson/repo_bson_project_settings.h>
 
 namespace Ui {
 class RepoProjectSettingsDialog;
@@ -42,7 +43,7 @@ class RepoProjectSettingsDialog : public QDialog
 
 public:
     explicit RepoProjectSettingsDialog(
-            //core::RepoProjectSettings projectSettings,
+		repo::core::model::bson::RepoProjectSettings projectSettings,
             QWidget *parent = 0);
     ~RepoProjectSettingsDialog();
 
@@ -52,7 +53,7 @@ public slots :
     void updatePermissionsOctal();
 
     //! Updates permissions octal based on corresponding value.
-    void updatePermissionsOctal(unsigned short value);
+	void updatePermissionsOctal(const std::vector<bool> perm);
 
     //! Updates permissions octal based on set text.
     void updatePermissionsOctal(const QString &value);
@@ -70,8 +71,8 @@ public :
             QCheckBox *x,
             int value);
 
-    //! Returns upsert command bson.
-    //core::RepoBSON getCommand() const;
+    //! Returns bson.
+	repo::core::model::bson::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const;
 
 protected :
 
