@@ -111,7 +111,6 @@ void repo::gui::RepoDialogUserManager::addUser(const repo::core::model::bson::Re
     item->setEditable(false);
     row.append(item);
 
-	repoLog("user: " + user.toString());
 
     // Username
     row.append(createItem(QString::fromStdString(user.getUserName())));
@@ -248,10 +247,13 @@ void repo::gui::RepoDialogUserManager::showEditDialog(const repo::core::model::b
 		controller, user, databasesWithProjects, customRolesList, this);
     if (QDialog::Rejected == userDialog.exec())
     {
+		repoLog("User profile dialog cancelled by user.\n");
         std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
     }
     else // QDialog::Accepted
     {
+
+		repoLog("create or update user...\n");
         // Create or update user
 		refresh(userDialog.getUpdatedUser(), 
 			userDialog.isNewUser() ? 

@@ -385,7 +385,7 @@ std::string repo::gui::RepoDialogUser::getLastName() const
 std::string repo::gui::RepoDialogUser::getPassword() const
 {
     std::string currentPassword = ui->passwordLineEdit->text().toStdString();
-    return /*currentPassword != user.getPassword() ? currentPassword :*/ "";
+    return currentPassword != user.getPassword() ? currentPassword : "";
 }
 
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getProjects() const

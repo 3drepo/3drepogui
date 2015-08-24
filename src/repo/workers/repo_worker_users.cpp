@@ -16,6 +16,7 @@
 */
 
 #include "repo_worker_users.h"
+#include "../logger/repo_logger.h"
 //------------------------------------------------------------------------------
 // Core
 
@@ -55,18 +56,20 @@ void UsersWorker::run()
 
 	//------------------------------------------------------------------
 	// Execute command (such as drop or update user) if any
-	if (user.isEmpty())
+	if (!user.isEmpty())
 	{
-		repoLog("Executing user command...\n");
 		switch (command)
 		{
 			case Command::INSERT:
+				repoLog("Adding new user\n");
 				controller->insertUser(token, user);
 				break;
 			case Command::UPDATE:
+				repoLog("Updating user\n");
 				controller->updateUser(token, user);
 				break;
 			case Command::DROP:
+				repoLog("Removing user\n");
 				controller->removeUser(token, user);
 		}
 	}
@@ -75,10 +78,8 @@ void UsersWorker::run()
 	// Get mapping of databases with their associated projects.
 	// This is long running job!
 	std::list<std::string> databases = controller->getDatabases(token);
-	repoLog("Fetching database...\n");
 	std::map<std::string, std::list<std::string> > databasesWithProjects =
 		controller->getDatabasesWithProjects(token, databases);
-	repoLog("Databases fetched\n");
 	emit databasesWithProjectsFetched(databasesWithProjects);
 	emit progressRangeChanged(0, jobsCount);
 	emit progressValueChanged(jobsDone++);
@@ -93,7 +94,6 @@ void UsersWorker::run()
 	fields.push_back(REPO_USER_LABEL_ROLE);
 
 	uint64_t retrieved = 0;
-	repoLog("Fetching roles...\n");
 	uint32_t nRoles = controller->countItemsInCollection(token, database, REPO_SYSTEM_ROLES);
 	while (!cancelled && nRoles > retrieved)
 	{
@@ -120,7 +120,6 @@ void UsersWorker::run()
 	fields.clear();
 
 	retrieved = 0;
-	repoLog("Fetching users\n");
 
 	uint32_t nUsers = controller->countItemsInCollection(token, database, REPO_SYSTEM_USERS);
 	while (!cancelled && nUsers > retrieved)
@@ -144,7 +143,6 @@ void UsersWorker::run()
 
 	//--------------------------------------------------------------------------
 	emit progressValueChanged(jobsCount);
-	repoLog("Done\n");
 	emit RepoAbstractWorker::finished();
 }
 
