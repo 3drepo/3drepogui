@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
+    <width>711</width>
     <height>346</height>
    </rect>
   </property>
@@ -44,7 +44,11 @@
        <widget class="QSpinBox" name="tiltSpinBox"/>
       </item>
       <item row="1" column="7" colspan="2">
-       <widget class="QDoubleSpinBox" name="tileSpinBox"/>
+       <widget class="QDoubleSpinBox" name="tileSpinBox">
+        <property name="decimals">
+         <number>12</number>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="tiltLabel">
@@ -74,14 +78,19 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3" colspan="4">
-       <widget class="QLineEdit" name="nameLineEdit"/>
-      </item>
       <item row="3" column="7" colspan="2">
-       <widget class="QDoubleSpinBox" name="latSpinBox"/>
+       <widget class="QDoubleSpinBox" name="latSpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
       </item>
       <item row="3" column="3" colspan="2">
-       <widget class="QDoubleSpinBox" name="longSpinBox"/>
+       <widget class="QDoubleSpinBox" name="longSpinBox">
+        <property name="decimals">
+         <number>9</number>
+        </property>
+       </widget>
       </item>
       <item row="2" column="7" colspan="2">
        <widget class="QSpinBox" name="zoomSpinBox"/>
@@ -94,7 +103,11 @@
        </widget>
       </item>
       <item row="5" column="1" colspan="2">
-       <widget class="QDoubleSpinBox" name="xSpinBox"/>
+       <widget class="QDoubleSpinBox" name="xSpinBox">
+        <property name="decimals">
+         <number>12</number>
+        </property>
+       </widget>
       </item>
       <item row="5" column="3">
        <widget class="QLabel" name="coordLabel_3">
@@ -111,7 +124,11 @@
        </widget>
       </item>
       <item row="5" column="7" colspan="2">
-       <widget class="QDoubleSpinBox" name="zSpinBox"/>
+       <widget class="QDoubleSpinBox" name="zSpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="coordLabel_2">
@@ -121,10 +138,17 @@
        </widget>
       </item>
       <item row="5" column="4" colspan="2">
-       <widget class="QDoubleSpinBox" name="ySpinBox"/>
+       <widget class="QDoubleSpinBox" name="ySpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="3" colspan="2">
        <widget class="QSpinBox" name="widthSpinBox"/>
+      </item>
+      <item row="0" column="3" colspan="4">
+       <widget class="QLineEdit" name="nameLineEdit"/>
       </item>
      </layout>
     </widget>
