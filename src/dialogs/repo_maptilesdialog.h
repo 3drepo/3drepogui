@@ -22,10 +22,8 @@
 // Qt
 #include <QDialog>
 
-// Core
-#include <RepoNodeMap>
-#include <RepoNodeAbstract>
-#include <RepoGraphScene>
+//Core
+#include <repo/core/model/bson/repo_node_map.h>
 
 //------------------------------------------------------------------------------
 
@@ -46,7 +44,7 @@ public:
             QWidget *parent = 0);
 
     ~RepoMapTilesDialog();
-    repo::core::RepoNodeMap* getMap();
+    repo::core::model::MapNode getMap();
 
 private:
 

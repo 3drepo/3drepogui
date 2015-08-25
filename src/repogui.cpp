@@ -315,25 +315,14 @@ void repo::gui::RepoGUI::about()
 
 void repo::gui::RepoGUI::addMapTiles()
 {
-    // Use Transformation Dialog as a guidance and inspiration
     RepoMapTilesDialog mapTilesDialog(this);
     if(mapTilesDialog.exec()){
-        core::RepoNodeTransformation *root = new core::RepoNodeTransformation();
-        root->setName("<root>");
 
-        std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
-        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
-
-        core::RepoNodeAbstractSet nodesSet;
-        core::RepoNodeMap *map = mapTilesDialog.getMap();
-
-        root->addChild(map);
-        map->addParent(root);
-
-        nodesSet.insert(root);
-        nodesSet.insert(map);
-
-        commit(nodesSet, revision);
+		repo::manipulator::graph::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
+		if (scene)
+		{
+			commit(scene);
+		}
 
     }
 
