@@ -26,7 +26,7 @@ using namespace repo::worker;
 
 repo::worker::FileExportWorker::FileExportWorker(const std::string & fullPath,
 	repo::RepoController *controller,
-	const repo::manipulator::graph::RepoScene *scene)
+	const repo::core::model::RepoScene *scene)
 	: fullPath(fullPath)
 	, controller(controller)
 	, scene(scene)

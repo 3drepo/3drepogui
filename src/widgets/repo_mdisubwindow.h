@@ -115,9 +115,9 @@ public :
 public slots :
 
 	//! Sets the two scene representations on the widget.
-	void finishedLoadingScene(repo::manipulator::graph::RepoScene *);
+	void finishedLoadingScene(repo::core::model::RepoScene *);
 
-	void finishedLoadingGLC(repo::manipulator::graph::RepoScene *, GLC_World &);
+	void finishedLoadingGLC(repo::core::model::RepoScene *, GLC_World &);
 
 	/*! 
 	 * Updates the current state of the progress bar with the values specified.

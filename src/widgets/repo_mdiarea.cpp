@@ -226,8 +226,8 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	// Establish and connect the new worker.
    repo::worker::SceneGraphWorker* worker = 
 	   new repo::worker::SceneGraphWorker(controller, token, database, project, id, headRevision);
-	connect(worker, SIGNAL(finished(repo::manipulator::graph::RepoScene *)),
-		repoSubWindow, SLOT(finishedLoadingScene(repo::manipulator::graph::RepoScene *)));
+	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
+		repoSubWindow, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
 
 	QObject::connect(

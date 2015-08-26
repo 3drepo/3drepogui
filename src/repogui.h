@@ -85,7 +85,7 @@ public slots:
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
-	void commit(repo::manipulator::graph::RepoScene *scene,
+	void commit(repo::core::model::RepoScene *scene,
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.
@@ -107,7 +107,7 @@ public slots:
     RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
-    const repo::manipulator::graph::RepoScene*getActiveScene();
+    const repo::core::model::RepoScene*getActiveScene();
 
     //! Shows a history dialog for selected repository.
     void history();

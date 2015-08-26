@@ -92,8 +92,8 @@ void RepoMdiSubWindow::setWidgetFromFile(
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
 	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new RepoWidgetAssimpFlags());
-	connect(worker, SIGNAL(finished(repo::manipulator::graph::RepoScene *)),
-		this, SLOT(finishedLoadingScene(repo::manipulator::graph::RepoScene *)));
+	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
+		this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 	//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
@@ -135,7 +135,7 @@ QWidget * RepoMdiSubWindow::widget() const
 }
 
 void RepoMdiSubWindow::finishedLoadingScene(
-    repo::manipulator::graph::RepoScene *repoScene)
+    repo::core::model::RepoScene *repoScene)
 {
 	repoLog("finished loading repo scene");
 	//We have a scene, fire up the GLC worker to get a GLC World representation
@@ -143,8 +143,8 @@ void RepoMdiSubWindow::finishedLoadingScene(
 	// Establish and connect the new worker.
 	repo::worker::GLCExportWorker* worker =
 		new repo::worker::GLCExportWorker(repoScene);
-	connect(worker, SIGNAL(finished(repo::manipulator::graph::RepoScene *, GLC_World &)),
-		this, SLOT(finishedLoadingGLC(repo::manipulator::graph::RepoScene *,GLC_World &)));
+	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *, GLC_World &)),
+		this, SLOT(finishedLoadingGLC(repo::core::model::RepoScene *,GLC_World &)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 
 	QObject::connect(
@@ -157,7 +157,7 @@ void RepoMdiSubWindow::finishedLoadingScene(
 
 }
 
-void RepoMdiSubWindow::finishedLoadingGLC(repo::manipulator::graph::RepoScene *repoScene, GLC_World &glcWorld)
+void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
 {
 	repo::logger::RepoLogger::getInstance()->messageGenerated("finished Loading GLC");
 	RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());

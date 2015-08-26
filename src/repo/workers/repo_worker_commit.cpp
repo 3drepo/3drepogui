@@ -26,7 +26,7 @@ using namespace repo::worker;
 CommitWorker::CommitWorker(
 	repo::RepoController *controller, 
 	const repo::RepoToken *token,
-	repo::manipulator::graph::RepoScene *scene)
+	repo::core::model::RepoScene *scene)
 	: RepoAbstractWorker(),
 	controller(controller),
 	token(token),

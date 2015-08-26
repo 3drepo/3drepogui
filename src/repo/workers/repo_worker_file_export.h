@@ -54,7 +54,7 @@ namespace repo {
 			*/
 			FileExportWorker(const std::string& fullPath,
 				repo::RepoController *controller,
-				const repo::manipulator::graph::RepoScene *scene);
+				const repo::core::model::RepoScene *scene);
 
 			//! Default empty destructor.
 			~FileExportWorker();
@@ -77,7 +77,7 @@ namespace repo {
 			const std::string fullPath;
 
 			repo::RepoController *controller;
-			const repo::manipulator::graph::RepoScene *scene;
+			const repo::core::model::RepoScene *scene;
 		}; // end class
 
 	} // end namespace core

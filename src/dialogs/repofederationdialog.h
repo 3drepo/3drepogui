@@ -36,7 +36,7 @@
 //------------------------------------------------------------------------------
 // Core
 #include <repo/core/model/bson/repo_bson_factory.h>
-#include <repo/manipulator/graph/repo_scene.h>
+#include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
     class RepoFederationDialog;

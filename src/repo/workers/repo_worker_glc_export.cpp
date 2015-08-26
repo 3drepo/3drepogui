@@ -158,7 +158,7 @@ private:
 };
 
 GLCExportWorker::GLCExportWorker(
-	repo::manipulator::graph::RepoScene* scene):scene(scene){}
+	repo::core::model::RepoScene* scene):scene(scene){}
 
 GLCExportWorker::~GLCExportWorker() {}
 
@@ -208,7 +208,7 @@ void GLCExportWorker::run()
 }
 
 GLC_World* GLCExportWorker::createGLCWorld(
-	repo::manipulator::graph::RepoScene *scene)
+	repo::core::model::RepoScene *scene)
 {
 
 	//-----
@@ -222,7 +222,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 
 GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
-	repo::manipulator::graph::RepoScene *scene)
+	repo::core::model::RepoScene *scene)
 {
 
 	//------------------------------------------------------------------
@@ -342,7 +342,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 }
 
 GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
-	repo::manipulator::graph::RepoScene                     *scene,
+	repo::core::model::RepoScene                     *scene,
 	const repo::core::model::RepoNode                 *node,
 	std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcMeshesMap,
 	std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcCamerasMap,
@@ -451,7 +451,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			break;
 		}
 		case repoModel::NodeType::REFERENCE:
-			repo::manipulator::graph::RepoScene *refScene = scene->getSceneFromReference(node->getSharedID());
+			repo::core::model::RepoScene *refScene = scene->getSceneFromReference(node->getSharedID());
 			if (refScene)
 			{
 				occurrence = convertSceneToOccurance(refScene);

@@ -704,7 +704,7 @@ void repo::gui::RepoGLCWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGLCWidget::setRepoScene(repo::manipulator::graph::RepoScene *repoScene)
+void repo::gui::RepoGLCWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 {
 	if (this->repoScene)
 		delete this->repoScene;

@@ -21,7 +21,7 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include <repo/manipulator/graph/repo_scene.h>
+#include <repo/core/model/collection/repo_scene.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -187,7 +187,7 @@ namespace repo {
 			//--------------------------------------------------------------------------
 
 			//! Sets the 3D Repo scene for this widget.
-			void setRepoScene(repo::manipulator::graph::RepoScene *repoScene);
+			void setRepoScene(repo::core::model::RepoScene *repoScene);
 
 			//! Sets the GLC World for this widget which is used for rendering purposes.
 			void setGLCWorld(GLC_World);
@@ -237,7 +237,7 @@ namespace repo {
 			//--------------------------------------------------------------------------
 
 			//! Returns the 3D Repo scene of this widget.
-			repo::manipulator::graph::RepoScene *getRepoScene() const { return repoScene; }
+			repo::core::model::RepoScene *getRepoScene() const { return repoScene; }
 
 			//! Returns the GLC World of this widget.
 			GLC_World getGLCWorld() const { return glcWorld; }
@@ -297,7 +297,7 @@ namespace repo {
 			//--------------------------------------------------------------------------
 
 			//! 3D scene, the scene graph representation to store in the DB.
-			repo::manipulator::graph::RepoScene *repoScene;
+			repo::core::model::RepoScene *repoScene;
 
 			//! 3D world, the main scene to render.
 			GLC_World glcWorld;

@@ -64,7 +64,7 @@ namespace repo {
 		signals:
 
 			//! Emitted when loading is finished. Passes Repo scene.
-			void finished(repo::manipulator::graph::RepoScene*);
+			void finished(repo::core::model::RepoScene*);
 
 		private:
 

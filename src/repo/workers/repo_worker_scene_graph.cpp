@@ -47,7 +47,7 @@ void SceneGraphWorker::run()
 	done = 0;
 	emit progress(0, 0); // undetermined (moving) progress bar
 
-	repo::manipulator::graph::RepoScene *masterSceneGraph
+	repo::core::model::RepoScene *masterSceneGraph
 		= controller->fetchScene(
 		token,
 		database,

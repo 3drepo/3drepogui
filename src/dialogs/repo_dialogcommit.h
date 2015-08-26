@@ -38,7 +38,7 @@
 
 //------------------------------------------------------------------------------
 // Repo Core
-#include <repo/manipulator/graph/repo_scene.h>
+#include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
     class RepoDialogCommit;
@@ -77,7 +77,7 @@ public:
         QWidget* parent = nullptr,
 		Qt::WindowFlags flags = nullptr,
 		RepoIDBCache *dbCache = nullptr,
-		repo::manipulator::graph::RepoScene * scene = nullptr);
+		repo::core::model::RepoScene * scene = nullptr);
 
     //--------------------------------------------------------------------------
 	//
@@ -100,7 +100,7 @@ public:
 
     QString getCurrentProject() const;
 
-	repo::manipulator::graph::RepoScene* getScene() { return scene; }
+	repo::core::model::RepoScene* getScene() { return scene; }
 
 public slots:
 
@@ -136,7 +136,7 @@ private:
     Ui::RepoDialogCommit *ui;
 		   
 	//! Scene from which the nodes to be committed come (based on info from revision object).
-	repo::manipulator::graph::RepoScene *scene;
+	repo::core::model::RepoScene *scene;
 
 	//! Data model to list commit table.
 	QStandardItemModel *model;

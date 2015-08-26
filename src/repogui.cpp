@@ -318,7 +318,7 @@ void repo::gui::RepoGUI::addMapTiles()
     RepoMapTilesDialog mapTilesDialog(this);
     if(mapTilesDialog.exec()){
 
-		repo::manipulator::graph::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
+		repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
 		if (scene)
 		{
 			commit(scene);
@@ -348,7 +348,7 @@ void repo::gui::RepoGUI::commit()
     QString project = ui->widgetRepository->getSelectedProject();
 
     
-	repo::manipulator::graph::RepoScene *repoScene;
+	repo::core::model::RepoScene *repoScene;
 
     if (activeWindow && widget)
     {
@@ -369,7 +369,7 @@ void repo::gui::RepoGUI::commit()
 }
 
 void repo::gui::RepoGUI::commit(
-        repo::manipulator::graph::RepoScene *scene,
+        repo::core::model::RepoScene *scene,
         RepoMdiSubWindow *activeWindow)
 {
 	
@@ -502,7 +502,7 @@ void repo::gui::RepoGUI::federate()
     RepoFederationDialog fed(ui->widgetRepository, this);
     if (fed.exec())
     {
-		repo::manipulator::graph::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
+		repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
 
 		repoLog("federated scene...");
 		std::stringstream sstream;
@@ -534,9 +534,9 @@ repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
     return widget;
 }
 
-const repo::manipulator::graph::RepoScene* repo::gui::RepoGUI::getActiveScene()
+const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene()
 {
-	const repo::manipulator::graph::RepoScene *scene = 0;
+	const repo::core::model::RepoScene *scene = 0;
     if (const RepoGLCWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
@@ -729,7 +729,7 @@ void repo::gui::RepoGUI::saveAs()
             tr("Select a file to save"),
             QString(QDir::separator()) + widget->windowTitle(),
 			tr(controller->getSupportedExportFormats().c_str()));
-        const repo::manipulator::graph::RepoScene *repoScene = widget->getRepoScene();
+        const repo::core::model::RepoScene *repoScene = widget->getRepoScene();
 	
 		//Instantiate worker
 		repo::worker::FileExportWorker *worker = new repo::worker::FileExportWorker(

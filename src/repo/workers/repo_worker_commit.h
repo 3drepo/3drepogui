@@ -41,7 +41,7 @@ namespace repo {
 			CommitWorker(
 				repo::RepoController *controller, 
 				const repo::RepoToken *token,
-				repo::manipulator::graph::RepoScene *scene);
+				repo::core::model::RepoScene *scene);
 
 			//! Default empty destructor.
 			~CommitWorker();
@@ -58,7 +58,7 @@ namespace repo {
 		private:
 			repo::RepoController *controller;
 			const repo::RepoToken      *token;
-			repo::manipulator::graph::RepoScene *scene;
+			repo::core::model::RepoScene *scene;
 
 		}; // end class
 

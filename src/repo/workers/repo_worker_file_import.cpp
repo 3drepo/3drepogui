@@ -42,7 +42,7 @@ void repo::worker::FileImportWorker::run()
 	emit progress(0, 0);
 
 	repoLog("loading repoScene from file");
-	repo::manipulator::graph::RepoScene * repoGraphScene 
+	repo::core::model::RepoScene * repoGraphScene 
 		= controller->loadSceneFromFile(fullPath, settings);
 	emit progress(jobsCount, jobsCount);
 	repoLog("done.");

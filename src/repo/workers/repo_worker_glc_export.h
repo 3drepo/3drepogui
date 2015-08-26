@@ -40,7 +40,7 @@ namespace repo {
 			it to GLC world.
 			*/
 			GLCExportWorker(
-				repo::manipulator::graph::RepoScene* scene);
+				repo::core::model::RepoScene* scene);
 
 			//! Default empty destructor.
 			~GLCExportWorker();
@@ -64,7 +64,7 @@ namespace repo {
 			* @param countJob contribute to the #jobs done (false for processing reference nodes)
 			*/
 			GLC_StructOccurence* createOccurrenceFromNode(
-				repo::manipulator::graph::RepoScene         *scene,
+				repo::core::model::RepoScene         *scene,
 				const repo::core::model::RepoNode           *node,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
@@ -75,18 +75,18 @@ namespace repo {
 			* Convert a repo scene to a GLC occurance structure of nodes.
 			*/
 			GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
-				repo::manipulator::graph::RepoScene *scene);
+				repo::core::model::RepoScene *scene);
 
 		signals:
 
 			//! Emitted when loading is finished. Passes Repo scene and GLC world.
-			void finished(repo::manipulator::graph::RepoScene*, GLC_World&);
+			void finished(repo::core::model::RepoScene*, GLC_World&);
 
 		private:
-			repo::manipulator::graph::RepoScene* scene;
+			repo::core::model::RepoScene* scene;
 
 			GLC_World* GLCExportWorker::createGLCWorld(
-				repo::manipulator::graph::RepoScene *scene);
+				repo::core::model::RepoScene *scene);
 
 			GLC_3DRep* convertGLCCamera(
 				const repo::core::model::CameraNode *camera);
@@ -107,7 +107,7 @@ namespace repo {
 				const QVector<GLfloat>         &vertices);
 
 			GLC_3DRep* createGLCMesh(
-				const repo::manipulator::graph::RepoScene *scene,
+				const repo::core::model::RepoScene *scene,
 				const repo::core::model::MeshNode   *node);
 
 			QVector<GLfloat> createGLCVector(

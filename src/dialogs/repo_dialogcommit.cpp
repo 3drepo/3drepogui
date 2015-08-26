@@ -29,7 +29,7 @@
 repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     Qt::WindowFlags flags,
     RepoIDBCache *dbCache,
-	repo::manipulator::graph::RepoScene * scene)
+	repo::core::model::RepoScene * scene)
 	: QDialog(parent, flags)
     , dbCache(dbCache)
 	, scene(scene)
