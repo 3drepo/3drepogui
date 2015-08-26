@@ -24,7 +24,7 @@
 #include <QPushButton>
 //------------------------------------------------------------------------------
 #include "../primitives/repo_fontawesome.h"
-
+#include "../repo/logger/repo_logger.h"
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     Qt::WindowFlags flags,
@@ -38,7 +38,6 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 
 	    ui->setupUi(this);
     this->setWindowIcon(getIcon());
-
 	//this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
 	model = new QStandardItemModel(0, 5, this); // 0 row, 5 cols 

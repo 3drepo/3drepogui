@@ -21,9 +21,6 @@
 #include <QtSvg>
 
 //------------------------------------------------------------------------------
-// New Core
-
-//------------------------------------------------------------------------------
 // GUI
 #include "repogui.h"
 #include "ui_repogui.h"
@@ -375,7 +372,6 @@ void repo::gui::RepoGUI::commit(
 	
 	if (scene)
 	{
-		std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
 		repo::gui::RepoDialogCommit commitDialog(
 			this,
 			Qt::Window,
@@ -661,10 +657,16 @@ void repo::gui::RepoGUI::openMetadataManager()
             tr("Select one or more files to open"),
             QString::null,
             "*.csv");
-/*
-        core::RepoCSV repoCSV;
-        core::RepoNodeAbstractSet metadata = repoCSV.readMetadata(filePath.toStdString());
-        widget->getRepoScene()->addMetadata(metadata,false);*/
+
+		repo::core::model::RepoScene *scene = widget->getRepoScene();
+		scene->addMetadata(
+			controller->loadMetadataFromFile(filePath.toStdString()), false);
+
+		std::stringstream ss;
+		scene->printStatistics(ss);
+		repoLog("Scene statistics: \n" + ss.str());
+		commit(scene);
+
     }
 }
 
