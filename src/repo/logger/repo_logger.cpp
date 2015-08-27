@@ -66,11 +66,11 @@ std::string RepoLogger::formatMessage(
 	formatted << " [";
 	//-------------------------------------------------------------------------
 	// add colors to severity level
-	formatted << "<span style='color:";
+	formatted << "<b><span style='color:";
 	formatted << getSeverityColor(severity);
 	formatted << "'>";
 	formatted << severity;
-	formatted << "</span>] ";
+	formatted << "</span></b>] ";
 
 	formatted << actualMessage;
 
