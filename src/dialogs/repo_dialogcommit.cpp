@@ -35,7 +35,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 	, scene(scene)
     , ui(new Ui::RepoDialogCommit)
 {
-
+	//FIXME: this should pop up the project and database names as default selection according to what's inside the scene graph
 	    ui->setupUi(this);
     this->setWindowIcon(getIcon());
 	//this->splitter->setStretchFactor(1, );

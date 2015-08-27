@@ -27,6 +27,7 @@
 #include <vector>
 
 #include <repo/lib/repo_listener_abstract.h>
+#include <repo/repo_controller.h>
 
 #include "repo_subscriber_abstract.h"
 
@@ -45,6 +46,8 @@ namespace repo{
 			static RepoLogger *getInstance();
 
 			~RepoLogger();
+
+		
 
 			/**
 			* Function inherited from RepoAbstractListener
@@ -69,6 +72,34 @@ namespace repo{
 			* Broadcasts messages to its subscribers
 			*/
 			void broadcast();
+
+			/**
+			* Format the given message into html tagged message
+			* This function expects the parameter message to be something
+			* like %SEVERITYLEVEL%Message Which should be what the logger
+			* in the core should be passing in.
+			* @param message pre-format message
+			* @return returns formatted message with html tags
+			*/
+			std::string RepoLogger::formatMessage(
+				const std::string &message);
+
+			/**
+			* normalize an integer and return it as a string
+			* basically, if it's <10, append a 0. This is used for
+			* printing the timestamp
+			* @param n integer to normalize
+			* @return returns the formatted number
+			*/
+			std::string formatNum(const uint32_t &n);
+
+
+			/**
+			* Get color (as string) based on severity level
+			* @param severity severity level
+			* @return returns a color given severity level, gray if unknown
+			*/
+			std::string getSeverityColor(std::string severity);
 
 			std::vector<AbstractSubscriber *> subs;
 		};

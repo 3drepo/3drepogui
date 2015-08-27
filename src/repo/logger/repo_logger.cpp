@@ -34,12 +34,103 @@ RepoLogger* RepoLogger::getInstance()
 	return log;
 }
 
+std::string RepoLogger::formatMessage(
+	const std::string &message)
+{
+
+	size_t firstPos = message.find_first_of('%')+1;
+	size_t secPos = message.find_first_of('%', firstPos + 1);
+
+	std::string severity = "UNKNOWN";
+	std::string actualMessage = message;
+	if (firstPos != std::string::npos && secPos != std::string::npos)
+	{
+		severity = message.substr(firstPos, secPos - firstPos);
+		std::transform(severity.begin(), severity.end(), severity.begin(), ::toupper);
+		//+1 to skip the % after severity, 
+		actualMessage = message.substr(secPos + 1); 
+
+	}
+
+	std::stringstream formatted;
+
+	//---------------------------------------------------
+	//Append time
+	time_t t = time(0);   // get time now
+	const struct tm *now = localtime(&t);
+	formatted << formatNum(now->tm_hour);
+	formatted << ":";
+	formatted << formatNum(now->tm_min);
+	formatted << ":";
+	formatted << formatNum(now->tm_sec);
+	formatted << " [";
+	//-------------------------------------------------------------------------
+	// add colors to severity level
+	formatted << "<span style='color:";
+	formatted << getSeverityColor(severity);
+	formatted << "'>";
+	formatted << severity;
+	formatted << "</span>] ";
+
+	formatted << actualMessage;
+
+	formatted << "<br/>";
+
+	return formatted.str();
+}
+
+
+std::string RepoLogger::formatNum(const uint32_t &n)
+{
+	std::stringstream str;
+	if (n < 10)
+		str << "0";
+	str << n;
+	return str.str();
+}
+
+
+std::string RepoLogger::getSeverityColor(std::string severity)
+{
+	//default is gray, which represents an unknown status
+	std::string color = "gray";
+
+	if (severity == "ERROR" || severity == "FATAL")
+	{
+		color = "red";
+	}
+
+	if (severity == "WARNING")
+	{
+		color = "orange";
+	}
+
+	if (severity == "INFO")
+	{
+		color = "green";
+	}
+
+	if (severity == "DEBUG")
+	{
+		color = "purple";
+	}
+
+	if (severity == "TRACE")
+	{
+		color = "blue";
+	}
+
+	return color;
+}
+
 void RepoLogger::messageGenerated(
 	const std::string &message)
 {
+	std::string formattedMessage = formatMessage(message);
+
 	for (auto sub : subs)
 	{
-		sub->newMessageReceived(message);
+		sub->newMessageReceived(formattedMessage);
 	}
 }
 
