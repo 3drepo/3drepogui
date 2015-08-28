@@ -27,7 +27,7 @@ CONFIG += ordered warn_off
 #================================ BOOST =====================================
 BOOSTDIR = $$(BOOST_ROOT) #change this if you don't want to use envar
 !isEmpty(BOOSTDIR) {
-        BOOST_INC_DIR = $${BOOSTDIR}/include
+        BOOST_INC_DIR = $${BOOSTDIR}/
         BOOST_LIB_DIR = $${BOOST_LIBRARYDIR}
 	isEmpty(BOOST_LIB_DIR){
                 BOOST_LIB_DIR = $${BOOSTDIR}/include
@@ -42,7 +42,7 @@ BOOSTLIB = -lboost_system -lboost_thread -lboost_chrono -lboost_log -lboost_log_
 BOUNCERDIR = $$(REPOBOUNCER_ROOT) #change this if you don't want to use envar
 !isEmpty(BOUNCERDIR) {
         BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
-        BOUNCER_INC_DIR = $${BOUNCERDIR}/include/
+        BOUNCER_INC_DIR = $${BOUNCERDIR}/include
 } else {
 	error(Cannot find 3drepobouncer installation. Please ensure the environment variable REPOBOUNCER_ROOT is set)
 }
@@ -82,8 +82,8 @@ GLCLIBDIR = $$(GLC_ROOT) #change this if you don't want ot use envar
 
 GLCLIB = -lGLC_lib
 
-INCLUDEPATH += $${BOOST_INC_DIR} $${BOUNCER_INC_DIR} $$ASSIMP_INC_DIR $$MONGO_INC_DIR $$GLC_INC_DIR
-LIBS += -L$$BOOST_LIB_DIR -L$$BOUNCER_LIB_DIR -L$$ASSIMP_LIB_DIR -L$$MONGO_LIB_DIR -L$$GLC_LIB_DIR
-LIBS += $$BOOSTLIB $$BOUNCERLIB $$ASSIMPLIB $$MONGOLIB $$GLCLIB
+INCLUDEPATH += $${BOOST_INC_DIR} $${BOUNCER_INC_DIR} $${ASSIMP_INC_DIR} $${MONGO_INC_DIR} $${GLC_INC_DIR}
+LIBS += -L$${BOOST_LIB_DIR} -L$${BOUNCER_LIB_DIR} -L$${ASSIMP_LIB_DIR} -L$${MONGO_LIB_DIR} -L$${GLC_LIB_DIR}
+LIBS += $${BOOSTLIB} $${BOUNCERLIB} $${ASSIMPLIB} $${MONGOLIB} $${GLCLIB}
 
 include(3drepogui.pri)
