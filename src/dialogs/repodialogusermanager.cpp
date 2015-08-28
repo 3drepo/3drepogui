@@ -25,6 +25,7 @@
 #define strcasecmp _stricmp
 #endif
 #include <repo/core/model/repo_model_global.h>
+#include <repo/repo_bouncer_global.h>
 
 repo::gui::RepoDialogUserManager::RepoDialogUserManager(
 		repo::RepoController *controller,

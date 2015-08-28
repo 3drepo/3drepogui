@@ -31,8 +31,6 @@
 
 #include "repo_subscriber_abstract.h"
 
-#define repoLog(MSG) repo::logger::RepoLogger::getInstance()->messageGenerated(MSG)
-
 namespace repo{
 	namespace logger{
 		class RepoLogger : public repo::lib::RepoAbstractListener
@@ -58,7 +56,6 @@ namespace repo{
 			void messageGenerated(const std::string &message);
 
 			/**
-			* Subscribe a new subscriber
 			* @param subscriber object who wishes to subscribe
 			*/
 
@@ -100,6 +97,12 @@ namespace repo{
 			* @return returns a color given severity level, gray if unknown
 			*/
 			std::string getSeverityColor(std::string severity);
+
+			/**
+			* tee (as of linux command) cout, clog and cerr 
+			* so we can capture these messages via the internal logging system
+			*/
+			void teeStdOutputs();
 
 			std::vector<AbstractSubscriber *> subs;
 		};

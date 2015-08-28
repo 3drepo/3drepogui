@@ -16,11 +16,15 @@
 */
 
 #include "repo_logger.h"
+#include "repo_stream_redirect.h"
+#include <boost/iostreams/tee.hpp>
+#include <boost/iostreams/stream.hpp>
 
 using namespace repo::logger;
 
 RepoLogger::RepoLogger()
 {
+	teeStdOutputs();
 }
 
 
@@ -138,4 +142,42 @@ void RepoLogger::subscribe(AbstractSubscriber *sub)
 {
 	if (sub)
 		subs.push_back(sub);
+}
+
+
+void RepoLogger::teeStdOutputs()
+{
+	//-------------------------------------------------------------
+	// COUT
+	std::ostream tmp(std::cout.rdbuf());
+	//boost::iostreams::tee_device<std::ostream, StreamRedirect> *coutDevice = 
+	//	new boost::iostreams::tee_device<std::ostream, StreamRedirect>(tmp, StreamRedirect(StreamRedirect::Severity::INFO));
+	//boost::iostreams::stream<boost::iostreams::tee_device<std::ostream, StreamRedirect>> * coutStream = 
+	//	new boost::iostreams::stream<boost::iostreams::tee_device<std::ostream, StreamRedirect>>(coutDevice);
+	//boost::iostreams::stream<StreamRedirect> coutStream = new boost::iostreams::stream<StreamRedirect>(StreamRedirect::Severity::INFO);
+
+	StreamRedirect const * newCoutBuff = new StreamRedirect(StreamRedirect::Severity::INFO);
+
+	boost::iostreams::stream_buffer<StreamRedirect> *sb = 
+		new boost::iostreams::stream_buffer<StreamRedirect>(*newCoutBuff);
+
+	std::cout.rdbuf(sb);
+	std::clog.rdbuf(sb);
+	//-------------------------------------------------------------
+	// CERR
+	//std::ostream tmp2(std::cerr.rdbuf());
+	////boost::iostreams::tee_device<std::ostream, StreamRedirect> *cerrDevice =
+	////	new boost::iostreams::tee_device<std::ostream, StreamRedirect>(tmp2, StreamRedirect(StreamRedirect::Severity::ERR));
+	////boost::iostreams::stream<boost::iostreams::tee_device<std::ostream, StreamRedirect>> * cerrStream =
+	////	new boost::iostreams::stream<boost::iostreams::tee_device<std::ostream, StreamRedirect>>(cerrDevice);
+
+
+	StreamRedirect const * newCerrBuff = new StreamRedirect(StreamRedirect::Severity::ERR);
+
+	boost::iostreams::stream_buffer<StreamRedirect> *sberr =
+		new boost::iostreams::stream_buffer<StreamRedirect>(*newCerrBuff);
+
+	std::cerr.rdbuf(sberr);
+
+
 }

@@ -159,7 +159,7 @@ void RepoMdiSubWindow::finishedLoadingScene(
 
 void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
 {
-	repo::logger::RepoLogger::getInstance()->messageGenerated("finished Loading GLC");
+	repoLog("finished Loading GLC");
 	RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());
 	if (widget)
 	{

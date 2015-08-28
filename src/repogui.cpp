@@ -67,8 +67,10 @@ repo::gui::RepoGUI::RepoGUI(
 
 	//Subscribe logger to broadcaster who taps into repo bouncer library logs
 	repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
-
-
+	repoLog("Testing");
+	std::cout << "This is from std::out";
+	std::cerr << " This is from std::cerr";
+	std::clog << "This is fron std::clog";
     QIcon icon(":/images/3drepo-icon.svg");
     this->setWindowIcon(icon);
 

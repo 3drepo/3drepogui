@@ -218,7 +218,7 @@ void repo::gui::RepoGLCWidget::initializeShaders()
 			GLC_SelectionMaterial::initShader(context());
 		}
 		catch(GLC_Exception e){
-			repo::logger::RepoLogger::getInstance()->messageGenerated("Init shader failed " + std::string(e.what()));
+			repoLogError("Init shader failed " + std::string(e.what()));
 		}
 		/*
 
@@ -714,10 +714,10 @@ void repo::gui::RepoGLCWidget::setRepoScene(repo::core::model::RepoScene *repoSc
 
 void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 {
-	repo::logger::RepoLogger::getInstance()->messageGenerated("Setting GLC World...");
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World empty: " + std::to_string(glcWorld.isEmpty()));
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World size: " + std::to_string(glcWorld.size()));
-	repo::logger::RepoLogger::getInstance()->messageGenerated("\tGLC World #vertex: " + std::to_string(glcWorld.numberOfVertex()));
+	repoLog("Setting GLC World...");
+	repoLog("\tGLC World empty: " + std::to_string(glcWorld.isEmpty()));
+	repoLog("\tGLC World size: " + std::to_string(glcWorld.size()));
+	repoLog("\tGLC World #vertex: " + std::to_string(glcWorld.numberOfVertex()));
 	this->glcWorld = glcWorld;
 	this->glcWorld.collection()->setLodUsage(true, &glcViewport);
 	this->glcWorld.collection()->setVboUsage(true);

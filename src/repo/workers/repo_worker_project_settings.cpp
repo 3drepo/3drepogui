@@ -16,7 +16,7 @@
 */
 
 #include "repo_worker_project_settings.h"
-#include "../logger/repo_logger.h"
+#include <repo/repo_bouncer_global.h>
 //------------------------------------------------------------------------------
 // Core
 
