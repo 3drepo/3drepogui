@@ -17,7 +17,7 @@ def printHeader(file):
 def writeAllFilesFound(dirName, files, subDirList, fileToWrite, ext):
 	for fname in files:
 		if fname.lower().endswith(ext):
-			fileToWrite.write(' \\\n\t' + dirName + '/'+fname)
+			fileToWrite.write(' \\\n\t' + dirName.replace('\\','/') + '/'+fname)
 	return
 
 
