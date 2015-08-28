@@ -27,10 +27,10 @@ CONFIG += ordered warn_off
 #================================ BOOST =====================================
 BOOSTDIR = $$(BOOST_ROOT) #change this if you don't want to use envar
 !isEmpty(BOOSTDIR) {
-	BOOST_INC_DIR = $BOOSTDIR/include
-	BOOST_LIB_DIR = $$(BOOST_LIBRARYDIR)
+        BOOST_INC_DIR = $${BOOSTDIR}/
+        BOOST_LIB_DIR = $${BOOST_LIBRARYDIR}
 	isEmpty(BOOST_LIB_DIR){
-		BOOST_LIB_DIR = $BOOSTDIR/include
+                BOOST_LIB_DIR = $${BOOSTDIR}/include
 	}
 } else {
 	error(Cannot find BOOST library. Please ensure the environment variables BOOST_ROOT and BOOST_LIBARYDIR is set.)
@@ -41,8 +41,8 @@ BOOSTLIB = -lboost_system -lboost_thread -lboost_chrono -lboost_log -lboost_log_
 #========================== 3D Repobouncer ==================================
 BOUNCERDIR = $$(REPOBOUNCER_ROOT) #change this if you don't want to use envar
 !isEmpty(BOUNCERDIR) {
-	BOUNCER_LIB_DIR = $BOUNCERDIR/lib/
-	BOUNCER_INC_DIR = $BOUNCERDIR/include/
+        BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
+        BOUNCER_INC_DIR = $${BOUNCERDIR}/include
 } else {
 	error(Cannot find 3drepobouncer installation. Please ensure the environment variable REPOBOUNCER_ROOT is set)
 }
@@ -51,8 +51,8 @@ BOUNCERLIB = -l3drepobouncer
 
 ASSIMPDIR = $$(ASSIMP_ROOT) #change this if not using envar
 !isEmpty(ASSIMPDIR) {
-	ASSIMP_LIB_DIR = $ASSIMPDIR/lib/
-	ASSIMP_INC_DIR = $ASSIMPDIR/include/
+        ASSIMP_LIB_DIR = $${ASSIMPDIR}/lib/
+        ASSIMP_INC_DIR = $${ASSIMPDIR}/include/
 } else {
 	error(Cannot find Assimp installation. Please ensure the environment variable ASSIMP_ROOT is set)
 
@@ -62,8 +62,8 @@ ASSIMPLIB = -lassimp
 
 MONGODIR = $$(MONGO_ROOT) #change this if not using envar
 !isEmpty(MONGODIR) {
-	MONGO_LIB_DIR = $MONGODIR/lib
-	MONGO_INC_DIR = $MONGODIR/include/
+        MONGO_LIB_DIR = $${MONGODIR}/lib
+        MONGO_INC_DIR = $${MONGODIR}/include/
 } else {
 	error(Cannot find Mongo installation. Please ensure the environment variable MONGO_ROOT is set)
 }
@@ -74,17 +74,16 @@ MONGOLIB = -lmongoclient
 #============================== GLC LIB =======================================
 GLCLIBDIR = $$(GLC_ROOT) #change this if you don't want ot use envar
 !isEmpty(GLCLIBDIR) {
-	GLC_INC_DIR = $GLCLIBDIR/include
-	GLC_LIB_DIR = $GLCLIBDIR/lib
+        GLC_INC_DIR = $${GLCLIBDIR}/include
+        GLC_LIB_DIR = $${GLCLIBDIR}/lib
 } else {
 	error(Cannot find GLC library. Please ensure the environment variable GLC_ROOT is set.)
 }
 
 GLCLIB = -lGLC_lib
 
-
-INCLUDEPATH += $BOOST_INC_DIR $BOUNCER_INC_DIR $ASSIMP_INC_DIR $MONGO_INC_DIR $GLC_INC_DIR
-LIBS += -L$BOOST_LIB_DIR -L$BOUNCER_LIB_DIR -L$ASSIMP_LIB_DIR -L$MONGO_LIB_DIR -L$GLC_LIB_DIR
-LIBS += $BOOSTLIB $BOUNCERLIB $ASSIMPLIB $MONGOLIB $GLCLIB
+INCLUDEPATH += $${BOOST_INC_DIR} $${BOUNCER_INC_DIR} $${ASSIMP_INC_DIR} $${MONGO_INC_DIR} $${GLC_INC_DIR}
+LIBS += -L$${BOOST_LIB_DIR} -L$${BOUNCER_LIB_DIR} -L$${ASSIMP_LIB_DIR} -L$${MONGO_LIB_DIR} -L$${GLC_LIB_DIR}
+LIBS += $${BOOSTLIB} $${BOUNCERLIB} $${ASSIMPLIB} $${MONGOLIB} $${GLCLIB}
 
 include(3drepogui.pri)
