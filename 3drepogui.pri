@@ -1,6 +1,7 @@
 #THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT OVERWRITE THE CONTENT!
 #If you need to update the sources/headers/forms, run updateSources.py at project root level
-#If you need to import an extra library or something clever, do it on the 3drepogui.pron#If you really need to overwrite this file, be aware that it will be overwritten if updateSources.py is executed.
+#If you need to import an extra library or something clever, do it on the 3drepogui.pron
+#If you really need to overwrite this file, be aware that it will be overwritten if updateSources.py is executed.
 
 
 HEADERS +=  \

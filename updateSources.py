@@ -10,7 +10,7 @@ def printHeader(file):
 	
 	file.write('#THIS IS AN AUTOMATICALLY GENERATED FILE - DO NOT OVERWRITE THE CONTENT!\n')
 	file.write('#If you need to update the sources/headers/forms, run updateSources.py at project root level\n')
-	file.write('#If you need to import an extra library or something clever, do it on the 3drepogui.pron')
+	file.write('#If you need to import an extra library or something clever, do it on the 3drepogui.pron\n')
 	file.write('#If you really need to overwrite this file, be aware that it will be overwritten if updateSources.py is executed.\n\n\n')
 	return
 
