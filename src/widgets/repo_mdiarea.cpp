@@ -18,9 +18,6 @@
 #include "repo_mdiarea.h"
 #include "../repo/workers/repo_worker_scene_graph.h"
 #include "../renderers/repo_glcwidget.h"
-
-#include "../renderers/repo_oculus.h"
-#include "../renderers/repooculustexturerenderer.h"
 #include "../renderers/repo_webview.h"
 
 
@@ -260,44 +257,10 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	return repoSubWindow;
 }
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addOculusTextureSubWindow()
-{
-    return addSubWidget(new RepoOculusTextureRenderer());
-}
-
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
 {
     return addSubWidget(new RepoWebView());
 }
-
-repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()
-{
-    RepoMdiSubWindow* repoSubWindow = activeSubWindow();    
-    RepoGLCWidget* oldWidget = repoSubWindow->widget<RepoGLCWidget*>();
-
-    if (!oldWidget)
-        repoSubWindow = NULL;
-    else
-    {
-
-        //----------------------------------------------------------------------
-        // Disable double buffering
-        RepoOculus *oculus = new RepoOculus(
-                    repoSubWindow,
-                    RepoOculus::singleBufferFormat(),
-                    oldWidget->windowTitle());
-        oculus->setGLCWorld(oldWidget->getGLCWorld());
-
-        repoSubWindow->setWidget(oculus);
-        repoSubWindow->show();
-
-        this->update();
-        this->repaint();
-    }
-    return repoSubWindow;
-}
-
-
 
 QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	bool onlyVisible,

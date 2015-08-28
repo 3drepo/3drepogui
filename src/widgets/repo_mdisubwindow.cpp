@@ -20,8 +20,6 @@
 #include "../renderers/repo_glcwidget.h"
 #include "../primitives/repo_fontawesome.h"
 
-#include "../renderers/repo_oculus.h"
-
 #include "../repo/workers/repo_worker_glc_export.h"
 #include "../repo/logger/repo_logger.h"
 
@@ -166,12 +164,6 @@ void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScen
 		if (repoScene)
 	           widget->setRepoScene(repoScene);
 		widget->setGLCWorld(glcWorld);
-	}
-	else
-	{
-	    RepoOculus *oculusWidget = dynamic_cast<RepoOculus*>(this->widget());
-	    if (oculusWidget)
-	        oculusWidget->setGLCWorld(glcWorld);
 	}
 }
 

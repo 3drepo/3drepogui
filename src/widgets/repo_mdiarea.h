@@ -103,12 +103,6 @@ public :
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
 
-    //! Transforms active subwindow to oculus rendering.
-    RepoMdiSubWindow *activeSubWindowToOculus();
-
-    //! Adds texture subwindow to render oculus view on desktop.
-    RepoMdiSubWindow* addOculusTextureSubWindow();
-
     //! Adds a web view subwindow
     RepoMdiSubWindow* addWebViewSubWindow();
 

@@ -27,7 +27,6 @@
 #include "dialogs/repo_dialogcommit.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
-#include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
@@ -39,8 +38,6 @@
 #include "widgets/reposelectiontreedockwidget.h"
 #include "repo/workers/repo_worker_commit.h"
 #include "repo/workers/repo_worker_file_export.h"
-#include "renderers/repo_oculus.h"
-#include "renderers/repooculustexturerenderer.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
@@ -183,12 +180,6 @@ repo::gui::RepoGUI::RepoGUI(
                     RepoFontAwesome::fa_link,
                     RepoFontAwesome::fa_chain_broken));
 
-
-    // Oculus VR
-    QObject::connect(ui->actionOculus, SIGNAL(triggered()), this, SLOT(oculus()));
-    ui->actionOculus->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_eye));
 
     // Web View
     QObject::connect(ui->actionWeb_View, &QAction::triggered,
@@ -591,25 +582,6 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
         loadFile(url.toLocalFile());
         ++it;
     }
-}
-
-
-void repo::gui::RepoGUI::oculus()
-{
-
-    RepoGLCWidget *activeSubWidget = ui->mdiArea->activeSubWidget<RepoGLCWidget*>();
-    if (!activeSubWidget)
-        std::cout << "A 3D window has to be open." << std::endl;
-    else
-    {
-        RepoMdiSubWindow* textureSubwindow = ui->mdiArea->addOculusTextureSubWindow();
-        RepoDialogOculus oculusDialog(activeSubWidget,
-                                      textureSubwindow->widget<RepoOculusTextureRenderer*>(),
-                                      this);
-        oculusDialog.exec();
-
-    }
-
 }
 
 void repo::gui::RepoGUI::open3DDiff()
