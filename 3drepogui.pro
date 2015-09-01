@@ -61,7 +61,7 @@ unix|win32: LIBS +=  -L$${BOOST_LIB_DIR}   $${BOOSTLIB}
 #========================== 3D Repobouncer ==================================
 !isEmpty(BOUNCERDIR) {
         BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
-        BOUNCER_INC_DIR = $${BOUNCERDIR}/src
+        BOUNCER_INC_DIR = $${BOUNCERDIR}/include
 } else {
 	error(Cannot find 3drepobouncer installation. Please ensure the environment variable REPOBOUNCER_ROOT is set)
 }
@@ -69,8 +69,10 @@ unix|win32: LIBS +=  -L$${BOOST_LIB_DIR}   $${BOOSTLIB}
 BOUNCERLIB = -l3drepobouncer
 
 INCLUDEPATH += $${BOUNCER_INC_DIR}
+DEPENDPATH += $${BOUNCER_INC_DIR}
 
-LIBS += -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
+
+unix|win32: LIBS +=  -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
 
 !isEmpty(ASSIMPDIR) {
         ASSIMP_LIB_DIR = $${ASSIMPDIR}/lib/
@@ -79,12 +81,14 @@ LIBS += -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
 	error(Cannot find Assimp installation. Please ensure the environment variable ASSIMP_ROOT is set)
 
 }
+win32:ASSIMPLIB =  -lassimp-$$COMPILER-mtd #this potentially needs changing depending on how assimp was built
 
-ASSIMPLIB = -lassimp
+unix|macx:ASSIMPLIB = -lassimp
 
 INCLUDEPATH += $${ASSIMP_INC_DIR}
+DEMANDPATH += $${ASSIMP_INC_DIR}
 
-LIBS += -L$${ASSIMP_LIB_DIR} $${ASSIMPLIB}
+unix|win32:LIBS += -L$${ASSIMP_LIB_DIR} $${ASSIMPLIB}
 
 !isEmpty(MONGODIR) {
         MONGO_LIB_DIR = $${MONGODIR}/lib
@@ -96,8 +100,9 @@ LIBS += -L$${ASSIMP_LIB_DIR} $${ASSIMPLIB}
 MONGOLIB = -lmongoclient
 
 INCLUDEPATH += $${MONGO_INC_DIR}
+DEMANDPATH += $${MONGO_INC_DIR}
 
-LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
+unix|win32: LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
 
 
 
@@ -109,12 +114,13 @@ LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
 	error(Cannot find GLC library. Please ensure the environment variable GLC_ROOT is set.)
 }
 
-#GLCLIB = -lGLC_lib
+GLCLIB = -lGLC_lib2
 
 
 INCLUDEPATH += $${GLC_INC_DIR}
+DEPENDPATH += $${GLC_INC_DIR}
 
-LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
+unix|win32:LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
 
 
 
@@ -123,26 +129,6 @@ win32:DEFINES += _WINDOWS UNICODE WIN32 WIN64 WIN32_LEAN_AND_MEAN _SCL_SECURE_NO
 DEFINES += BOOST_LOG_DYN_LINK BOOST_ALL_NO_LIB
 
 
-unix|win32: LIBS += -L$$PWD/../../../../../../local/3drepobouncer/lib/ -l3drepobouncer
 
-INCLUDEPATH += $$PWD/../../../../../../local/3drepobouncer/include
-DEPENDPATH += $$PWD/../../../../../../local/3drepobouncer/include
-
-unix|win32: LIBS += -L$$PWD/../../../../../../local/libGLC/lib/ -lGLC_lib2
-
-INCLUDEPATH += $$PWD/../../../../../../local/libGLC/include
-DEPENDPATH += $$PWD/../../../../../../local/libGLC/include
-
-
-unix|win32: LIBS += -L$$PWD/../../../../../../local/mongo-cxx-driver/lib/ -lmongoclient
-
-INCLUDEPATH += $$PWD/../../../../../../local/mongo-cxx-driver/include
-DEPENDPATH += $$PWD/../../../../../../local/mongo-cxx-driver/include
-
-
-unix|win32: LIBS += -L$$PWD/../../../../../../local/assimp_head/lib/ -lassimp-vc120-mtd
-
-INCLUDEPATH += $$PWD/../../../../../../local/assimp_head/include
-DEPENDPATH += $$PWD/../../../../../../local/assimp_head/include
 
 include(3drepogui.pri)
