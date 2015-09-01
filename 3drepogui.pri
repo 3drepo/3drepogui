@@ -9,7 +9,6 @@ HEADERS +=  \
 	src/reposettings.h \
 	src/dialogs/repoabstractmanagerdialog.h \
 	src/dialogs/repodialogabout.h \
-	src/dialogs/repodialogoculus.h \
 	src/dialogs/repodialogsettings.h \
 	src/dialogs/repodialoguser.h \
 	src/dialogs/repodialogusermanager.h \
@@ -29,11 +28,9 @@ HEADERS +=  \
 	src/primitives/repo_fontawesome.h \
 	src/primitives/repo_glccamera.h \
 	src/primitives/repo_sortfilterproxymodel.h \
-	src/renderers/repooculustexturerenderer.h \
 	src/renderers/repo_3ddiffrenderer.h \
 	src/renderers/repo_fpscounter.h \
 	src/renderers/repo_glcwidget.h \
-	src/renderers/repo_oculus.h \
 	src/renderers/repo_webview.h \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
@@ -65,7 +62,6 @@ SOURCES +=  \
 	src/reposettings.cpp \
 	src/dialogs/repoabstractmanagerdialog.cpp \
 	src/dialogs/repodialogabout.cpp \
-	src/dialogs/repodialogoculus.cpp \
 	src/dialogs/repodialogsettings.cpp \
 	src/dialogs/repodialoguser.cpp \
 	src/dialogs/repodialogusermanager.cpp \
@@ -85,11 +81,9 @@ SOURCES +=  \
 	src/primitives/repo_fontawesome.cpp \
 	src/primitives/repo_glccamera.cpp \
 	src/primitives/repo_sortfilterproxymodel.cpp \
-	src/renderers/repooculustexturerenderer.cpp \
 	src/renderers/repo_3ddiffrenderer.cpp \
 	src/renderers/repo_fpscounter.cpp \
 	src/renderers/repo_glcwidget.cpp \
-	src/renderers/repo_oculus.cpp \
 	src/renderers/repo_webview.cpp \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
@@ -118,7 +112,6 @@ SOURCES +=  \
 FORMS +=  \
 	forms/repoabstractmanagerdialog.ui \
 	forms/repodialogabout.ui \
-	forms/repodialogoculus.ui \
 	forms/repodialogsettings.ui \
 	forms/repodialoguser.ui \
 	forms/repofederationdialog.ui \

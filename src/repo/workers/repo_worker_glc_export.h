@@ -74,7 +74,7 @@ namespace repo {
 			/**
 			* Convert a repo scene to a GLC occurance structure of nodes.
 			*/
-			GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
+            GLC_StructOccurence* convertSceneToOccurance(
 				repo::core::model::RepoScene *scene);
 
 		signals:

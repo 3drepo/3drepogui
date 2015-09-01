@@ -69,7 +69,7 @@ public slots :
 		refresh(repo::core::model::RepoProjectSettings(), false);
 	}
 
-	void repo::gui::RepoProjectManagerDialog::refresh(
+    void refresh(
 		const repo::core::model::RepoProjectSettings &settings,
 		const bool                                         &isDelete);
 
