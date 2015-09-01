@@ -64,14 +64,9 @@ repo::gui::RepoGUI::RepoGUI(
 
 	//Subscribe logger to broadcaster who taps into repo bouncer library logs
 	repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
-	repoLog("Testing");
+
     QIcon icon(":/images/3drepo-icon.svg");
     this->setWindowIcon(icon);
-
-    this->setWindowIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                            RepoFontAwesome::fa_database,
-                            QColor(246, 101, 60)));
 
     //--------------------------------------------------------------------------
     // For docks and windows not to update as they are slow to repaint.
