@@ -141,10 +141,10 @@ void RepoFederationDialog::addProjectsToFederation()
             row[0]->setData(var);
 
             row << RepoFilterableTreeWidget::createItem("master");
-            row[1]->setEditable(true);
+            row[1]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
 
             row << RepoFilterableTreeWidget::createItem("head");
-            row[2]->setEditable(true);
+			row[2]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
             item->appendRow(row);
         }
         ui->federatedWidget->expandItem(item);
