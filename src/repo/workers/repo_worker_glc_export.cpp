@@ -164,9 +164,16 @@ GLCExportWorker::GLCExportWorker(
 {
 	//use stashGraph if available, otherwise use default
 	if (scene && scene->getRoot(repo::core::model::RepoScene::GraphType::OPTIMIZED))
+	{
+		repoDebug << "stash graph found, visualising with stash graph...";
 		repoViewGraph = repo::core::model::RepoScene::GraphType::OPTIMIZED;
+	}
 	else
+	{
+		repoDebug << "stash graph not found, visualising with default graph...";
 		repoViewGraph = repo::core::model::RepoScene::GraphType::DEFAULT;
+	}
+
 }
 
 GLCExportWorker::~GLCExportWorker() {}

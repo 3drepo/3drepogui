@@ -38,13 +38,13 @@ CommitWorker::~CommitWorker() {}
 void CommitWorker::run()
 {
 	std::cout << tr("Commiting scene to the database, please wait...").toStdString() << std::endl;
-	int jobsCount = 0;
 	
+	emit progress(0, 0);
 	controller->commitScene(token, scene);
 
 	//--------------------------------------------------------------------------
 	// End
-	emit progress(jobsCount, jobsCount);
+	emit progress(1, 1);
 	//--------------------------------------------------------------------------
 	// Done
 	emit RepoAbstractWorker::finished();
