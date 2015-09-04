@@ -25,6 +25,7 @@
 
 using namespace repo::worker;
 namespace repoModel = repo::core::model;
+
 //------------------------------------------------------------------------------
 // Core
 
@@ -158,18 +159,26 @@ private:
 };
 
 GLCExportWorker::GLCExportWorker(
-	repo::core::model::RepoScene* scene):scene(scene){}
+	repo::core::model::RepoScene* scene):
+	scene(scene)
+{
+	//use stashGraph if available, otherwise use default
+	if (scene && scene->getRoot(repo::core::model::RepoScene::GraphType::OPTIMIZED))
+		repoViewGraph = repo::core::model::RepoScene::GraphType::OPTIMIZED;
+	else
+		repoViewGraph = repo::core::model::RepoScene::GraphType::DEFAULT;
+}
 
 GLCExportWorker::~GLCExportWorker() {}
 
 void GLCExportWorker::run()
 {
 
-	if (scene)
+	if (scene && scene->getRoot(repoViewGraph))
 	{
 		//-------------------------------------------------------------------------
 		// Start
-		jobsCount = scene->getItemsInCurrentGraph();
+		jobsCount = scene->getItemsInCurrentGraph(repoViewGraph);
 		done = 0;
 		emit progress(0, 0); // undetermined (moving) progress bar
 		GLC_World *glcWorld = createGLCWorld(scene);
@@ -179,7 +188,7 @@ void GLCExportWorker::run()
 		QString rootName;
 
 		if (scene)
-			rootName = QString(scene->getRoot()->getName().c_str());
+			rootName = QString(scene->getRoot(repoViewGraph)->getName().c_str());
 
 		if (glcWorld)
 		{
@@ -213,7 +222,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 	//-----
 	GLC_World* glcWorld = nullptr;
-	if (!cancelled && scene && scene->hasRoot()){
+	if (!cancelled && scene && scene->hasRoot(repoViewGraph)){
 		glcWorld = new GLC_World(convertSceneToOccurance(scene));
 	}
 
@@ -229,7 +238,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 	// Allocate Textures
 	std::map<repoUUID, std::vector<GLC_Texture*>> parentToGLCTexture;
 
-	repoModel::RepoNodeSet textures = scene->getAllTextures();
+	repoModel::RepoNodeSet textures = scene->getAllTextures(repoViewGraph);
 
 	for (auto &texture : textures)
 	{
@@ -258,7 +267,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 	// Allocate Materials
 	std::map<repoUUID, std::vector<GLC_Material*>> parentToGLCMaterial;
 
-	repoModel::RepoNodeSet materials = scene->getAllMaterials();
+	repoModel::RepoNodeSet materials = scene->getAllMaterials(repoViewGraph);
 
 	for (auto &material : materials)
 	{
@@ -286,7 +295,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 	//-------------------------------------------------------------------------
 	// Allocate Meshes
 
-	repoModel::RepoNodeSet meshes = scene->getAllMeshes();
+	repoModel::RepoNodeSet meshes = scene->getAllMeshes(repoViewGraph);
 	std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCMeshes;
 	for (auto &mesh : meshes)
 	{
@@ -312,7 +321,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 
 	//-------------------------------------------------------------------------
 	// Allocate cameras
-	repoModel::RepoNodeSet cameras = scene->getAllCameras();
+	repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
 	std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
 	for (auto &camera : cameras)
 	{
@@ -338,7 +347,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 		}
 	}
 
-	return createOccurrenceFromNode(scene, scene->getRoot(), parentToGLCMeshes, parentToGLCCameras);
+	return createOccurrenceFromNode(scene, scene->getRoot(repoViewGraph), parentToGLCMeshes, parentToGLCCameras);
 }
 
 GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
@@ -451,7 +460,9 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			break;
 		}
 		case repoModel::NodeType::REFERENCE:
-			repo::core::model::RepoScene *refScene = scene->getSceneFromReference(node->getSharedID());
+			//FIXME: references in stash? need to think about this.
+			repo::core::model::RepoScene *refScene = scene->getSceneFromReference(repoViewGraph,
+				node->getSharedID());
 			if (refScene)
 			{
 				occurrence = convertSceneToOccurance(refScene);
@@ -463,7 +474,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 		//-------------------------------------------------------------------------
 		// Children
 
-		for (auto child : scene->getChildrenAsNodes(node->getSharedID()))
+		for (auto child : scene->getChildrenAsNodes(repoViewGraph, node->getSharedID()))
 		{
 
 			GLC_StructOccurence *childOccurance = createOccurrenceFromNode(

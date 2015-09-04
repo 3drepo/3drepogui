@@ -84,6 +84,7 @@ namespace repo {
 
 		private:
 			repo::core::model::RepoScene* scene;
+			repo::core::model::RepoScene::GraphType repoViewGraph;
 
 			GLC_World* GLCExportWorker::createGLCWorld(
 				repo::core::model::RepoScene *scene);
