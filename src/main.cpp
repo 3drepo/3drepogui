@@ -62,6 +62,8 @@ int main(int argc, char *argv[])
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
 	}
 
+	controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
+
 	if (verbose) free(verbose);
 	if (debug)   free(debug);
 	

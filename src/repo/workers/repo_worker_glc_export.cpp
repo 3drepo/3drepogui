@@ -334,22 +334,23 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 	{
 		if (camera)
 		{
-			GLC_3DRep* glcCamera = convertGLCCamera(
-				(repoModel::CameraNode*)camera);
-			if (glcCamera)
-			{
-				std::vector<repoUUID> parents = camera->getParentIDs();
-				for (auto &parent : parents)
-				{
-					//Map the material to all parent UUIDs
-					if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
-					{
-						parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
-					}
-					//Map the mesh to all parent UUIDs
-					parentToGLCCameras[parent].push_back(glcCamera);
-				}
-			}
+			//FIXME: cameras don't really work. Disabled from visualisation for now.
+			//GLC_3DRep* glcCamera = convertGLCCamera(
+			//	(repoModel::CameraNode*)camera);
+			//if (glcCamera)
+			//{
+			//	std::vector<repoUUID> parents = camera->getParentIDs();
+			//	for (auto &parent : parents)
+			//	{
+			//		//Map the material to all parent UUIDs
+			//		if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
+			//		{
+			//			parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
+			//		}
+			//		//Map the mesh to all parent UUIDs
+			//		parentToGLCCameras[parent].push_back(glcCamera);
+			//	}
+			//}
 
 		}
 	}
@@ -429,27 +430,30 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 					instance = new GLC_StructInstance(new GLC_StructReference(name));
 				}
 			}
+			//else
+			//{
+			//	//FIXME: If there is a camera AND mesh then this wouldn't support that.
+			//	it = glcCamerasMap.find(sharedID);
+			//	if (it != glcCamerasMap.end())
+			//	{
+			//		//has cameras
+			//		for (auto &glcCamera : it->second)
+			//		{
+			//			if (glcCamera)
+			//			{
 
-			//FIXME: instance is overridden by camera if there is a mesh + camera under the same transformation!
-			it = glcCamerasMap.find(sharedID);
-			if (it != glcCamerasMap.end())
-			{
-				//has cameras
-				for (auto &glcCamera : it->second)
-				{
-					if (glcCamera)
-					{
+			//				instance = new GLC_StructInstance(new GLC_StructReference(new GLC_3DRep(*glcCamera)));
+			//				//if (pRep)
+			//				//	// instead of merging pRep
+			//				//	pRep->merge(glcCamera);
+			//				//else
+			//				//	pRep = new GLC_3DRep(*glcCamera);
+			//			}
 
-						instance = new GLC_StructInstance(new GLC_StructReference(new GLC_3DRep(*glcCamera)));
-						//if (pRep)
-						//	// instead of merging pRep
-						//	pRep->merge(glcCamera);
-						//else
-						//	pRep = new GLC_3DRep(*glcCamera);
-					}
-
-				}
-			}
+			//		}
+			//	}
+			//}
+			//
 			
 			if (!instance)
 			{
