@@ -28,7 +28,7 @@ External libraries are referenced via environment variables. Please ensure the f
 
 Libraries are referenced within 3drepogui.pro, you may wish to view and alter this where appropriate.
 
-Before compilation, 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
+Before compilation, make sure 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
 
 ## Compiling on Windows
 
