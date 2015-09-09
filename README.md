@@ -8,12 +8,17 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 
 ## Dependencies
 
-- [3D Repo Core master branch](https://github.com/3drepo/3drepocore)
+- [3D Repo Bouncer master branch](https://github.com/3drepo/3drepobouncer)
 - [GLC Lib v2.5.1](https://github.com/laumaya/GLC_lib/tree/Version_2_5_1)
 - [Font Awesome v4.3.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.3.0)
 - [Qt v5.4.1 OpenGL](https://www.qt.io/download-open-source/#section-2)
-- [Oculus SDK 0.4.3](https://developer.oculus.com/downloads/)
-- [UnrealEngine 4.7.2](https://github.com/3drepo/UnrealEngine)
+- [Python v2.x] (https://www.python.org/)
+
+## General Compilation instruction
+
+This project uses qmake as the compilation procedure. The easiest way to build this will be to open the qt project using QT Creator and using the GUI interface. For more information about qmake, see [http://doc.qt.io/qt-4.8/qmake-using.html]
+
+Before compilation, make sure the 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
 
 ## Compiling on Windows
 
@@ -33,18 +38,9 @@ http://gnuwin32.sourceforge.net/packages/openssl.htm
 Download pre-compiled ICU libraries for MSVC 2010, 2012 and 2013 directly from Qt: [http://download.qt-project.org/development_releases/prebuilt/icu/prebuilt/](http://download.qt-project.org/development_releases/prebuilt/icu/prebuilt/)
 See also [http://qt-project.org/wiki/Compiling-ICU-with-MSVC](http://qt-project.org/wiki/Compiling-ICU-with-MSVC)
 
-### Oculus
-
-Download and install Oculus Runtime for Windows. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
-
 ### OpenSSL
 
 Download pre-compiled OpenSSL binaries from [https://www.openssl.org/related/binaries.html](https://www.openssl.org/related/binaries.html). Either add them to the Path variable or copy the DLLs next to the 3D Repo executable.
-
-### UnrealEngine
-
-Unsupported yet: Register for an Unreal account and follow these instructions to link the account with Epic Games' GitHub private repository: [https://www.unrealengine.com/ue4-on-github](https://www.unrealengine.com/ue4-on-github)
-Once forked, follow the installation instructions (the page is inaccessible unless you're registered and linked): [https://github.com/EpicGames/UnrealEngine](https://github.com/EpicGames/UnrealEngine) 
 
 ## Compiling on Mac
 
@@ -68,7 +64,3 @@ On Mac you will need to compile GLC Lib separately. To do so, navigate to the su
 qmake -recursive
 make -j8
 ```
-
-### Oculus
-
-Download and install Oculus Runtime for Mac. Download Oculus SDK and copy precompiled Lib folder under submodules/LibOVR. Modify oculus.pri in the main folder to point to the library matching your compiler.
