@@ -16,7 +16,7 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 
 ## General Compilation instruction
 
-This project uses qmake as the compilation procedure. The easiest way to build this will be to open the qt project using QT Creator and using the GUI interface. For more information about qmake, see [http://doc.qt.io/qt-4.8/qmake-using.html]
+This project uses qmake as the compilation procedure. The easiest way to build this will be to open the qt project using QT Creator and operate on the GUI interface. For more information about qmake, see [http://doc.qt.io/qt-4.8/qmake-using.html]
 
 Before compilation, make sure the 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
 
