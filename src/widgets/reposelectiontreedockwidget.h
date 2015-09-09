@@ -23,11 +23,6 @@
 // Qt
 #include <QDockWidget>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoNodeAbstract>
-#include <RepoNodeTransformation>
-#include <RepoBinary>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -58,7 +53,7 @@ public:
 
 public slots :
 
-    void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
+    //void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
 
     void attachPDF();
 
@@ -77,20 +72,20 @@ public slots :
 
     void editSelectedItems() const;
 
-    void select(const core::RepoNodeAbstract* node,
-                bool unselectSelected);
+    //void select(const core::RepoNodeAbstract* node,
+    //            bool unselectSelected);
 
     void showContextMenu(const QPoint &point);
 
 protected :
 
-    core::RepoNodeTransformation *getTransformationFromProxy(const QModelIndex &proxyIndex) const;
+    //core::RepoNodeTransformation *getTransformationFromProxy(const QModelIndex &proxyIndex) const;
 
-    core::RepoNodeTransformation *getTransformationFromSource(const QModelIndex &proxyIndex) const;
+    //core::RepoNodeTransformation *getTransformationFromSource(const QModelIndex &proxyIndex) const;
 
-    core::RepoNodeAbstract *getNode(const QStandardItem *) const;
+    //core::RepoNodeAbstract *getNode(const QStandardItem *) const;
 
-    core::RepoNodeTransformation *getTransformation(const QStandardItem *) const;
+    //core::RepoNodeTransformation *getTransformation(const QStandardItem *) const;
 
     std::string getType(const QStandardItem *) const;
 

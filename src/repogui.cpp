@@ -21,38 +21,28 @@
 #include <QtSvg>
 
 //------------------------------------------------------------------------------
-// Core
-#include <RepoGraphHistory>
-#include <RepoLogger>
-#include <Repo3DDiff>
-#include <RepoNodeRevision>
-#include <RepoPCA>
-#include <RepoCSV>
-#include <RepoGraphOptimizer>
-
-//------------------------------------------------------------------------------
 // GUI
 #include "repogui.h"
 #include "ui_repogui.h"
 #include "dialogs/repo_dialogcommit.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
-#include "dialogs/repodialogoculus.h"
 #include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
 #include "dialogs/repoprojectmanagerdialog.h"
+#include "repo/logger/repo_logger.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
 #include "widgets/reposelectiontreedockwidget.h"
-#include "workers/repo_workercommit.h"
-#include "renderers/repo_oculus.h"
-#include "renderers/repooculustexturerenderer.h"
+#include "repo/workers/repo_worker_commit.h"
+#include "repo/workers/repo_worker_file_export.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
 #include "dialogs/repofederationdialog.h"
+#include "dialogs/repo_maptilesdialog.h"
 #include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
@@ -61,24 +51,22 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 
-repo::gui::RepoGUI::RepoGUI(QWidget *parent)
+repo::gui::RepoGUI::RepoGUI(
+	repo::RepoController *controller,
+	QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::RepoGUI)
+	, controller(controller)
     , panelsMenu(0)
 {
     ui->setupUi(this);
     restoreSettings();
 
-    core::RepoLogger::instance().addListener(ui->logTextBrowser);
-
+	//Subscribe logger to broadcaster who taps into repo bouncer library logs
+	repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
 
     QIcon icon(":/images/3drepo-icon.svg");
     this->setWindowIcon(icon);
-
-//    this->setWindowIcon(
-//                RepoFontAwesome::getInstance().getIcon(
-//                            RepoFontAwesome::fa_database,
-//                            QColor(246, 101, 60)));
 
     //--------------------------------------------------------------------------
     // For docks and windows not to update as they are slow to repaint.
@@ -150,9 +138,13 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
     ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
 
-    // Federate
+    // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
+
+    // Add Map Tiles...
+    QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
+                     this, SLOT(addMapTiles()));
 
     //--------------------------------------------------------------------------
     // User Management...
@@ -183,12 +175,6 @@ repo::gui::RepoGUI::RepoGUI(QWidget *parent)
                     RepoFontAwesome::fa_link,
                     RepoFontAwesome::fa_chain_broken));
 
-
-    // Oculus VR
-    QObject::connect(ui->actionOculus, SIGNAL(triggered()), this, SLOT(oculus()));
-    ui->actionOculus->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_eye));
 
     // Web View
     QObject::connect(ui->actionWeb_View, &QAction::triggered,
@@ -309,6 +295,21 @@ void repo::gui::RepoGUI::about()
     aboutDialog.exec();
 }
 
+void repo::gui::RepoGUI::addMapTiles()
+{
+    RepoMapTilesDialog mapTilesDialog(this);
+    if(mapTilesDialog.exec()){
+
+		repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
+		if (scene)
+		{
+			commit(scene);
+		}
+
+    }
+
+}
+
 void repo::gui::RepoGUI::addSelectionTree(RepoGLCWidget* widget, Qt::DockWidgetArea area)
 {
     RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
@@ -328,74 +329,66 @@ void repo::gui::RepoGUI::commit()
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
 
-    core::RepoNodeAbstractSet nodes;
-    core::RepoNodeRevision* revision = 0;
+    
+	repo::core::model::RepoScene *repoScene;
 
     if (activeWindow && widget)
     {
-        const core::RepoGraphScene *repoScene = widget->getRepoScene();
-        nodes = repoScene->getNodes();
-
+        repoScene = widget->getRepoScene();
+        
         // TODO: fix !!!
         if (project.isEmpty())
         {
             QFileInfo path(activeWindow->windowTitle());
-            project = RepoWorkerCommit::sanitizeCollectionName(path.completeBaseName());
+            project = path.completeBaseName();
+			repoScene->setDatabaseAndProjectName(database.toStdString(), project.toStdString());
         }
 
-        core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-        core::RepoGraphHistory* history = new core::RepoGraphHistory();
-
-        revision = new core::RepoNodeRevision(mongo.getUsername(database.toStdString()));
-        revision->setCurrentUniqueIDs(repoScene->getUniqueIDs());
-        history->setCommitRevision(revision);
+        repo::RepoToken *token = ui->widgetRepository->getSelectedConnection();
     }   
 
-    commit(nodes, revision, project, activeWindow);
+    commit(repoScene, activeWindow);
 }
 
 void repo::gui::RepoGUI::commit(
-        const core::RepoNodeAbstractSet &nodes,
-        core::RepoNodeRevision* revision,
-        const QString &project,
+        repo::core::model::RepoScene *scene,
         RepoMdiSubWindow *activeWindow)
 {
-    std::cerr << "TEMPORARY COMMIT ONLY" << std::endl;
-
-    repo::gui::RepoDialogCommit commitDialog(
-                this,
-                Qt::Window,
-                ui->widgetRepository,
-                project,
-                nodes,
-                revision);
-
+	
+	if (scene)
+	{
+		repo::gui::RepoDialogCommit commitDialog(
+			this,
+			Qt::Window,
+			ui->widgetRepository,
+			scene);
 
 
-    if(!commitDialog.exec())
-        std::cout << "Commit dialog cancelled by user" << std::endl;
-    else // Clicked "OK"
-    {
-        //----------------------------------------------------------------------
-        // Establish and connect the new worker.
-        RepoWorkerCommit *worker = new RepoWorkerCommit(
-                     ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
-                    commitDialog.getCurrentDatabase(),
-                    commitDialog.getCurrentProject(),
-                    commitDialog.getRevision(),
-                    commitDialog.getNodesToCommit());
 
-        if (activeWindow)
-            QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+		if (!commitDialog.exec())
+			std::cout << "Commit dialog cancelled by user" << std::endl;
+		else // Clicked "OK"
+		{
+			//----------------------------------------------------------------------
+			// Establish and connect the new worker.
+			repo::worker::CommitWorker *worker = new repo::worker::CommitWorker(
+				controller,
+				ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
+				scene);
 
-        QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
-        //connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+			if (activeWindow)
+				QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
 
-        //----------------------------------------------------------------------
-        // Fire up the asynchronous calculation.
-        QThreadPool::globalInstance()->start(worker);
-    }
+			QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+			//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
+
+			//----------------------------------------------------------------------
+			// Fire up the asynchronous calculation.
+			QThreadPool::globalInstance()->start(worker);
+		}
+	}
 }
+
 
 void repo::gui::RepoGUI::connect()
 {
@@ -407,36 +400,38 @@ void repo::gui::RepoGUI::connect()
     }
     else
     {
-        // TODO move mongo creation outside of this main GUI to repository widget
-        // or similar
-        core::MongoClientWrapper mongo;
-
-        //----------------------------------------------------------------------
         // if not successfully connected
-        if (!mongo.connect(
-                    connectionDialog.getHost().toStdString(),
-                    connectionDialog.getPort()))
-        {
-            std::cerr << "Connection error" << std::endl;
-        }
-        else
-        {
-            if (!connectionDialog.getUsername().isEmpty())
-            {
-                mongo.authenticate(
-                    connectionDialog.getUsername().toStdString(),
-                    connectionDialog.getPassword().toStdString());
-            }
-            ui->widgetRepository->fetchDatabases(mongo);
 
-            //-----------------------------------------------------------------
-            // enable buttons
-            ui->actionRefresh->setEnabled(true);
-            ui->actionHead->setEnabled(true);
-            ui->actionHistory->setEnabled(true);
-            ui->actionCommit->setEnabled(true);
-            ui->actionDrop->setEnabled(true);
-        }
+		std::string errMsg;
+
+		repo::RepoToken* connectionToken =
+			controller->authenticateToAdminDatabaseMongo(
+			errMsg, 
+			connectionDialog.getHost().toStdString(), 
+			connectionDialog.getPort(),
+			connectionDialog.getUsername().toStdString(), 
+			connectionDialog.getPassword().toStdString());
+
+		if (connectionToken)
+		{
+			//connection/authentication success
+			ui->widgetRepository->fetchDatabases(controller, connectionToken);
+			//-----------------------------------------------------------------
+			// enable buttons
+			ui->actionRefresh->setEnabled(true);
+			ui->actionHead->setEnabled(true);
+			ui->actionHistory->setEnabled(true);
+			ui->actionCommit->setEnabled(true);
+			ui->actionDrop->setEnabled(true);
+
+		}
+		else
+		{
+			//connection/authentication failed
+			std::cerr << "Failed to connect/authenticate user." << std::endl;
+		}
+
+        
     }
 }
 
@@ -453,6 +448,7 @@ void repo::gui::RepoGUI::drop()
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString collection = ui->widgetRepository->getSelectedCollection();
 
+
     if (database.isNull() || database.isEmpty())
         std::cout << "A database must be selected." << std::endl;
     else if ((database == "local" || database == "admin") && collection.isEmpty())
@@ -460,25 +456,25 @@ void repo::gui::RepoGUI::drop()
     else
     {
         QString ns = database + (!collection.isEmpty() ? "." + collection : "");
-        switch (QMessageBox::warning(this,
-            "Drop?",
-            "Are you sure you want to drop '" + ns + "'?",
-            "&Yes",
-            "&No",
-            QString::null, 1, 1))
-        {
-            case 0: // yes
+		if (!QMessageBox::warning(this,
+			"Drop?",
+			"Are you sure you want to drop '" + ns + "'?",
+			"&Yes",
+			"&No",
+			QString::null, 1, 1))
+		{
 
-                // TODO: create a DB manager separate from repositories widget.
-                core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-                mongo.reconnectAndReauthenticate();
-                if (!collection.isEmpty())
-                    mongo.dropCollection(ns.toStdString());
-                else
-                    mongo.dropDatabase(ns.toStdString());
-                refresh();
-                break;
-            }
+			bool success;
+			std::string errMsg;
+			const RepoToken *token = ui->widgetRepository->getSelectedConnection();
+			// TODO: create a DB manager separate from repositories widget.
+			if (collection.isEmpty())
+				success = controller->removeDatabase(token, database.toStdString(), errMsg);
+			else
+				success = controller->removeCollection(token, database.toStdString(), collection.toStdString(), errMsg);
+
+			refresh();
+		}
     }
 }
 
@@ -487,19 +483,14 @@ void repo::gui::RepoGUI::federate()
     RepoFederationDialog fed(ui->widgetRepository, this);
     if (fed.exec())
     {
-        core::RepoGraphScene *scene = fed.getFederation();
+		repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
 
-        // TODO: diff the scene with previous to get current, added, deleted and modified nodes.
-        std::set<const core::RepoNodeAbstract *> nodes = scene->getNodesRecursively();
-        std::string username = ui->widgetRepository->getSelectedConnection().getUsername(ui->widgetRepository->getSelectedDatabase().toStdString());
-
-        core::RepoNodeRevision *revision = new core::RepoNodeRevision(username);
-    //    revision->setCurrentUniqueIDs(nodes);
-
-        core::RepoNodeAbstractSet nodesSet;
-        for (const core::RepoNodeAbstract *node : nodes)
-            nodesSet.insert(const_cast<core::RepoNodeAbstract*>(node));
-        commit(nodesSet, revision);
+		repoLog("federated scene...");
+		std::stringstream sstream;
+		scene->printStatistics(sstream);
+		repoLog(sstream.str());
+		repoLog("Committing scene...");
+		commit(scene);
     }
 }
 
@@ -507,6 +498,7 @@ void repo::gui::RepoGUI::fetchHead()
 {
     // Head revision from master branch
     ui->mdiArea->addSubWindow(
+				controller,
                 ui->widgetRepository->getSelectedConnection(),
                 ui->widgetRepository->getSelectedDatabase(),
                 ui->widgetRepository->getSelectedProject());
@@ -523,9 +515,9 @@ repo::gui::RepoGLCWidget* repo::gui::RepoGUI::getActiveWidget()
     return widget;
 }
 
-const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
+const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene()
 {
-    const core::RepoGraphScene *scene = 0;
+	const repo::core::model::RepoScene *scene = 0;
     if (const RepoGLCWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
@@ -533,11 +525,10 @@ const repo::core::RepoGraphScene* repo::gui::RepoGUI::getActiveScene()
 
 void repo::gui::RepoGUI::history()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    QString project = ui->widgetRepository->getSelectedProject();
-    core::MongoClientWrapper mongo =
-            ui->widgetRepository->getSelectedConnection();
-    RepoDialogHistory historyDialog(mongo, database, project, this);
+    QString          database = ui->widgetRepository->getSelectedDatabase();
+    QString          project  = ui->widgetRepository->getSelectedProject();
+    repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
+	RepoDialogHistory historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
         std::cout << "Revision History dialog cancelled by user." << std::endl;
@@ -547,7 +538,7 @@ void repo::gui::RepoGUI::history()
         for (QList<QUuid>::iterator uid = revisions.begin();
              uid != revisions.end();
              ++uid)
-            ui->mdiArea->addSubWindow(mongo, database, project, *uid, false);
+            ui->mdiArea->addSubWindow(controller, token, database, project, *uid, false);
         //---------------------------------------------------------------------
         // make sure to hook controls if chain is on
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
@@ -559,10 +550,10 @@ void repo::gui::RepoGUI::loadFile(const QString &filePath)
     if (!filePath.isEmpty())
     {
         QFileInfo pathInfo(filePath);
-        string fileName = pathInfo.fileName().toStdString();
+        std::string fileName = pathInfo.fileName().toStdString();
         std::cout << "Loading " << fileName << " ..." << std::endl;
 
-        ui->mdiArea->addSubWindow(filePath);
+        ui->mdiArea->addSubWindow(controller, filePath);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
 }
@@ -586,25 +577,6 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
         loadFile(url.toLocalFile());
         ++it;
     }
-}
-
-
-void repo::gui::RepoGUI::oculus()
-{
-
-    RepoGLCWidget *activeSubWidget = ui->mdiArea->activeSubWidget<RepoGLCWidget*>();
-    if (!activeSubWidget)
-        std::cout << "A 3D window has to be open." << std::endl;
-    else
-    {
-        RepoMdiSubWindow* textureSubwindow = ui->mdiArea->addOculusTextureSubWindow();
-        RepoDialogOculus oculusDialog(activeSubWidget,
-                                      textureSubwindow->widget<RepoOculusTextureRenderer*>(),
-                                      this);
-        oculusDialog.exec();
-
-    }
-
 }
 
 void repo::gui::RepoGUI::open3DDiff()
@@ -638,7 +610,7 @@ void repo::gui::RepoGUI::openFile()
         this,
         tr("Select one or more files to open"),
         QString::null,
-        repo::core::AssimpWrapper::getImportFormats().c_str());
+		QString(controller->getSupportedImportFormats().c_str()));
     loadFiles(filePaths);
 }
 
@@ -652,9 +624,15 @@ void repo::gui::RepoGUI::openMetadataManager()
             QString::null,
             "*.csv");
 
-        core::RepoCSV repoCSV;
-        core::RepoNodeAbstractSet metadata = repoCSV.readMetadata(filePath.toStdString());
-        widget->getRepoScene()->addMetadata(metadata,false);
+		repo::core::model::RepoScene *scene = widget->getRepoScene();
+		scene->addMetadata(
+			controller->loadMetadataFromFile(filePath.toStdString()), false);
+
+		std::stringstream ss;
+		scene->printStatistics(ss);
+		repoLog("Scene statistics: \n" + ss.str());
+		commit(scene);
+
     }
 }
 
@@ -662,12 +640,12 @@ void repo::gui::RepoGUI::optimizeGraph()
 {
     if (const RepoGLCWidget *widget = getActiveWidget())
     {
-        core::RepoGraphScene* scene = widget->getRepoScene();
+      /*  core::RepoGraphScene* scene = widget->getRepoScene();
         core::RepoGraphOptimizer optimizer(scene);
 
         optimizer.collapseZeroMeshTransformations();
 
-        optimizer.collapseSingleMeshTransformations();
+        optimizer.collapseSingleMeshTransformations();*/
     }
 }
 
@@ -689,14 +667,13 @@ void repo::gui::RepoGUI::openSupportEmail() const
 
 void repo::gui::RepoGUI::openUserManager() const
 {
-//    core::MongoClientWrapper mongo = ui->widgetRepository->getSelectedConnection();
-    RepoDialogUserManager um(ui->widgetRepository, (QWidget*) this);
+    RepoDialogUserManager um(controller, ui->widgetRepository, (QWidget*) this);
     um.exec();
 }
 
 void repo::gui::RepoGUI::openProjectManager() const
 {
-    RepoProjectManagerDialog pm(ui->widgetRepository, (QWidget*) this);
+    RepoProjectManagerDialog pm(controller, ui->widgetRepository, (QWidget*) this);
     pm.exec();
 }
 
@@ -719,67 +696,28 @@ void repo::gui::RepoGUI::saveAs()
             this,
             tr("Select a file to save"),
             QString(QDir::separator()) + widget->windowTitle(),
-            tr(core::AssimpWrapper::getExportFormats().c_str()));
-        QFileInfo fileInfo(path);
-        QDir directory = fileInfo.absoluteDir();
-        QString fileExtension = fileInfo.completeSuffix();
-        const core::RepoGraphScene *repoScene = widget->getRepoScene();
+			tr(controller->getSupportedExportFormats().c_str()));
+        const repo::core::model::RepoScene *repoScene = widget->getRepoScene();
+	
+		//Instantiate worker
+		repo::worker::FileExportWorker *worker = new repo::worker::FileExportWorker(
+			path.toStdString(),
+			controller,
+			repoScene);
 
-        std::cout << "Exporting to " << path.toStdString() << std::endl;
+		QObject::connect(worker, SIGNAL(progress(int, int)), widget, SLOT(progress(int, int)));
 
-        string embeddedTextureExtension = ".jpg";
-        aiScene *scene = new aiScene();
-        scene->mFlags = 0; //getPostProcessingFlags(); // TODO FIX ME!
-        repoScene->toAssimp(scene);
-        core::AssimpWrapper exporter;
+		QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
 
-        bool successful = exporter.exportModel(scene,
-            core::AssimpWrapper::getExportFormatID(fileExtension.toStdString()),
-            path.toStdString(),
-            embeddedTextureExtension);
+		//----------------------------------------------------------------------
+		// Fire up the asynchronous calculation.
+		QThreadPool::globalInstance()->start(worker);
 
-        if (!successful)
-           std::cerr << "Export unsuccessful." << std::endl;
-        else
-        {
-           std::vector<core::RepoNodeTexture *> textures = repoScene->getTextures();
-           for (size_t i = 0; i < textures.size(); ++i)
-           {
-               core::RepoNodeTexture *repoTex = textures[i];
-                const unsigned char *data = (unsigned char*) repoTex->getRawData();
-                QImage image = QImage::fromData(data, repoTex->getRawDataSize());
-                QString filename = QString::fromStdString(repoTex->getName());
-
-                if (scene->HasTextures())
-                {
-                    string name = repoTex->getName();
-                    name = name.substr(1, name.size()); // remove leading '*' char
-                    filename = QString::fromStdString(name + embeddedTextureExtension);
-                }
-                QFileInfo fi(directory,filename);
-                image.save(fi.absoluteFilePath());
-            }
-            /* TODO: textures
-            const map<string, QImage> textures = widget->getTextures();
-            for (map<string, QImage>::const_iterator it = textures.begin(); it != textures.end(); it++)
-            {
-                QString filename(((*it).first).c_str());
-
-                // if embedded textures
-                if (scene->HasTextures())
-                {
-                    string name = (*it).first;
-                    name = name.substr(1, name.size()); // remove leading '*' char
-                    filename = QString((name + embeddedTextureExtension).c_str());
-                }
-                QFileInfo fi(directory,filename);
-                QImage image = (*it).second;
-                image.save(fi.absoluteFilePath());
-            }*/
-            std::cout << "Export successful." << std::endl;
-        }
-        delete scene;
-    }
+	}
+	else
+	{
+		repoLog("Failed to export model: No active window found.");
+	}
 }
 
 void repo::gui::RepoGUI::saveScreenshot()

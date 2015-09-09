@@ -20,12 +20,10 @@
 
 #include <QMainWindow>
 #include <QGLFormat>
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperMongo>
-#include <RepoGraphScene>
-#include <RepoNodeRevision>
-//------------------------------------------------------------------------------
+
+// CORE
+#include <repo/repo_controller.h>
+
 // GUI
 
 #include "renderers/repo_glcwidget.h"
@@ -50,15 +48,29 @@ class RepoGUI : public QMainWindow
 public:
 
     //! Explicit default constructor
-    explicit RepoGUI(QWidget *parent = 0);
+    explicit RepoGUI(
+		repo::RepoController *controller,
+		QWidget *parent = 0);
 
     //! Destructor
     ~RepoGUI();
+
+	/**
+	* returns controller to library
+	* @return instance of RepoController
+	*/
+	repo::RepoController* getController()
+	{
+		return controller;
+	}
 
 public slots:
 
     //! Shows about dialog.
     void about();
+
+    //! Creates a new map tiles project.
+    void addMapTiles();
 
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree()
@@ -73,9 +85,7 @@ public slots:
     //! Shows a commit dialog based on currently active 3D window.
     void commit();
 
-    void commit(const core::RepoNodeAbstractSet &nodes,
-                core::RepoNodeRevision *revision,
-                const QString &project = QString(),
+	void commit(repo::core::model::RepoScene *scene,
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.
@@ -97,7 +107,7 @@ public slots:
     RepoGLCWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
-    const core::RepoGraphScene *getActiveScene();
+    const repo::core::model::RepoScene*getActiveScene();
 
     //! Shows a history dialog for selected repository.
     void history();
@@ -110,9 +120,6 @@ public slots:
 
     //! Loads files from a list of full file paths.
     void loadFiles(const QStringList &filePaths);
-
-    //! Opens an oculus rift rendering window.
-    void oculus();
 
     //! Opens a 3D Diff dialog.
     void open3DDiff();
@@ -186,10 +193,12 @@ protected :
     void storeSettings();
 
 private:
+	//! Controller to talk to the core
+	repo::RepoController *controller;
 
     //! UI var.
     Ui::RepoGUI *ui;
-
+	
     //! Panels menu (dockable widgets and toolbars)
     QMenu *panelsMenu;
 

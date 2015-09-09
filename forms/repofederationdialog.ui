@@ -68,7 +68,7 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+		 <item>
           <widget class="repo::gui::RepoFilterableTreeWidget" name="availableWidget" native="true"/>
          </item>
         </layout>
@@ -231,7 +231,7 @@
   <customwidget>
    <class>repo::gui::RepoFilterableTreeWidget</class>
    <extends>QWidget</extends>
-   <header>widgets/repofilterabletreewidget.h</header>
+   <header>src/widgets/repofilterabletreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

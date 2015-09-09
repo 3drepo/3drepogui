@@ -18,7 +18,6 @@
 #ifndef REPO_GLCCAMERA_H
 #define REPO_GLCCAMERA_H
 //------------------------------------------------------------------------------
-#include "assimp/scene.h"
 #include "geometry/../GLC_Geometry"
 #include "viewport/../GLC_Camera"
 

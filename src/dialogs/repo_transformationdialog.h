@@ -23,13 +23,12 @@
 #include <cmath>
 #include <math.h>
 
+#include <repo/core/model/bson/repo_node_transformation.h>
+
 //------------------------------------------------------------------------------
 // Qt
 #include <QDialog>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoNodeTransformation>
 
 namespace Ui {
     class RepoTransformationDialog;
@@ -45,7 +44,7 @@ class RepoTransformationDialog : public QDialog
 public:
 
     explicit RepoTransformationDialog(
-            const core::RepoNodeTransformation &transformation = core::RepoNodeTransformation(),
+		const repo::core::model::TransformationNode &transformation = repo::core::model::TransformationNode(),
             QWidget *parent = 0);
     ~RepoTransformationDialog();
 
@@ -55,40 +54,44 @@ public slots :
 
     void setName(const std::string &name);
 
-    void setMatrix(const aiMatrix4x4 &matrix);
+    void setMatrix(const std::vector<float> &matrix);
 
     void setMatrix(double a1, double a2, double a3, double a4,
                    double b1, double b2, double b3, double b4,
                    double c1, double c2, double c3, double c4,
                    double d1, double d2, double d3, double d4);
 
-    core::RepoNodeTransformation getTransformation();
+	repo::core::model::TransformationNode getTransformation();
 
-    aiMatrix4x4 getMatrix() const;
+    std::vector<float> getMatrix() const;
+
+	std::vector<std::vector<float>> getMatrix2D() const;
 
     std::string getName() const;
 
-    void rotateX90() { rotateX(M_PI/2); }
+	//UI only allows rotation of 90 degrees, no point doing extra maths we don't need.
+	void rotateX90();/* { rotateX(M_PI/2); }*/
 
-    void rotateX(double radians);
+    //void rotateX(double radians);
 
-    void rotateY90() { rotateY(M_PI/2); }
+	void rotateY90(); /*{ rotateY(M_PI/2); }*/
 
-    void rotateY(double radians);
+    //void rotateY(double radians);
 
-    void rotateZ90() { rotateZ(M_PI/2); }
+	void rotateZ90(); /*{ rotateZ(M_PI/2); }*/
 
-    void rotateZ(double radians);
+    //void rotateZ(double radians);
 
     void inverse();
 
     void transpose();
+	void transposeMat(std::vector<float> &mat);
 
 private:
 
     Ui::RepoTransformationDialog *ui;
 
-    core::RepoNodeTransformation transformation;
+	repo::core::model::TransformationNode transformation;
 
 };
 

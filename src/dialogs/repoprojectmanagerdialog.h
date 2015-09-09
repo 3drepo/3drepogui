@@ -16,17 +16,20 @@
  */
 
 
-#ifndef REPO_PROJECT_MANAGER_DIALOG_H
-#define REPO_PROJECT_MANAGER_DIALOG_H
+#pragma once
 
 #include <QObject>
 #include <QMessageBox>
 
+#include <repo/repo_controller.h>
+#include <repo/core/model/bson/repo_bson_project_settings.h>
+
 #include "repoabstractmanagerdialog.h"
-#include "../workers/repoworkerprojectsettings.h"
 #include "../primitives/repoidbcache.h"
 
-Q_DECLARE_METATYPE(repo::core::RepoProjectSettings)
+
+
+Q_DECLARE_METATYPE(repo::core::model::RepoProjectSettings)
 
 namespace repo {
 namespace gui {
@@ -35,11 +38,12 @@ class RepoProjectManagerDialog : public RepoAbstractManagerDialog
 {    
     Q_OBJECT
 
-    enum Columns { PROJECT, DESCRIPTION, OWNER, GROUP, PERMISSIONS, TYPE, USERS };
+    enum class Columns { PROJECT, DESCRIPTION, OWNER, GROUP, PERMISSIONS, TYPE, USERS };
 
 public:
 
     RepoProjectManagerDialog(
+			repo::RepoController *controller,
             const RepoIDBCache *cache,
             QWidget *parent = 0);
 
@@ -47,7 +51,7 @@ public:
 
 public slots :
 
-    void addProjectSettings(core::RepoProjectSettings);
+	void addProjectSettings(repo::core::model::RepoProjectSettings);
 
     void clear(bool resizeColumns = false);
 
@@ -55,21 +59,31 @@ public slots :
 
     void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
 
-    core::RepoProjectSettings getProjectSettings();
+	repo::core::model::RepoProjectSettings getProjectSettings();
 
-    core::RepoProjectSettings getProjectSettings(const QModelIndex &index);
+	repo::core::model::RepoProjectSettings getProjectSettings(const QModelIndex &index);
 
-    void refresh(const core::RepoBSON &command = core::RepoBSON());
+	//! Refreshes the current list of users by fetching from a database.
+	void refresh()
+	{
+		refresh(repo::core::model::RepoProjectSettings(), false);
+	}
+
+    void refresh(
+		const repo::core::model::RepoProjectSettings &settings,
+		const bool                                         &isDelete);
 
     //! Removes currently selected item if any.
     void removeItem();
 
-    void showEditDialog() { showEditDialog(core::RepoProjectSettings()); }
+	void showEditDialog() { showEditDialog(repo::core::model::RepoProjectSettings()); }
 
-    void showEditDialog(const repo::core::RepoProjectSettings &);
+	void showEditDialog(const repo::core::model::RepoProjectSettings &);
+
+private:
+	repo::RepoController *controller;
 };
 
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_PROJECT_MANAGER_DIALOG_H

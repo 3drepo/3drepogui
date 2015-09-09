@@ -27,14 +27,7 @@
 #include <QtGui>
 #include <QStandardItemModel>
 #include <QModelIndex>
-//------------------------------------------------------------------------------
-// Repo Core
-#include <RepoWrapperMongo>
-#include <RepoGraphAbstract>
-#include <RepoNodeRevision>
-#include <RepoNodeAbstract>
-#include <RepoNodeTransformation>
-#include <RepoNodeTypes>
+
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
@@ -43,6 +36,10 @@
 #include "repo_transformationdialog.h"
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+// Repo Core
+#include <repo/core/model/collection/repo_scene.h>
+
 namespace Ui {
     class RepoDialogCommit;
 }
@@ -50,9 +47,9 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-Q_DECLARE_METATYPE(repo::core::RepoNodeAbstract*)
+Q_DECLARE_METATYPE(repo::core::model::RepoNode*);
 
-/*!
+/*!fontawesome-webfont
  * Commit dialog which enables users to confirm those nodes that are to be 
  * committed to the repository. The dialog modifies the "revision" object 
  * accordingly.
@@ -77,12 +74,10 @@ public:
 	 * dialog to have minimize/maximize buttons.
 	 */
     RepoDialogCommit(
-        QWidget* parent = 0,
-        Qt::WindowFlags flags = 0,
-        RepoIDBCache *dbCache = 0,
-        const QString &projectName = QString(),
-        const core::RepoNodeAbstractSet &nodes = core::RepoNodeAbstractSet(),
-        core::RepoNodeRevision *revision = 0);
+        QWidget* parent = nullptr,
+		Qt::WindowFlags flags = nullptr,
+		RepoIDBCache *dbCache = nullptr,
+		repo::core::model::RepoScene * scene = nullptr);
 
     //--------------------------------------------------------------------------
 	//
@@ -105,9 +100,7 @@ public:
 
     QString getCurrentProject() const;
 
-    core::RepoNodeAbstractSet getNodesToCommit() const;
-
-    repo::core::RepoNodeRevision *getRevision();
+	repo::core::model::RepoScene* getScene() { return scene; }
 
 public slots:
 
@@ -142,11 +135,8 @@ private:
     //! Ui var.
     Ui::RepoDialogCommit *ui;
 		   
-	//! Revision object on which user preferences (message, nodes to commit) are set.	
-	repo::core::RepoNodeRevision *revision;
-
 	//! Scene from which the nodes to be committed come (based on info from revision object).
-    core::RepoNodeAbstractSet nodes;
+	repo::core::model::RepoScene *scene;
 
 	//! Data model to list commit table.
 	QStandardItemModel *model;

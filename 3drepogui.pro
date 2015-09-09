@@ -1,4 +1,4 @@
-#  Copyright (C) 2014 3D Repo Ltd
+#  Copyright (C) 2015 3D Repo Ltd
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -13,149 +13,122 @@
 #  You should have received a copy of the GNU Affero General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-include(3drepocore.pri)
-include(glclib.pri)
-include(oculus.pri)
+#===========================================================================
+#CHANGE THESE TO YOUR LIBRARY DIRECTORES IF YOU ARE NOT USING ENV. VARIABLES
+ASSIMPDIR = $$(ASSIMP_ROOT)
+BOOSTDIR = $$(BOOST_ROOT)
+BOUNCERDIR = $$(REPOBOUNCER_ROOT)
+GLCLIBDIR = $$(GLC_ROOT)
+MONGODIR = $$(MONGO_ROOT)
 
-#-------------------------------------------------------------------------------
+#EDIT THESE IF YOU ARE A WINDOWS USER
+BOOST_VERS = 1_58
+COMPILER = vc120
 
+#========================== QT Configuration==================================
 QT += core gui opengl openglextensions webkitwidgets network svg #gui-private
 unix:!macx:QT += x11extras
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 TARGET = 3drepogui
 TEMPLATE = app
+CONFIG += ordered warn_off c++11
 
-INCLUDEPATH += src
+#================================ BOOST =====================================
+!isEmpty(BOOSTDIR) {
+        BOOST_INC_DIR = $${BOOSTDIR}/
+        BOOST_LIB_DIR = $$(BOOST_LIBRARYDIR)
+	isEmpty(BOOST_LIB_DIR){
+                BOOST_LIB_DIR = $${BOOSTDIR}/include
+	}
+} else {
+	error(Cannot find BOOST library. Please ensure the environment variables BOOST_ROOT and BOOST_LIBARYDIR is set.)
+}
 
-#-------------------------------------------------------------------------------
+INCLUDEPATH += $${BOOST_INC_DIR}
+DEPENDPATH += $${BOOST_INC_DIR}
 
-HEADERS  += src/repogui.h \
-            src/primitives/repo_fontawesome.h \
-            src/dialogs/repo_dialogconnect.h \
-            src/dialogs/repo_dialogcommit.h \
-            src/dialogs/repo_dialoghistory.h \
-            src/widgets/repo_widgetrepository.h \
-            src/widgets/repo_lineedit.h \
-            src/widgets/repo_textbrowser.h \
-            src/widgets/repo_mdiarea.h \
-            src/widgets/repo_mdisubwindow.h \
-            src/renderers/repo_glcwidget.h \
-            src/workers/repo_workerdatabases.h \
-            src/workers/repo_worker_abstract.h \
-            src/workers/repo_workercollection.h \
-            src/workers/repo_worker_assimp.h \
-            src/workers/repo_workercommit.h \
-            src/workers/repo_workerfetchrevision.h \
-            src/workers/repo_workerhistory.h \
-            src/workers/repo_workerusers.h \
-            src/primitives/repo_sortfilterproxymodel.h \
-            src/primitives/repo_glccamera.h \
-            src/conversion/repo_transcoder_assimp.h \
-            src/conversion/repo_transcoder_graph_scene.h \
-            src/conversion/repo_transcoder_helpers.h \
-            src/renderers/repo_oculus.h \
-            src/dialogs/repodialogoculus.h \
-            src/dialogs/repodialogusermanager.h \
-            src/dialogs/repodialoguser.h \
-            src/primitives/repocomboboxeditor.h \
-            src/primitives/repocomboboxdelegate.h \
-            src/dialogs/repodialogsettings.h \
-            src/widgets/repowidgetassimpflags.h \
-            src/reposettings.h \
-            src/widgets/repofilterabletreewidget.h \
-            src/widgets/reposelectiontreedockwidget.h \
-            src/primitives/repo_color.h \
-            src/renderers/repooculustexturerenderer.h \
-            src/renderers/repo_webview.h \
-            src/dialogs/repodialogabout.h \
-            src/dialogs/repoabstractmanagerdialog.h \
-            src/dialogs/repoprojectmanagerdialog.h \
-            src/workers/repoworkerprojectsettings.h \
-            src/primitives/repoidbcache.h \
-            src/dialogs/repoprojectsettingsdialog.h \
-            src/widgets/repo_clickabletreeview.h \
-            src/dialogs/repofederationdialog.h \
-            src/dialogs/repo_genericdialog.h \
-            src/dialogs/repo_transformationdialog.h \
-    src/renderers/repo_fpscounter.h \
-    src/renderers/repo_3ddiffrenderer.h
+win32:BOOSTLIB = -lboost_system-$$COMPILER-mt-$$BOOST_VERS -lboost_thread-$$COMPILER-mt-$$BOOST_VERS -lboost_chrono-$$COMPILER-mt-$$BOOST_VERS -lboost_log-$$COMPILER-mt-$$BOOST_VERS -lboost_log_setup-$$COMPILER-mt-$$BOOST_VERS -lboost_filesystem-$$COMPILER-mt-$$BOOST_VERS
 
-SOURCES +=  src/main.cpp\
-            src/repogui.cpp \
-            src/primitives/repo_fontawesome.cpp \
-            src/dialogs/repo_dialogconnect.cpp \
-            src/dialogs/repo_dialogcommit.cpp \
-            src/dialogs/repo_dialoghistory.cpp \
-            src/widgets/repo_widgetrepository.cpp \
-            src/widgets/repo_lineedit.cpp \
-            src/widgets/repo_textbrowser.cpp \
-            src/widgets/repo_mdiarea.cpp \
-            src/widgets/repo_mdisubwindow.cpp \
-            src/renderers/repo_glcwidget.cpp \
-            src/workers/repo_workerdatabases.cpp \
-            src/workers/repo_worker_abstract.cpp \
-            src/workers/repo_workercommit.cpp \
-            src/workers/repo_workercollection.cpp \
-            src/workers/repo_worker_assimp.cpp \
-            src/workers/repo_workerfetchrevision.cpp \
-            src/workers/repo_workerhistory.cpp \
-            src/workers/repo_workerusers.cpp \
-            src/primitives/repo_sortfilterproxymodel.cpp \
-            src/primitives/repo_glccamera.cpp \
-            src/conversion/repo_transcoder_assimp.cpp \
-            src/conversion/repo_transcoder_graph_scene.cpp \
-            src/conversion/repo_transcoder_helpers.cpp \
-            src/renderers/repo_oculus.cpp \
-            src/dialogs/repodialogoculus.cpp \
-            src/dialogs/repodialogusermanager.cpp \
-            src/dialogs/repodialoguser.cpp \
-            src/primitives/repocomboboxeditor.cpp \
-            src/primitives/repocomboboxdelegate.cpp \
-            src/dialogs/repodialogsettings.cpp \
-            src/widgets/repowidgetassimpflags.cpp \
-            src/reposettings.cpp \
-            src/widgets/repofilterabletreewidget.cpp \
-            src/widgets/reposelectiontreedockwidget.cpp \
-            src/primitives/repo_color.cpp \
-            src/renderers/repooculustexturerenderer.cpp \
-            src/renderers/repo_webview.cpp \
-            src/dialogs/repodialogabout.cpp \
-            src/dialogs/repoabstractmanagerdialog.cpp \
-            src/dialogs/repoprojectmanagerdialog.cpp \
-            src/workers/repoworkerprojectsettings.cpp \
-            src/dialogs/repoprojectsettingsdialog.cpp \
-            src/widgets/repo_clickabletreeview.cpp \
-            src/dialogs/repofederationdialog.cpp \
-            src/primitives/repoidbcache.cpp \
-            src/dialogs/repo_genericdialog.cpp \
-            src/dialogs/repo_transformationdialog.cpp \
-    src/renderers/repo_fpscounter.cpp \
-    src/renderers/repo_3ddiffrenderer.cpp
-
-FORMS    += forms/repogui.ui \
-            forms/repo_dialogconnect.ui \
-            forms/repo_dialogcommit.ui \
-            forms/repo_dialoghistory.ui \
-            forms/repo_widgetrepository.ui \
-            forms/repodialogoculus.ui \
-            forms/repodialoguser.ui \
-            forms/repodialogsettings.ui \
-            forms/repowidgetassimpflags.ui \
-            forms/repofilterabletreewidget.ui \
-            forms/reposelectiontreedockwidget.ui \
-            forms/repo_webview.ui \
-            forms/repodialogabout.ui \
-            forms/repoabstractmanagerdialog.ui \
-            forms/repoprojectsettingsdialog.ui \
-            forms/repofederationdialog.ui \
-            forms/repo_transformationdialog.ui \
-            forms/repo_genericdialog.ui
+unix|macx:BOOSTLIB = -lboost_system -lboost_thread -lboost_chrono -lboost_log -lboost_log_setup -lboost_filesystem
 
 
-# http://qt-project.org/doc/qt-5/resources.html
-RESOURCES += resources.qrc \
-             submodules/fonts.qrc \
+unix|win32: LIBS +=  -L$${BOOST_LIB_DIR}   $${BOOSTLIB}
 
 
+
+#========================== 3D Repobouncer ==================================
+!isEmpty(BOUNCERDIR) {
+        BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
+        BOUNCER_INC_DIR = $${BOUNCERDIR}/include
+} else {
+	error(Cannot find 3drepobouncer installation. Please ensure the environment variable REPOBOUNCER_ROOT is set)
+}
+
+BOUNCERLIB = -l3drepobouncer
+
+INCLUDEPATH += $${BOUNCER_INC_DIR}
+DEPENDPATH += $${BOUNCER_INC_DIR}
+
+
+unix|win32: LIBS +=  -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
+
+!isEmpty(ASSIMPDIR) {
+        ASSIMP_LIB_DIR = $${ASSIMPDIR}/lib/
+        ASSIMP_INC_DIR = $${ASSIMPDIR}/include/
+} else {
+	error(Cannot find Assimp installation. Please ensure the environment variable ASSIMP_ROOT is set)
+
+}
+win32:ASSIMPLIB =  -lassimp-$$COMPILER-mtd #this potentially needs changing depending on how assimp was built
+
+unix|macx:ASSIMPLIB = -lassimp
+
+INCLUDEPATH += $${ASSIMP_INC_DIR}
+DEMANDPATH += $${ASSIMP_INC_DIR}
+
+unix|win32:LIBS += -L$${ASSIMP_LIB_DIR} $${ASSIMPLIB}
+
+!isEmpty(MONGODIR) {
+        MONGO_LIB_DIR = $${MONGODIR}/lib
+        MONGO_INC_DIR = $${MONGODIR}/include/
+} else {
+	error(Cannot find Mongo installation. Please ensure the environment variable MONGO_ROOT is set)
+}
+
+MONGOLIB = -lmongoclient
+
+INCLUDEPATH += $${MONGO_INC_DIR}
+DEMANDPATH += $${MONGO_INC_DIR}
+
+unix|win32: LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
+
+
+
+#============================== GLC LIB =======================================
+!isEmpty(GLCLIBDIR) {
+        GLC_INC_DIR = $${GLCLIBDIR}/include
+        GLC_LIB_DIR = $${GLCLIBDIR}/lib
+} else {
+	error(Cannot find GLC library. Please ensure the environment variable GLC_ROOT is set.)
+}
+
+GLCLIB = -lGLC_lib2
+
+
+INCLUDEPATH += $${GLC_INC_DIR}
+DEPENDPATH += $${GLC_INC_DIR}
+
+unix|win32:LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
+
+
+
+win32:DEFINES += _WINDOWS UNICODE WIN32 WIN64 WIN32_LEAN_AND_MEAN _SCL_SECURE_NO_WARNINGS
+
+DEFINES += BOOST_LOG_DYN_LINK BOOST_ALL_NO_LIB
+
+
+
+
+include(3drepogui.pri)

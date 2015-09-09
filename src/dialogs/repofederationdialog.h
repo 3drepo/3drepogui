@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_FEDERATION_DIALOG_H
-#define REPO_FEDERATION_DIALOG_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -37,16 +35,14 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include <RepoGraphScene>
-#include <RepoNodeAbstract>
-#include <RepoNodeTransformation>
-#include <RepoNodeReference>
+#include <repo/core/model/bson/repo_bson_factory.h>
+#include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
     class RepoFederationDialog;
 }
 
-typedef QPair<repo::core::RepoNodeTransformation, repo::core::RepoNodeReference> RepoTransRefPair;
+typedef QPair<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoTransRefPair;
 
 Q_DECLARE_METATYPE(RepoTransRefPair)
 
@@ -89,19 +85,19 @@ public slots :
 
     QStandardItem *getCurrentFederatedItem() const;
 
-    core::RepoNodeTransformation getCurrentFederatedTransformation() const;
+	repo::core::model::TransformationNode getCurrentFederatedTransformation() const;
 
     QModelIndexList getAvailableSelection() const;
 
     QModelIndexList getFederatedSelection() const;
 
-    core::RepoGraphScene *getFederation();
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  getFederation();
 
 protected :
 
-    void getFederationRecursively(
-            QStandardItem *parentItem,
-            core::RepoNodeAbstract *parentNode);
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
+		RepoFederationDialog::getFederationRecursively(
+		QStandardItem *parentItem);
 
 private:
 
@@ -113,4 +109,3 @@ private:
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_FEDERATION_DIALOG_H

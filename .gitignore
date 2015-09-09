@@ -21,3 +21,20 @@ qrc_resources.cpp
 qrc_resources.o
 debug
 
+doc
+html
+latex
+#Windows junk
+*.vcxproj*
+*.sln
+*.suo
+*.rc
+*.opensdf
+*.aps
+*.sdf
+resource.h
+
+Debug
+x64
+
+3drepogui.pro

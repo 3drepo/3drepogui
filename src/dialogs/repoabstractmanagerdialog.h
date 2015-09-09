@@ -30,9 +30,6 @@
 #include <QMenu>
 #include <QWidgetAction>
 
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperMongo>
 
 // GUI
 #include "../primitives/repoidbcache.h"
@@ -51,10 +48,10 @@ class RepoAbstractManagerDialog : public QDialog
 public:
 
     //! Constructor.
-//    RepoAbstractManagerDialog(
-//            const core::MongoClientWrapper &mongo,
-//            const std::string &database = core::MongoClientWrapper::ADMIN_DATABASE,
-//            QWidget *parent = 0);
+  //  RepoAbstractManagerDialog(
+		//repo::RepoController *controller,
+		//const RepoIDBCache *dbCache,
+		//QWidget *parent = 0);
 
     //! Explicit constructor.
     explicit RepoAbstractManagerDialog(
@@ -93,7 +90,7 @@ public slots :
     virtual void updateCountLabel() const;
 
     //! Refreshes the current list
-    virtual void refresh(const core::RepoBSON &command = core::RepoBSON()) = 0;
+    virtual void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/) = 0;
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() = 0;
@@ -129,6 +126,7 @@ protected :
     //! Ui var.
     Ui::RepoAbstractManagerDialog *ui;
 
+	//repo::RepoController *controller;
     const RepoIDBCache *dbCache;
 
 }; // end class

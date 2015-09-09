@@ -28,7 +28,9 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include <RepoAbstractListener>
+//#include <repo/lib/repo_listener_abstract.h>
+
+#include "../repo/logger/repo_subscriber_abstract.h"
 
 namespace repo {
 namespace gui {
@@ -36,7 +38,7 @@ namespace gui {
 
 class RepoTextBrowser
         : public QTextBrowser
-        , public core::RepoAbstractListener
+		, public repo::logger::AbstractSubscriber
 {
 	Q_OBJECT
 		
@@ -48,8 +50,8 @@ public :
     //! Deallocates file system watcher and associated text streams if any.
     ~RepoTextBrowser();
 
-    //! Reimplemented from abstract listener.
-    void messageGenerated(const std::string &msg);
+    //! Reimplemented from AbstractSubscriber.
+	void newMessageReceived(const std::string &msg);
 
 public slots :
 

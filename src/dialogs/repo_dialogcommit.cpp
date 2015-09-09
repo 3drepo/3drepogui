@@ -24,24 +24,20 @@
 #include <QPushButton>
 //------------------------------------------------------------------------------
 #include "../primitives/repo_fontawesome.h"
-
+#include "../repo/logger/repo_logger.h"
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     Qt::WindowFlags flags,
     RepoIDBCache *dbCache,
-    const QString &projectName,
-    const core::RepoNodeAbstractSet &nodes,
-    core::RepoNodeRevision *revision)
+	repo::core::model::RepoScene * scene)
 	: QDialog(parent, flags)
-    , projectName(projectName)
-    , nodes(nodes)
-	, revision(revision)
     , dbCache(dbCache)
+	, scene(scene)
     , ui(new Ui::RepoDialogCommit)
 {
-    ui->setupUi(this);
+	//FIXME: this should pop up the project and database names as default selection according to what's inside the scene graph
+	    ui->setupUi(this);
     this->setWindowIcon(getIcon());
-
 	//this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
 	model = new QStandardItemModel(0, 5, this); // 0 row, 5 cols 
@@ -82,7 +78,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 
     ui->branchComboBox->addItem(
                 RepoFontAwesome::getBranchIcon(),
-                QString::fromStdString(revision->getName()));
+                QString::fromStdString(scene->getBranchName()));
 
     //--------------------------------------------------------------------------
 
@@ -123,20 +119,25 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 
     if (item)
     {
-        core::RepoNodeAbstract* node = item->data().value<core::RepoNodeAbstract*>();
-        if (node && REPO_NODE_TYPE_TRANSFORMATION == node->getType())
+		repo::core::model::RepoNode* node = item->data().value<repo::core::model::RepoNode*>();
+		if (node && repo::core::model::NodeType::TRANSFORMATION == node->getTypeAsEnum())
         {
-            core::RepoNodeTransformation *transformation = dynamic_cast<core::RepoNodeTransformation*>(node);
+			repo::core::model::TransformationNode *transformation = dynamic_cast<repo::core::model::TransformationNode*>(node);
             if (transformation)
             {
                 RepoTransformationDialog transformationDialog(*transformation, this);
-                if (transformationDialog.exec())
-                {
-                    core::RepoNodeTransformation t = transformationDialog.getTransformation();
-                    transformation->setName(t.getName());
-                    transformation->setMatrix(t.getMatrix());
+				if (transformationDialog.exec())
+				{
+					repo::core::model::TransformationNode *t = 
+						new repo::core::model::TransformationNode(transformationDialog.getTransformation());
+					if (t)
+					{
+						scene->modifyNode(transformation->getSharedID(), t);
+						delete t;
+					}
+				
                     proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
-                                        QString::fromStdString(t.getName()));
+                                        QString::fromStdString(t->getName()));
                 }
             }
         }
@@ -167,10 +168,12 @@ int repo::gui::RepoDialogCommit::exec()
     //--------------------------------------------------------------------------
 	// If user clicked OK
 	int result;
-    if (result = QDialog::exec() && revision)
+    if (result = QDialog::exec())
 	{
 		// TODO: modify the revision object according to user selection
-		revision->setMessage(getMessage().toStdString());
+		scene->setCommitMessage(getMessage().toStdString());
+
+		scene->setDatabaseAndProjectName(getCurrentDatabase().toStdString(), getCurrentProject().toStdString());
 	}
 	return result;
 }
@@ -221,12 +224,12 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
     // TODO: make into asynchronous worker
 
 
-    core::RepoNodeAbstractSet modifiedObjects = nodes;
+	std::vector<repoUUID> modifiedObjects = scene->getModifiedNodesID();
 
     //--------------------------------------------------------------------------
 	// Number of changes
 	QLocale locale;
-    ui->countLabel->setText(locale.toString((long long)(modifiedObjects.size()))
+    ui->countLabel->setText(locale.toString((int64_t)(modifiedObjects.size()))
                               + " "
                               + tr("changes"));
 
@@ -235,10 +238,13 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 	QList<QStandardItem *> row;
 	QStandardItem *item;
 
-    core::RepoNodeAbstractSet::const_iterator it;
-    for (it = modifiedObjects.begin(); it != modifiedObjects.end(); ++it)
+   
+	for (const auto &sharedID : modifiedObjects)
     {
-        core::RepoNodeAbstract *node = *it;
+        repo::core::model::RepoNode *node = scene->getNodeBySharedID(sharedID);
+
+		if (!node) continue;
+
 		row.clear();
 
         QVariant var;
@@ -273,7 +279,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
         //----------------------------------------------------------------------
 		// UID
         item = new QStandardItem(QString::fromStdString(
-                                      core::MongoClientWrapper::uuidToString(
+                                      UUIDtoString(
                                          node->getUniqueID())));
 		item->setEditable(false);
 		row.append(item);
@@ -282,7 +288,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
 		// SID
         item = new QStandardItem(
                     QString::fromStdString(
-                         core::MongoClientWrapper::uuidToString(node->getSharedID())));
+					UUIDtoString(node->getSharedID())));
 		item->setEditable(false);
 		row.append(item);
 
@@ -304,25 +310,6 @@ QString repo::gui::RepoDialogCommit::getCurrentDatabase() const
 QString repo::gui::RepoDialogCommit::getCurrentProject() const
 {
     return ui->projectComboBox->currentText();
-}
-
-
-repo::core::RepoNodeAbstractSet repo::gui::RepoDialogCommit::getNodesToCommit() const
-{
-    core::RepoNodeAbstractSet nodes;
-    for (int i = 0; i < model->rowCount(); ++i)
-    {
-        QStandardItem *item = model->invisibleRootItem()->child(i,Columns::NAME);
-        if (item->checkState() != Qt::CheckState::Unchecked)
-            nodes.insert(item->data().value<core::RepoNodeAbstract*>());
-    }
-    return nodes;
-}
-
-repo::core::RepoNodeRevision *repo::gui::RepoDialogCommit::getRevision()
-{
-    revision->setCurrentUniqueIDs(getNodesToCommit());
-    return revision;
 }
 
 void repo::gui::RepoDialogCommit::updateCountLabel() const
