@@ -15,7 +15,7 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 - [Python v2.x] (https://www.python.org/)
 - [Boost v1.58] (http://www.boost.org/)
 
-## General Compilation instruction
+## General Compilation Instruction
 
 This project uses qmake as the compilation procedure. The easiest way to build this will be to open the qt project using QT Creator and operate on the GUI interface. For more information about qmake, see [http://doc.qt.io/qt-4.8/qmake-using.html]
 
