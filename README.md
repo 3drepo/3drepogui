@@ -13,12 +13,22 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 - [Font Awesome v4.3.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.3.0)
 - [Qt v5.4.1 OpenGL](https://www.qt.io/download-open-source/#section-2)
 - [Python v2.x] (https://www.python.org/)
+- [Boost v1.58] (http://www.boost.org/)
 
 ## General Compilation instruction
 
 This project uses qmake as the compilation procedure. The easiest way to build this will be to open the qt project using QT Creator and operate on the GUI interface. For more information about qmake, see [http://doc.qt.io/qt-4.8/qmake-using.html]
 
-Before compilation, make sure the 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
+External libraries are referenced via environment variables. Please ensure the followings are set to the correct directories:
+ - ASSIMP_ROOT
+ - BOOST_ROOT
+ - REPOBOUNCER_ROOT
+ - GLC_ROOT
+ - MONGO_ROOT
+
+Libraries are referenced within 3drepogui.pro, you may wish to view and alter this where appropriate.
+
+Before compilation, 3drepogui.pri file is up to date. This can be done by running the provided python script `python updateSources.py`
 
 ## Compiling on Windows
 
