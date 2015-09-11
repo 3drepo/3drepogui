@@ -67,7 +67,7 @@ void CollectionWorker::run()
 			{
 				const char *bsonType = bson.getStringField(REPO_NODE_LABEL_TYPE);
 				QString type = QString(bsonType);
-				emit keyValuePairAdded(++retrieved, (uint64_t)bson.objsize(), type.isEmpty() ? "BSONObj" : type, 0);
+				emit keyValuePairAdded((qulonglong)++retrieved, (qulonglong)bson.objsize(), type.isEmpty() ? "BSONObj" : type, 0);
 				decodeRecords(bson, 1);
 				emit progressValueChanged(retrieved);
 			}
@@ -107,7 +107,7 @@ void CollectionWorker::decodeRecords(const repoModel::RepoBSON& bson, uint32_t d
 		switch (element.type())
 		{
 			case repoModel::ElementType::ARRAY: // array
-				value = (uint64_t) element.embeddedObject().objsize(); //nFields();
+				value = (qulonglong) element.embeddedObject().objsize(); //nFields();
 				type = QString("BSONArray");
 				// TODO: colors and textures
 				// else recursion

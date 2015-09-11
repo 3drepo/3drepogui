@@ -40,8 +40,8 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     databasesProxyModel = new RepoSortFilterProxyModel((QWidget*)this, false);
 	enableFiltering(
         ui->databasesTreeView,
-		databasesModel, 
-		databasesProxyModel, 
+		databasesModel,
+		databasesProxyModel,
         ui->databasesFilterLineEdit);
     ui->databasesTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
 
@@ -56,8 +56,8 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     collectionProxyModel = new RepoSortFilterProxyModel((QWidget*)this, true);
 	enableFiltering(
         ui->collectionTreeView,
-		collectionModel, 
-		collectionProxyModel, 
+		collectionModel,
+		collectionProxyModel,
         ui->collectionFilterLineEdit);
 	
     ui->collectionTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
@@ -332,9 +332,9 @@ void repo::gui::RepoWidgetRepository::addCollection(
 	const repo::core::model::CollectionStats &stats)
 {
     QString collection = QString::fromStdString(stats.getCollection());
-    uint64_t count = stats.getCount();
-    uint64_t size = stats.getActualSizeOnDisk();
-    uint64_t allocated = stats.getStorageSize();
+    qulonglong count     = (qulonglong)stats.getCount();
+    qulonglong size      = (qulonglong)stats.getActualSizeOnDisk();
+    qulonglong allocated = (qulonglong)stats.getStorageSize();
 
     if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
 		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
@@ -617,14 +617,14 @@ void repo::gui::RepoWidgetRepository::setItem(
 
 void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, uint64_t value)
 {
-    setItem(item, toLocaleString(value), value);
+    setItem(item, toLocaleString((qulonglong)value), (qulonglong)value);
 }
 
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, uint64_t value)
 {
-    setItem(item, toFileSize(value), value);
+    setItem(item, toFileSize((qulonglong)value), (qulonglong)value);
 }
 
 QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const

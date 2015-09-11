@@ -229,7 +229,7 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
     //--------------------------------------------------------------------------
 	// Number of changes
 	QLocale locale;
-    ui->countLabel->setText(locale.toString((int64_t)(modifiedObjects.size()))
+    ui->countLabel->setText(locale.toString((qulonglong)(modifiedObjects.size()))
                               + " "
                               + tr("changes"));
 

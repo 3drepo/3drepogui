@@ -175,21 +175,26 @@ void repo::gui::RepoDialogHistory::addRevision(repo::core::model::RevisionNode *
 
 		//--------------------------------------------------------------------------
 		// Datetime
-		QStandardItem *item = createItem(QVariant(datetime));
+		QVariant tmp(datetime);
+		QStandardItem *item = createItem(tmp);
 		item->setData(qVariantFromValue((void *)revision));
 		row.append(item);
 
 		// Message
-		row.append(createItem(QVariant(QString::fromStdString(revision->getMessage()))));
+		QVariant message(QString::fromStdString(revision->getMessage()));
+		row.append(createItem(message));
 
 		// Author
-		row.append(createItem(QVariant(QString::fromStdString(revision->getAuthor()))));
+		QVariant author(QString::fromStdString(revision->getAuthor()));
+		row.append(createItem(author));
 
 		// UID
-		row.append(createItem(QVariant(QUuid(UUIDtoString(revision->getUniqueID()).c_str()))));
+		QVariant uid(QUuid(UUIDtoString(revision->getUniqueID()).c_str()));
+		row.append(createItem(uid));
 
 		// SID
-		row.append(createItem(QVariant(QUuid(UUIDtoString(revision->getSharedID()).c_str()))));
+		QVariant sid(QUuid(UUIDtoString(revision->getSharedID()).c_str()));
+		row.append(createItem(sid));
 
 		//--------------------------------------------------------------------------
 		historyModel->invisibleRootItem()->appendRow(row);
@@ -246,10 +251,12 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 				QList<QStandardItem *> row;
 
 				// UID // TODO: make SID
-				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
+				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+				row.append(createItem(uid));
 
 				// Action
-				row.append(createItem(QVariant(tr("Added"))));
+				QVariant action(QVariant(tr("Added")));
+				row.append(createItem(action));
 
 				//--------------------------------------------------------------------------
 				revisionModel->invisibleRootItem()->appendRow(row);
@@ -260,10 +267,12 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 				QList<QStandardItem *> row;
 
 				// UID // TODO: make SID
-				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
+				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+				row.append(createItem(uid));
 
 				// Action
-				row.append(createItem(QVariant(tr("Deleted"))));
+				QVariant action(tr("Deleted"));
+				row.append(createItem(action));
 
 				//--------------------------------------------------------------------------
 				revisionModel->invisibleRootItem()->appendRow(row);
@@ -275,10 +284,12 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 				QList<QStandardItem *> row;
 
 				// UID // TODO: make SID
-				row.append(createItem(QVariant(QUuid(UUIDtoString(uuid).c_str()))));
+				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+				row.append(createItem(uid));
 
 				// Action
-				row.append(createItem(QVariant(tr("Modified"))));
+				QVariant action(tr("Modified"));
+				row.append(createItem(action));
 
 				//--------------------------------------------------------------------------
 				revisionModel->invisibleRootItem()->appendRow(row);

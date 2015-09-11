@@ -61,7 +61,7 @@ void HistoryWorker::run()
 			if (cancelled) break;
 			if (bson.isValid() && !bson.isEmpty())
 			{
-				repo::core::model::RepoNode &node = (repo::core::model::RepoNode)bson;
+				const repo::core::model::RepoNode &node = (repo::core::model::RepoNode)bson;
 				if (node.getTypeAsEnum() == repo::core::model::NodeType::REVISION)
 					emit revisionFetched(new repo::core::model::RevisionNode(bson));
 			}

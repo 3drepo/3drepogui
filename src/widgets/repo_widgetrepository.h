@@ -232,9 +232,9 @@ private :
 	
 	static void setItem(QStandardItem*, const QString&, const QVariant&);
 
-	static void setItemSize(QStandardItem*, unsigned long long);
+	static void setItemSize(QStandardItem*, uint64_t);
 
-	static void setItemCount(QStandardItem*, unsigned long long);
+	static void setItemCount(QStandardItem*, uint64_t);
 
 	/*! Returns icon if collection contains recognized string such as "scene" or "history",
      *	empty icon otherwise.
@@ -242,7 +242,7 @@ private :
 	QIcon getIcon(const QString& collection) const;
 
     //! Returns a human readable string of kilobytes, megabytes etc.
-    static QString toFileSize(unsigned long long int bytes);
+    static QString toFileSize(uint64_t bytes);
 
     //! Returns the current locale string representation.
     template <class T>

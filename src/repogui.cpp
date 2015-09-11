@@ -625,8 +625,9 @@ void repo::gui::RepoGUI::openMetadataManager()
             "*.csv");
 
 		repo::core::model::RepoScene *scene = widget->getRepoScene();
-		scene->addMetadata(
-			controller->loadMetadataFromFile(filePath.toStdString()), false);
+		repo::core::model::RepoNodeSet nodeSet = controller->loadMetadataFromFile(filePath.toStdString());
+
+		scene->addMetadata(nodeSet, false);
 
 		std::stringstream ss;
 		scene->printStatistics(ss);

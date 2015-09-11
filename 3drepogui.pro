@@ -21,6 +21,8 @@ BOUNCERDIR = $$(REPOBOUNCER_ROOT)
 GLCLIBDIR = $$(GLC_ROOT)
 MONGODIR = $$(MONGO_ROOT)
 
+GLC_INC_DIR = /usr/local/include/GLC_lib-2.5
+
 #EDIT THESE IF YOU ARE A WINDOWS USER
 BOOST_VERS = 1_58
 COMPILER = vc120
@@ -34,6 +36,12 @@ greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 TARGET = 3drepogui
 TEMPLATE = app
 CONFIG += ordered warn_off c++11
+
+unix:QMAKE_CXXFLAGS += -fpermissive
+unix:INCLUDEPATH += ./src
+unix:OBJECTS_DIR = ./build
+unix:UI_DIR = ./src/ui
+unix:MOC_DIR = ./moc/ui
 
 #================================ BOOST =====================================
 !isEmpty(BOOSTDIR) {
@@ -108,14 +116,16 @@ unix|win32: LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
 
 #============================== GLC LIB =======================================
 !isEmpty(GLCLIBDIR) {
-        GLC_INC_DIR = $${GLCLIBDIR}/include
+		isEmpty(GLC_INC_DIR) {
+	        GLC_INC_DIR = $${GLCLIBDIR}/include
+		}
         GLC_LIB_DIR = $${GLCLIBDIR}/lib
 } else {
 	error(Cannot find GLC library. Please ensure the environment variable GLC_ROOT is set.)
 }
 
-GLCLIB = -lGLC_lib2
-
+win32:GLCLIB = -lGLC_lib2
+unix:GLCLIB = -lGLC_lib
 
 INCLUDEPATH += $${GLC_INC_DIR}
 DEPENDPATH += $${GLC_INC_DIR}
