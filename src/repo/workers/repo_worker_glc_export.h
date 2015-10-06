@@ -86,7 +86,7 @@ namespace repo {
 			repo::core::model::RepoScene* scene;
 			repo::core::model::RepoScene::GraphType repoViewGraph;
 
-			GLC_World* GLCExportWorker::createGLCWorld(
+            GLC_World* createGLCWorld(
 				repo::core::model::RepoScene *scene);
 
 			GLC_3DRep* convertGLCCamera(

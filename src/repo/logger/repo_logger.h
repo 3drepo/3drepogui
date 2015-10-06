@@ -78,7 +78,7 @@ namespace repo{
 			* @param message pre-format message
 			* @return returns formatted message with html tags
 			*/
-			std::string RepoLogger::formatMessage(
+            std::string formatMessage(
 				const std::string &message);
 
 			/**

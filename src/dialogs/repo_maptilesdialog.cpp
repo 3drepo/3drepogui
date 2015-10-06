@@ -36,7 +36,7 @@ repo::gui::RepoMapTilesDialog::~RepoMapTilesDialog()
 
 repo::core::model::MapNode repo::gui::RepoMapTilesDialog::getMap(){
 
-	repo_vector_t centrePoint = { ui->xSpinBox->value(), ui->ySpinBox->value(), ui->zSpinBox->value() };
+    repo_vector_t centrePoint = { (float)ui->xSpinBox->value(), (float)ui->ySpinBox->value(), (float)ui->zSpinBox->value() };
 
    return repo::core::model::RepoBSONFactory::makeMapNode(
                 ui->widthSpinBox->value(),

@@ -173,7 +173,7 @@ public :
     //--------------------------------------------------------------------------
 
     //! Sets the avatar icon with the give image.
-	void repo::gui::RepoDialogUser::setAvatar(const std::vector<char> &image);
+    void setAvatar(const std::vector<char> &image);
 
     //! Sets the avatar icon with the given image.
     void setAvatar(const QImage &image);

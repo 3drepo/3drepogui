@@ -37,11 +37,12 @@ TARGET = 3drepogui
 TEMPLATE = app
 CONFIG += ordered warn_off c++11
 
-unix:QMAKE_CXXFLAGS += -fpermissive
-unix:INCLUDEPATH += ./src
-unix:OBJECTS_DIR = ./build
-unix:UI_DIR = ./src/ui
-unix:MOC_DIR = ./moc/ui
+unix|macx:QMAKE_CXXFLAGS += -fpermissive
+unix|macx:DESTDIR = ./build
+unix|macx:INCLUDEPATH += ./src
+unix|macx:OBJECTS_DIR = ./build
+unix|macx:UI_DIR = ./src/ui
+unix|macx:MOC_DIR = ./moc/ui
 
 #================================ BOOST =====================================
 !isEmpty(BOOSTDIR) {
@@ -59,10 +60,10 @@ DEPENDPATH += $${BOOST_INC_DIR}
 
 win32:BOOSTLIB = -lboost_system-$$COMPILER-mt-$$BOOST_VERS -lboost_thread-$$COMPILER-mt-$$BOOST_VERS -lboost_chrono-$$COMPILER-mt-$$BOOST_VERS -lboost_log-$$COMPILER-mt-$$BOOST_VERS -lboost_log_setup-$$COMPILER-mt-$$BOOST_VERS -lboost_filesystem-$$COMPILER-mt-$$BOOST_VERS
 
-unix|macx:BOOSTLIB = -lboost_system -lboost_thread -lboost_chrono -lboost_log -lboost_log_setup -lboost_filesystem
+unix:BOOSTLIB = -lboost_system -lboost_thread -lboost_chrono -lboost_log -lboost_log_setup -lboost_filesystem
+macx:BOOSTLIB = -lboost_thread-mt -lboost_system -lboost_chrono -lboost_log-mt -lboost_log_setup -lboost_filesystem
 
-
-unix|win32: LIBS +=  -L$${BOOST_LIB_DIR}   $${BOOSTLIB}
+macx|unix|win32: LIBS +=  -L$${BOOST_LIB_DIR}   $${BOOSTLIB}
 
 
 
@@ -137,8 +138,5 @@ unix|win32:LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
 win32:DEFINES += _WINDOWS UNICODE WIN32 WIN64 WIN32_LEAN_AND_MEAN _SCL_SECURE_NO_WARNINGS
 
 DEFINES += BOOST_LOG_DYN_LINK BOOST_ALL_NO_LIB
-
-
-
 
 include(3drepogui.pri)

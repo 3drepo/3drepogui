@@ -44,10 +44,10 @@ namespace Ui {
     class RepoDialogCommit;
 }
 
+Q_DECLARE_METATYPE(repo::core::model::RepoNode*);
+
 namespace repo {
 namespace gui {
-
-Q_DECLARE_METATYPE(repo::core::model::RepoNode*);
 
 /*!fontawesome-webfont
  * Commit dialog which enables users to confirm those nodes that are to be 

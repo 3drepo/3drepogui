@@ -72,7 +72,7 @@ public :
             int value);
 
     //! Returns bson.
-	repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const;
+    repo::core::model::RepoProjectSettings getSettings() const;
 
 protected :
 

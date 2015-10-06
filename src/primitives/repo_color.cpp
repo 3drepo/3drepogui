@@ -17,6 +17,7 @@
 
 #include "repo_color.h"
 #include <iostream>
+#include <cmath>
 unsigned int repo::gui::RepoColor::colorCounter = 0;
 
 repo::gui::RepoColor::RepoColor() : QColor() {}

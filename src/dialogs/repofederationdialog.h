@@ -96,7 +96,7 @@ public slots :
 protected :
 
 	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
-		RepoFederationDialog::getFederationRecursively(
+        getFederationRecursively(
 		QStandardItem *parentItem);
 
 private:
