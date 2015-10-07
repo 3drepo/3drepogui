@@ -53,7 +53,11 @@ void SceneGraphWorker::run()
 		database,
 		project,
 		id.toString().toStdString(),
-		headRevision);
+		headRevision,
+		//THIS NEEDS TO SET TO FALSE IF YOU WANT TO EXAMINE THE SCENE
+		//at the moment we only visualise the scene so there isn't a need for the whole
+		//scene graph being loaded onto memory.
+		true ); 
 
 
 	//--------------------------------------------------------------------------
