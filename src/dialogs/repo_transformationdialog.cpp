@@ -199,13 +199,13 @@ std::string repo::gui::RepoTransformationDialog::getName() const
 void repo::gui::RepoTransformationDialog::rotateX90()
 {
 	std::vector<float> mat = getMatrix();
-	//essentially, swap col 2 and 3.
+	//essentially, swap col 2 and 3, negate the 2nd row.
 
 	for (uint32_t row = 0; row < 4; row++)
 	{
 		float tmp = mat[row * 4 + 1];
 		mat[row * 4 + 1] = mat[row * 4 + 2];
-		mat[row * 4 + 2] = tmp;
+		mat[row * 4 + 2] = -tmp;
 	}
 
 	setMatrix(mat);
@@ -219,7 +219,7 @@ void repo::gui::RepoTransformationDialog::rotateY90()
 	for (uint32_t row = 0; row < 4; row++)
 	{
 		float tmp = mat[row * 4];
-		mat[row * 4] = mat[row * 4 + 2];
+		mat[row * 4] = -mat[row * 4 + 2];
 		mat[row * 4 + 2] = tmp;
 	}
 
@@ -235,7 +235,7 @@ void repo::gui::RepoTransformationDialog::rotateZ90()
 	{
 		float tmp = mat[row * 4];
 		mat[row * 4] = mat[row * 4 + 1];
-		mat[row * 4 + 1] = tmp;
+		mat[row * 4 + 1] = -tmp;
 	}
 
 	setMatrix(mat);
