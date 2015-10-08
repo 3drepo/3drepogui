@@ -9,7 +9,7 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 ## Dependencies
 
 - [3D Repo Bouncer master branch](https://github.com/3drepo/3drepobouncer)
-- [GLC Lib v2.5.1](https://github.com/laumaya/GLC_lib/tree/Version_2_5_1)
+- [GLC Lib v2.5.1](https://github.com/laumaya/GLC_lib/tree/Version_2_5_1) See our [compilation instructions](https://github.com/3drepo/3drepogui/wiki/Compiling-GLC-Lib)
 - [Font Awesome v4.3.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.3.0)
 - [Qt v5.4.1 OpenGL](https://www.qt.io/download-open-source/#section-2)
 - [Python v2.x] (https://www.python.org/)
