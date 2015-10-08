@@ -132,12 +132,12 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 						new repo::core::model::TransformationNode(transformationDialog.getTransformation());
 					if (t)
 					{
-						scene->modifyNode(transformation->getSharedID(), t);
+						scene->modifyNode(repo::core::model::RepoScene::GraphType::DEFAULT, transformation->getSharedID(), t);
 						delete t;
 					}
 				
                     proxyModel->setData(proxyIndex.sibling(proxyIndex.row(), Columns::NAME),
-                                        QString::fromStdString(t->getName()));
+						QString::fromStdString(transformation->getName()));
                 }
             }
         }
