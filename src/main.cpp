@@ -41,10 +41,6 @@ int main(int argc, char *argv[])
 
 	repo::RepoController *controller = new repo::RepoController(listeners);
 
-	//std::string logFilePath=
-	//controller->logToFile()
-	
-
 	//check env var to see whether a debug level is set
 	char* debug = getenv("REPO_DEBUG");
 	char* verbose = getenv("REPO_VERBOSE");

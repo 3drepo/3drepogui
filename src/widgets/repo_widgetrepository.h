@@ -36,7 +36,7 @@
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repoidbcache.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
-#include <widgets/repo_lineedit.h>
+#include "../widgets/repo_lineedit.h"
 
 namespace Ui {
     class RepoWidgetRepository;
