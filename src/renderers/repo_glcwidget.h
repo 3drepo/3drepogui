@@ -30,6 +30,7 @@
 //------------------------------------------------------------------------------
 #include <QGLWidget>
 //------------------------------------------------------------------------------
+#include <QOpenGLFunctions>
 #include <GLC_Factory>
 #include <GLC_Light>
 #include <GLC_Material>

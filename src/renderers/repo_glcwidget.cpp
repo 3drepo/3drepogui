@@ -280,7 +280,11 @@ void repo::gui::RepoGLCWidget::paintGL()
 
 		//----------------------------------------------------------------------
 		// Clear screen
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+        f->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        // Clear screen
+        f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		//----------------------------------------------------------------------
 		// Load identity matrix
