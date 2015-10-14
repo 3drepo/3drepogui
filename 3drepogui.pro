@@ -34,8 +34,7 @@ unix:!macx:QT += x11extras
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
 # Qt5.5 support
-QT_OPENGL = desktop
-win32:LIBS += -lopengl32 -lglu32
+win32:LIBS += -lopengl32
 
 TARGET = 3drepogui
 TEMPLATE = app
