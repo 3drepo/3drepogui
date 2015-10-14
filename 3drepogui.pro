@@ -128,7 +128,7 @@ unix|win32: LIBS += -L$${MONGO_LIB_DIR} $${MONGOLIB}
 	error(Cannot find GLC library. Please ensure the environment variable GLC_ROOT is set.)
 }
 
-win32:GLCLIB = -lGLC_lib2
+win32:GLCLIB = -lGLC_lib3
 unix:GLCLIB = -lGLC_lib
 
 INCLUDEPATH += $${GLC_INC_DIR}

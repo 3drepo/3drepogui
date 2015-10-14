@@ -70,7 +70,7 @@ const double repo::gui::RepoGLCWidget::ZOOM_FACTOR = 1.2;
 //QList<GLC_Shader*> repo::gui::RepoGLCWidget::shaders;
 
 repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTitle)
-	: QGLWidget(new GLC_Context(QGLFormat::defaultFormat()), parent)
+    : QGLWidget(new QGLContext(QGLFormat(QGL::SampleBuffers)), parent)
 	, glcLight()
 	, glcViewport()
 	, glcMoverController()
@@ -129,7 +129,7 @@ repo::gui::RepoGLCWidget::~RepoGLCWidget()
 	glcViewCollection.clear();
 	glcWorld.clear();
 
-	GLC_SelectionMaterial::deleteShader(context());
+    // TODO: fix me // GLC_SelectionMaterial::deleteShader(context());
 
 	for (int i = 0; i < shaders.size(); ++i)
 		delete shaders[i];
@@ -167,7 +167,7 @@ void repo::gui::RepoGLCWidget::initializeGL()
 
 	//--------------------------------------------------------------------------
 	// Enable VBOs and other settings.
-	GLC_State::setVboSupport();
+//	GLC_State::setVboSupport();
 	GLC_State::setVboUsage(isAdvancedGPU);
 	GLC_State::setDefaultOctreeDepth(3);
 	GLC_State::setPixelCullingUsage(true);
@@ -209,13 +209,16 @@ void repo::gui::RepoGLCWidget::initializeShaders()
 		GLC_State::setSelectionShaderUsage(true);
 		QFile vertexShaderFile(":/shaders/select.vert");
 		QFile fragmentShaderFile(":/shaders/select.frag");
-		GLC_SelectionMaterial::setShaders(
-			vertexShaderFile,
-			fragmentShaderFile,
-			context());
+
+// TODO: fix me
+//		GLC_SelectionMaterial::setShaders(
+//			vertexShaderFile,
+//			fragmentShaderFile,
+//			context());
 		try
 		{
-			GLC_SelectionMaterial::initShader(context());
+// TODO: fix me //			GLC_SelectionMaterial::initShader(context());
+            int i = 0;
 		}
 		catch(GLC_Exception e){
 			repoLogError("Init shader failed " + std::string(e.what()));
@@ -422,7 +425,7 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	qglColor(Qt::gray);
 	QString selectionName;
 	if (glcWorld.selectionSize() > 0)
-		selectionName = glcWorld.selectedOccurenceList().first()->name();
+        selectionName = glcWorld.selectedOccurrenceList().first()->name();
 	renderText(9, 14, QString() +
 		QChar(0x25B2) + " " +
 		locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()) +
@@ -625,11 +628,11 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceRenderProperties(
 	const QString &occurrenceName,
 	const GLC_RenderProperties &properties)
 {
-	GLC_StructOccurence *oc;
-	QHash<QString, GLC_StructOccurence *>::iterator it =
+    GLC_StructOccurrence *oc;
+    QHash<QString, GLC_StructOccurrence *>::iterator it =
 		glcOccurrences.find(occurrenceName);
 
-	QHash<QString, GLC_StructOccurence *>::iterator itt =
+    QHash<QString, GLC_StructOccurrence *>::iterator itt =
 		glcMeshOccurences.find(occurrenceName);
 	if (glcMeshOccurences.end() != itt)
 		oc = itt.value();
@@ -660,10 +663,10 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceOpacity(
 
 void repo::gui::RepoGLCWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
 {
-	QHash<QString, GLC_StructOccurence *>::iterator it = glcOccurrences.find(occurrenceName);
+    QHash<QString, GLC_StructOccurrence *>::iterator it = glcOccurrences.find(occurrenceName);
 	if (glcOccurrences.end() != it)
 	{
-		GLC_StructOccurence * oc = it.value();
+        GLC_StructOccurrence * oc = it.value();
 		oc->setVisibility(visible);
 	}
 }
@@ -734,7 +737,7 @@ void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 
 	glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());
 	setCamera(ISO);
-	extractMeshes(this->glcWorld.rootOccurence());
+    extractMeshes(this->glcWorld.rootOccurrence());
 }
 
 //------------------------------------------------------------------------------
@@ -746,11 +749,11 @@ void repo::gui::RepoGLCWidget::setGLCWorld(GLC_World glcWorld)
 std::vector<std::string> repo::gui::RepoGLCWidget::getSelectionList() const
 {
 	std::vector<std::string> selectedNames;
-	QList<GLC_StructOccurence *> occurrences = glcWorld.selectedOccurenceList();
-	QList<GLC_StructOccurence *>::iterator it;
+    QList<GLC_StructOccurrence *> occurrences = glcWorld.selectedOccurrenceList();
+    QList<GLC_StructOccurrence *>::iterator it;
 	for (it = occurrences.begin(); it != occurrences.end(); ++it)
 	{
-		GLC_StructOccurence *oc = *it;
+        GLC_StructOccurrence *oc = *it;
 		selectedNames.push_back(oc->name().toStdString());
 	}
 	return selectedNames;
@@ -761,7 +764,7 @@ repo::core::model::RepoNode* repo::gui::RepoGLCWidget::getSelectedNode() const
 	repo::core::model::RepoNode *node = 0;
 	if (glcWorld.selectionSize() > 0)
 	{
-		GLC_StructOccurence* o = glcWorld.selectedOccurenceList().first();
+        GLC_StructOccurrence* o = glcWorld.selectedOccurrenceList().first();
 
 	}
 
@@ -1132,7 +1135,7 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
 	bool repaint)
 {
 	setAutoBufferSwap(true);
-	if (glcWorld.containsOccurence(selectionID))
+    if (glcWorld.containsOccurrence(selectionID))
 	{
 		if (unselectSelected
 			&& (!glcWorld.isSelected(selectionID))
@@ -1194,7 +1197,7 @@ void repo::gui::RepoGLCWidget::select(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
+void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurrence * occurrence)
 {
 	if (occurrence)
 	{
@@ -1230,11 +1233,11 @@ void repo::gui::RepoGLCWidget::extractMeshes(GLC_StructOccurence * occurrence)
 
 		//----------------------------------------------------------------------
 		// Children
-		QList<GLC_StructOccurence*> children = occurrence->children();
-		QList<GLC_StructOccurence*>::iterator it;
+        QList<GLC_StructOccurrence*> children = occurrence->children();
+        QList<GLC_StructOccurrence*>::iterator it;
 		for (it = children.begin(); it != children.end(); ++it)
 		{
-			GLC_StructOccurence *child = *it;
+            GLC_StructOccurrence *child = *it;
 			extractMeshes(child);
 		}
 	}

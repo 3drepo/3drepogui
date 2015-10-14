@@ -289,7 +289,7 @@ namespace repo {
 			//--------------------------------------------------------------------------
 
 			//! Recursively extracts meshes from a given occurrence. Call with a root node.
-			void extractMeshes(GLC_StructOccurence*);
+            void extractMeshes(GLC_StructOccurrence*);
 
 			//--------------------------------------------------------------------------
 			//
@@ -325,10 +325,10 @@ namespace repo {
 			//! Dictionary of mesh ids pointed to by their associated unique name.
 			QHash<QString, GLC_uint> glcMeshesIds;
 
-			QHash<QString, GLC_StructOccurence *> glcMeshOccurences;
+            QHash<QString, GLC_StructOccurrence *> glcMeshOccurences;
 
 			//! Dictionary of occurrences pointed to by their associated unique name.
-			QHash<QString, GLC_StructOccurence *> glcOccurrences;
+            QHash<QString, GLC_StructOccurrence *> glcOccurrences;
 
 			//! True if wireframe is to be rendered, false otherwise.
 			bool isWireframe;

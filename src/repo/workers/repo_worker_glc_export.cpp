@@ -202,8 +202,8 @@ void GLCExportWorker::run()
 			glcWorld->setRootName(rootName);
 			//---------------------------------------------------------------------
 			// Clean and update positions
-			glcWorld->rootOccurence()->removeEmptyChildren();
-			glcWorld->rootOccurence()->updateChildrenAbsoluteMatrix();
+            glcWorld->rootOccurrence()->removeEmptyChildren();
+            glcWorld->rootOccurrence()->updateChildrenAbsoluteMatrix();
 		}
 
 		GLC_World wholeGraph = glcWorld ? GLC_World(*glcWorld) : GLC_World();
@@ -237,7 +237,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 }
 
 
-GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
+GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 	repo::core::model::RepoScene *scene)
 {
 
@@ -358,7 +358,7 @@ GLC_StructOccurence* GLCExportWorker::convertSceneToOccurance(
 	return createOccurrenceFromNode(scene, scene->getRoot(repoViewGraph), parentToGLCMeshes, parentToGLCCameras);
 }
 
-GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
+GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
 	repo::core::model::RepoScene                     *scene,
 	const repo::core::model::RepoNode                 *node,
 	std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcMeshesMap,
@@ -373,7 +373,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 	* - Meshes are immediate children of transformations
 	*/
 	GLC_StructInstance* instance = nullptr;
-	GLC_StructOccurence* occurrence = nullptr;
+    GLC_StructOccurrence* occurrence = nullptr;
 	if (node)
 	{
 		repoModel::NodeType type = node->getTypeAsEnum();
@@ -465,7 +465,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 			GLC_Matrix4x4 transMat(&((repoModel::TransformationNode*)node)->getTransMatrix().at(0));
 			instance->move(transMat);
 
-			occurrence = new GLC_StructOccurence(instance);
+            occurrence = new GLC_StructOccurrence(instance);
 			occurrence->setName(name);
 
 			break;
@@ -488,7 +488,7 @@ GLC_StructOccurence* GLCExportWorker::createOccurrenceFromNode(
 		for (auto child : scene->getChildrenAsNodes(repoViewGraph, node->getSharedID()))
 		{
 
-			GLC_StructOccurence *childOccurance = createOccurrenceFromNode(
+            GLC_StructOccurrence *childOccurance = createOccurrenceFromNode(
 				scene,
 				child,
 				glcMeshesMap,
