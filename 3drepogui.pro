@@ -84,7 +84,7 @@ unix|macx:MOC_DIR = ./moc/ui
 
 #============================= 3D Repobouncer ==================================
 !isEmpty(BOUNCERDIR) {
-    win32:CONFIG(release, debug|release):BOUNCER_LIB_DIR = $${BOUNCER_LIB_DIR}/lib/Release/
+    win32:CONFIG(release, debug|release):BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/Release/
     else:win32:CONFIG(debug, debug|release):BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/Debug/
     else:unix|macx:BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
     BOUNCER_INC_DIR = $${BOUNCERDIR}/include
