@@ -100,7 +100,11 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 
 	//--------------------------------------------------------------------------
 	// Connect slots
-    connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(update()));
+//    connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(paintGL()));
+
+    QObject::connect(
+        &glcViewport, &GLC_Viewport::updateOpenGL,
+        this, &RepoGLCWidget::paintGL);
 
 	//--------------------------------------------------------------------------
 	// GLC settings
@@ -108,7 +112,11 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0); // Red colour
 	glcMoverController = GLC_Factory::instance()->createDefaultMoverController(
 		repColor, &glcViewport);
-    connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(update()));
+//    connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(paintGL()));
+
+    QObject::connect(
+        &glcMoverController, &GLC_MoverController::repaintNeeded,
+        this, &RepoGLCWidget::paintGL);
 
 	glcViewport.setBackgroundColor(Qt::white);
 	glcLight.setPosition(1.0, 1.0, 1.0);
@@ -1112,9 +1120,9 @@ void repo::gui::RepoGLCWidget::mouseMoveEvent(QMouseEvent * e)
 	}
 	else
 	{
-		//	select(e->x(),e->y(), false, e);
-        //	update();
-	}
+//            select(e->x(),e->y(), false, e);
+//            update();
+    }
 
 	// Pass on the event to parent.
     QOpenGLWidget::mouseMoveEvent(e);
@@ -1152,12 +1160,13 @@ void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
 	QMouseEvent *pMouseEvent)
 {
 //	setAutoBufferSwap(false);
-    setUpdatesEnabled(false);
+//    setUpdatesEnabled(false);
+    setUpdatesEnabled(true);
 	//	glcWorld.collection()->setLodUsage(true, &glcViewport);
 	GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
 	GLC_uint pickupID = glcViewport.selectOnPreviousRender(x, y);
 	//	glcWorld.collection()->setLodUsage(false, &glcViewport);
-	select(selectionID, multiSelection);
+    select(selectionID, multiSelection);
 }
 
 void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
@@ -1166,7 +1175,7 @@ void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
     bool isUpdate)
 {
 //	setAutoBufferSwap(true);
-    setUpdatesEnabled(true);
+//    setUpdatesEnabled(true);
 
     if (glcWorld.containsOccurrence(selectionID))
 	{
