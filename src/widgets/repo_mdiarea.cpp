@@ -193,9 +193,10 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-        &fpsTimer, &QTimer::timeout,
-        repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME: timer timeout
+//	QObject::connect(
+//        &fpsTimer, &QTimer::timeout,
+//        repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
 	this->update();
 	this->repaint();
@@ -215,9 +216,10 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-            &fpsTimer, &QTimer::timeout,
-            repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME
+//	QObject::connect(
+//            &fpsTimer, &QTimer::timeout,
+//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -248,9 +250,10 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-            &fpsTimer, &QTimer::timeout,
-			repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME
+//    QObject::connect(
+//            &fpsTimer, &QTimer::timeout,
+//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
 	this->update();
 	this->repaint();
