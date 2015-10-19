@@ -80,6 +80,7 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	, isInfoVisible(true)
 	, renderingFlag(glc::ShadingFlag)
     , repoScene(0)
+    , glc3DWidgetManager(&glcViewport)
 {
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
@@ -99,12 +100,9 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	this->setMouseTracking(true);
 
 	//--------------------------------------------------------------------------
-	// Connect slots
-//    connect(&glcViewport, SIGNAL(updateOpenGL()), this, SLOT(paintGL()));
-
     QObject::connect(
         &glcViewport, &GLC_Viewport::updateOpenGL,
-        this, &RepoGLCWidget::paintGL);
+        this, &RepoGLCWidget::repaintCurrent);
 
 	//--------------------------------------------------------------------------
 	// GLC settings
@@ -112,14 +110,13 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 	repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0); // Red colour
 	glcMoverController = GLC_Factory::instance()->createDefaultMoverController(
 		repColor, &glcViewport);
-//    connect(&glcMoverController, SIGNAL(repaintNeeded()), this, SLOT(paintGL()));
-
     QObject::connect(
         &glcMoverController, &GLC_MoverController::repaintNeeded,
-        this, &RepoGLCWidget::paintGL);
+        this, &RepoGLCWidget::repaintCurrent);
 
 	glcViewport.setBackgroundColor(Qt::white);
 	glcLight.setPosition(1.0, 1.0, 1.0);
+
 
 
 	//--------------------------------------------------------------------------
@@ -136,6 +133,14 @@ repo::gui::RepoGLCWidget::RepoGLCWidget(QWidget* parent, const QString& windowTi
 
     QObject::connect(&glcMoverController, SIGNAL(repaintNeeded()),
         this, SLOT(broadcastCameraChange()));
+
+}
+
+void repo::gui::RepoGLCWidget::repaintCurrent()
+{
+    makeCurrent();
+    paintGL();
+    doneCurrent();
 }
 
 repo::gui::RepoGLCWidget::~RepoGLCWidget()
@@ -233,14 +238,12 @@ void repo::gui::RepoGLCWidget::initializeShaders()
 		QFile vertexShaderFile(":/shaders/select.vert");
 		QFile fragmentShaderFile(":/shaders/select.frag");
 
-// FIXME: selection shader
         GLC_SelectionMaterial::setShaders(
             vertexShaderFile,
             fragmentShaderFile,
             context());
 		try
 		{
-// FIXME: selection material init shader
             GLC_SelectionMaterial::initShader(context());
             int i = 0;
 
@@ -395,7 +398,7 @@ void repo::gui::RepoGLCWidget::paintGL()
 	}
 	catch (GLC_Exception &e)
 	{
-		std::cerr << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
 	}
 
 	//QGLFramebufferObject::bindDefault();
@@ -443,12 +446,6 @@ void repo::gui::RepoGLCWidget::paintInfo()
 	//            glVertex2f( 1.f,panelRat);
 	//            glVertex2f(-1.f,panelRat);
 	//        glEnd();
-
-
-
-
-
-
 
 	GLC_Matrix4x4 uiMatrix(glcViewport.cameraHandle()->viewMatrix());
 	// Change matrix to follow camera orientation
@@ -501,7 +498,6 @@ void repo::gui::RepoGLCWidget::paintInfo()
     // Display selection
     if (glcWorld.selectionSize() > 0)
         painter.drawText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
-
 
 
 	glMatrixMode(GL_PROJECTION);
@@ -803,9 +799,7 @@ repo::core::model::RepoNode* repo::gui::RepoGLCWidget::getSelectedNode() const
 	if (glcWorld.selectionSize() > 0)
 	{
         GLC_StructOccurrence* o = glcWorld.selectedOccurrenceList().first();
-
 	}
-
 	return node;
 }
 
@@ -1075,7 +1069,7 @@ void repo::gui::RepoGLCWidget::mousePressEvent(QMouseEvent *e)
 	case (Qt::RightButton) :
 		this->setCursor(Qt::ClosedHandCursor);
 		glcMoverController.setActiveMover(
-			GLC_MoverController::TrackBall,
+            GLC_MoverController::TurnTable,
 			GLC_UserInput(e->x(), e->y()));
         update();
 		break;
@@ -1157,66 +1151,84 @@ void repo::gui::RepoGLCWidget::wheelEvent(QWheelEvent * e)
 }
 
 void repo::gui::RepoGLCWidget::select(int x, int y, bool multiSelection,
-	QMouseEvent *pMouseEvent)
+    QMouseEvent *event)
 {
+    const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
+    if (spacePartitioningIsUsed)
+    {
+        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
+        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
+        glcWorld.collection()->setSpacePartitionningUsage(false);
+    }
+
 //	setAutoBufferSwap(false);
 //    setUpdatesEnabled(false);
-    setUpdatesEnabled(true);
-	//	glcWorld.collection()->setLodUsage(true, &glcViewport);
-	GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
-	GLC_uint pickupID = glcViewport.selectOnPreviousRender(x, y);
-	//	glcWorld.collection()->setLodUsage(false, &glcViewport);
+//    glcWorld.collection()->setLodUsage(true, &glcViewport);
+
+    GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
+
+//    glcWorld.collection()->setLodUsage(false, &glcViewport);
+
+
+
+    if (spacePartitioningIsUsed)
+    {
+        glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
+        glcWorld.collection()->setSpacePartitionningUsage(true);
+    }
+
+    std::clog << "Selection ID: " << selectionID << std::endl;
     select(selectionID, multiSelection);
 }
 
 void repo::gui::RepoGLCWidget::select(GLC_uint selectionID,
-	bool multiSelection,
-	bool unselectSelected,
+    bool multiSelection,
+    bool unselectSelected,
     bool isUpdate)
 {
 //	setAutoBufferSwap(true);
 //    setUpdatesEnabled(true);
 
     if (glcWorld.containsOccurrence(selectionID))
-	{
-		if (unselectSelected
-			&& (!glcWorld.isSelected(selectionID))
-			&& (glcWorld.selectionSize() > 0)
-			&& (!multiSelection))
-		{
-			glcWorld.unselectAll();
-			emit selectionChanged(this, getSelectionList());
-			//emit unselectAll();
-		}
-		if (!glcWorld.isSelected(selectionID))
-		{
-			glcWorld.select(selectionID);
-			emit selectionChanged(this, getSelectionList());
-			//emit updateSelection(m_World.collection()->selection());
-		}
-		else if (unselectSelected && glcWorld.isSelected(selectionID) && multiSelection)
-		{
-			glcWorld.unselect(selectionID);
-			emit selectionChanged(this, getSelectionList());
-			//emit updateSelection(m_World.collection()->selection());
-		}
-		else
-		{
-			if (unselectSelected)
-				glcWorld.unselectAll();
-			glcWorld.select(selectionID);
+    {
+        if (unselectSelected
+            && (!glcWorld.isSelected(selectionID))
+            && (glcWorld.selectionSize() > 0)
+            && (!multiSelection))
+        {
+            glcWorld.unselectAll();
+            emit selectionChanged(this, getSelectionList());
+            //emit unselectAll();
+        }
+        if (!glcWorld.isSelected(selectionID))
+        {
+            glcWorld.select(selectionID);
+            emit selectionChanged(this, getSelectionList());
+            //emit updateSelection(m_World.collection()->selection());
+        }
+        else if (unselectSelected && glcWorld.isSelected(selectionID) && multiSelection)
+        {
+            glcWorld.unselect(selectionID);
+            emit selectionChanged(this, getSelectionList());
+            //emit updateSelection(m_World.collection()->selection());
+        }
+        else
+        {
+            if (unselectSelected)
+                glcWorld.unselectAll();
+            glcWorld.select(selectionID);
 
-			emit selectionChanged(this, getSelectionList());
-			//emit updateSelection(m_World.collection()->selection());
-		}
-	}
-	else if (unselectSelected && (glcWorld.selectionSize() > 0) && (!multiSelection))
-	{
-		// if a geometry is selected, unselect it
-		glcWorld.unselectAll();
-		emit selectionChanged(this, getSelectionList());
-		//emit unselectAll();
-	}
+            emit selectionChanged(this, getSelectionList());
+            //emit updateSelection(m_World.collection()->selection());
+        }
+    }
+    else if (unselectSelected && (glcWorld.selectionSize() > 0) && (!multiSelection))
+    {
+        // if a geometry is selected, unselect it
+        glcWorld.unselectAll();
+        emit selectionChanged(this, getSelectionList());
+        //emit unselectAll();
+    }
 
     if (isUpdate)
         update();

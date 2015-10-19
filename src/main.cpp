@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 //    a.setAttribute(Qt::AA_UseDesktopOpenGL); // Qt5.5 support
-//    a.setAttribute(Qt::AA_ShareOpenGLContexts); // https://blog.qt.io/blog/2014/09/10/qt-weekly-19-qopenglwidget/
+    a.setAttribute(Qt::AA_ShareOpenGLContexts); // https://blog.qt.io/blog/2014/09/10/qt-weekly-19-qopenglwidget/
 
     QCoreApplication::setOrganizationName("3D Repo");
     QCoreApplication::setOrganizationDomain("3drepo.org");

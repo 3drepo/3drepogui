@@ -117,6 +117,9 @@ public slots :
     //
     //--------------------------------------------------------------------------
 
+    //! Repaints the opengl context of this widget.
+    void repaintCurrent();
+
     void broadcastCameraChange();
 
     //! Sets the camera of the view.
@@ -321,6 +324,8 @@ protected:
 
     //! Dictionary of meshes pointed to by their associated unique name.
     QHash<QString, GLC_Mesh*> glcMeshes;
+
+    GLC_3DWidgetManager glc3DWidgetManager;
 
     //! Dictionary of mesh ids pointed to by their associated unique name.
     QHash<QString, GLC_uint> glcMeshesIds;
