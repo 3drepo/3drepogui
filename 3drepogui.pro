@@ -14,18 +14,10 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #===============================================================================
-#CHANGE THESE TO YOUR LIBRARY DIRECTORES IF YOU ARE NOT USING ENV. VARIABLES
-ASSIMPDIR = $$(ASSIMP_ROOT)
-BOOSTDIR = $$(BOOST_ROOT)
-BOUNCERDIR = $$(REPOBOUNCER_ROOT)
-GLCLIBDIR = $$(GLC_ROOT)
-MONGODIR = $$(MONGO_ROOT)
-
-BOUNCER_VERS = 1_0
-
-#EDIT THESE IF YOU ARE A WINDOWS USER
-BOOST_VERS = 1_58
-COMPILER = vc120
+# Modify contents of the dependencies.pri file to correctly point to your local
+# paths should your environmental variables not be set correctly.
+#===============================================================================
+include(dependencies.pri)
 
 #=========================== QT Configuration ==================================
 QT += core gui opengl openglextensions webkitwidgets network svg #gui-private
@@ -50,7 +42,6 @@ unix|macx:MOC_DIR = ./moc/ui
 #================================== BOOST ======================================
 !isEmpty(BOOSTDIR) {
     BOOST_INC_DIR = $${BOOSTDIR}/
-    BOOST_LIB_DIR = $$(BOOST_LIBRARYDIR)
     isEmpty(BOOST_LIB_DIR){
             BOOST_LIB_DIR = $${BOOSTDIR}/include
     }
