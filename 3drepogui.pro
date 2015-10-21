@@ -21,7 +21,7 @@ BOUNCERDIR = $$(REPOBOUNCER_ROOT)
 GLCLIBDIR = $$(GLC_ROOT)
 MONGODIR = $$(MONGO_ROOT)
 
-GLC_INC_DIR = /usr/local/include/GLC_lib-2.5
+BOUNCER_VERS = 1_0
 
 #EDIT THESE IF YOU ARE A WINDOWS USER
 BOOST_VERS = 1_58
@@ -84,12 +84,19 @@ unix|macx:MOC_DIR = ./moc/ui
 
 #============================= 3D Repobouncer ==================================
 !isEmpty(BOUNCERDIR) {
-    win32:CONFIG(release, debug|release):BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/Release/
-    else:win32:CONFIG(debug, debug|release):BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/Debug/
-    else:unix|macx:BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
+    BOUNCER_LIB_DIR = $${BOUNCERDIR}/lib/
     BOUNCER_INC_DIR = $${BOUNCERDIR}/include
 
-    LIBS += -L$${BOUNCER_LIB_DIR} -l3drepobouncer
+
+    #win32:CONFIG(release, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}
+    #else:win32:CONFIG(debug, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}_d
+    #else:unix|macx:BOUNCERLIB = -l3drepobouncer
+
+    #The libraries should have the same postfixes regardless of platforms, change if it's not the case
+    CONFIG(release, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}
+    else:CONFIG(debug, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}_d
+
+    LIBS += -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
 
     INCLUDEPATH += $${BOUNCER_INC_DIR}
     DEPENDPATH += $${BOUNCER_INC_DIR}
@@ -136,16 +143,15 @@ unix|macx:MOC_DIR = ./moc/ui
 
 #=============================== GLC LIB =======================================
 !isEmpty(GLCLIBDIR) {
-    isEmpty(GLC_INC_DIR) {
-        GLC_INC_DIR = $${GLCLIBDIR}/include
-    }
+    win32:GLC_INC_DIR = $${GLCLIBDIR}/include
+    unix|macx:GLC_INC_DIR = /usr/local/include/GLC_lib-3.0
 
-    win32:GLCLIB = -lGLC_lib3
-    else:GLCLIB = -lGLC_lib
 
-    win32:CONFIG(release, debug|release):GLC_LIB_DIR = $${GLCLIBDIR}/lib/Release/
-    else:win32:CONFIG(debug, debug|release):GLC_LIB_DIR = $${GLCLIBDIR}/lib/Debug/
-    else:unix|macx:GLC_LIB_DIR = $${GLCLIBDIR}/lib
+    GLC_LIB_DIR = $${GLCLIBDIR}/lib
+
+    win32:CONFIG(release, debug|release):GLCLIB = -lGLC_lib3
+    else:win32:CONFIG(debug, debug|release):GLCLIB = -lGLC_lib3d
+    else:unix|macx:GLCLIB = -lGLC_lib.3
 
     LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
 
