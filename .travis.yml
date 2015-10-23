@@ -45,6 +45,9 @@ before_install:
     - sudo apt-get -qq install qt55tools qt55svg qt55webkit qt55base qt55quick1 
     - ls /opt/qt55/include
     - ls /opt/qt55/include/QtGui
+    - export QTDIR=/opt/qt55
+    - export PATH=$QTDIR:$PATH
+    - which qmake
     - echo =========== GLC_LIB INSTALL =============
     - git clone --branch=Branch_Version_3_0_0 https://github.com/3drepo/GLC_lib.git
     - cd GLC_lib
