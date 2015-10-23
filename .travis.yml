@@ -43,15 +43,26 @@ before_install:
     - sudo apt-add-repository -y ppa:beineri/opt-qt542
     - sudo apt-get -qq update
     - sudo apt-get -qq install libc6-i386 qt54tools qt54svg qt54webkit
+    - echo =========== GLC_LIB INSTALL =============
+    - git clone --branch=Branch_Version_3_0_0 https://github.com/3drepo/GLC_lib.git
+    - cd GLC_lib
+    - qmake -recursive
+    - make -j2
+    - sudo make install
 before_script:
     - ls
-    - qmake
-    - make
+    - export BOOST_ROOT=/usr/local
+    - export ASSIMP_ROOT=/usr/local
+    - export GLC_ROOT=/usr/local
+    - export REPOBOUNCER_ROOT=/usr/local
+    - qmake -recursive
+    - make -j2
 
 script:
     - ls /usr/local/lib
+    - ls /usr/local/include
 
 notifications:
     email: 
         recipients:
-            - carmen@3drepo.org
+            - carmen.fan@3drepo.org
