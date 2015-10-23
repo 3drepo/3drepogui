@@ -65,8 +65,9 @@ before_script:
     - export GLC_ROOT=/usr/local/GLC_lib-3.0
     - export REPOBOUNCER_ROOT=/usr/local
     - qmake -recursive
+    - which gcc
     - grep -rn "c++0x" *
-    - make -j2
+    - CXXFLAGS+=-std=c++11 make -j2
 script:
     - ls /usr/local/lib
     - ls /usr/local/include

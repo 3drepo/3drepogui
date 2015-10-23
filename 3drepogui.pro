@@ -31,7 +31,6 @@ win32:LIBS += -lopengl32
 TARGET = 3drepogui
 TEMPLATE = app
 CONFIG += ordered warn_off c++11
-QMAKE_CXXFLAGS += -std=c++11
 
 unix|macx:QMAKE_CXXFLAGS += -fpermissive
 unix|macx:DESTDIR = ./build
