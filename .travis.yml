@@ -64,7 +64,6 @@ before_script:
     - export REPOBOUNCER_ROOT=/usr/local
     - qmake -recursive
     - make -j2
-
 script:
     - ls /usr/local/lib
     - ls /usr/local/include
