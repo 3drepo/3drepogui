@@ -33,10 +33,12 @@ before_install:
     - sudo make -j2 install
     - cd ../
     - echo ============ BOUNCER INSTALL =============
-    - mkdir bouncer
     - git clone https://github.com/3drepo/3drepobouncer.git
+    - ls
+    - cd 3drepobouncer
     - MONGO_ROOT=$HOME/mongo-cxx cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
     - sudo make -j2 install
+    - cd ../
     - echo =============== QT INSTALL ===============
     - sudo apt-add-repository -y ppa:beineri/opt-qt541
     - sudo apt-get -qq update
