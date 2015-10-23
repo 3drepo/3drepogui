@@ -40,9 +40,10 @@ before_install:
     - sudo make -j2 install
     - cd ../
     - echo =============== QT INSTALL ===============
-    - sudo apt-add-repository -y ppa:beineri/opt-qt542
+    - sudo apt-add-repository -y ppa:beineri/opt-qt551
     - sudo apt-get -qq update
-    - sudo apt-get -qq install libc6-i386 qt54tools qt54svg qt54webkit
+    - sudo apt-get -qq install qt55tools qt55svg qt55webkit
+    - ls /opt/qt55/include
     - echo =========== GLC_LIB INSTALL =============
     - git clone --branch=Branch_Version_3_0_0 https://github.com/3drepo/GLC_lib.git
     - cd GLC_lib
