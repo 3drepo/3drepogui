@@ -40,7 +40,7 @@ before_install:
     - sudo make -j2 install
     - cd ../
     - echo =============== QT INSTALL ===============
-    - sudo apt-add-repository -y ppa:beineri/opt-qt541
+    - sudo apt-add-repository -y ppa:beineri/opt-qt542
     - sudo apt-get -qq update
     - sudo apt-get -qq install libc6-i386 qt54tools qt54svg qt54webkit
 before_script:
