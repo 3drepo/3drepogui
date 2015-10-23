@@ -1,0 +1,55 @@
+language: cpp
+
+compiler:
+     - gcc
+addons:
+    apt:
+        sources:
+            - ubuntu-toolchain-r-test
+        packages:
+            - gcc-4.9
+            - g++-4.9
+before_install:
+    - export CXX="g++-4.9"
+    - export CC="gcc-4.9"
+    - echo ============ BOOST  INSTALL =============
+    - sudo add-apt-repository -y ppa:boost-latest/ppa
+    - sudo apt-get update
+    - sudo apt-get install libboost1.55-all-dev
+    - echo ============ MONGO  INSTALL =============
+    - mkdir mongo
+    - cd mongo
+    - git clone https://github.com/mongodb/mongo-cxx-driver.git
+    - cd mongo-cxx-driver
+    - ls
+    - scons -j2 --64 --mute --sharedclient --prefix=$HOME/mongo-cxx install
+    - ls $HOME/mongo-cxx
+    - cd ../../
+    - echo ============ ASSIMP INSTALL =============
+    - mkdir assimp
+    - cd assimp
+    - git clone --branch=multipart https://github.com/3drepo/assimp.git      
+    - CXXFLAGS+=-std=c++11 cmake -DASSIMP_BUILD_TESTS=OFF assimp
+    - sudo make -j2 install
+    - cd ../
+    - echo ============ BOUNCER INSTALL =============
+    - mkdir bouncer
+    - git clone https://github.com/3drepo/3drepobouncer.git
+    - MONGO_ROOT=$HOME/mongo-cxx cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
+    - sudo make -j2 install
+    - echo =============== QT INSTALL ===============
+    - sudo apt-add-repository -y ppa:beineri/opt-qt541
+    - sudo apt-get -qq update
+    - sudo apt-get -qq install libc6-i386 qt54tools qt54svg qt54webkit
+before_script:
+    - ls
+    - qmake
+    - make
+
+script:
+    - ls /usr/local/lib
+
+notifications:
+    email: 
+        recipients:
+            - carmen@3drepo.org
