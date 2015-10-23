@@ -66,6 +66,7 @@ before_script:
     - export REPOBOUNCER_ROOT=/usr/local
     - qmake -recursive
     - which gcc
+    - g++ -v
     - grep -rn "c++0x" *
     - CXXFLAGS+=-std=c++11 make -j2
 script:
