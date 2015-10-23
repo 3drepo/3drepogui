@@ -59,9 +59,10 @@ before_install:
     - cd ../
 before_script:
     - ls
+    - export MONGO_ROOT=$HOME/mongo-cxx
     - export BOOST_ROOT=/usr/local
     - export ASSIMP_ROOT=/usr/local
-    - export GLC_ROOT=/usr/local
+    - export GLC_ROOT=/usr/local/GLC_lib-3.0
     - export REPOBOUNCER_ROOT=/usr/local
     - qmake -recursive
     - make -j2
