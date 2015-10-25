@@ -25,6 +25,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repoabstractmanagerdialog.h"
+#include "repo_dialogconnect.h"
 #include "../primitives/repoidbcache.h"
 
 //------------------------------------------------------------------------------
@@ -63,10 +64,14 @@ public :
     void addConnectionToken(const repo::RepoToken &connectionToken);
 
     //! Updates selected item.
-    void edit() {}
+    void edit();
 
     //! Updates item based on model index.
-    void edit(const QModelIndex &index) {}
+    void edit(const QModelIndex &index);
+
+    repo::RepoToken getConnection();
+
+    repo::RepoToken getConnection(const QModelIndex &index);
 
     //! Refreshes the current list
     void refresh();
@@ -75,7 +80,10 @@ public :
     void removeItem() {}
 
     //! Shows edit dialog.
-    void showEditDialog() {}
+    void showEditDialog() { showEditDialog(repo::RepoToken()); }
+
+    //! Shows the edit dialog and saves edits to token.
+    void showEditDialog(const repo::RepoToken &token);
 
 
 };

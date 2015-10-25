@@ -18,15 +18,22 @@
 #ifndef REPO_DIALOG_CONNECT_H
 #define REPO_DIALOG_CONNECT_H
 
+//------------------------------------------------------------------------------
+// Qt
 #include <QtWidgets/qdialog.h>
 #include <QtGui>
 #include <QIcon>
 #include <QSettings>
 #include <QCompleter>
+
 //------------------------------------------------------------------------------
+// CORE
+#include <repo/repo_controller.h>
+
+//------------------------------------------------------------------------------
+// GUI
 #include "ui_repo_dialogconnect.h"
 #include "../primitives/repo_fontawesome.h"
-
 
 namespace Ui {
     class RepoDialogConnect;
@@ -52,7 +59,7 @@ public:
     //--------------------------------------------------------------------------
 	
 	//! Creates a connection dialog. To show, run exec().
-    RepoDialogConnect(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    RepoDialogConnect(repo::RepoToken &token, QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
     //--------------------------------------------------------------------------
 	//

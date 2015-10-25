@@ -78,10 +78,38 @@ void repo::gui::RepoDialogManagerConnect::addConnectionToken(const repo::RepoTok
     // Authentication
     row.append(createItem(QString::fromStdString(connectionToken.getDatabaseName())));
 
+    row.append(createItem(QVariant(false)));
+    row.append(createItem(QVariant(false)));
 
 
     //--------------------------------------------------------------------------
     model->invisibleRootItem()->appendRow(row);
+}
+
+void repo::gui::RepoDialogManagerConnect::edit()
+{
+    showEditDialog(getConnection());
+}
+
+void repo::gui::RepoDialogManagerConnect::edit(const QModelIndex &index)
+{
+    showEditDialog(getConnection(index));
+}
+
+repo::RepoToken repo::gui::RepoDialogManagerConnect::getConnection()
+{
+    return getConnection(ui->treeView->selectionModel()->currentIndex());
+}
+
+repo::RepoToken repo::gui::RepoDialogManagerConnect::getConnection(const QModelIndex &index)
+{
+    repo::RepoToken token;
+    if (index.isValid())
+    {
+        QModelIndex tokenIndex = index.sibling(index.row(), (int) Columns::ALIAS);
+        return tokenIndex.data(Qt::UserRole + 1).value<repo::RepoToken>();
+    }
+    return token;
 }
 
 void repo::gui::RepoDialogManagerConnect::refresh()
@@ -89,15 +117,37 @@ void repo::gui::RepoDialogManagerConnect::refresh()
     if (cancelAllThreads())
     {
         std::cout << "Refresh called" << std::endl;
-        ui->progressBar->show();
+        ui->progressBar->show(); // TODO: delete line
         //----------------------------------------------------------------------
         clear(false); // Clear any previous entries
 
+
+        // TODO: new worker here
 
         repo::RepoToken dbToken(0, "localhost", "admin");
         addConnectionToken(dbToken);
 
         //----------------------------------------------------------------------
-        ui->progressBar->hide();
+        ui->progressBar->hide(); // TODO: show
+    }
+}
+
+
+void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoToken &token)
+{
+
+    RepoDialogConnect connectionSettingsDialog(this);
+    if (QDialog::Rejected == connectionSettingsDialog.exec())
+    {
+        repoLog("Connection Settings Dialog cancelled by user.\n");
+        std::cout << tr("Connection Settings Dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+
+        repoLog("create or update user...\n");
+        // Create or update user
+
+        // TODO: SAVE
     }
 }
