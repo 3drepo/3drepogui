@@ -17,7 +17,6 @@
 
 
 #include "repodialogusermanager.h"
-
 #include "ui_repoabstractmanagerdialog.h"
 
 
@@ -168,7 +167,6 @@ void repo::gui::RepoDialogUserManager::refresh(
 	const repo::core::model::RepoUser &user,
 	const repo::worker::UsersWorker::Command &command)
 {
-
     if (cancelAllThreads())
     {
         const repo::RepoToken *token = dbCache->getConnection(ui->hostComboBox->currentText());

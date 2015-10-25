@@ -31,9 +31,11 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getManagerIcon());
 
-    dbCache->setHostsComboBox(ui->hostComboBox);
-    dbCache->setDatabasesComboBox(ui->databaseComboBox);
-
+    if (dbCache)
+    {
+        dbCache->setHostsComboBox(ui->hostComboBox);
+        dbCache->setDatabasesComboBox(ui->databaseComboBox);
+    }
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(this);
     proxy = new QSortFilterProxyModel(this);

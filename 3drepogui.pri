@@ -18,6 +18,7 @@ HEADERS +=  \
 	src/dialogs/repo_dialogcommit.h \
 	src/dialogs/repo_dialogconnect.h \
 	src/dialogs/repo_dialoghistory.h \
+	src/dialogs/repo_dialog_manager_connect.h \
 	src/dialogs/repo_genericdialog.h \
 	src/dialogs/repo_maptilesdialog.h \
 	src/dialogs/repo_transformationdialog.h \
@@ -35,6 +36,7 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/settings/repo_settings_token.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -71,6 +73,7 @@ SOURCES +=  \
 	src/dialogs/repo_dialogcommit.cpp \
 	src/dialogs/repo_dialogconnect.cpp \
 	src/dialogs/repo_dialoghistory.cpp \
+	src/dialogs/repo_dialog_manager_connect.cpp \
 	src/dialogs/repo_genericdialog.cpp \
 	src/dialogs/repo_maptilesdialog.cpp \
 	src/dialogs/repo_transformationdialog.cpp \
@@ -88,6 +91,7 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/settings/repo_settings_token.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \

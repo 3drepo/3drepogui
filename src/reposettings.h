@@ -31,7 +31,7 @@ class RepoSettings : public QSettings, public repo::manipulator::modelconvertor:
 
 public:
 
-    RepoSettings() {}
+    RepoSettings() : QSettings() {}
 
     ~RepoSettings() {}
 

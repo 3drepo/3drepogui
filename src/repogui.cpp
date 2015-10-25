@@ -30,6 +30,7 @@
 #include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
+#include "dialogs/repo_dialog_manager_connect.h"
 #include "dialogs/repoprojectmanagerdialog.h"
 #include "repo/logger/repo_logger.h"
 #include "widgets/repo_widgetrepository.h"
@@ -393,6 +394,9 @@ void repo::gui::RepoGUI::commit(
 void repo::gui::RepoGUI::connect()
 {
     RepoDialogConnect connectionDialog(this);
+
+    RepoDialogManagerConnect connectManager(0, this);
+    connectManager.exec();
 
     if(!connectionDialog.exec()) // if not clicked "Connect"
     {
