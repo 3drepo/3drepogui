@@ -132,7 +132,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 						new repo::core::model::TransformationNode(transformationDialog.getTransformation());
 					if (t)
 					{
-						scene->modifyNode(repo::core::model::RepoScene::GraphType::DEFAULT, transformation->getSharedID(), t);
+                    //TODO: fix me //	scene->modifyNode(repo::core::model::RepoScene::GraphType::DEFAULT, transformation->getSharedID(), t);
 						delete t;
 					}
 				

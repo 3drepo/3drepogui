@@ -63,7 +63,7 @@ namespace repo {
 			* @param glcMeshesMap 
 			* @param countJob contribute to the #jobs done (false for processing reference nodes)
 			*/
-			GLC_StructOccurence* createOccurrenceFromNode(
+            GLC_StructOccurrence* createOccurrenceFromNode(
 				repo::core::model::RepoScene         *scene,
 				const repo::core::model::RepoNode           *node,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
@@ -74,7 +74,7 @@ namespace repo {
 			/**
 			* Convert a repo scene to a GLC occurance structure of nodes.
 			*/
-            GLC_StructOccurence* convertSceneToOccurance(
+            GLC_StructOccurrence* convertSceneToOccurance(
 				repo::core::model::RepoScene *scene);
 
 		signals:

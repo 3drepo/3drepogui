@@ -121,7 +121,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 //                                mesh->getBoundingBox().getLengthZ(),
 //                                core::RepoNodeTransformation::matrixToVector(mesh->getBoundingBoxTransformation()));
 //    }
-    widgetB->updateGL();
+//    widgetB->paintGL();
 }
 
 repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()
