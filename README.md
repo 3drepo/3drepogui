@@ -1,4 +1,4 @@
-3D Repo GUI [![Build Status](https://travis-ci.org/3drepo/3drepogui.svg?branch=master)](https://travis-ci.org/3drepo/3drepogui)
+3D Repo GUI [![Build Status](https://travis-ci.org/3drepo/3drepogui.svg?branch=ISSUE_50)](https://travis-ci.org/3drepo/3drepogui)
 =========
 
 Cross-platform C++ GUI written in Qt.
@@ -9,9 +9,9 @@ This project is Copyright of [3D Repo Ltd](http://3drepo.org) and is released un
 ## Dependencies
 
 - [3D Repo Bouncer master branch](https://github.com/3drepo/3drepobouncer)
-- [GLC Lib v2.5.1](https://github.com/laumaya/GLC_lib/tree/Version_2_5_1) See our [compilation instructions](https://github.com/3drepo/3drepogui/wiki/Compiling-GLC-Lib)
+- [GLC Lib v3.0](https://github.com/3drepo/GLC_lib/tree/Branch_Version_3_0_0) See our [compilation instructions](https://github.com/3drepo/3drepogui/wiki/Compiling-GLC-Lib)
 - [Font Awesome v4.3.0](https://github.com/FortAwesome/Font-Awesome/tree/v4.3.0)
-- [Qt v5.4.1 OpenGL](https://www.qt.io/download-open-source/#section-2)
+- [Qt v5.5 OpenGL](https://www.qt.io/download/)
 - [Python v2.x] (https://www.python.org/)
 - [Boost v1.58] (http://www.boost.org/)
 
@@ -61,7 +61,7 @@ These instructions are for OSX Yosemite.
 Download and install Qt with an explicit OpenGL support.
 
 Navigate to where you installed Qt using finder.
-Go to the subdirectory 5.3/clang_64/mkspecs directory.
+Go to the subdirectory 5.5/clang_64/mkspecs directory.
 Open the file called qdevice.pri with a text editor
 Change the line !host_build:QMAKE_MAC_SDK = macosx10.8 to !host_build:QMAKE_MAC_SDK = macosx10.9
 Save the file and restart Qt Creator.
