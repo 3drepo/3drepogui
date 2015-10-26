@@ -166,12 +166,10 @@ GLCExportWorker::GLCExportWorker(
 	if (scene && scene->getRoot(repo::core::model::RepoScene::GraphType::OPTIMIZED))
 	{
 		repoDebug << "stash graph found, visualising with stash graph...";
-		repoViewGraph = repo::core::model::RepoScene::GraphType::OPTIMIZED;
 	}
 	else
 	{
 		repoDebug << "stash graph not found, visualising with default graph...";
-		repoViewGraph = repo::core::model::RepoScene::GraphType::DEFAULT;
 	}
 
 }
@@ -180,6 +178,8 @@ GLCExportWorker::~GLCExportWorker() {}
 
 void GLCExportWorker::run()
 {
+
+    repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
 
 	if (scene && scene->getRoot(repoViewGraph))
 	{
@@ -229,7 +229,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 	//-----
 	GLC_World* glcWorld = nullptr;
-	if (!cancelled && scene && scene->hasRoot(repoViewGraph)){
+    if (!cancelled && scene && scene->hasRoot(scene->getViewGraph())){
 		glcWorld = new GLC_World(convertSceneToOccurance(scene));
 	}
 
@@ -240,6 +240,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
 GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 	repo::core::model::RepoScene *scene)
 {
+	repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
 
 	//------------------------------------------------------------------
 	// Allocate Textures
@@ -472,7 +473,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
 		}
 		case repoModel::NodeType::REFERENCE:
 			//FIXME: references in stash? need to think about this.
-			repo::core::model::RepoScene *refScene = scene->getSceneFromReference(repoViewGraph,
+            repo::core::model::RepoScene *refScene = scene->getSceneFromReference(scene->getViewGraph(),
 				node->getSharedID());
 			if (refScene)
 			{
@@ -485,7 +486,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
 		//-------------------------------------------------------------------------
 		// Children
 
-		for (auto child : scene->getChildrenAsNodes(repoViewGraph, node->getSharedID()))
+        for (auto child : scene->getChildrenAsNodes(scene->getViewGraph(), node->getSharedID()))
 		{
 
             GLC_StructOccurrence *childOccurance = createOccurrenceFromNode(
