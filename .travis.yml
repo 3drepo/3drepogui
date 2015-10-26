@@ -21,7 +21,6 @@ before_install:
     - cd mongo
     - git clone https://github.com/mongodb/mongo-cxx-driver.git
     - cd mongo-cxx-driver
-    - ls
     - scons -j2 --64 --mute --sharedclient --prefix=$HOME/mongo-cxx install
     - ls $HOME/mongo-cxx
     - cd ../../
@@ -34,7 +33,6 @@ before_install:
     - cd ../
     - echo ============ BOUNCER INSTALL =============
     - git clone https://github.com/3drepo/3drepobouncer.git
-    - ls
     - cd 3drepobouncer
     - MONGO_ROOT=$HOME/mongo-cxx cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
     - sudo make -j2 install
@@ -43,14 +41,9 @@ before_install:
     - sudo apt-add-repository -y ppa:beineri/opt-qt551
     - sudo apt-get -qq update
     - sudo apt-get -qq install qt55tools qt55svg qt55webkit qt55base qt55quick1 qt55x11extras
-    - ls /opt/qt55/
     - sudo cp g++-base.conf /opt/qt55/mkspecs/common
-    - ls /opt/qt55/include/QtGui
     - export QTDIR=/opt/qt55
-    - ls $QTDIR
-    - ls $QTDIR/bin
     - export PATH=$QTDIR/bin:$PATH
-    - which qmake
     - echo =========== GLC_LIB INSTALL =============
     - git clone --branch=Branch_Version_3_0_0 https://github.com/3drepo/GLC_lib.git
     - cd GLC_lib
@@ -66,9 +59,7 @@ before_script:
     - export GLC_ROOT=/usr/local/GLC_lib-3.0
     - export REPOBOUNCER_ROOT=/usr/local
     - qmake -recursive
-    - which gcc
     - g++ -v
-    - grep -rn "c++0x" *
     - CXXFLAGS+=-std=c++11 make -j2
 script:
     - ls /usr/local/lib
