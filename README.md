@@ -1,4 +1,4 @@
-3D Repo GUI
+3D Repo GUI [![Build Status](https://travis-ci.org/3drepo/3drepogui.svg?branch=master)](https://travis-ci.org/3drepo/3drepogui)
 =========
 
 Cross-platform C++ GUI written in Qt.

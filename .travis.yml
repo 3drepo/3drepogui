@@ -58,14 +58,11 @@ before_script:
     - export ASSIMP_ROOT=/usr/local
     - export GLC_ROOT=/usr/local/GLC_lib-3.0
     - export REPOBOUNCER_ROOT=/usr/local
-    - qmake -recursive
-    - g++ -v
-    - CXXFLAGS+=-std=c++11 make -j2
 script:
-    - ls /usr/local/lib
-    - ls /usr/local/include
+    - qmake -recursive
+    - CXXFLAGS+=-std=c++11 make -j2
 
 notifications:
     email: 
         recipients:
-            - carmen.fan@3drepo.org
+            -team@3drepo.org
