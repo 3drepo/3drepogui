@@ -21,8 +21,8 @@
 using namespace repo::settings;
 //------------------------------------------------------------------------------
 
-QString CREDENTIALS = "token";
-QString CREDENTIALS_ARRAY = "tokens";
+const QString RepoSettingsCredentials::CREDENTIALS = "credentials";
+const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "credentials_array";
 
 //------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ QList<repo::RepoCredentials> RepoSettingsCredentials::readCredentials()
         setArrayIndex(i);
         repo::RepoCredentials credentials = value(CREDENTIALS).value<repo::RepoCredentials>();
         credentialsList.append(credentials);
-        emit credentialsAt(i, credentials);
+//        emit credentialsAt(i, credentials);
     }
     endArray();
     return credentialsList;
