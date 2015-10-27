@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>402</width>
-    <height>291</height>
+    <width>379</width>
+    <height>289</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="addressTab">
       <attribute name="title">
@@ -104,7 +104,7 @@
        <item row="6" column="1">
         <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>Port number of MongoDB. Default is 27017.</string>
+          <string>Port number for MongoDB. Default is 27017.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -114,7 +114,7 @@
        <item row="4" column="1">
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>Server address of MongoDB. This can be either a domain name or an IP address.</string>
+          <string>Server address for MongoDB. This can be either a domain name or an IP address.</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -173,7 +173,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="databaseLineEdit">
+        <widget class="QLineEdit" name="authenticationDatabaseLineEdit">
          <property name="placeholderText">
           <string>Database</string>
          </property>

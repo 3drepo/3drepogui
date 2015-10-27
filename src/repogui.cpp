@@ -115,7 +115,7 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
-    ui->actionConnect->setIcon(RepoDialogConnect::getIcon());
+    ui->actionConnect->setIcon(RepoFontAwesome::getConnectIcon());
 
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
@@ -393,7 +393,7 @@ void repo::gui::RepoGUI::commit(
 
 void repo::gui::RepoGUI::connect()
 {
-    RepoDialogConnect connectionDialog(this);
+    RepoDialogConnect connectionDialog(repo::RepoCredentials(), this);
 
     RepoDialogManagerConnect connectManager(0, this);
     connectManager.exec();
@@ -408,13 +408,13 @@ void repo::gui::RepoGUI::connect()
 
 		std::string errMsg;
 
-		repo::RepoToken* connectionToken =
-			controller->authenticateToAdminDatabaseMongo(
-			errMsg, 
-			connectionDialog.getHost().toStdString(), 
-			connectionDialog.getPort(),
-			connectionDialog.getUsername().toStdString(), 
-			connectionDialog.getPassword().toStdString());
+        repo::RepoToken* connectionToken = new repo::RepoToken();
+//			controller->authenticateToAdminDatabaseMongo(
+//			errMsg,
+//			connectionDialog.getHost().toStdString(),
+//			connectionDialog.getPort(),
+//			connectionDialog.getUsername().toStdString(),
+//			connectionDialog.getPassword().toStdString());
 
 		if (connectionToken)
 		{
@@ -792,8 +792,8 @@ void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 
 void repo::gui::RepoGUI::startup()
 {
-    RepoDialogConnect connectionDialog(this);
-    if (connectionDialog.isShowAtStartup())
+//    RepoDialogConnect connectionDialog(this);
+//    if (connectionDialog.isShowAtStartup())
         connect();
 }
 

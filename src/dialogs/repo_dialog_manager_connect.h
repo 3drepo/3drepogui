@@ -40,6 +40,8 @@
 #include <QMessageBox>
 
 
+Q_DECLARE_METATYPE(repo::RepoCredentials)
+
 namespace repo {
 namespace gui {
 
