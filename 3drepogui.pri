@@ -36,6 +36,7 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/settings/repo_settings_credentials.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -55,8 +56,7 @@ HEADERS +=  \
 	src/widgets/repo_mdiarea.h \
 	src/widgets/repo_mdisubwindow.h \
 	src/widgets/repo_textbrowser.h \
-	src/widgets/repo_widgetrepository.h \
-    $$PWD/src/repo/settings/repo_settings_credentials.h
+	src/widgets/repo_widgetrepository.h
 
 SOURCES +=  \
 	src/main.cpp \
@@ -91,6 +91,7 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
@@ -110,8 +111,7 @@ SOURCES +=  \
 	src/widgets/repo_mdiarea.cpp \
 	src/widgets/repo_mdisubwindow.cpp \
 	src/widgets/repo_textbrowser.cpp \
-	src/widgets/repo_widgetrepository.cpp \
-    $$PWD/src/repo/settings/repo_settings_credentials.cpp
+	src/widgets/repo_widgetrepository.cpp
 
 FORMS +=  \
 	forms/repoabstractmanagerdialog.ui \
