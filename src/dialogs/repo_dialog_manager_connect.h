@@ -21,12 +21,14 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
+#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "repoabstractmanagerdialog.h"
 #include "repo_dialogconnect.h"
 #include "../primitives/repoidbcache.h"
+#include "../repo/settings/repo_settings_credentials.h"
 
 //------------------------------------------------------------------------------
 // Qt
@@ -37,7 +39,6 @@
 #include <QItemSelection>
 #include <QMessageBox>
 
-Q_DECLARE_METATYPE(repo::RepoToken)
 
 namespace repo {
 namespace gui {
@@ -61,7 +62,7 @@ public :
      * @brief addConnectionToken
      * @param connectionToken connection token for specific DB connection
      */
-    void addConnectionToken(const repo::RepoToken &connectionToken);
+    void addCredentials(const repo::RepoCredentials &credentials);
 
     //! Updates selected item.
     void edit();
@@ -69,9 +70,11 @@ public :
     //! Updates item based on model index.
     void edit(const QModelIndex &index);
 
-    repo::RepoToken getConnection();
+    //! Returns currently selected connection.
+    RepoCredentials getConnection();
 
-    repo::RepoToken getConnection(const QModelIndex &index);
+    //! Returns connection based on given model index.
+    repo::RepoCredentials getConnection(const QModelIndex &index);
 
     //! Refreshes the current list
     void refresh();
@@ -80,10 +83,10 @@ public :
     void removeItem() {}
 
     //! Shows edit dialog.
-    void showEditDialog() { showEditDialog(repo::RepoToken()); }
+    void showEditDialog() { showEditDialog(repo::RepoCredentials()); }
 
     //! Shows the edit dialog and saves edits to token.
-    void showEditDialog(const repo::RepoToken &token);
+    void showEditDialog(const repo::RepoCredentials &credentials);
 
 
 };

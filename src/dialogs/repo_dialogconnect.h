@@ -59,7 +59,7 @@ public:
     //--------------------------------------------------------------------------
 	
 	//! Creates a connection dialog. To show, run exec().
-    RepoDialogConnect(repo::RepoToken &token, QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    RepoDialogConnect(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
     //--------------------------------------------------------------------------
 	//

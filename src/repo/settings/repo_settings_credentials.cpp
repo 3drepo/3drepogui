@@ -15,44 +15,49 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "repo_settings_token.h"
+#include "repo_settings_credentials.h"
 
 //------------------------------------------------------------------------------
 using namespace repo::settings;
 //------------------------------------------------------------------------------
 
-std::string TOKEN = "token";
-std::string TOKENS_ARRAY = "tokens";
+QString CREDENTIALS = "token";
+QString CREDENTIALS_ARRAY = "tokens";
 
 //------------------------------------------------------------------------------
 
-RepoSettingsToken::RepoSettingsToken() : QSettings()
+RepoSettingsCredentials::RepoSettingsCredentials() : QSettings()
 {
-    qRegisterMetaType<repo::RepoToken>();
+    qRegisterMetaType<repo::RepoCredentials>();
 }
 
 //------------------------------------------------------------------------------
 
-void RepoSettingsToken::writeTokens(QList<repo::RepoToken> &tokens)
+void RepoSettingsCredentials::writeCredentials(QList<repo::RepoCredentials> &credentials)
 {
-    beginWriteArray(TOKENS_ARRAY);
-    for (int i = 0; i < logins.size(); ++i)
+    beginWriteArray(CREDENTIALS_ARRAY);
+    for (int i = 0; i < credentials.size(); ++i)
     {
-        settings.setArrayIndex(i);
-        settings.setValue(TOKEN, tokens.at(i));
-    }
-    settings.endArray();
-}
-
-//------------------------------------------------------------------------------
-
-void RepoSettingsToken::readTokens() const
-{
-    int size = beginReadArray(TOKENS_ARRAY);
-    for (int i = 0; i < size; ++i) {
         setArrayIndex(i);
-        repo::RepoToken token = settings.value(TOKEN).value<repo::RepoToken>();
-        emit tokenReadAt(token);
+        QVariant var;
+        var.setValue(credentials.at(i));
+        setValue(CREDENTIALS, var);
     }
     endArray();
+}
+
+//------------------------------------------------------------------------------
+
+QList<repo::RepoCredentials> RepoSettingsCredentials::readCredentials()
+{    
+    int size = beginReadArray(CREDENTIALS_ARRAY);
+    QList<repo::RepoCredentials> credentialsList;
+    for (int i = 0; i < size; ++i) {
+        setArrayIndex(i);
+        repo::RepoCredentials credentials = value(CREDENTIALS).value<repo::RepoCredentials>();
+        credentialsList.append(credentials);
+        emit credentialsAt(i, credentials);
+    }
+    endArray();
+    return credentialsList;
 }

@@ -34,32 +34,32 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     ui->setupUi(this);
 	this->setWindowIcon(getIcon());
 
-    ui->lineEditHost->setText(
+    ui->hostLineEdit->setText(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_HOST,
                                "localhost").toString());
-    ui->lineEditPort->setText(
+    ui->portLineEdit->setText(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PORT,
                                27017).toString());
-    ui->lineEditUserName->setText(
+    ui->usernameLineEdit->setText(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME,
                                "anonymous").toString());
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption
-    ui->lineEditPassword->setText(
+    ui->passwordLineEdit->setText(
                 settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
                                "").toString());
-    ui->lineEditPassword->setFocus();
+    ui->passwordLineEdit->setFocus();
 
-    ui->checkBoxShowAtStartup->setChecked(
-                settings.value(
-                    REPO_SETTINGS_CONNECTION_DIALOG_STARTUP, true).toBool());
 
     //--------------------------------------------------------------------------
 	QStringList wordList;
 	wordList << "admin";
 	databasesCompleter = new QCompleter(wordList);
-    ui->lineEditDatabase->setCompleter(databasesCompleter);
+    ui->databaseLineEdit->setCompleter(databasesCompleter);
+
+    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 //------------------------------------------------------------------------------
@@ -116,19 +116,14 @@ int repo::gui::RepoDialogConnect::exec()
 	if (result = QDialog::exec())
 	{
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_HOST,
-                          ui->lineEditHost->text());
+                          ui->hostLineEdit->text());
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_PORT,
-                          ui->lineEditPort->text().toInt());
+                          ui->portLineEdit->text().toInt());
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME,
-                          ui->lineEditUserName->text());
+                          ui->usernameLineEdit->text());
         settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
-                          ui->lineEditPassword->text());
+                          ui->passwordLineEdit->text());
 	}
-
-    // Deliberately save the show at startup checkbox state regardless of
-    // cancelling the dialog box.
-    settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_STARTUP,
-                      ui->checkBoxShowAtStartup->isChecked());
 	return result;
 }
 

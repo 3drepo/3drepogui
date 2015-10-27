@@ -20,34 +20,36 @@
 
 //------------------------------------------------------------------------------
 // CORE
-#include <repo/repo_controller.h>
+#include <repo/repo_credentials.h>
 
-Q_DECLARE_METATYPE(repo::RepoToken)
+Q_DECLARE_METATYPE(repo::RepoCredentials)
 
 namespace repo {
 namespace settings {
 
-class RepoSettingsToken : public QSettings
+class RepoSettingsCredentials : public QSettings
 {
 
-    static const std::string TOKEN;
-    static const std::string TOKENS_ARRAY;
+    static const QString CREDENTIALS;
+    static const QString CREDENTIALS_ARRAY;
 
 public:
 
-    RepoSettingsToken();
+    RepoSettingsCredentials();
 
-    ~RepoSettingsToken() {}
+    ~RepoSettingsCredentials() {}
 
 signals :
 
-    void tokenReadAt(repo::RepoToken &token);
+    void credentialsAt(int i, repo::RepoCredentials &credentials);
 
 public :
 
-    void writeTokens(QList<repo::RepoToken> &tokens);
+    //! Stores given credentials in settings
+    void writeCredentials(QList<repo::RepoCredentials> &credentials);
 
-    void readTokens() const;
+    //! Emits a singal upon each stored credentials and returns them in a list.
+    QList<RepoCredentials> readCredentials();
 };
 
 

@@ -55,28 +55,28 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
     ui->treeView->sortByColumn((int) Columns::ALIAS, Qt::SortOrder::AscendingOrder);
     ui->hostComboBox->hide();
     ui->databaseComboBox->hide();
+
+    ui->buttonBox->addButton("Connect", QDialogButtonBox::AcceptRole);
 }
 
-void repo::gui::RepoDialogManagerConnect::addConnectionToken(const repo::RepoToken &connectionToken)
+void repo::gui::RepoDialogManagerConnect::addCredentials(const RepoCredentials &credentials)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
     // Token object itself
     QVariant var;
-    var.setValue(connectionToken);
+    var.setValue(credentials);
 
-    QStandardItem *item = new QStandardItem();
+    QStandardItem *item = createItem(QString::fromStdString(credentials.getAlias()));
     item->setData(var);
     item->setEnabled(true);
-    item->setTristate(false);
-    item->setEditable(false);
     row.append(item);
 
     // Address
-    row.append(createItem(QString::fromStdString(connectionToken.getDatabaseHostPort())));
+    row.append(createItem(QString::fromStdString(credentials.getHostAndPort())));
 
     // Authentication
-    row.append(createItem(QString::fromStdString(connectionToken.getDatabaseName())));
+    row.append(createItem(QString::fromStdString(credentials.getUsername())));
 
     row.append(createItem(QVariant(false)));
     row.append(createItem(QVariant(false)));
@@ -96,18 +96,18 @@ void repo::gui::RepoDialogManagerConnect::edit(const QModelIndex &index)
     showEditDialog(getConnection(index));
 }
 
-repo::RepoToken repo::gui::RepoDialogManagerConnect::getConnection()
+repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection()
 {
     return getConnection(ui->treeView->selectionModel()->currentIndex());
 }
 
-repo::RepoToken repo::gui::RepoDialogManagerConnect::getConnection(const QModelIndex &index)
+repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection(const QModelIndex &index)
 {
-    repo::RepoToken token;
+    repo::RepoCredentials token;
     if (index.isValid())
     {
         QModelIndex tokenIndex = index.sibling(index.row(), (int) Columns::ALIAS);
-        return tokenIndex.data(Qt::UserRole + 1).value<repo::RepoToken>();
+        return tokenIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
     }
     return token;
 }
@@ -123,9 +123,13 @@ void repo::gui::RepoDialogManagerConnect::refresh()
 
 
         // TODO: new worker here
+        repo::settings::RepoSettingsCredentials settings;
+        QList<repo::RepoCredentials> credentialsList = settings.readCredentials();
+        for (int i = 0; i < credentialsList.size() < i; ++i)
+        {
+            addCredentials(credentialsList[i]);
+        }
 
-        repo::RepoToken dbToken(0, "localhost", "admin");
-        addConnectionToken(dbToken);
 
         //----------------------------------------------------------------------
         ui->progressBar->hide(); // TODO: show
@@ -133,7 +137,7 @@ void repo::gui::RepoDialogManagerConnect::refresh()
 }
 
 
-void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoToken &token)
+void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoCredentials &credentials)
 {
 
     RepoDialogConnect connectionSettingsDialog(this);
@@ -145,7 +149,7 @@ void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoToken &
     else // QDialog::Accepted
     {
 
-        repoLog("create or update user...\n");
+        repoLog("create or update connection settings...\n");
         // Create or update user
 
         // TODO: SAVE
