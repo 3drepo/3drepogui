@@ -21,9 +21,8 @@
 
 
 repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
-        const RepoIDBCache *dbCache,
         QWidget *parent)
-    : RepoAbstractManagerDialog(dbCache, parent)
+    : RepoAbstractManagerDialog(0, parent)
 {
     setWindowTitle("Connection Manager");
     setWindowIcon(RepoFontAwesome::getConnectIcon());
@@ -63,38 +62,25 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
 void repo::gui::RepoDialogManagerConnect::addCredentials(const RepoCredentials &credentials)
 {
     QList<QStandardItem *> row;
-    //--------------------------------------------------------------------------
-    // Token object itself
-    QVariant var;
-    var.setValue(credentials);
+    row.append(getAliasItem(credentials));
+    row.append(getAddressItem(credentials));
+    row.append(getAuthenticationItem(credentials));
 
-    QStandardItem *item = createItem(QString::fromStdString(credentials.getAlias()));
-    item->setData(var);
-    item->setEnabled(true);
-    row.append(item);
+    // TODO: add support for SSL and SSH
+    row.append(getSSLItem(credentials));
+    row.append(getSSHItem(credentials));
 
-    // Address
-    row.append(createItem(QString::fromStdString(credentials.getHostAndPort())));
-
-    // Authentication
-    row.append(createItem(QString::fromStdString(credentials.getUsername())));
-
-    row.append(createItem(QVariant(false)));
-    row.append(createItem(QVariant(false)));
-
-
-    //--------------------------------------------------------------------------
     model->invisibleRootItem()->appendRow(row);
 }
 
 void repo::gui::RepoDialogManagerConnect::edit()
 {
-    showEditDialog(getConnection());
+    showEditDialog(getConnection(), ui->treeView->selectionModel()->currentIndex());
 }
 
 void repo::gui::RepoDialogManagerConnect::edit(const QModelIndex &index)
 {
-    showEditDialog(getConnection(index));
+    showEditDialog(getConnection(index), index);
 }
 
 repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection()
@@ -104,13 +90,13 @@ repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection()
 
 repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection(const QModelIndex &index)
 {
-    repo::RepoCredentials token;
+    repo::RepoCredentials credentials;
     if (index.isValid())
     {
         QModelIndex credentialsIndex = index.sibling(index.row(), (int) Columns::ALIAS);
-        return credentialsIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
+        credentials = credentialsIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
     }
-    return token;
+    return credentials;
 }
 
 void repo::gui::RepoDialogManagerConnect::refresh()
@@ -135,8 +121,19 @@ void repo::gui::RepoDialogManagerConnect::refresh()
     }
 }
 
+void repo::gui::RepoDialogManagerConnect::removeItem()
+{
+    QModelIndex index = ui->treeView->selectionModel()->currentIndex();
+    int row = proxy->mapToSource(index).row();
+    model->removeRow(row);
+    sync();
+    updateCountLabel();
+}
 
-void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoCredentials &credentials)
+
+void repo::gui::RepoDialogManagerConnect::showEditDialog(
+        const repo::RepoCredentials &credentials,
+        const QModelIndex &index)
 {
     RepoDialogConnect connectionSettingsDialog(credentials, this);
     if (QDialog::Rejected == connectionSettingsDialog.exec())
@@ -145,17 +142,90 @@ void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoCredent
     {
         repoLog("Create or update connection settings...\n");
 
-        // TODO: put into async worker
-
-
-        QList<repo::RepoCredentials> list;
-        for (int i = 0; i < model->invisibleRootItem()->rowCount(); ++i)
-        {
-            list.append(model->index(0, i).data(Qt::UserRole + 1).value<repo::RepoCredentials>());
-        }
         RepoCredentials credentials = connectionSettingsDialog.getConnectionSettings();
-        list.append(credentials);
-        settings::RepoSettingsCredentials credentialsSettings;
-        credentialsSettings.writeCredentials(list);
+        if (!index.isValid())
+        {
+            addCredentials(credentials);
+        }
+        else
+        {
+            int row = proxy->mapToSource(index).row();
+            model->setItem(row, (int) Columns::ALIAS, getAliasItem(credentials));
+            model->setItem(row, (int) Columns::HOST_PORT, getAddressItem(credentials));
+            model->setItem(row, (int) Columns::AUTHENTICATION, getAuthenticationItem(credentials));
+            model->setItem(row, (int) Columns::SSL, getSSLItem(credentials));
+            model->setItem(row, (int) Columns::SSH, getSSHItem(credentials));
+        }
+        sync();
     }
+}
+
+void repo::gui::RepoDialogManagerConnect::sync()
+{
+    // TODO: put into async worker
+    QList<repo::RepoCredentials> list;
+    for (int i = 0; i < model->invisibleRootItem()->rowCount(); ++i)
+    {
+        QModelIndex index = model->indexFromItem(model->invisibleRootItem()->child(i, (int) Columns::ALIAS));
+        list.append(index.data(Qt::UserRole + 1).value<repo::RepoCredentials>());
+    }
+    settings::RepoSettingsCredentials credentialsSettings;
+    credentialsSettings.writeCredentials(list);
+}
+
+QStandardItem *repo::gui::RepoDialogManagerConnect::getAliasItem(
+        const RepoCredentials &credentials)
+{
+    QVariant var;
+    var.setValue(credentials);
+    QStandardItem *item = createItem(QString::fromStdString(credentials.getAlias()));
+    item->setData(var);
+    item->setEnabled(true);
+    return item;
+}
+
+QStandardItem *repo::gui::RepoDialogManagerConnect::getAddressItem(
+        const RepoCredentials &credentials)
+{
+    return createItem(QString::fromStdString(credentials.getHostAndPort()));
+}
+
+QStandardItem *repo::gui::RepoDialogManagerConnect::getAuthenticationItem(
+        const RepoCredentials &credentials)
+{
+    QString label;
+    QStandardItem *item = 0;
+    if (!credentials.getAuthenticationDatabase().empty() &&
+        !credentials.getUsername().empty())
+    {
+        label = QString::fromStdString(
+                credentials.getAuthenticationDatabase() +
+                " / " +
+                credentials.getUsername());
+        item = createItem(label);
+        item->setIcon(RepoFontAwesome::getAuthenticationIcon());
+    }
+    else
+        item = createItem(label);
+    return item;
+}
+
+QStandardItem *repo::gui::RepoDialogManagerConnect::getSSLItem(
+        const RepoCredentials &credentials)
+{
+    QStandardItem *item = createItem(QVariant());
+    item->setEnabled(false);
+    item->setIcon(RepoFontAwesome::getInstance().getIcon(
+                      RepoFontAwesome::fa_unlock_alt));
+    return item;
+}
+
+QStandardItem *repo::gui::RepoDialogManagerConnect::getSSHItem(
+        const RepoCredentials &credentials)
+{
+    QStandardItem *item = createItem(QVariant());
+    item->setEnabled(false);
+    item->setIcon(RepoFontAwesome::getInstance().getIcon(
+                      RepoFontAwesome::fa_unlock_alt));
+    return item;
 }

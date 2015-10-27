@@ -115,6 +115,10 @@ public:
     static QIcon getMetadataIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_FileIcon); }
 
+    //! Returns a pre-defined authentication icon (key).
+    static QIcon getAuthenticationIcon()
+    { return getIconStatic(fa_key); }
+
     //--------------------------------------------------------------------------
 
 	QIcon getIcon(int iconOn);

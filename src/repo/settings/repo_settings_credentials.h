@@ -91,7 +91,7 @@ namespace settings {
 class RepoSettingsCredentials : public QSettings
 {
 
-Q_OBJECT
+    Q_OBJECT
 
     static const QString CREDENTIALS;
     static const QString CREDENTIALS_ARRAY;

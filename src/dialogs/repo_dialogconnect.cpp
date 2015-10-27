@@ -32,6 +32,7 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
     ui->portLineEdit->setText(QString::number(credentials.getPort()));
     ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
+    ui->authenticationDatabaseLineEdit->setText(QString::fromStdString(credentials.getAuthenticationDatabase()));
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption

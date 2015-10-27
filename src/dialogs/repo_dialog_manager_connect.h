@@ -53,9 +53,7 @@ class RepoDialogManagerConnect : public RepoAbstractManagerDialog
 
 public:
 
-    explicit RepoDialogManagerConnect(
-            const RepoIDBCache *dbCache = 0,
-            QWidget *parent = 0);
+    explicit RepoDialogManagerConnect(QWidget *parent = 0);
 
 public :
 
@@ -82,13 +80,28 @@ public :
     void refresh();
 
     //! Removes item and refreshes if necessary.
-    void removeItem() {}
+    void removeItem();
 
     //! Shows edit dialog.
-    void showEditDialog() { showEditDialog(repo::RepoCredentials()); }
+    void showEditDialog() { showEditDialog(repo::RepoCredentials(), QModelIndex()); }
 
     //! Shows the edit dialog and saves edits to token.
-    void showEditDialog(const repo::RepoCredentials &credentials);
+    void showEditDialog(const repo::RepoCredentials &credentials, const QModelIndex &index);
+
+private:
+
+    void sync();
+
+    static QStandardItem *getAliasItem(const RepoCredentials &credentials);
+
+    static QStandardItem *getAddressItem(const RepoCredentials &credentials);
+
+    static QStandardItem *getAuthenticationItem(const RepoCredentials &credentials);
+
+    static QStandardItem *getSSLItem(const RepoCredentials &credentials);
+
+    static QStandardItem *getSSHItem(const RepoCredentials &credentials);
+
 
 
 };

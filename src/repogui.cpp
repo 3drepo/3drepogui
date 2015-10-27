@@ -393,28 +393,22 @@ void repo::gui::RepoGUI::commit(
 
 void repo::gui::RepoGUI::connect()
 {
-    RepoDialogConnect connectionDialog(repo::RepoCredentials(), this);
-
-    RepoDialogManagerConnect connectManager(0, this);
-    connectManager.exec();
-
-    if(!connectionDialog.exec()) // if not clicked "Connect"
-    {
-        std::cout<< "Connection dialog cancelled by user" << std::endl;
-    }
+    RepoDialogManagerConnect connectManager(this);
+    if(! connectManager.exec()) // if not clicked "Connect"
+        std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
     else
     {
         // if not successfully connected
-
 		std::string errMsg;
 
-        repo::RepoToken* connectionToken = new repo::RepoToken();
-//			controller->authenticateToAdminDatabaseMongo(
-//			errMsg,
-//			connectionDialog.getHost().toStdString(),
-//			connectionDialog.getPort(),
-//			connectionDialog.getUsername().toStdString(),
-//			connectionDialog.getPassword().toStdString());
+        repo::RepoCredentials credentials = connectManager.getConnection();
+        repo::RepoToken* connectionToken =
+            controller->authenticateToAdminDatabaseMongo(
+            errMsg,
+            credentials.getHost(),
+            credentials.getPort(),
+            credentials.getUsername(),
+            credentials.getPassword());
 
 		if (connectionToken)
 		{
@@ -427,15 +421,12 @@ void repo::gui::RepoGUI::connect()
 			ui->actionHistory->setEnabled(true);
 			ui->actionCommit->setEnabled(true);
 			ui->actionDrop->setEnabled(true);
-
 		}
 		else
 		{
 			//connection/authentication failed
-			std::cerr << "Failed to connect/authenticate user." << std::endl;
-		}
-
-        
+            std::cerr << "Failed to connect/authenticate user: " << errMsg << std::endl;
+		}        
     }
 }
 
