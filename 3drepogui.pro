@@ -144,7 +144,7 @@ unix|macx:MOC_DIR = ./moc/ui
 
     win32:CONFIG(release, debug|release):GLCLIB = -lGLC_lib3
     else:win32:CONFIG(debug, debug|release):GLCLIB = -lGLC_lib3
-    else:unix|macx:GLCLIB = -lGLC_lib.3
+    else:unix|macx:GLCLIB = -lGLC_lib
 
     LIBS += -L$${GLC_LIB_DIR} $${GLCLIB}
 

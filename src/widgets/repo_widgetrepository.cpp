@@ -68,6 +68,9 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
     ui->databasesProgressBar->hide();
     ui->collectionProgressBar->hide();
+
+	token = nullptr;
+	controller = nullptr;
 }
 
 //------------------------------------------------------------------------------
