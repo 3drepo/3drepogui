@@ -18,45 +18,32 @@
 #include "repo_dialogconnect.h"
 
 //------------------------------------------------------------------------------
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_HOST		= "RepoDialogConnect/host";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PORT		= "RepoDialogConnect/port";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_USERNAME	= "RepoDialogConnect/username";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD	= "RepoDialogConnect/password";
-const QString repo::gui::RepoDialogConnect::REPO_SETTINGS_CONNECTION_DIALOG_STARTUP     = "RepoDialogConnect/startup";
-
-//------------------------------------------------------------------------------
 repo::gui::RepoDialogConnect::RepoDialogConnect(
+        const RepoCredentials &credentials,
         QWidget *parent,
         Qt::WindowFlags flags)
 	: QDialog(parent, flags)
     , ui(new Ui::RepoDialogConnect)
 {
     ui->setupUi(this);
-	this->setWindowIcon(getIcon());
+    setWindowIcon(RepoFontAwesome::getConnectIcon());
 
-    ui->hostLineEdit->setText(
-                settings.value(REPO_SETTINGS_CONNECTION_DIALOG_HOST,
-                               "localhost").toString());
-    ui->portLineEdit->setText(
-                settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PORT,
-                               27017).toString());
-    ui->usernameLineEdit->setText(
-                settings.value(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME,
-                               "anonymous").toString());
+    ui->aliasLineEdit->setText(QString::fromStdString(credentials.getAlias()));
+    ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
+    ui->portLineEdit->setText(QString::number(credentials.getPort()));
+    ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption
-    ui->passwordLineEdit->setText(
-                settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
-                               "").toString());
-    ui->passwordLineEdit->setFocus();
-
+//    ui->passwordLineEdit->setText(QString::fromStdString(credentials.getPassword()).toString());
 
     //--------------------------------------------------------------------------
+
+    // TODO: make it remember more databases.
 	QStringList wordList;
 	wordList << "admin";
 	databasesCompleter = new QCompleter(wordList);
-    ui->databaseLineEdit->setCompleter(databasesCompleter);
+    ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
 
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
@@ -65,65 +52,18 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogConnect::~RepoDialogConnect() 
 {
-	settings.sync();
 	delete databasesCompleter; 
     delete ui;
 }
 
-//------------------------------------------------------------------------------
-QString repo::gui::RepoDialogConnect::getHost()
+repo::RepoCredentials repo::gui::RepoDialogConnect::getConnectionSettings() const
 {
-    return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_HOST).toString();
+    repo::RepoCredentials credentials(
+                ui->aliasLineEdit->text().toStdString(),
+                ui->hostLineEdit->text().toStdString(),
+                ui->portLineEdit->text().toInt(),
+                ui->authenticationDatabaseLineEdit->text().toStdString(),
+                ui->usernameLineEdit->text().toStdString(),
+                ui->passwordLineEdit->text().toStdString());
+    return credentials;
 }
-
-//------------------------------------------------------------------------------
-int repo::gui::RepoDialogConnect::getPort()
-{
-	return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PORT).toInt();
-}
-
-//------------------------------------------------------------------------------
-QString repo::gui::RepoDialogConnect::getUsername()
-{
-	return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME).toString();
-}
-
-//------------------------------------------------------------------------------
-QString repo::gui::RepoDialogConnect::getPassword()
-{
-	return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD).toString();
-}
-
-bool repo::gui::RepoDialogConnect::isShowAtStartup()
-{
-    return settings.value(REPO_SETTINGS_CONNECTION_DIALOG_STARTUP).toBool();
-}
-
-//------------------------------------------------------------------------------
-QIcon repo::gui::RepoDialogConnect::getIcon()
-{
-    return RepoFontAwesome::getInstance().getIcon(
-        RepoFontAwesome::fa_sign_in, QColor(0, 122, 204)); // blue
-}
-
-//------------------------------------------------------------------------------
-int repo::gui::RepoDialogConnect::exec()
-{
-	int result;
-    //--------------------------------------------------------------------------
-    // If the user confirms the selection and does not click "Cancel", save
-    // values.
-	if (result = QDialog::exec())
-	{
-        settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_HOST,
-                          ui->hostLineEdit->text());
-        settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_PORT,
-                          ui->portLineEdit->text().toInt());
-        settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_USERNAME,
-                          ui->usernameLineEdit->text());
-        settings.setValue(REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD,
-                          ui->passwordLineEdit->text());
-	}
-	return result;
-}
-

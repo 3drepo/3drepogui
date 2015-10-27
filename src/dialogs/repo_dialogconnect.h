@@ -29,6 +29,7 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
+#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -59,7 +60,9 @@ public:
     //--------------------------------------------------------------------------
 	
 	//! Creates a connection dialog. To show, run exec().
-    RepoDialogConnect(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+    RepoDialogConnect(const repo::RepoCredentials &credentials,
+                      QWidget *parent = 0,
+                      Qt::WindowFlags flags = 0);
 
     //--------------------------------------------------------------------------
 	//
@@ -75,65 +78,18 @@ public:
 	// Getters
 	//
     //--------------------------------------------------------------------------
-		
-	//! Returns the user specified host value and writes it to the global settings.
-	QString getHost();
 
-	//! Returns the user specified port value and writes it to the global settings.
-	int getPort();
-
-	//! Returns the user specified username value and writes it to the global settings.
-	QString getUsername();
-
-	//! Returns the user specified password value and writes it to the global settings.
-	QString getPassword(); 
-
-    //! Returns true if to show at startup, false otherwise.
-    bool isShowAtStartup();
-
-    //--------------------------------------------------------------------------
-	//
-	// Static
-	//
-    //--------------------------------------------------------------------------
-
-	//! Returns the default blue icon for the connection dialog.
-	static QIcon getIcon();
-  
-public slots:
-
-	/*! 
-	 * Shows the dialog as a modal window, blocking until the user closes it. 
-	 * If the user selects to connect, the dialog saves all filled-in values
-	 * as user settings. Returns a DialogCode result.
-	 */
-	virtual int exec();
+    //! Returns current connection settings
+    repo::RepoCredentials getConnectionSettings() const;
 
 private :
 
     //! Ui var
     Ui::RepoDialogConnect *ui;
 
-	//! Application settings such as user specified host/port/username/password.
-	QSettings settings;
-
     //! Completer for databases line edit.
     QCompleter *databasesCompleter;
 
-    //! Settings host label.
-	static const QString REPO_SETTINGS_CONNECTION_DIALOG_HOST; 
-
-    //! Settings port label.
-	static const QString REPO_SETTINGS_CONNECTION_DIALOG_PORT;
-	
-    //! Settings username label.
-	static const QString REPO_SETTINGS_CONNECTION_DIALOG_USERNAME;
-
-    //! Settings password label.
-	static const QString REPO_SETTINGS_CONNECTION_DIALOG_PASSWORD; 
-
-    //! Settings show at startup label.
-    static const QString REPO_SETTINGS_CONNECTION_DIALOG_STARTUP;
 };
 
 } // end namespace gui

@@ -116,7 +116,6 @@ void repo::gui::RepoDialogManagerConnect::refresh()
 {
     if (cancelAllThreads())
     {
-        std::cout << "Refresh called" << std::endl;
         ui->progressBar->show(); // TODO: delete line
         //----------------------------------------------------------------------
         clear(false); // Clear any previous entries
@@ -130,7 +129,6 @@ void repo::gui::RepoDialogManagerConnect::refresh()
             addCredentials(credentialsList[i]);
         }
 
-
         //----------------------------------------------------------------------
         ui->progressBar->hide(); // TODO: show
     }
@@ -139,18 +137,20 @@ void repo::gui::RepoDialogManagerConnect::refresh()
 
 void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoCredentials &credentials)
 {
-
-    RepoDialogConnect connectionSettingsDialog(this);
+    RepoDialogConnect connectionSettingsDialog(credentials, this);
     if (QDialog::Rejected == connectionSettingsDialog.exec())
-    {
         repoLog("Connection Settings Dialog cancelled by user.\n");
-        std::cout << tr("Connection Settings Dialog cancelled by user.").toStdString() << std::endl;
-    }
     else // QDialog::Accepted
     {
-
         repoLog("create or update connection settings...\n");
-        // Create or update user
+
+        repo::RepoCredentials credentials = connectionSettingsDialog.getConnectionSettings();
+
+        repo::settings::RepoSettingsCredentials credentialsSettings;
+
+        QList<repo::RepoCredentials> list;
+        list.append(credentials);
+        credentialsSettings.writeCredentials(list);
 
         // TODO: SAVE
     }

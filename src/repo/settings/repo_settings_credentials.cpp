@@ -28,19 +28,24 @@ const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "credentials_array";
 
 RepoSettingsCredentials::RepoSettingsCredentials() : QSettings()
 {
-    qRegisterMetaType<repo::RepoCredentials>();
+    qRegisterMetaType<RepoCredentialsStreamable>();
+    qRegisterMetaTypeStreamOperators<RepoCredentialsStreamable>();
 }
 
 //------------------------------------------------------------------------------
 
-void RepoSettingsCredentials::writeCredentials(QList<repo::RepoCredentials> &credentials)
+void RepoSettingsCredentials::writeCredentials(QList<repo::RepoCredentials> &credentialsList)
 {
+
     beginWriteArray(CREDENTIALS_ARRAY);
-    for (int i = 0; i < credentials.size(); ++i)
-    {
+    for (int i = 0; i < credentialsList.size(); ++i)
+    {        
+        const repo::RepoCredentials credentials = credentialsList.at(i);
+        RepoCredentialsStreamable cs(credentials);
+
         setArrayIndex(i);
         QVariant var;
-        var.setValue(credentials.at(i));
+        var.setValue(cs);
         setValue(CREDENTIALS, var);
     }
     endArray();
@@ -54,8 +59,8 @@ QList<repo::RepoCredentials> RepoSettingsCredentials::readCredentials()
     QList<repo::RepoCredentials> credentialsList;
     for (int i = 0; i < size; ++i) {
         setArrayIndex(i);
-        repo::RepoCredentials credentials = value(CREDENTIALS).value<repo::RepoCredentials>();
-        credentialsList.append(credentials);
+        RepoCredentialsStreamable cs = value(CREDENTIALS).value<RepoCredentialsStreamable>();
+        credentialsList.append(cs.credentials);
 //        emit credentialsAt(i, credentials);
     }
     endArray();

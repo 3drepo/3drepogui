@@ -50,7 +50,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     : QDialog(parent)
     , controller(controller)
 	, token(token)
-	,user(user)
+    , user(user)
     , ui(new Ui::RepoDialogUser)
 {
     ui->setupUi(this);
