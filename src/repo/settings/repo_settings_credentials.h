@@ -24,9 +24,13 @@
 // CORE
 #include <repo/repo_credentials.h>
 
+#include <iostream>
+
+namespace repo {
+namespace settings {
 
 
-
+//! Wrapper class to enable serialization of RepoCredentials via Qt.
 class RepoCredentialsStreamable
 {
 
@@ -76,7 +80,10 @@ public :
     repo::RepoCredentials credentials;
 };
 
-Q_DECLARE_METATYPE(RepoCredentialsStreamable)
+} // end namespace settings
+} // end namespace repo
+
+Q_DECLARE_METATYPE(repo::settings::RepoCredentialsStreamable)
 
 namespace repo {
 namespace settings {

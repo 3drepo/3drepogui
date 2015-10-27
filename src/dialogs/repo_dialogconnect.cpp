@@ -35,7 +35,7 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption
-//    ui->passwordLineEdit->setText(QString::fromStdString(credentials.getPassword()).toString());
+    ui->passwordLineEdit->setText(QString::fromStdString(credentials.getPassword()).toString());
 
     //--------------------------------------------------------------------------
 
@@ -47,6 +47,10 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
 
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    // TODO: code in support for SSL and SSH
+    ui->tabWidget->setTabEnabled(2, false); // SSL tab disabled
+    ui->tabWidget->setTabEnabled(3, false); // SSH tab disabled
 }
 
 //------------------------------------------------------------------------------

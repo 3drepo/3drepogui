@@ -252,7 +252,6 @@ void repo::gui::RepoDialogUserManager::showEditDialog(const repo::core::model::R
     }
     else // QDialog::Accepted
     {
-
 		repoLog("create or update user...\n");
         // Create or update user
 		refresh(userDialog.getUpdatedUser(), 

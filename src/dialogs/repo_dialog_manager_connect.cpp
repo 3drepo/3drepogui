@@ -52,7 +52,8 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
                 Qt::Horizontal,
                 tr("SSH"));
 
-    ui->treeView->sortByColumn((int) Columns::ALIAS, Qt::SortOrder::AscendingOrder);
+//    ui->treeView->sortByColumn((int) Columns::ALIAS, Qt::SortOrder::AscendingOrder);
+
     ui->hostComboBox->hide();
     ui->databaseComboBox->hide();
 
@@ -106,8 +107,8 @@ repo::RepoCredentials repo::gui::RepoDialogManagerConnect::getConnection(const Q
     repo::RepoCredentials token;
     if (index.isValid())
     {
-        QModelIndex tokenIndex = index.sibling(index.row(), (int) Columns::ALIAS);
-        return tokenIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
+        QModelIndex credentialsIndex = index.sibling(index.row(), (int) Columns::ALIAS);
+        return credentialsIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
     }
     return token;
 }
@@ -124,7 +125,7 @@ void repo::gui::RepoDialogManagerConnect::refresh()
         // TODO: new worker here
         repo::settings::RepoSettingsCredentials settings;
         QList<repo::RepoCredentials> credentialsList = settings.readCredentials();
-        for (int i = 0; i < credentialsList.size() < i; ++i)
+        for (int i = 0; i < credentialsList.size(); ++i)
         {
             addCredentials(credentialsList[i]);
         }
@@ -142,16 +143,19 @@ void repo::gui::RepoDialogManagerConnect::showEditDialog(const repo::RepoCredent
         repoLog("Connection Settings Dialog cancelled by user.\n");
     else // QDialog::Accepted
     {
-        repoLog("create or update connection settings...\n");
+        repoLog("Create or update connection settings...\n");
 
-        repo::RepoCredentials credentials = connectionSettingsDialog.getConnectionSettings();
+        // TODO: put into async worker
 
-        repo::settings::RepoSettingsCredentials credentialsSettings;
 
         QList<repo::RepoCredentials> list;
+        for (int i = 0; i < model->invisibleRootItem()->rowCount(); ++i)
+        {
+            list.append(model->index(0, i).data(Qt::UserRole + 1).value<repo::RepoCredentials>());
+        }
+        RepoCredentials credentials = connectionSettingsDialog.getConnectionSettings();
         list.append(credentials);
+        settings::RepoSettingsCredentials credentialsSettings;
         credentialsSettings.writeCredentials(list);
-
-        // TODO: SAVE
     }
 }
