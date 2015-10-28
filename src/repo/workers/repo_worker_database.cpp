@@ -42,43 +42,41 @@ void DatabaseWorker::run()
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
     emit progressValueChanged(0);
 
-    if (controller && token)
+    //----------------------------------------------------------------------
+    // For each database (if not cancelled)
+    std::list<std::string> databases = controller->getDatabases(token);
+    emit hostFetched(QString::fromStdString(controller->getHostAndPort(token)));
+
+    //----------------------------------------------------------------------
+    jobsCount = (int)databases.size() * 2;
+    emit progressRangeChanged(0, jobsCount);
+
+
+    int counter = 0;
+
+    //----------------------------------------------------------------------
+    // Populate collections with sizes
+    for (std::list<std::string>::const_iterator dbIterator = databases.begin();
+         !cancelled && dbIterator != databases.end();
+         ++dbIterator)
     {
-        //----------------------------------------------------------------------
-        // For each database (if not cancelled)
-        std::list<std::string> databases = controller->getDatabases(token);
-        emit hostFetched(QString::fromStdString(controller->getHostAndPort(token)));
-
-        //----------------------------------------------------------------------
-        jobsCount = (int)databases.size() * 2;
-        emit progressRangeChanged(0, jobsCount);
-
-
-        int counter = 0;
-
-        //----------------------------------------------------------------------
-        // Populate collections with sizes
-        for (std::list<std::string>::const_iterator dbIterator = databases.begin();
-             !cancelled && dbIterator != databases.end();
-             ++dbIterator)
+        const std::string database = *dbIterator;
+        emit databaseFetched(QString::fromStdString(database));
+        emit progressValueChanged(counter++);
+        //------------------------------------------------------------------
+        // For each collection within the database (if not cancelled)
+        std::list<std::string> collections = controller->getCollections(token, database);
+        for (std::list<std::string>::const_iterator colIterator = collections.begin();
+             !cancelled && colIterator != collections.end();
+             ++colIterator)
         {
-            const std::string database = *dbIterator;
-            emit databaseFetched(QString::fromStdString(database));
-            emit progressValueChanged(counter++);
-            //------------------------------------------------------------------
-            // For each collection within the database (if not cancelled)
-            std::list<std::string> collections = controller->getCollections(token, database);
-            for (std::list<std::string>::const_iterator colIterator = collections.begin();
-                 !cancelled && colIterator != collections.end();
-                 ++colIterator)
-            {
-                emit collectionFetched(controller->getCollectionStats(token, database, *colIterator));
-            }
-            emit databaseFinished(QString::fromStdString(database));
-            //------------------------------------------------------------------
-            emit progressValueChanged(counter++);
+            emit collectionFetched(controller->getCollectionStats(token, database, *colIterator));
         }
+        emit databaseFinished(QString::fromStdString(database));
+        //------------------------------------------------------------------
+        emit progressValueChanged(counter++);
     }
+
 
     //--------------------------------------------------------------------------
     emit progressValueChanged(jobsCount);

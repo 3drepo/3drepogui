@@ -173,8 +173,7 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
 
 bool repo::gui::RepoWidgetRepository::disconnectDB()
 {
-    RepoToken *token = getSelectedConnection();
-    bool success = token;
+    bool success = (token != nullptr);
     if (token)
     {
         controller->disconnectFromDatabase(token);
@@ -190,7 +189,8 @@ void repo::gui::RepoWidgetRepository::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,
     // all get refreshes
-    fetchDatabases(controller, getSelectedConnection());
+    if (token)
+        fetchDatabases(controller, token);
 }
 
 //------------------------------------------------------------------------------

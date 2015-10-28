@@ -94,6 +94,9 @@ public slots:
     //! Returns a menu with currently available panels.
     QMenu* createPanelsMenu();
 
+    //! Disconnects DB connection and disables repository buttons.
+    void disconnectDB();
+
     //! Shows a dialog confirmation and drops a selected database if agreed.
     void drop();
 

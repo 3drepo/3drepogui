@@ -100,7 +100,7 @@ public slots :
      * Returns a copy of a selected connection. It is necessary to reconnect
      * and reauthenticate.
      */
-	repo::RepoToken* getSelectedConnection() const { return token; }
+    repo::RepoToken* getSelectedConnection() const { return token; }
 
     //! Returns a list of available databases.
     QList<QString> getDatabases(const QString& host) const;

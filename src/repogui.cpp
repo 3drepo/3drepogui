@@ -118,8 +118,7 @@ repo::gui::RepoGUI::RepoGUI(
     ui->actionConnect->setIcon(RepoFontAwesome::getConnectIcon());
 
     // Disconnect
-    QObject::connect(ui->actionDisconnect, SIGNAL(triggered()), ui->widgetRepository,
-                     SLOT(disconnectDB()));
+    QObject::connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnectDB()));
     ui->actionDisconnect->setIcon(RepoFontAwesome::getDisconnectIcon());
 
     // Refresh
@@ -431,6 +430,7 @@ void repo::gui::RepoGUI::connectDB()
 			ui->actionHistory->setEnabled(true);
 			ui->actionCommit->setEnabled(true);
 			ui->actionDrop->setEnabled(true);
+            ui->actionDisconnect->setEnabled(true);
 		}
 		else
 		{
@@ -446,6 +446,20 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
     panelsMenu->setTitle(tr("Dock Widgets"));
     panelsMenu->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
     return panelsMenu;
+}
+
+void repo::gui::RepoGUI::disconnectDB()
+{
+    if (ui->widgetRepository->disconnectDB())
+    {
+        // disable buttons
+        ui->actionRefresh->setEnabled(false);
+        ui->actionHead->setEnabled(false);
+        ui->actionHistory->setEnabled(false);
+        ui->actionCommit->setEnabled(false);
+        ui->actionDrop->setEnabled(false);
+        ui->actionDisconnect->setEnabled(false);
+    }
 }
 
 void repo::gui::RepoGUI::drop()
