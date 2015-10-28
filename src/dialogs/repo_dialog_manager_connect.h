@@ -39,20 +39,31 @@
 #include <QItemSelection>
 #include <QMessageBox>
 
-
 Q_DECLARE_METATYPE(repo::RepoCredentials)
 
 namespace repo {
 namespace gui {
 
+/**
+ * @brief The RepoDialogManagerConnect class
+ * Provides a Connection Manager Dialog to set multiple connections and let Qt
+ * remember the settings for next user session. Each user settings is stored
+ * as a streamable RepoCredentials object in platform independent settings.
+ */
 class RepoDialogManagerConnect : public RepoAbstractManagerDialog
 {
     Q_OBJECT
 
+    //! Tree view columns
     enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
 
 public:
 
+    //! Explicit constructor
+    /**
+     * @brief RepoDialogManagerConnect
+     * @param parent parent widget which can be null
+     */
     explicit RepoDialogManagerConnect(QWidget *parent = 0);
 
 public :
@@ -83,26 +94,32 @@ public :
     void removeItem();
 
     //! Shows edit dialog.
-    void showEditDialog() { showEditDialog(repo::RepoCredentials(), QModelIndex()); }
+    void showEditDialog()
+    { showEditDialog(repo::RepoCredentials(), QModelIndex()); }
 
     //! Shows the edit dialog and saves edits to token.
-    void showEditDialog(const repo::RepoCredentials &credentials, const QModelIndex &index);
+    void showEditDialog(const repo::RepoCredentials &credentials,
+                        const QModelIndex &index);
 
 private:
 
+    //! Synchronizes current connections settings to disk.
     void sync();
 
+    //! Returns alias tree item from given credentials
     static QStandardItem *getAliasItem(const RepoCredentials &credentials);
 
+    //! Returns address tree item from given credentials
     static QStandardItem *getAddressItem(const RepoCredentials &credentials);
 
+    //! Returns authentication tree item from given credentials
     static QStandardItem *getAuthenticationItem(const RepoCredentials &credentials);
 
+    //! Returns ssl tree item from given credentials
     static QStandardItem *getSSLItem(const RepoCredentials &credentials);
 
+    //! Returns ssh tree item from given credentials
     static QStandardItem *getSSHItem(const RepoCredentials &credentials);
-
-
 
 };
 

@@ -22,7 +22,7 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
         const RepoCredentials &credentials,
         QWidget *parent,
         Qt::WindowFlags flags)
-	: QDialog(parent, flags)
+    : QDialog(parent, flags)
     , ui(new Ui::RepoDialogConnect)
 {
     ui->setupUi(this);
@@ -32,7 +32,8 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
     ui->portLineEdit->setText(QString::number(credentials.getPort()));
     ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
-    ui->authenticationDatabaseLineEdit->setText(QString::fromStdString(credentials.getAuthenticationDatabase()));
+    ui->authenticationDatabaseLineEdit->setText(
+                QString::fromStdString(credentials.getAuthenticationDatabase()));
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption
@@ -41,9 +42,9 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     //--------------------------------------------------------------------------
 
     // TODO: make it remember more databases.
-	QStringList wordList;
-	wordList << "admin";
-	databasesCompleter = new QCompleter(wordList);
+    QStringList wordList;
+    wordList << "admin";
+    databasesCompleter = new QCompleter(wordList);
     ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
 
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -57,7 +58,7 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogConnect::~RepoDialogConnect() 
 {
-	delete databasesCompleter; 
+    delete databasesCompleter;
     delete ui;
 }
 

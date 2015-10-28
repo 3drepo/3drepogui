@@ -51,7 +51,7 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
                 Qt::Horizontal,
                 tr("SSH"));
 
-//    ui->treeView->sortByColumn((int) Columns::ALIAS, Qt::SortOrder::AscendingOrder);
+    //    ui->treeView->sortByColumn((int) Columns::ALIAS, Qt::SortOrder::AscendingOrder);
 
     ui->hostComboBox->hide();
     ui->databaseComboBox->hide();
@@ -196,12 +196,12 @@ QStandardItem *repo::gui::RepoDialogManagerConnect::getAuthenticationItem(
     QString label;
     QStandardItem *item = 0;
     if (!credentials.getAuthenticationDatabase().empty() &&
-        !credentials.getUsername().empty())
+            !credentials.getUsername().empty())
     {
         label = QString::fromStdString(
-                credentials.getAuthenticationDatabase() +
-                " / " +
-                credentials.getUsername());
+                    credentials.getAuthenticationDatabase() +
+                    " / " +
+                    credentials.getUsername());
         item = createItem(label);
         item->setIcon(RepoFontAwesome::getAuthenticationIcon());
     }

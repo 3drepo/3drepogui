@@ -37,47 +37,31 @@
 #include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
-    class RepoDialogConnect;
+class RepoDialogConnect;
 }
 
 namespace repo {
 namespace gui {
 
 /*!
- * Connection dialog that saves host, port, username and password as user
- * settings.
+ * Connection dialog that saves alias, host, port, authentication database,
+ * username and password as RepoCredentials.
  */
 class RepoDialogConnect : public QDialog
 {
-	Q_OBJECT
- 
+    Q_OBJECT
+
 public:
 
-    //--------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-    //--------------------------------------------------------------------------
-	
-	//! Creates a connection dialog. To show, run exec().
+    //! Creates a connection dialog. To show, run exec().
     RepoDialogConnect(const repo::RepoCredentials &credentials,
                       QWidget *parent = 0,
                       Qt::WindowFlags flags = 0);
 
-    //--------------------------------------------------------------------------
-	//
-	// Desctructor
-	//
-    //--------------------------------------------------------------------------
+    //! Syncs the global settings.
+    ~RepoDialogConnect();
 
-	//! Syncs the global settings.
-	~RepoDialogConnect();
-
-    //--------------------------------------------------------------------------
-	//
-	// Getters
-	//
-    //--------------------------------------------------------------------------
+public :
 
     //! Returns current connection settings
     repo::RepoCredentials getConnectionSettings() const;
