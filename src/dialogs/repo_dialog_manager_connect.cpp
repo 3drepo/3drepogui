@@ -107,7 +107,7 @@ void repo::gui::RepoDialogManagerConnect::refresh()
     {
         ui->progressBar->show(); // TODO: delete line
         //----------------------------------------------------------------------
-        clear(false); // Clear any previous entries
+        clear(); // Clear any previous entries
 
 
         // TODO: new worker here

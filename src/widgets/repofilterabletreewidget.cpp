@@ -18,6 +18,10 @@
 #include "repofilterabletreewidget.h"
 #include "ui_repofilterabletreewidget.h"
 
+
+const QString repo::gui::RepoFilterableTreeWidget::COLUMNS_SETTINGS = "RepoFilterableTreeWidgetColumnsSettings";
+
+
 repo::gui::RepoFilterableTreeWidget::RepoFilterableTreeWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::RepoFilterableTreeWidget)
@@ -31,10 +35,18 @@ repo::gui::RepoFilterableTreeWidget::RepoFilterableTreeWidget(QWidget *parent)
     setProxyModel();
     ui->progressBar->hide();
     setCollapsedUI();
+
+    QSettings settings(parent);
+    ui->treeView->header()->restoreState(
+                settings.value(COLUMNS_SETTINGS).toByteArray());
+
 }
 
 repo::gui::RepoFilterableTreeWidget::~RepoFilterableTreeWidget()
-{
+{    
+    QSettings settings(this->parentWidget());
+    settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
+
     delete ui;
 
     if (model)

@@ -403,10 +403,11 @@ void repo::gui::RepoGUI::connect()
 
         repo::RepoCredentials credentials = connectManager.getConnection();
         repo::RepoToken* connectionToken =
-            controller->authenticateToAdminDatabaseMongo(
+            controller->authenticateMongo(
             errMsg,
             credentials.getHost(),
             credentials.getPort(),
+            credentials.getAuthenticationDatabase(),
             credentials.getUsername(),
             credentials.getPassword());
 

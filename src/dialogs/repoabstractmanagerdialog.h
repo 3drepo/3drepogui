@@ -29,6 +29,7 @@
 #include <QComboBox>
 #include <QMenu>
 #include <QWidgetAction>
+#include <QSettings>
 
 
 // GUI
@@ -44,6 +45,8 @@ namespace gui {
 class RepoAbstractManagerDialog : public QDialog
 {
     Q_OBJECT
+
+    static const QString COLUMNS_SETTINGS;
 
 public:
 
@@ -72,7 +75,7 @@ public slots :
     virtual bool cancelAllThreads();
 
     //! Clears the model.
-    virtual void clear(bool resizeColumns = false);
+    virtual void clear();
 
     //! Updates selected item.
     virtual void edit() = 0;

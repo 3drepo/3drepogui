@@ -105,17 +105,6 @@ void repo::gui::RepoProjectManagerDialog::addProjectSettings(
     model->invisibleRootItem()->appendRow(row);
 }
 
-void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
-{
-    RepoAbstractManagerDialog::clear(resizeColumns);
-
-    ui->treeView->resizeColumnToContents((int)Columns::OWNER);
-	ui->treeView->resizeColumnToContents((int)Columns::GROUP);
-	ui->treeView->resizeColumnToContents((int)Columns::PERMISSIONS);
-	ui->treeView->resizeColumnToContents((int)Columns::TYPE);
-	ui->treeView->resizeColumnToContents((int)Columns::USERS);
-}
-
 repo::core::model::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
 {
     return getProjectSettings(ui->treeView->selectionModel()->currentIndex());

@@ -25,6 +25,7 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QCompleter>
+#include <QSettings>
 
 //------------------------------------------------------------------------------
 // Repo Core
@@ -54,6 +55,8 @@ class RepoWidgetRepository : public QWidget, public RepoIDBCache
 
 	//! Collection header positions
 	enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
+
+    static const QString DATABASES_COLUMNS_SETTINGS;
 
 public :
 

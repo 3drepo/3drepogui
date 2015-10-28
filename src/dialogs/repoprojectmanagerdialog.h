@@ -53,8 +53,6 @@ public slots :
 
 	void addProjectSettings(repo::core::model::RepoProjectSettings);
 
-    void clear(bool resizeColumns = false);
-
     void edit() { showEditDialog(getProjectSettings()); }
 
     void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }

@@ -21,6 +21,9 @@
 #include "../repo/workers/repo_worker_collection.h"
 #include "../repo/logger/repo_logger.h"
 
+
+const QString repo::gui::RepoWidgetRepository::DATABASES_COLUMNS_SETTINGS = "RepoWidgetRepositoryColumnsSettings";
+
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     : QWidget(parent)
@@ -71,12 +74,21 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
 	token = nullptr;
 	controller = nullptr;
+
+    QSettings settings(this);
+    ui->databasesTreeView->header()->restoreState(
+                settings.value(DATABASES_COLUMNS_SETTINGS).toByteArray());
+
 }
 
 //------------------------------------------------------------------------------
 
 repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
-{
+{   
+    QSettings settings(this);
+    settings.setValue(DATABASES_COLUMNS_SETTINGS, ui->databasesTreeView->header()->saveState());
+
+
 	cancelAllThreads();
     //--------------------------------------------------------------------------
 	delete databasesProxyModel;
@@ -306,8 +318,6 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
     // TODO: be careful when adding multiple mongo connections. This counter
     // won't work with more than one async addCollection call.
     databaseRowCounter = 0;
-
-//    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::NAME);
 }
 
 //------------------------------------------------------------------------------
@@ -407,10 +417,6 @@ void repo::gui::RepoWidgetRepository::addKeyValuePair(
 void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 {	
 	databasesModel->removeRows(0, databasesModel->rowCount());	
-    //--------------------------------------------------------------------------
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::COUNT);
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::SIZE);
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::ALLOCATED);
     ui->databasesFilterLineEdit->clear();
 }
 
@@ -418,11 +424,7 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 
 void repo::gui::RepoWidgetRepository::clearCollectionModel()
 {
-	collectionModel->removeRows(0, collectionModel->rowCount());	
-
-    //--------------------------------------------------------------------------
-    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::VALUE);
-    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::TYPE);
+    collectionModel->removeRows(0, collectionModel->rowCount());
     ui->collectionFilterLineEdit->clear();
 }
 

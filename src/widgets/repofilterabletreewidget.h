@@ -25,6 +25,7 @@
 #include <QProgressBar>
 #include <QAbstractItemView>
 #include <QTreeView>
+#include <QSettings>
 
 namespace Ui {
     class RepoFilterableTreeWidget;
@@ -37,6 +38,8 @@ namespace gui {
 class RepoFilterableTreeWidget : public QWidget
 {
     Q_OBJECT
+
+    static const QString COLUMNS_SETTINGS;
 
 public:
 

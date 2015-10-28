@@ -75,7 +75,7 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 tr("Roles"));
 
     ui->treeView->sortByColumn((int) Columns::USERNAME, Qt::SortOrder::AscendingOrder);
-    clear(true);
+    clear();
 }
 
 repo::gui::RepoDialogUserManager::~RepoDialogUserManager() {}
@@ -211,7 +211,7 @@ void repo::gui::RepoDialogUserManager::refresh(
 
         //----------------------------------------------------------------------
         // Clear any previous entries
-        clear(true);
+        clear();
 
         //----------------------------------------------------------------------
         ui->progressBar->show();
