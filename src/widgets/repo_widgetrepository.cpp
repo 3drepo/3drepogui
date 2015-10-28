@@ -171,6 +171,21 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
     return projects.toList();
 }
 
+bool repo::gui::RepoWidgetRepository::disconnectDB()
+{
+    RepoToken *token = getSelectedConnection();
+    bool success = token;
+    if (token)
+    {
+        controller->disconnectFromDatabase(token);
+        delete token;
+        token = nullptr;
+        clearDatabaseModel();
+        clearCollectionModel();
+    }
+    return success;
+}
+
 void repo::gui::RepoWidgetRepository::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,

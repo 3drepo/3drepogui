@@ -24,62 +24,65 @@
 using namespace repo::worker;
 
 DatabaseWorker::DatabaseWorker(
-	repo::RepoController *controller, 
-	repo::RepoToken *token)
-	: RepoAbstractWorker(),
-	controller(controller),
-	token(token)
+        repo::RepoController *controller,
+        repo::RepoToken *token)
+    : RepoAbstractWorker(),
+      controller(controller),
+      token(token)
 {
-	qRegisterMetaType<QList<QPersistentModelIndex>>("QList<QPersistentModelIndex>");
-	qRegisterMetaType<repo::core::model::CollectionStats>("repo::core::model::CollectionStats");
+    qRegisterMetaType<QList<QPersistentModelIndex>>("QList<QPersistentModelIndex>");
+    qRegisterMetaType<repo::core::model::CollectionStats>("repo::core::model::CollectionStats");
 }
 
 DatabaseWorker::~DatabaseWorker() {}
 
 void DatabaseWorker::run()
 {
-	int jobsCount = 0;
-	emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
-	emit progressValueChanged(0);
+    int jobsCount = 0;
+    emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
+    emit progressValueChanged(0);
 
-	//----------------------------------------------------------------------
-	// For each database (if not cancelled)
-	std::list<std::string> databases = controller->getDatabases(token);
-	emit hostFetched(QString::fromStdString(controller->getHostAndPort(token)));
+    if (controller && token)
+    {
+        //----------------------------------------------------------------------
+        // For each database (if not cancelled)
+        std::list<std::string> databases = controller->getDatabases(token);
+        emit hostFetched(QString::fromStdString(controller->getHostAndPort(token)));
 
-	//----------------------------------------------------------------------
-	jobsCount = (int)databases.size() * 2;
-	emit progressRangeChanged(0, jobsCount);
+        //----------------------------------------------------------------------
+        jobsCount = (int)databases.size() * 2;
+        emit progressRangeChanged(0, jobsCount);
 
 
-	int counter = 0;
+        int counter = 0;
 
-	//----------------------------------------------------------------------
-	// Populate collections with sizes
-	for (std::list<std::string>::const_iterator dbIterator = databases.begin();
-		!cancelled && dbIterator != databases.end();
-		++dbIterator)
-	{
-		const std::string database = *dbIterator;
-		emit databaseFetched(QString::fromStdString(database));
-		emit progressValueChanged(counter++);
-		//------------------------------------------------------------------
-		// For each collection within the database (if not cancelled)
-		std::list<std::string> collections = controller->getCollections(token, database);
-		for (std::list<std::string>::const_iterator colIterator = collections.begin();
-			!cancelled && colIterator != collections.end();
-			++colIterator)
-		{
-			emit collectionFetched(controller->getCollectionStats(token, database, *colIterator));
-		}
-		emit databaseFinished(QString::fromStdString(database));
-		//------------------------------------------------------------------
-		emit progressValueChanged(counter++);
-	}
-	
-	//--------------------------------------------------------------------------
-	emit progressValueChanged(jobsCount);
-	emit RepoAbstractWorker::finished();
+        //----------------------------------------------------------------------
+        // Populate collections with sizes
+        for (std::list<std::string>::const_iterator dbIterator = databases.begin();
+             !cancelled && dbIterator != databases.end();
+             ++dbIterator)
+        {
+            const std::string database = *dbIterator;
+            emit databaseFetched(QString::fromStdString(database));
+            emit progressValueChanged(counter++);
+            //------------------------------------------------------------------
+            // For each collection within the database (if not cancelled)
+            std::list<std::string> collections = controller->getCollections(token, database);
+            for (std::list<std::string>::const_iterator colIterator = collections.begin();
+                 !cancelled && colIterator != collections.end();
+                 ++colIterator)
+            {
+                emit collectionFetched(controller->getCollectionStats(token, database, *colIterator));
+            }
+            emit databaseFinished(QString::fromStdString(database));
+            //------------------------------------------------------------------
+            emit progressValueChanged(counter++);
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    emit progressValueChanged(jobsCount);
+    emit RepoAbstractWorker::finished();
 }
 
 

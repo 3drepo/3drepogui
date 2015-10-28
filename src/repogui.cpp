@@ -114,8 +114,13 @@ repo::gui::RepoGUI::RepoGUI(
     //
     //--------------------------------------------------------------------------
     // Connect
-    QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
+    QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connectDB()));
     ui->actionConnect->setIcon(RepoFontAwesome::getConnectIcon());
+
+    // Disconnect
+    QObject::connect(ui->actionDisconnect, SIGNAL(triggered()), ui->widgetRepository,
+                     SLOT(disconnectDB()));
+    ui->actionDisconnect->setIcon(RepoFontAwesome::getDisconnectIcon());
 
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
@@ -391,8 +396,12 @@ void repo::gui::RepoGUI::commit(
 }
 
 
-void repo::gui::RepoGUI::connect()
+void repo::gui::RepoGUI::connectDB()
 {
+    // Disconnect previous connection if any
+    // TODO: remove when expanding to multiple connections
+    ui->widgetRepository->disconnectDB();
+
     RepoDialogManagerConnect connectManager(controller, this);
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
@@ -784,9 +793,10 @@ void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 
 void repo::gui::RepoGUI::startup()
 {
+    // TODO: add this functionality back in
 //    RepoDialogConnect connectionDialog(this);
 //    if (connectionDialog.isShowAtStartup())
-        connect();
+        connectDB();
 }
 
 void repo::gui::RepoGUI::toggleFullScreen()

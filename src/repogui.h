@@ -89,7 +89,7 @@ public slots:
                 repo::gui::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.
-    void connect();
+    void connectDB();
 
     //! Returns a menu with currently available panels.
     QMenu* createPanelsMenu();

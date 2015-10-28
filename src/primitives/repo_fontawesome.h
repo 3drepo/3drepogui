@@ -91,6 +91,10 @@ public:
     static QIcon getConnectIcon()
     { return getInstance().getIcon(fa_sign_in, QColor(0, 122, 204)); }
 
+    //! Returns a pre-defined disconnect icon in dark red.
+    static QIcon getDisconnectIcon()
+    { return getInstance().getIcon(fa_sign_out, QColor(Qt::darkRed)); }
+
     //! Returns a pre-defined database icon.
     static QIcon getDatabaseIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_DriveHDIcon); } // getIconStatic(fa_database); }

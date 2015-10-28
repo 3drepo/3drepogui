@@ -115,6 +115,9 @@ public slots :
 
 public slots :
 
+    //! Disconnects database connection, if any.
+    bool disconnectDB();
+
     //! Refreshes all connected databases. Only one at the moment.
     void refresh();
 		
@@ -175,8 +178,6 @@ public :
     // Getters
     //
     //--------------------------------------------------------------------------
-
-
 
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
@@ -263,6 +264,7 @@ private :
 
 private :
 
+    //! Access to ui elements
     Ui::RepoWidgetRepository *ui;
 
 	//! Default model for the databases.
@@ -280,9 +282,13 @@ private :
 	//! Private thread pool local to this object only.
 	QThreadPool threadPool;
 
+    //! Database controller
     repo::RepoController *controller;
-	repo::RepoToken      *token;
 
+    //! Connection token
+    repo::RepoToken *token;
+
+    //! Counter of database rows
     int databaseRowCounter;
 };
 
