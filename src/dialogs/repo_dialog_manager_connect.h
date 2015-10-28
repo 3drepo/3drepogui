@@ -53,7 +53,7 @@ class RepoDialogManagerConnect : public RepoAbstractManagerDialog
 
 public:
 
-    explicit RepoDialogManagerConnect(QWidget *parent = 0);
+    explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
 
 public :
 
@@ -102,7 +102,9 @@ private:
 
     static QStandardItem *getSSHItem(const RepoCredentials &credentials);
 
+private :
 
+    repo::RepoController *controller;
 
 };
 

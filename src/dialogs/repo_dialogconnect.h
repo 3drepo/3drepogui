@@ -53,31 +53,26 @@ class RepoDialogConnect : public QDialog
  
 public:
 
-    //--------------------------------------------------------------------------
-	//
-	// Constructor
-	//
-    //--------------------------------------------------------------------------
-	
 	//! Creates a connection dialog. To show, run exec().
-    RepoDialogConnect(const repo::RepoCredentials &credentials,
+    RepoDialogConnect(repo::RepoController *controller,
+                      const repo::RepoCredentials &credentials,
                       QWidget *parent = 0,
                       Qt::WindowFlags flags = 0);
 
-    //--------------------------------------------------------------------------
-	//
-	// Desctructor
-	//
-    //--------------------------------------------------------------------------
-
 	//! Syncs the global settings.
 	~RepoDialogConnect();
+
+public slots:
+
+    void validate();
 
     //--------------------------------------------------------------------------
 	//
 	// Getters
 	//
     //--------------------------------------------------------------------------
+
+public :
 
     //! Returns current connection settings
     repo::RepoCredentials getConnectionSettings() const;
@@ -89,6 +84,8 @@ private :
 
     //! Completer for databases line edit.
     QCompleter *databasesCompleter;
+
+    repo::RepoController *controller;
 
 };
 
