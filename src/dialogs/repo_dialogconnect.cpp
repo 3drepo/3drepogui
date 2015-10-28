@@ -74,28 +74,8 @@ void repo::gui::RepoDialogConnect::validate()
 
     // TODO: make asynchronous
     repo::RepoCredentials credentials = getConnectionSettings();
-    std::string errMsg;
-    repo::RepoToken* connectionToken = 0;
-    if (controller)
-    {
-        connectionToken = controller->authenticateToAdminDatabaseMongo(
-        errMsg,
-        credentials.getHost(),
-        credentials.getPort(),
-        credentials.getUsername(),
-        credentials.getPassword());
-    }
 
-    if (connectionToken)
-    {
-        std::cout << "Connection established." << std::endl;
-//        ui->validateProgressBar->setValue(ui->validateProgressBar->maximum());
-    }
-    else
-    {
-        //connection/authentication failed
-        std::cerr << "Failed to connect/authenticate user. " << errMsg << std::endl;
-    }
+    controller->testConnection(credentials);
 
 //    ui->validateProgressBar->hide();
 }
