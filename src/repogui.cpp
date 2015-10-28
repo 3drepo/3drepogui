@@ -393,7 +393,7 @@ void repo::gui::RepoGUI::commit(
 
 void repo::gui::RepoGUI::connect()
 {
-    RepoDialogManagerConnect connectManager(this);
+    RepoDialogManagerConnect connectManager(controller, this);
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
     else

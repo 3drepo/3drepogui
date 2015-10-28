@@ -21,8 +21,10 @@
 
 
 repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
+        repo::RepoController *controller,
         QWidget *parent)
     : RepoAbstractManagerDialog(0, parent)
+    , controller(controller)
 {
     setWindowTitle("Connection Manager");
     setWindowIcon(RepoFontAwesome::getConnectIcon());
@@ -135,7 +137,7 @@ void repo::gui::RepoDialogManagerConnect::showEditDialog(
         const repo::RepoCredentials &credentials,
         const QModelIndex &index)
 {
-    RepoDialogConnect connectionSettingsDialog(credentials, this);
+    RepoDialogConnect connectionSettingsDialog(controller, credentials, this);
     if (QDialog::Rejected == connectionSettingsDialog.exec())
         repoLog("Connection Settings Dialog cancelled by user.\n");
     else // QDialog::Accepted
@@ -181,6 +183,7 @@ QStandardItem *repo::gui::RepoDialogManagerConnect::getAliasItem(
     QStandardItem *item = createItem(QString::fromStdString(credentials.getAlias()));
     item->setData(var);
     item->setEnabled(true);
+    item->setIcon(RepoFontAwesome::getHostIcon());
     return item;
 }
 
@@ -203,7 +206,7 @@ QStandardItem *repo::gui::RepoDialogManagerConnect::getAuthenticationItem(
                     " / " +
                     credentials.getUsername());
         item = createItem(label);
-        item->setIcon(RepoFontAwesome::getAuthenticationIcon());
+        item->setIcon(RepoFontAwesome::getDatabaseIcon());
     }
     else
         item = createItem(label);

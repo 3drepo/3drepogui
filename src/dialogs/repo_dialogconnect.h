@@ -51,15 +51,20 @@ class RepoDialogConnect : public QDialog
 {
     Q_OBJECT
 
-public:
+public :
 
-    //! Creates a connection dialog. To show, run exec().
-    RepoDialogConnect(const repo::RepoCredentials &credentials,
+	//! Creates a connection dialog. To show, run exec().
+    RepoDialogConnect(repo::RepoController *controller,
+                      const repo::RepoCredentials &credentials,
                       QWidget *parent = 0,
                       Qt::WindowFlags flags = 0);
 
-    //! Syncs the global settings.
-    ~RepoDialogConnect();
+	//! Syncs the global settings.
+	~RepoDialogConnect();
+
+public slots:
+
+    void validate();
 
 public :
 
@@ -73,6 +78,8 @@ private :
 
     //! Completer for databases line edit.
     QCompleter *databasesCompleter;
+
+    repo::RepoController *controller;
 
 };
 

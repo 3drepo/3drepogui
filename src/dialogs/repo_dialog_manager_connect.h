@@ -64,7 +64,8 @@ public:
      * @brief RepoDialogManagerConnect
      * @param parent parent widget which can be null
      */
-    explicit RepoDialogManagerConnect(QWidget *parent = 0);
+    explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
+
 
 public :
 
@@ -121,6 +122,9 @@ private:
     //! Returns ssh tree item from given credentials
     static QStandardItem *getSSHItem(const RepoCredentials &credentials);
 
+private :
+
+    repo::RepoController *controller;
 };
 
 } // end namespace gui

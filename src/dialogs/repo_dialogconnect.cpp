@@ -19,11 +19,13 @@
 
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogConnect::RepoDialogConnect(
+        RepoController *controller,
         const RepoCredentials &credentials,
         QWidget *parent,
         Qt::WindowFlags flags)
     : QDialog(parent, flags)
     , ui(new Ui::RepoDialogConnect)
+    , controller(controller)
 {
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getConnectIcon());
@@ -53,6 +55,10 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     // TODO: code in support for SSL and SSH
     ui->tabWidget->setTabEnabled(2, false); // SSL tab disabled
     ui->tabWidget->setTabEnabled(3, false); // SSH tab disabled
+
+    ui->validateProgressBar->hide();
+
+    connect(ui->validatePushButton, SIGNAL(pressed()), this, SLOT(validate()));
 }
 
 //------------------------------------------------------------------------------
@@ -60,6 +66,38 @@ repo::gui::RepoDialogConnect::~RepoDialogConnect()
 {
     delete databasesCompleter;
     delete ui;
+}
+
+void repo::gui::RepoDialogConnect::validate()
+{
+//    ui->validateProgressBar->show();
+
+    // TODO: make asynchronous
+    repo::RepoCredentials credentials = getConnectionSettings();
+    std::string errMsg;
+    repo::RepoToken* connectionToken = 0;
+    if (controller)
+    {
+        connectionToken = controller->authenticateToAdminDatabaseMongo(
+        errMsg,
+        credentials.getHost(),
+        credentials.getPort(),
+        credentials.getUsername(),
+        credentials.getPassword());
+    }
+
+    if (connectionToken)
+    {
+        std::cout << "Connection established." << std::endl;
+//        ui->validateProgressBar->setValue(ui->validateProgressBar->maximum());
+    }
+    else
+    {
+        //connection/authentication failed
+        std::cerr << "Failed to connect/authenticate user. " << errMsg << std::endl;
+    }
+
+//    ui->validateProgressBar->hide();
 }
 
 repo::RepoCredentials repo::gui::RepoDialogConnect::getConnectionSettings() const
