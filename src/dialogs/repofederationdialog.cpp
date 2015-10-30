@@ -178,7 +178,7 @@ void RepoFederationDialog::removeProjectsFromFederation()
     while (!selectedIndexes.empty() && isRemoved)
     {
         QModelIndex selectedIndex = selectedIndexes[0];
-        //isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
+        isRemoved = federatedModel->removeRow(selectedIndex.row(), selectedIndex.parent());
         selectedIndexes = getFederatedSelection();
     }
 }
