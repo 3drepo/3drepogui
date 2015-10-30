@@ -179,10 +179,9 @@ GLCExportWorker::~GLCExportWorker() {}
 void GLCExportWorker::run()
 {
 
-    repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
-
-	if (scene && scene->getRoot(repoViewGraph))
+	if (scene && scene->getRoot(scene->getViewGraph()))
 	{
+		repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
 		//-------------------------------------------------------------------------
 		// Start
 		jobsCount = scene->getItemsInCurrentGraph(repoViewGraph);
