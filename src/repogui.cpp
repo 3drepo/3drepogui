@@ -333,10 +333,8 @@ void repo::gui::RepoGUI::commit()
 
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
-
     
-	repo::core::model::RepoScene *repoScene;
-
+    repo::core::model::RepoScene *repoScene = nullptr;
     if (activeWindow && widget)
     {
         repoScene = widget->getRepoScene();
@@ -358,8 +356,7 @@ void repo::gui::RepoGUI::commit()
 void repo::gui::RepoGUI::commit(
         repo::core::model::RepoScene *scene,
         RepoMdiSubWindow *activeWindow)
-{
-	
+{	
 	if (scene)
 	{
 		repo::gui::RepoDialogCommit commitDialog(

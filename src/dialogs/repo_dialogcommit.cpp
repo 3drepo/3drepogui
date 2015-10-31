@@ -75,8 +75,8 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
                 ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
                 this, SLOT(editItem(QModelIndex)));
 
-
-    ui->branchComboBox->addItem(
+    if (scene)
+        ui->branchComboBox->addItem(
                 RepoFontAwesome::getBranchIcon(),
                 QString::fromStdString(scene->getBranchName()));
 
