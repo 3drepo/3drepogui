@@ -74,6 +74,13 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QLabel" name="countLabel">
+     <property name="text">
+      <string>Showing 0 of 0</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>

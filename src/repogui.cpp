@@ -141,7 +141,7 @@ repo::gui::RepoGUI::RepoGUI(
 
     // Commit
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
-    ui->actionCommit->setIcon(RepoDialogCommit::getIcon());
+    ui->actionCommit->setIcon(RepoFontAwesome::getCommitIcon());
 
     // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),

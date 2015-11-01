@@ -26,6 +26,7 @@
 #include <QtWidgets/QDialog>
 #include <QtGui>
 #include <QStandardItemModel>
+#include <QThreadPool>
 #include <QModelIndex>
 
 //------------------------------------------------------------------------------
@@ -34,7 +35,7 @@
 #include "../widgets/repo_lineedit.h"
 #include "../primitives/repoidbcache.h"
 #include "repo_transformationdialog.h"
-//------------------------------------------------------------------------------
+#include "../repo/workers/repo_worker_modified_nodes.h"
 
 //------------------------------------------------------------------------------
 // Repo Core
@@ -44,7 +45,7 @@ namespace Ui {
     class RepoDialogCommit;
 }
 
-Q_DECLARE_METATYPE(repo::core::model::RepoNode*);
+Q_DECLARE_METATYPE(repo::core::model::RepoNode*)
 
 namespace repo {
 namespace gui {
@@ -79,20 +80,23 @@ public:
 		RepoIDBCache *dbCache = nullptr,
 		repo::core::model::RepoScene * scene = nullptr);
 
-    //--------------------------------------------------------------------------
-	//
-	// Destructor
-	//
-    //--------------------------------------------------------------------------
-
 	//! Destructs the tree model.
 	~RepoDialogCommit();
 
+public slots:
+
+    //! Cancels all ongoing threads, if any.
+    bool cancelAllThreads();
+
+signals :
+
+    //! Emitted whenever running threads are to be cancelled.
+    void cancel();
+
+public :
+
 	//! Returns the commit message
 	QString getMessage();
-
-	//! Returns the default green icon for the commit dialog.
-	static QIcon getIcon();
 
     QString getCurrentHost() const;
 
@@ -103,6 +107,8 @@ public:
 	repo::core::model::RepoScene* getScene() { return scene; }
 
 public slots:
+
+    void addNode(repo::core::model::RepoNode *node);
 
     void editItem(const QModelIndex &);
 
@@ -144,9 +150,14 @@ private:
 	//! Proxy model to enable table sorting.
 	QSortFilterProxyModel *proxyModel;
 
+    //! Database cache.
     RepoIDBCache *dbCache;
 
+    //! Selected project name.
     QString projectName;
+
+    //! Threadpool for this object only.
+    QThreadPool threadPool;
 };
 
 } // end namespace gui

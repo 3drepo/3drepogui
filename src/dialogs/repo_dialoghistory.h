@@ -36,57 +36,57 @@
 #include <repo/repo_controller.h>
 
 namespace Ui {
-    class RepoDialogHistory;
+class RepoDialogHistory;
 }
 
 namespace repo {
 namespace gui {
-	
+
 class RepoDialogHistory : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	//! Databases table header positions
+    //! Databases table header positions
     enum RepoHistoryColumns { TIMESTAMP, MESSAGE, AUTHOR,REVISION, BRANCH };
 
-	//! Revision table header positions
-	enum RepoRevisionColumns { SID, ACTION };
-  
+    //! Revision table header positions
+    enum RepoRevisionColumns { SID, ACTION };
+
 public:
 
-	//! Constuctor
-	RepoDialogHistory(
-		repo::RepoController  *controller,
-        const repo::RepoToken *token,
-        const QString &database,
-        const QString& project,
-        QWidget *parent = 0,
-		Qt::WindowFlags flags = 0);
+    //! Constuctor
+    RepoDialogHistory(
+            repo::RepoController  *controller,
+            const repo::RepoToken *token,
+            const QString &database,
+            const QString& project,
+            QWidget *parent = 0,
+            Qt::WindowFlags flags = 0);
 
-	//! Destructor
-	~RepoDialogHistory();
+    //! Destructor
+    ~RepoDialogHistory();
 
 signals :
 
-	//! Emitted whenever running threads are to be cancelled.
-	void cancel();
+    //! Emitted whenever running threads are to be cancelled.
+    void cancel();
 
 public slots:
 
-	//! Cancels all running threads and waits for their completion.
-	bool cancelAllThreads();
+    //! Cancels all running threads and waits for their completion.
+    bool cancelAllThreads();
 
-	//! Forces refresh.
-	int exec();
-	
-	//! Refreshes the history model
-	void refresh();
+    //! Forces refresh.
+    int exec();
 
-	////! Adds a revision row to the history model
+    //! Refreshes the history model
+    void refresh();
+
+    ////! Adds a revision row to the history model
     void addRevision(repo::core::model::RevisionNode *);
 
-	//! Clears the history model (does not remove headers)
-	void clearHistoryModel();
+    //! Clears the history model (does not remove headers)
+    void clearHistoryModel();
 
     //! Updates count label
     void updateCountLabel();
@@ -95,45 +95,45 @@ public slots:
 
 public :
 
-	//! Returns a list of selected revisions' unique IDs (UIDs), empty list if none selected.
-	QList<QUuid> getSelectedRevisions();
+    //! Returns a list of selected revisions' unique IDs (UIDs), empty list if none selected.
+    QList<QUuid> getSelectedRevisions();
 
     //--------------------------------------------------------------------------
-	//
-	// Static helpers
-	//
+    //
+    // Static helpers
+    //
     //--------------------------------------------------------------------------
 
-	//! Returns a non-editable item with set tooltip.
+    //! Returns a non-editable item with set tooltip.
     static QStandardItem *createItem(QVariant& data);
 
 private:	
 
     //! Ui var.
     Ui::RepoDialogHistory *ui;
-		
-	//! Model of the revision history.
+
+    //! Model of the revision history.
     QStandardItemModel *historyModel;
 
-	//! Proxy model for revision history to enable filtering.
+    //! Proxy model for revision history to enable filtering.
     QSortFilterProxyModel *historyProxy;
 
-	//! Model of a single revision.
+    //! Model of a single revision.
     QStandardItemModel *revisionModel;
 
-	////! Client connection.
-	repo::RepoController *controller;
-	const repo::RepoToken      *token;
+    ////! Client connection.
+    repo::RepoController *controller;
+    const repo::RepoToken      *token;
 
-	//! Database to retrieve revision history from.
-	QString database;
+    //! Database to retrieve revision history from.
+    QString database;
 
     //! Project to retrieve revision history from.
     QString project;
 
-	//! Threadpool for this object only.
-	QThreadPool threadPool;
- 
+    //! Threadpool for this object only.
+    QThreadPool threadPool;
+
 }; // end class
 
 } // end namespace gui

@@ -123,6 +123,11 @@ public:
     static QIcon getAuthenticationIcon()
     { return getIconStatic(fa_key); }
 
+    //! Returns commit icon.
+    static QIcon getCommitIcon()
+    { return getInstance().getIcon(
+                    RepoFontAwesome::fa_upload, QColor(Qt::darkGreen));}
+
     //--------------------------------------------------------------------------
 
 	QIcon getIcon(int iconOn);
