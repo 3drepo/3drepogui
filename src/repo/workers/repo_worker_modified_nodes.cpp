@@ -20,9 +20,13 @@
 using namespace repo::worker;
 
 RepoWorkerModifiedNodes::RepoWorkerModifiedNodes(
-        repo::core::model::RepoScene *scene)
+        repo::core::model::RepoScene *scene,
+        int skip,
+        int limit)
     : RepoAbstractWorker()
     , scene(scene)
+    , skip(skip)
+    , limit(limit)
 {}
 
 RepoWorkerModifiedNodes::~RepoWorkerModifiedNodes() {}
@@ -34,18 +38,20 @@ void RepoWorkerModifiedNodes::run()
 
     int jobsDone = 0;
 
-    if (scene)
+    if (scene && !cancelled)
     {
         std::vector<repoUUID> modifiedNodes = scene->getModifiedNodesID();
-
         emit progressRangeChanged(0, modifiedNodes.size());
 
         //----------------------------------------------------------------------
         // Emit nodes one by one
-        for (const auto &sharedID : modifiedNodes)
-        {
-            repo::core::model::RepoNode *node = scene->getNodeBySharedID(sharedID);
-            emit modifiedNode(node);
+        for (int i = skip;
+             !cancelled &&
+             i < modifiedNodes.size() &&
+             i < (skip + limit);
+             ++i)
+        {                       
+            emit modifiedNode(scene->getNodeBySharedID(modifiedNodes[i]));
             emit progressValueChanged(++jobsDone);
         }
     }

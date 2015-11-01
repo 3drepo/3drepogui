@@ -94,6 +94,8 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
 //------------------------------------------------------------------------------
 repo::gui::RepoDialogCommit::~RepoDialogCommit() 
 {
+    cancelAllThreads();
+
     delete proxyModel;
     delete model;
 }
@@ -270,18 +272,9 @@ void repo::gui::RepoDialogCommit::updateBranches()
 //------------------------------------------------------------------------------
 void repo::gui::RepoDialogCommit::setModifiedObjects()
 {	
-    // TODO: make into asynchronous worker
-    //--------------------------------------------------------------------------
-    // Number of changes
-//    QLocale locale;
-//    ui->countLabel->setText(locale.toString((qulonglong)(modifiedObjects.size()))
-//                            + " "
-//                            + tr("changes"));
-
-
-
     if (scene && cancelAllThreads())
     {
+        // TODO: add skip and limit to load when scrollbar reaches bottom.
         worker::RepoWorkerModifiedNodes* worker = new worker::RepoWorkerModifiedNodes(
                     scene);
         worker->setAutoDelete(true);
@@ -306,10 +299,6 @@ void repo::gui::RepoDialogCommit::setModifiedObjects()
         QObject::connect(
             worker, &repo::worker::RepoWorkerModifiedNodes::progressValueChanged,
             ui->progressBar, &QProgressBar::setValue);
-
-        //----------------------------------------------------------------------
-        // Clear any previous entries : the collection model
-//        clearHistoryModel();
 
         ui->progressBar->show();
         //----------------------------------------------------------------------

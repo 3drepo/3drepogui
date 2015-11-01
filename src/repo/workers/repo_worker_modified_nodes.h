@@ -37,7 +37,9 @@ class RepoWorkerModifiedNodes : public RepoAbstractWorker {
 public:
 
     //! Default worker constructor.
-    RepoWorkerModifiedNodes(repo::core::model::RepoScene *scene);
+    RepoWorkerModifiedNodes(repo::core::model::RepoScene *scene,
+                            int skip = 0,
+                            int limit = 1000);
 
     //! Default empty destructor.
     ~RepoWorkerModifiedNodes();
@@ -58,6 +60,12 @@ private:
 
     //! Repo scene.
     repo::core::model::RepoScene *scene;
+
+    //! Number of nodes to skip when retrieveing.
+    int skip;
+
+    //! Max number of nodes to load.
+    int limit;
 
 }; // end class
 
