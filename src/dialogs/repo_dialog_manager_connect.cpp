@@ -59,6 +59,14 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
     ui->databaseComboBox->hide();
 
     ui->buttonBox->addButton("Connect", QDialogButtonBox::AcceptRole);
+
+
+
+    QObject::disconnect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
+                     this, SLOT(edit(const QModelIndex &)));
+
+    QObject::connect(ui->treeView, &QTreeView::doubleClicked,
+                     this, &QDialog::accept);
 }
 
 void repo::gui::RepoDialogManagerConnect::addCredentials(const RepoCredentials &credentials)
@@ -217,7 +225,7 @@ QStandardItem *repo::gui::RepoDialogManagerConnect::getSSLItem(
         const RepoCredentials &credentials)
 {
     QStandardItem *item = createItem(QVariant());
-    item->setEnabled(false);
+    item->setEnabled(true);
     item->setIcon(RepoFontAwesome::getInstance().getIcon(
                       RepoFontAwesome::fa_unlock_alt));
     return item;
@@ -227,7 +235,7 @@ QStandardItem *repo::gui::RepoDialogManagerConnect::getSSHItem(
         const RepoCredentials &credentials)
 {
     QStandardItem *item = createItem(QVariant());
-    item->setEnabled(false);
+    item->setEnabled(true);
     item->setIcon(RepoFontAwesome::getInstance().getIcon(
                       RepoFontAwesome::fa_unlock_alt));
     return item;
