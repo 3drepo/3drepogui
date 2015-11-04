@@ -18,6 +18,11 @@
 #include "repo_dialog_manager_connect.h"
 #include "ui_repoabstractmanagerdialog.h"
 
+const QString repo::gui::RepoDialogManagerConnect::SETTINGS_CONNECTIONS_COLUMNS =
+        "RepoDialogManagerConnectSettingsConnectionsColumns";
+
+const QString repo::gui::RepoDialogManagerConnect::SETTINGS_SELECTION =
+        "RepoDialogManagerConnectSettingsSelection";
 
 
 repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
@@ -57,16 +62,34 @@ repo::gui::RepoDialogManagerConnect::RepoDialogManagerConnect(
 
     ui->hostComboBox->hide();
     ui->databaseComboBox->hide();
-
     ui->buttonBox->addButton("Connect", QDialogButtonBox::AcceptRole);
 
 
+    //--------------------------------------------------------------------------
+    // Restore user settings
+    QSettings settings(this);
+    ui->treeView->header()->restoreState(
+                settings.value(SETTINGS_CONNECTIONS_COLUMNS).toByteArray());
 
+    // See https://bugreports.qt.io/browse/QTBUG-42438
+    // This should magically work from Qt 5.4.0 RC onwards
+    ui->treeView->selectionModel()->setCurrentIndex(settings.value(SETTINGS_SELECTION).toModelIndex(),
+                                                    QItemSelectionModel::SelectCurrent);
+
+    //--------------------------------------------------------------------------
+    // Connect double click to accept action for convenient UI
     QObject::disconnect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
                      this, SLOT(edit(const QModelIndex &)));
 
     QObject::connect(ui->treeView, &QTreeView::doubleClicked,
                      this, &QDialog::accept);
+}
+
+repo::gui::RepoDialogManagerConnect::~RepoDialogManagerConnect()
+{
+    QSettings settings(this);
+    settings.setValue(SETTINGS_CONNECTIONS_COLUMNS, ui->treeView->header()->saveState());
+    settings.setValue(SETTINGS_SELECTION, ui->treeView->selectionModel()->currentIndex());
 }
 
 void repo::gui::RepoDialogManagerConnect::addCredentials(const RepoCredentials &credentials)
