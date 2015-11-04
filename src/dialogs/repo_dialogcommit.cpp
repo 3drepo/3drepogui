@@ -171,7 +171,11 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
 
 void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 {
-    QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
+   /* 
+   FIXME: Alteration of the transformation would only update the one in unoptimized, not the stash.
+   So this is disabled to prevent user from doing something they do not expect.
+
+   QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
     QStandardItem *item = model->item(modelIndex.row(),Columns::NAME);
 
     if (item)
@@ -189,7 +193,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
                             new repo::core::model::TransformationNode(transformationDialog.getTransformation());
                     if (t)
                     {
-                        //FIXME:	scene->modifyNode(repo::core::model::RepoScene::GraphType::DEFAULT, transformation->getSharedID(), t);
+                        scene->modifyNode(repo::core::model::RepoScene::GraphType::DEFAULT, transformation->getSharedID(), t);
                         delete t;
                     }
 
@@ -198,7 +202,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
                 }
             }
         }
-    }
+    }*/
 }
 
 //------------------------------------------------------------------------------
