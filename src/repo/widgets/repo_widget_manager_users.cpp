@@ -27,7 +27,7 @@ RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
 {
     QList<QString> headers;
     headers << tr("Username") << tr("First Name") << tr("Last Name");
-    headers << tr("Email") << tr("Projects") << tr("Groups") << tr("Roles");
+    headers << tr("Email") << tr("Projects") << tr("Roles");
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->setHeaders(headers);
@@ -86,11 +86,6 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     row.append(RepoWidgetTreeFilterable::createItem(
                    QString::number(user.getProjectsList().size()),
                    (qulonglong)(user.getProjectsList().size())));
-
-    // Groups count
-    row.append(RepoWidgetTreeFilterable::createItem(
-                   QString::number(user.getGroupsList().size()),
-                   (qulonglong)(user.getGroupsList().size())));
 
     // Roles count
     row.append(RepoWidgetTreeFilterable::createItem(

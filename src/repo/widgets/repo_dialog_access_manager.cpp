@@ -41,10 +41,10 @@ RepoDialogAccessManager::RepoDialogAccessManager(
 
 
     QObject::connect(ui->refreshPushButton, &QPushButton::pressed,
-                this, &RepoDialogAccessManager::refresh);
+                     this, &RepoDialogAccessManager::refresh);
 
-//    QObject::connect(ui->databaseComboBox, &QComboBox::currentIndexChanged,
-//                     this, &RepoDialogAccessManager::refresh);
+    QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
+                     this, SLOT(refresh()));
 
 }
 
@@ -63,6 +63,18 @@ void RepoDialogAccessManager::refresh()
 {
     ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->userManagerWidget->refresh();
+}
+
+void RepoDialogAccessManager::keyPressEvent(QKeyEvent* e)
+{
+    switch (e->key())
+    {
+    case Qt::Key_Tab:
+        ui->tabWidget->setCurrentIndex((ui->tabWidget->currentIndex() + 1) % ui->tabWidget->count());
+        break;
+    }
+
+    QWidget::keyPressEvent(e);
 }
 
 repo::RepoToken* RepoDialogAccessManager::getToken() const

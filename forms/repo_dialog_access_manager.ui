@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
-    <height>360</height>
+    <width>851</width>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,7 +103,7 @@
   <customwidget>
    <class>repo::widgets::RepoWidgetManagerUsers</class>
    <extends>QWidget</extends>
-   <header>repo_widget_manager_users.h</header>
+   <header>src/repo/widgets/repo_widget_manager_users.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

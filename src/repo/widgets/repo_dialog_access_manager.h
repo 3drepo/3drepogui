@@ -50,6 +50,11 @@ public slots :
 
 public :
 
+    //! Always returns false in order to capture Tab keypress
+    bool focusNextPrevChild(bool) { return false; }
+
+    void keyPressEvent(QKeyEvent*);
+
     repo::RepoToken* getToken() const;
 
     std::string getDatabase() const;

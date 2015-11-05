@@ -47,7 +47,7 @@ class RepoWidgetManagerUsers : public RepoWidgetTreeEditable
 {
     Q_OBJECT
 
-    enum class Columns { USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, GROUPS, ROLES };
+    enum class Columns { USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
 
 public:
 
