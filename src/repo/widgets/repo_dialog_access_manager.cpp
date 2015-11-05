@@ -26,6 +26,7 @@ RepoDialogAccessManager::RepoDialogAccessManager(QWidget *parent) :
     ui(new Ui::RepoDialogAccessManager)
 {
     ui->setupUi(this);
+    setWindowIcon(repo::gui::RepoFontAwesome::getAccessManagerIcon());
 }
 
 RepoDialogAccessManager::~RepoDialogAccessManager()

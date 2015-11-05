@@ -23,6 +23,8 @@
 
 #include <QDialog>
 
+#include "../../primitives/repo_fontawesome.h"
+
 namespace Ui {
 class RepoDialogAccessManager;
 }

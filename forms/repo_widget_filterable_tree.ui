@@ -92,7 +92,7 @@
   <customwidget>
    <class>repo::gui::RepoClickableTreeView</class>
    <extends>QTreeView</extends>
-   <header>../../widgets/repo_clickabletreeview.h</header>
+   <header>../widgets/repo_clickabletreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

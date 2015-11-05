@@ -126,6 +126,9 @@ public:
     static QIcon getAuthenticationIcon()
     { return getIconStatic(fa_key); }
 
+    static QIcon getAccessManagerIcon()
+    { return getIconStatic(fa_dashboard); }
+
     //! Returns commit icon.
     static QIcon getCommitIcon()
     { return getInstance().getIcon(
