@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoWidgetFilterableTree</class>
- <widget class="QWidget" name="RepoWidgetFilterableTree">
+ <class>RepoWidgetTreeFilterable</class>
+ <widget class="QWidget" name="RepoWidgetTreeFilterable">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -66,8 +66,11 @@
    </item>
    <item>
     <widget class="QProgressBar" name="progressBar">
+     <property name="maximum">
+      <number>0</number>
+     </property>
      <property name="value">
-      <number>24</number>
+      <number>0</number>
      </property>
      <property name="textVisible">
       <bool>false</bool>
@@ -87,12 +90,12 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>../../widgets/repo_lineedit.h</header>
+   <header>src/widgets/repo_lineedit.h</header>
   </customwidget>
   <customwidget>
    <class>repo::gui::RepoClickableTreeView</class>
    <extends>QTreeView</extends>
-   <header>../widgets/repo_clickabletreeview.h</header>
+   <header>src/widgets/repo_clickabletreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

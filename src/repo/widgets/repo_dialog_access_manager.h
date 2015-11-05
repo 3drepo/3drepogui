@@ -39,6 +39,7 @@ class RepoDialogAccessManager : public QDialog
 public:
 
     explicit RepoDialogAccessManager(QWidget *parent = 0);
+
     ~RepoDialogAccessManager();
 
 private:

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>522</width>
+    <width>448</width>
     <height>372</height>
    </rect>
   </property>
@@ -26,11 +26,7 @@
       <attribute name="title">
        <string>Users</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="repo::widgets::RepoWidgetFilterableTree" name="widget_2" native="true"/>
-       </item>
-      </layout>
+      <layout class="QVBoxLayout" name="verticalLayout_2"/>
      </widget>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
@@ -60,6 +56,19 @@
        <number>0</number>
       </property>
       <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="text">
+         <string>Refresh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="hostComboBox"/>
+      </item>
+      <item>
+       <widget class="QComboBox" name="databaseComboBox"/>
+      </item>
+      <item>
        <widget class="QDialogButtonBox" name="buttonBox">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -74,14 +83,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>repo::widgets::RepoWidgetFilterableTree</class>
-   <extends>QWidget</extends>
-   <header>repo_widget_filterable_tree.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections>
   <connection>

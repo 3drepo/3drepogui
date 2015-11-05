@@ -28,13 +28,13 @@
 #include <QSettings>
 
 namespace Ui {
-    class RepoWidgetFilterableTree;
+    class RepoWidgetTreeFilterable;
 }
 
 namespace repo {
 namespace widgets {
 
-class RepoWidgetFilterableTree : public QWidget
+class RepoWidgetTreeFilterable : public QWidget
 {
     Q_OBJECT
 
@@ -43,10 +43,10 @@ class RepoWidgetFilterableTree : public QWidget
 public:
 
     //! Constructs a default model (no headers) and default basic proxy.
-    RepoWidgetFilterableTree(QWidget *parent = 0);
+    RepoWidgetTreeFilterable(QWidget *parent = 0);
 
     //! Constructor to remove the UI elements and tree models.
-    ~RepoWidgetFilterableTree();
+    ~RepoWidgetTreeFilterable();
 
 public slots:
 
@@ -182,7 +182,7 @@ public :
 private:
 
     //! UI var.
-    Ui::RepoWidgetFilterableTree* ui;
+    Ui::RepoWidgetTreeFilterable* ui;
 
     //! Default model for the databases.
     QStandardItemModel* model;
