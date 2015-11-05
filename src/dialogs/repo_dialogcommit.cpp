@@ -26,6 +26,7 @@
 #include "../primitives/repo_fontawesome.h"
 #include "../repo/logger/repo_logger.h"
 //------------------------------------------------------------------------------
+
 repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
                                               Qt::WindowFlags flags,
                                               RepoIDBCache *dbCache,
@@ -34,13 +35,15 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     , dbCache(dbCache)
     , scene(scene)
     , ui(new Ui::RepoDialogCommit)
+    , skip(0)
+    , modifiedNodesCount(scene ? scene->getModifiedNodesID().size() : 0)
 {
     //FIXME: this should pop up the project and database names as default selection according to what's inside the scene graph
     ui->setupUi(this);
     this->setWindowIcon(RepoFontAwesome::getCommitIcon());
     //this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
-    model = new QStandardItemModel(0, 5, this); // 0 row, 5 cols
+    model = new QStandardItemModel(0, 5, this); // 0 rows, 5 cols
     model->setHeaderData(Columns::NAME, Qt::Horizontal, tr("Name"));
     model->setHeaderData(Columns::TYPE, Qt::Horizontal, tr("Type"));
     model->setHeaderData(Columns::STATUS, Qt::Horizontal, tr("Status"));
@@ -89,6 +92,11 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
                      SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(updateBranches()));
 
+    //--------------------------------------------------------------------------
+
+    QObject::connect(ui->treeView->verticalScrollBar(), &QScrollBar::sliderMoved,
+                     this, &RepoDialogCommit::infiniteScroll);
+
 }
 
 //------------------------------------------------------------------------------
@@ -106,6 +114,12 @@ bool repo::gui::RepoDialogCommit::cancelAllThreads()
     return threadPool.waitForDone(); // msecs
 }
 
+void repo::gui::RepoDialogCommit::infiniteScroll(int sliderPosition)
+{
+    if (sliderPosition == ui->treeView->verticalScrollBar()->maximum())
+        loadModifiedObjects();
+}
+
 //------------------------------------------------------------------------------
 QString repo::gui::RepoDialogCommit::getMessage()
 {
@@ -116,6 +130,8 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
 {
     if (node)
     {
+        ++skip;
+
         QList<QStandardItem *> row;
         QStandardItem *item;
 
@@ -171,7 +187,7 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
 
 void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 {
-   /* 
+    /*
    FIXME: Alteration of the transformation would only update the one in unoptimized, not the stash.
    So this is disabled to prevent user from doing something they do not expect.
 
@@ -219,7 +235,7 @@ int repo::gui::RepoDialogCommit::exec()
     ui->databaseComboBox->setCurrentText(dbCache->getSelectedDatabase());
     ui->projectComboBox->setCurrentText(projectName);
 
-    setModifiedObjects();
+    loadModifiedObjects();
 
     //--------------------------------------------------------------------------
     // If user clicked OK
@@ -274,43 +290,45 @@ void repo::gui::RepoDialogCommit::updateBranches()
 }
 
 //------------------------------------------------------------------------------
-void repo::gui::RepoDialogCommit::setModifiedObjects()
+void repo::gui::RepoDialogCommit::loadModifiedObjects()
 {	
-    if (scene && cancelAllThreads())
+    if (mutex.tryLock() && scene && (skip < modifiedNodesCount || 0 == skip) && cancelAllThreads())
     {
         // TODO: add skip and limit to load when scrollbar reaches bottom.
         worker::RepoWorkerModifiedNodes* worker = new worker::RepoWorkerModifiedNodes(
-                    scene);
+                    scene, skip);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP
         QObject::connect(
-            this, &RepoDialogCommit::cancel,
-            worker, &repo::worker::RepoWorkerModifiedNodes::cancel, Qt::DirectConnection);
+                    this, &RepoDialogCommit::cancel,
+                    worker, &repo::worker::RepoWorkerModifiedNodes::cancel,
+                    Qt::DirectConnection);
 
         QObject::connect(
-            worker, &repo::worker::RepoWorkerModifiedNodes::modifiedNode,
-            this, &RepoDialogCommit::addNode);
+                    worker, &repo::worker::RepoWorkerModifiedNodes::modifiedNode,
+                    this, &RepoDialogCommit::addNode);
 
         QObject::connect(
-            worker, &repo::worker::RepoWorkerModifiedNodes::finished,
-            ui->progressBar, &QProgressBar::hide);
+                    worker, &repo::worker::RepoWorkerModifiedNodes::finished,
+                    ui->progressBar, &QProgressBar::hide);
 
         QObject::connect(
-            worker, &repo::worker::RepoWorkerModifiedNodes::progressRangeChanged,
-            ui->progressBar, &QProgressBar::setRange);
+                    worker, &repo::worker::RepoWorkerModifiedNodes::progressRangeChanged,
+                    ui->progressBar, &QProgressBar::setRange);
 
         QObject::connect(
-            worker, &repo::worker::RepoWorkerModifiedNodes::progressValueChanged,
-            ui->progressBar, &QProgressBar::setValue);
+                    worker, &repo::worker::RepoWorkerModifiedNodes::progressValueChanged,
+                    ui->progressBar, &QProgressBar::setValue);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerModifiedNodes::finished,
+                    this, &RepoDialogCommit::unlockMutex);
 
         ui->progressBar->show();
         //----------------------------------------------------------------------
         threadPool.start(worker);
     }
-
-
-
 }
 
 QString repo::gui::RepoDialogCommit::getCurrentHost() const
@@ -331,5 +349,6 @@ QString repo::gui::RepoDialogCommit::getCurrentProject() const
 void repo::gui::RepoDialogCommit::updateCountLabel() const
 {
     static QLocale locale;
-    ui->countLabel->setText(tr("Showing %1 of %2").arg(locale.toString(proxyModel->rowCount())).arg(locale.toString(model->rowCount())));
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(
+                                locale.toString(proxyModel->rowCount())).arg(locale.toString(modifiedNodesCount)));
 }

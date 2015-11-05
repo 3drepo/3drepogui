@@ -19,6 +19,8 @@
 
 using namespace repo::worker;
 
+const int RepoWorkerModifiedNodes::DEFAULT_LIMIT = 1000;
+
 RepoWorkerModifiedNodes::RepoWorkerModifiedNodes(
         repo::core::model::RepoScene *scene,
         int skip,
@@ -36,7 +38,7 @@ void RepoWorkerModifiedNodes::run()
     std::cout << tr("Populating Commit Dialog...").toStdString() << std::endl;
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
-    int jobsDone = 0;
+    int jobsDone = skip;
 
     if (scene && !cancelled)
     {

@@ -36,10 +36,15 @@ class RepoWorkerModifiedNodes : public RepoAbstractWorker {
 
 public:
 
+    //! Maximum number of nodes to load in one go.
+    static const int DEFAULT_LIMIT;
+
+public:
+
     //! Default worker constructor.
     RepoWorkerModifiedNodes(repo::core::model::RepoScene *scene,
                             int skip = 0,
-                            int limit = 1000);
+                            int limit = DEFAULT_LIMIT);
 
     //! Default empty destructor.
     ~RepoWorkerModifiedNodes();

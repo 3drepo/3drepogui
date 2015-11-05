@@ -89,7 +89,9 @@ repo::gui::RepoDialogManagerConnect::~RepoDialogManagerConnect()
 {
     QSettings settings(this);
     settings.setValue(SETTINGS_CONNECTIONS_COLUMNS, ui->treeView->header()->saveState());
-    settings.setValue(SETTINGS_SELECTION, ui->treeView->selectionModel()->currentIndex());
+    // FIXME: uncomment when Qt 5.4.0+ is used
+    // See  https://bugreports.qt.io/browse/QTBUG-42438
+    // settings.setValue(SETTINGS_SELECTION, ui->treeView->selectionModel()->currentIndex());
 }
 
 void repo::gui::RepoDialogManagerConnect::addCredentials(const RepoCredentials &credentials)
