@@ -349,6 +349,7 @@ QString repo::gui::RepoDialogCommit::getCurrentProject() const
 void repo::gui::RepoDialogCommit::updateCountLabel() const
 {
     static QLocale locale;
+    QString msg = skip != modifiedNodesCount ? tr(" - scroll down to reveal more") : "";
     ui->countLabel->setText(tr("Showing %1 of %2").arg(
-                                locale.toString(proxyModel->rowCount())).arg(locale.toString(modifiedNodesCount)));
+                                locale.toString(proxyModel->rowCount())).arg(locale.toString(modifiedNodesCount)) + msg);
 }
