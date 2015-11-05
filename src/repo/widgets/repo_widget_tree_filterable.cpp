@@ -35,7 +35,6 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     model = new QStandardItemModel(this);
     setProxyModel();
     ui->progressBar->hide();
-    setCollapsedUI();
 
     QSettings settings(parent);
     ui->treeView->header()->restoreState(

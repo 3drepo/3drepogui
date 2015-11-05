@@ -39,6 +39,7 @@ HEADERS +=  \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_access_manager.h \
 	src/repo/widgets/repo_widget_tree_clickable.h \
+	src/repo/widgets/repo_widget_tree_editable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
@@ -96,6 +97,7 @@ SOURCES +=  \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_access_manager.cpp \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
+	src/repo/widgets/repo_widget_tree_editable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
@@ -136,6 +138,7 @@ FORMS +=  \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
 	forms/repo_widgetrepository.ui \
+	forms/repo_widget_tree_editable.ui \
 	forms/repo_widget_tree_filterable.ui
 
 RESOURCES +=  \
