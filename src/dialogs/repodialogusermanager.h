@@ -26,6 +26,7 @@
 #include <QThreadPool>
 #include <QItemSelection>
 #include <QMessageBox>
+#include <QMutex>
 
 
 //------------------------------------------------------------------------------
@@ -101,6 +102,9 @@ public slots:
     //! Shows the user dialog and saves edits to the database.
 	void showEditDialog(const repo::core::model::RepoUser &user);
 
+    //! Unlocks refresh mutex.
+    void unlockMutex() { mutex.unlock(); }
+
 private:
 
     //! List of custom roles updated upon each refresh.
@@ -109,7 +113,11 @@ private:
     //! Mapping of databases to their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;
 
+    //! DB connection controller
 	repo::RepoController *controller;
+
+    //! Refresh mutex.
+    QMutex mutex;
 };
 
 } // end namespace gui
