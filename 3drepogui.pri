@@ -37,6 +37,8 @@ HEADERS +=  \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
 	src/repo/settings/repo_settings_credentials.h \
+	src/repo/widgets/repo_dialog_access_manager.h \
+	src/repo/widgets/repo_widget_filterable_tree.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -49,7 +51,6 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_project_settings.h \
 	src/repo/workers/repo_worker_scene_graph.h \
 	src/repo/workers/repo_worker_users.h \
-	src/widgets/repofilterabletreewidget.h \
 	src/widgets/reposelectiontreedockwidget.h \
 	src/widgets/repowidgetassimpflags.h \
 	src/widgets/repo_clickabletreeview.h \
@@ -93,6 +94,8 @@ SOURCES +=  \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
+	src/repo/widgets/repo_dialog_access_manager.cpp \
+	src/repo/widgets/repo_widget_filterable_tree.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
@@ -105,7 +108,6 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_project_settings.cpp \
 	src/repo/workers/repo_worker_scene_graph.cpp \
 	src/repo/workers/repo_worker_users.cpp \
-	src/widgets/repofilterabletreewidget.cpp \
 	src/widgets/reposelectiontreedockwidget.cpp \
 	src/widgets/repowidgetassimpflags.cpp \
 	src/widgets/repo_clickabletreeview.cpp \
@@ -121,7 +123,6 @@ FORMS +=  \
 	forms/repodialogsettings.ui \
 	forms/repodialoguser.ui \
 	forms/repofederationdialog.ui \
-	forms/repofilterabletreewidget.ui \
 	forms/repogui.ui \
 	forms/repoprojectsettingsdialog.ui \
 	forms/reposelectiontreedockwidget.ui \
@@ -129,11 +130,13 @@ FORMS +=  \
 	forms/repo_dialogcommit.ui \
 	forms/repo_dialogconnect.ui \
 	forms/repo_dialoghistory.ui \
+	forms/repo_dialog_access_manager.ui \
 	forms/repo_genericdialog.ui \
 	forms/repo_maptilesdialog.ui \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
-	forms/repo_widgetrepository.ui
+	forms/repo_widgetrepository.ui \
+	forms/repo_widget_filterable_tree.ui
 
 RESOURCES +=  \
 	./resources.qrc \

@@ -47,6 +47,9 @@
 #include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
+#include "repo/widgets/repo_dialog_access_manager.h"
+
+//------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
@@ -146,6 +149,9 @@ repo::gui::RepoGUI::RepoGUI(
     // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
+
+    QObject::connect(ui->actionAccessManager, SIGNAL(triggered()),
+                     this, SLOT(openAccessManager()));
 
     // Add Map Tiles...
     QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
@@ -618,6 +624,12 @@ void repo::gui::RepoGUI::open3DDiff()
     }
     else
         std::cerr << "Exactly 2 windows have to be open." << std::endl;
+}
+
+void repo::gui::RepoGUI::openAccessManager()
+{
+    repo::widgets::RepoDialogAccessManager accessManager;
+    accessManager.exec();
 }
 
 void repo::gui::RepoGUI::openFile()

@@ -127,6 +127,9 @@ public slots:
     //! Opens a 3D Diff dialog.
     void open3DDiff();
 
+    //! Opens Access Manager dialog.
+    void openAccessManager();
+
     //! Opens a file dialog.
     void openFile();
 

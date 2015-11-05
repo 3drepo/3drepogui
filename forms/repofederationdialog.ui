@@ -69,7 +69,7 @@
           <number>0</number>
          </property>
 		 <item>
-          <widget class="repo::gui::RepoFilterableTreeWidget" name="availableWidget" native="true"/>
+          <widget class="repo::widgets::RepoWidgetFilterableTree" name="availableWidget" native="true"/>
          </item>
         </layout>
        </widget>
@@ -166,7 +166,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="repo::gui::RepoFilterableTreeWidget" name="federatedWidget" native="true">
+          <widget class="repo::widgets::RepoWidgetFilterableTree" name="federatedWidget" native="true">
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
            </property>
@@ -229,9 +229,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::gui::RepoFilterableTreeWidget</class>
+   <class>repo::widgets::RepoWidgetFilterableTree</class>
    <extends>QWidget</extends>
-   <header>src/widgets/repofilterabletreewidget.h</header>
+   <header>src/repo/widgets/repo_widget_filterable_tree.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

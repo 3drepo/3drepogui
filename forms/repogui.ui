@@ -55,6 +55,7 @@
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
     <addaction name="actionFederate"/>
+    <addaction name="actionAccessManager"/>
     <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
     <addaction name="actionUserManager"/>
@@ -538,6 +539,11 @@
    </property>
    <property name="text">
     <string>Disconnect</string>
+   </property>
+  </action>
+  <action name="actionAccessManager">
+   <property name="text">
+    <string>Access Manager...</string>
    </property>
   </action>
  </widget>

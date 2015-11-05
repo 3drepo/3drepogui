@@ -28,14 +28,13 @@
 #include <QSettings>
 
 namespace Ui {
-    class RepoFilterableTreeWidget;
+    class RepoWidgetFilterableTree;
 }
 
 namespace repo {
-namespace gui {
+namespace widgets {
 
-
-class RepoFilterableTreeWidget : public QWidget
+class RepoWidgetFilterableTree : public QWidget
 {
     Q_OBJECT
 
@@ -44,11 +43,10 @@ class RepoFilterableTreeWidget : public QWidget
 public:
 
     //! Constructs a default model (no headers) and default basic proxy.
-    RepoFilterableTreeWidget(QWidget *parent = 0);
+    RepoWidgetFilterableTree(QWidget *parent = 0);
 
     //! Constructor to remove the UI elements and tree models.
-    ~RepoFilterableTreeWidget();
-
+    ~RepoWidgetFilterableTree();
 
 public slots:
 
@@ -64,22 +62,21 @@ public slots:
     void addTopLevelRow(QStandardItem* item)
     { model->invisibleRootItem()->appendRow(item); }
 
+    //! Expands all top level items.
     void expandTopLevelItems() const;
 
+    //! Expands given item.
     void expandItem(const QStandardItem *item) const;
 
+    //! Selects a row based on a given item.
     void selectRow(const QStandardItem *item) const;
 
+    //! Clears the tree view.
     void clear();
 
 public:
 
-    //--------------------------------------------------------------------------
-    //
-    // Getters
-    //
-    //--------------------------------------------------------------------------
-
+    //! Returns tree font.
     QFont getTreeFont() const;
 
     //! Returns standard item model of the tree view
@@ -102,6 +99,7 @@ public:
      */
     QModelIndexList getCurrentSelection() const;
 
+    //! Returns tree view.
     QTreeView *getTreeView() const;
 
     //! Proxy
@@ -110,13 +108,7 @@ public:
     //! Model
     QStandardItem *getItemFromSource(const QModelIndex &sourceIndex, int column = 0) const;
 
-
-
-    //--------------------------------------------------------------------------
-    //
-    // Setters
-    //
-    //--------------------------------------------------------------------------
+public :
 
     //! Sets the headers on this model.
     void setHeaders(const QList<QString>& headers);
@@ -190,7 +182,7 @@ public:
 private:
 
     //! UI var.
-    Ui::RepoFilterableTreeWidget* ui;
+    Ui::RepoWidgetFilterableTree* ui;
 
     //! Default model for the databases.
     QStandardItemModel* model;
@@ -200,7 +192,7 @@ private:
 
 };
 
-} // end namespace gui
+} // end namespace widgets
 } // end namespace repo
 
 #endif // REPO_FILTERABLE_TREE_WIDGET_H
