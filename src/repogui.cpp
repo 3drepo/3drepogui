@@ -628,7 +628,9 @@ void repo::gui::RepoGUI::open3DDiff()
 
 void repo::gui::RepoGUI::openAccessManager()
 {
-    repo::widgets::RepoDialogAccessManager accessManager;
+    repo::widgets::RepoDialogAccessManager accessManager(
+                ui->widgetRepository,
+                (QWidget*) this);
     accessManager.exec();
 }
 

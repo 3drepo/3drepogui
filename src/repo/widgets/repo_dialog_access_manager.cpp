@@ -21,12 +21,20 @@
 
 using namespace repo::widgets;
 
-RepoDialogAccessManager::RepoDialogAccessManager(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::RepoDialogAccessManager)
+RepoDialogAccessManager::RepoDialogAccessManager(
+        const repo::gui::RepoIDBCache *dbCache,
+        QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::RepoDialogAccessManager)
 {
     ui->setupUi(this);
     setWindowIcon(repo::gui::RepoFontAwesome::getAccessManagerIcon());
+
+    if (dbCache)
+    {
+        dbCache->setHostsComboBox(ui->hostComboBox);
+        dbCache->setDatabasesComboBox(ui->databaseComboBox);
+    }
 }
 
 RepoDialogAccessManager::~RepoDialogAccessManager()

@@ -24,6 +24,7 @@
 #include <QDialog>
 
 #include "../../primitives/repo_fontawesome.h"
+#include "../../primitives/repoidbcache.h"
 
 namespace Ui {
 class RepoDialogAccessManager;
@@ -38,7 +39,9 @@ class RepoDialogAccessManager : public QDialog
 
 public:
 
-    explicit RepoDialogAccessManager(QWidget *parent = 0);
+    explicit RepoDialogAccessManager(
+            const repo::gui::RepoIDBCache *dbCache,
+            QWidget *parent = 0);
 
     ~RepoDialogAccessManager();
 

@@ -21,6 +21,8 @@
 
 #include <QWidget>
 
+#include "repo_widget_tree_filterable.h"
+
 namespace Ui {
 class RepoWidgetTreeEditable;
 }

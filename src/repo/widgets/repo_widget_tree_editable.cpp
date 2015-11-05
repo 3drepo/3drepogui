@@ -26,8 +26,7 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
     ui(new Ui::RepoWidgetTreeEditable)
 {
     ui->setupUi(this);
-
-    ui->filterableTreeWidget->layout()->setContentsMargins(9,9,9,9);
+    ui->filterableTreeWidget->setMargins(0);
 }
 
 RepoWidgetTreeEditable::~RepoWidgetTreeEditable()

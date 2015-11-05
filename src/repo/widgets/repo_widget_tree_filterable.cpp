@@ -76,6 +76,11 @@ void RepoWidgetTreeFilterable::setExpandedUI()
     ui->treeView->setLineWidth(1);
 }
 
+void RepoWidgetTreeFilterable::setMargins(int m)
+{
+    this->layout()->setContentsMargins(m,m,m,m);
+}
+
 void RepoWidgetTreeFilterable::expandTopLevelItems() const
 {
     ui->treeView->expandToDepth(1);

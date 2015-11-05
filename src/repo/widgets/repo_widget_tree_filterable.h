@@ -56,6 +56,9 @@ public slots:
     //! Makes the visual layout expanded with borders and spacing.
     void setExpandedUI();
 
+    //! Sets margin of the layout.
+    void setMargins(int m);
+
     void addTopLevelRow(const QList<QStandardItem*>& row)
     { model->invisibleRootItem()->appendRow(row); }
 
