@@ -23,9 +23,12 @@ using namespace repo::widgets;
 
 RepoDialogAccessManager::RepoDialogAccessManager(
         const repo::gui::RepoIDBCache *dbCache,
+        repo::RepoController *controller,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::RepoDialogAccessManager)
+    , dbCache(dbCache)
+    , controller(controller)
 {
     ui->setupUi(this);
     setWindowIcon(repo::gui::RepoFontAwesome::getAccessManagerIcon());
@@ -35,9 +38,39 @@ RepoDialogAccessManager::RepoDialogAccessManager(
         dbCache->setHostsComboBox(ui->hostComboBox);
         dbCache->setDatabasesComboBox(ui->databaseComboBox);
     }
+
+
+    QObject::connect(ui->refreshPushButton, &QPushButton::pressed,
+                this, &RepoDialogAccessManager::refresh);
+
+//    QObject::connect(ui->databaseComboBox, &QComboBox::currentIndexChanged,
+//                     this, &RepoDialogAccessManager::refresh);
+
 }
 
 RepoDialogAccessManager::~RepoDialogAccessManager()
 {
     delete ui;
+}
+
+int RepoDialogAccessManager::exec()
+{
+    refresh();
+    return QDialog::exec();
+}
+
+void RepoDialogAccessManager::refresh()
+{
+    ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
+    ui->userManagerWidget->refresh();
+}
+
+repo::RepoToken* RepoDialogAccessManager::getToken() const
+{
+    return dbCache ? dbCache->getConnection(ui->hostComboBox->currentText()) : 0;
+}
+
+std::string RepoDialogAccessManager::getDatabase() const
+{
+    return ui->databaseComboBox->currentText().toStdString();
 }

@@ -630,6 +630,7 @@ void repo::gui::RepoGUI::openAccessManager()
 {
     repo::widgets::RepoDialogAccessManager accessManager(
                 ui->widgetRepository,
+                controller,
                 (QWidget*) this);
     accessManager.exec();
 }

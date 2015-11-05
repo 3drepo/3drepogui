@@ -38,6 +38,7 @@ HEADERS +=  \
 	src/repo/logger/repo_subscriber_abstract.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_access_manager.h \
+	src/repo/widgets/repo_widget_manager_users.h \
 	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_editable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
@@ -96,6 +97,7 @@ SOURCES +=  \
 	src/repo/logger/repo_subscriber_abstract.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_access_manager.cpp \
+	src/repo/widgets/repo_widget_manager_users.cpp \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_editable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \

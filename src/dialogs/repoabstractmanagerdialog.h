@@ -50,12 +50,6 @@ class RepoAbstractManagerDialog : public QDialog
 
 public:
 
-    //! Constructor.
-  //  RepoAbstractManagerDialog(
-		//repo::RepoController *controller,
-		//const RepoIDBCache *dbCache,
-		//QWidget *parent = 0);
-
     //! Explicit constructor.
     explicit RepoAbstractManagerDialog(
             const RepoIDBCache *dbCache = 0,
@@ -93,7 +87,7 @@ public slots :
     virtual void updateCountLabel() const;
 
     //! Refreshes the current list
-    virtual void refresh(/*const core::RepoBSON &command = core::RepoBSON()*/) = 0;
+    virtual void refresh() = 0;
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() = 0;
@@ -129,8 +123,7 @@ protected :
     //! Ui var.
     Ui::RepoAbstractManagerDialog *ui;
 
-	//repo::RepoController *controller;
-    const RepoIDBCache *dbCache;
+    const RepoIDBCache* dbCache;
 
 }; // end class
 

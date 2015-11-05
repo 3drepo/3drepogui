@@ -27,8 +27,8 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
         const RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
-    , dbCache(dbCache)
     , ui(new Ui::RepoAbstractManagerDialog)
+    , dbCache(dbCache)
 {
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getManagerIcon());

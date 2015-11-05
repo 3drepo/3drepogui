@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_FILTERABLE_TREE_WIDGET_H
-#define REPO_FILTERABLE_TREE_WIDGET_H
+#pragma once
 
 #include <QWidget>
 #include <QStandardItemModel>
@@ -28,7 +26,7 @@
 #include <QSettings>
 
 namespace Ui {
-    class RepoWidgetTreeFilterable;
+class RepoWidgetTreeFilterable;
 }
 
 namespace repo {
@@ -77,6 +75,9 @@ public slots:
     //! Clears the tree view.
     void clear();
 
+    //! Updates count label.
+    void updateCountLabel() const;
+
 public:
 
     //! Returns tree font.
@@ -93,9 +94,15 @@ public:
     //! Returns progress bar.
     QProgressBar *getProgressBar() const;
 
+    //! Returns selection model.
     QItemSelectionModel *getSelectionModel() const;
 
+    //! Returns current item for specified column.
     QStandardItem *getCurrentItem(int column = 0) const;
+
+    //! Returns currently selected index.
+    QModelIndex getCurrentIndex() const
+    { return getSelectionModel()->currentIndex(); }
 
     /*! Returns current selection indexes which is the number of columns by
      * the number of rows selected.
@@ -169,11 +176,7 @@ public :
 
     void setRootIsDecorated(bool on);
 
-    //--------------------------------------------------------------------------
-    //
-    // Static helpers
-    //
-    //--------------------------------------------------------------------------
+public :
 
     //! Returns a standard item.
     static QStandardItem *createItem(
@@ -182,7 +185,13 @@ public :
             Qt::Alignment alignment = Qt::AlignLeft,
             bool enabled = true);
 
-private:
+//    //! Creates a default non-editable item from a given string.
+//    static QStandardItem *createItem(const QString &);
+
+//    //! Creates a default non-editable item from a given variant.
+//    static QStandardItem *createItem(const QVariant&);
+
+protected:
 
     //! UI var.
     Ui::RepoWidgetTreeFilterable* ui;
@@ -197,5 +206,3 @@ private:
 
 } // end namespace widgets
 } // end namespace repo
-
-#endif // REPO_FILTERABLE_TREE_WIDGET_H

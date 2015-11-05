@@ -15,17 +15,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
 
-#ifndef REPO_WIDGET_TREE_EDITABLE_H
-#define REPO_WIDGET_TREE_EDITABLE_H
-
-#include <QWidget>
-
+//------------------------------------------------------------------------------
+// GUI
 #include "repo_widget_tree_filterable.h"
 
-namespace Ui {
-class RepoWidgetTreeEditable;
-}
+//------------------------------------------------------------------------------
+// Qt
+#include <QWidget>
+#include <QThreadPool>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+
+//------------------------------------------------------------------------------
+
+namespace Ui { class RepoWidgetTreeEditable; }
 
 namespace repo {
 namespace widgets {
@@ -37,14 +42,57 @@ class RepoWidgetTreeEditable : public QWidget
 public:
 
     explicit RepoWidgetTreeEditable(QWidget *parent = 0);
+
     ~RepoWidgetTreeEditable();
 
-private:
+signals :
+
+    //! Emitted whenever running threads are to be cancelled.
+    void cancel();
+
+public slots :
+
+    //! Cancels all running threads and waits for their completion.
+    virtual bool cancelAllThreads();
+
+    //! Clears the model.
+    virtual void clear();
+
+    //! Updates selected item.
+    virtual void edit() = 0;
+
+    //! Updates item based on model index.
+    virtual void edit(const QModelIndex &index) = 0;
+
+    //! Called when loading is finished.
+    virtual void finish();
+
+    //! Refreshes the current list
+    virtual void refresh() = 0;
+
+    //! Removes item and refreshes the DB if necessary.
+    virtual void removeItem() = 0;
+
+    //! Selects the data from the given item.
+    virtual void select(const QItemSelection &, const QItemSelection &);
+
+    //! Shows edit dialog.
+    virtual void showEditDialog() = 0;
+
+    //! Shows custom context menu for treeView.
+    virtual void showCustomContextMenu(const QPoint &);
+
+public :
+
+    RepoWidgetTreeFilterable* getFilterableTree();
+
+protected :
+
+    //! Threadpool for this object only.
+    QThreadPool threadPool;
 
     Ui::RepoWidgetTreeEditable *ui;
 };
 
-}
-}
-
-#endif // REPO_WIDGET_TREE_EDITABLE_H
+} // end widgets
+} // end repo

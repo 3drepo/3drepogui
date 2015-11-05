@@ -36,6 +36,14 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     setProxyModel();
     ui->progressBar->hide();
 
+    QObject::connect(
+        proxy, &QSortFilterProxyModel::rowsInserted,
+        this, &RepoWidgetTreeFilterable::updateCountLabel);
+
+    QObject::connect(
+        proxy, &QSortFilterProxyModel::rowsRemoved,
+        this, &RepoWidgetTreeFilterable::updateCountLabel);
+
     QSettings settings(parent);
     ui->treeView->header()->restoreState(
                 settings.value(COLUMNS_SETTINGS).toByteArray());
@@ -95,6 +103,12 @@ void RepoWidgetTreeFilterable::clear()
 {
     model->removeRows(0, model->rowCount());
     ui->lineEdit->clear();
+}
+
+
+void RepoWidgetTreeFilterable::updateCountLabel() const
+{
+    ui->countLabel->setText(tr("Showing %1 of %2").arg(proxy->rowCount()).arg(model->rowCount()));
 }
 
 void RepoWidgetTreeFilterable::selectRow(const QStandardItem *item) const
@@ -209,3 +223,23 @@ QStandardItem *RepoWidgetTreeFilterable::createItem(
     item->setToolTip(text);
     return item;
 }
+
+//QStandardItem *RepoWidgetTreeFilterable::createItem(const QString &data)
+//{
+//    QStandardItem *item = new QStandardItem(data);
+//    item->setEditable(false);
+//    item->setToolTip(data);
+//    return item;
+//}
+
+//QStandardItem *RepoWidgetTreeFilterable::createItem(
+//    const QVariant& data)
+//{
+//    QStandardItem* item = new QStandardItem();
+//    item->setEditable(false);
+//    item->setTextAlignment(Qt::AlignRight);
+//    item->setText(data.toString());
+//    item->setToolTip(data.toString());
+//    item->setData(data);
+//    return item;
+//}

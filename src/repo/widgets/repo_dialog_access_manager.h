@@ -15,11 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #pragma once
-
-#ifndef REPO_DIALOG_ACCESS_MANAGER_H
-#define REPO_DIALOG_ACCESS_MANAGER_H
 
 #include <QDialog>
 
@@ -41,15 +37,32 @@ public:
 
     explicit RepoDialogAccessManager(
             const repo::gui::RepoIDBCache *dbCache,
+            repo::RepoController *controller,
             QWidget *parent = 0);
 
     ~RepoDialogAccessManager();
 
+public slots :
+
+    virtual int exec();
+
+    void refresh();
+
+public :
+
+    repo::RepoToken* getToken() const;
+
+    std::string getDatabase() const;
+
 private:
+
     Ui::RepoDialogAccessManager *ui;
+
+    const repo::gui::RepoIDBCache *dbCache;
+
+    repo::RepoController *controller;
+
 };
 
 } // widgets
 } // repo
-
-#endif // REPO_DIALOG_ACCESS_MANAGER_H

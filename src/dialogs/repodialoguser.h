@@ -41,7 +41,7 @@
 #include <repo/core/model/bson/repo_bson_user.h>
 
 namespace Ui {
-    class RepoDialogUser;
+class RepoDialogUser;
 }
 
 namespace repo {
@@ -51,18 +51,18 @@ class RepoDialogUser : public QDialog
 {
     Q_OBJECT
 
-	enum class Columns { DATABASE, VALUE };
+    enum class Columns { DATABASE, VALUE };
 
     //! Access rights tabs.
-	enum  class Tabs { PROJECTS, GROUPS, ROLES, API_KEYS };
+    enum  class Tabs { PROJECTS, GROUPS, ROLES, API_KEYS };
 
 public:
 
     //! Explicit constructor.
     explicit RepoDialogUser(
-			const repo::RepoToken			  *token,
-			repo::RepoController              *controller,
-			const repo::core::model::RepoUser &user, 
+            const repo::RepoToken *token,
+            repo::RepoController *controller,
+            const repo::core::model::RepoUser &user,
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
             const std::list<std::string> &customRolesList,
             QWidget *parent = 0);
@@ -159,8 +159,8 @@ public :
     //! Returns the user action command to be used with db.runCommand().
     repo::core::model::RepoUser getUpdatedUser() const;
 
-	//! Returns true if new user, false if it is an update of existing user
-	bool isNewUser() const;
+    //! Returns true if new user, false if it is an update of existing user
+    bool isNewUser() const;
 
     //! Returns the icon for this dialog.
     static QIcon getIcon();
@@ -193,12 +193,12 @@ private:
     repo::core::model::RepoUser user;
 
     //! User avatar (profile picture).
-	std::vector<char> avatar;
+    std::vector<char> avatar;
 
     //! Ui var.
     Ui::RepoDialogUser *ui;
-	const repo::RepoToken			  *token;
-	repo::RepoController              *controller;
+    const repo::RepoToken			  *token;
+    repo::RepoController              *controller;
 };
 
 } // end namespace gui
