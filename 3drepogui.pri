@@ -38,6 +38,7 @@ HEADERS +=  \
 	src/repo/logger/repo_subscriber_abstract.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_access_manager.h \
+	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
@@ -53,7 +54,6 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_users.h \
 	src/widgets/reposelectiontreedockwidget.h \
 	src/widgets/repowidgetassimpflags.h \
-	src/widgets/repo_clickabletreeview.h \
 	src/widgets/repo_lineedit.h \
 	src/widgets/repo_mdiarea.h \
 	src/widgets/repo_mdisubwindow.h \
@@ -95,6 +95,7 @@ SOURCES +=  \
 	src/repo/logger/repo_subscriber_abstract.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_access_manager.cpp \
+	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
@@ -110,7 +111,6 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_users.cpp \
 	src/widgets/reposelectiontreedockwidget.cpp \
 	src/widgets/repowidgetassimpflags.cpp \
-	src/widgets/repo_clickabletreeview.cpp \
 	src/widgets/repo_lineedit.cpp \
 	src/widgets/repo_mdiarea.cpp \
 	src/widgets/repo_mdisubwindow.cpp \

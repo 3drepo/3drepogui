@@ -16,13 +16,12 @@
  */
 
 
-#ifndef REPO_CLICKABLE_TREE_VIEW_H
-#define REPO_CLICKABLE_TREE_VIEW_H
+#pragma once
 
 #include <QTreeView>
 
 namespace repo {
-namespace gui {
+namespace widgets {
 
 /*!
  * \brief
@@ -32,15 +31,15 @@ namespace gui {
  * useful for instance to open an AddItem dialog that creates a new entry in the
  * TreeView.
  */
-class RepoClickableTreeView : public QTreeView
+class RepoWidgetTreeClickable : public QTreeView
 {    
     Q_OBJECT
 
 public:
 
-    RepoClickableTreeView(QWidget *parent);
+    RepoWidgetTreeClickable(QWidget *parent);
 
-    ~RepoClickableTreeView() {}
+    ~RepoWidgetTreeClickable() {}
 
 public slots:
 
@@ -61,7 +60,6 @@ protected :
 
 };
 
-} // end namespace gui
+} // end namespace widgets
 } // end namespace repo
 
-#endif // REPO_CLICKABLE_TREE_VIEW_H
