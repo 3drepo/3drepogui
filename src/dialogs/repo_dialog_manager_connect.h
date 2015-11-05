@@ -38,6 +38,9 @@
 #include <QThreadPool>
 #include <QItemSelection>
 #include <QMessageBox>
+#include <QSettings>
+#include <QTreeView>
+#include <QItemSelectionModel>
 
 Q_DECLARE_METATYPE(repo::RepoCredentials)
 
@@ -57,6 +60,9 @@ class RepoDialogManagerConnect : public RepoAbstractManagerDialog
     //! Tree view columns
     enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
 
+    static const QString SETTINGS_CONNECTIONS_COLUMNS;
+    static const QString SETTINGS_SELECTION;
+
 public:
 
     //! Explicit constructor
@@ -66,6 +72,7 @@ public:
      */
     explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
 
+    ~RepoDialogManagerConnect();
 
 public :
 

@@ -27,16 +27,16 @@
 #include <repo/repo_bouncer_global.h>
 
 repo::gui::RepoDialogUserManager::RepoDialogUserManager(
-		repo::RepoController *controller,
+        repo::RepoController *controller,
         const RepoIDBCache *dbCache,
         QWidget *parent)
-    : controller(controller), 
-	RepoAbstractManagerDialog(dbCache, parent)
+    : controller(controller),
+      RepoAbstractManagerDialog(dbCache, parent)
 {
     setWindowTitle("User Manager");
 
     ui->databaseComboBox->setCurrentText(QString::fromStdString(
-		controller->getNameOfAdminDatabase(dbCache->getSelectedConnection())));
+                                             controller->getNameOfAdminDatabase(dbCache->getSelectedConnection())));
 
     //--------------------------------------------------------------------------
     // Users
@@ -46,11 +46,11 @@ repo::gui::RepoDialogUserManager::RepoDialogUserManager(
                 Qt::Horizontal,
                 tr("Active"));
     model->setHeaderData(
-				(int) Columns::USERNAME,
+                (int) Columns::USERNAME,
                 Qt::Horizontal,
                 tr("Username"));
     model->setHeaderData(
-				(int) Columns::FIRST_NAME,
+                (int) Columns::FIRST_NAME,
                 Qt::Horizontal,
                 tr("First Name"));
     model->setHeaderData(
@@ -154,60 +154,66 @@ repo::core::model::RepoUser repo::gui::RepoDialogUserManager::getUser()
 
 repo::core::model::RepoUser repo::gui::RepoDialogUserManager::getUser(const QModelIndex &index)
 {
-	repo::core::model::RepoUser user;
+    repo::core::model::RepoUser user;
     if (index.isValid())
     {
         QModelIndex userIndex = index.sibling(index.row(), (int) Columns::ACTIVE);
-		user = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoUser>();
+        user = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoUser>();
     }
     return user;
 }
 
 void repo::gui::RepoDialogUserManager::refresh(
-	const repo::core::model::RepoUser &user,
-	const repo::worker::UsersWorker::Command &command)
+        const repo::core::model::RepoUser &user,
+        const repo::worker::UsersWorker::Command &command)
 {
-    if (cancelAllThreads())
+    if (mutex.tryLock() && cancelAllThreads())
     {
         const repo::RepoToken *token = dbCache->getConnection(ui->hostComboBox->currentText());
         std::string database = ui->databaseComboBox->currentText().toStdString();
 
-		repo::worker::UsersWorker* worker = new repo::worker::UsersWorker(token, controller, database, user, command);
+        repo::worker::UsersWorker* worker =
+                new repo::worker::UsersWorker(token, controller, database, user, command);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP
         QObject::connect(
-            this, &RepoDialogUserManager::cancel,
-            worker, &repo::worker::UsersWorker::cancel, Qt::DirectConnection);
+                    this, &RepoDialogUserManager::cancel,
+                    worker, &repo::worker::UsersWorker::cancel, Qt::DirectConnection);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::userFetched,
-            this, &RepoDialogUserManager::addUser);
+                    worker, &repo::worker::UsersWorker::userFetched,
+                    this, &RepoDialogUserManager::addUser);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::databasesWithProjectsFetched,
-            this, &RepoDialogUserManager::addDatabasesWithProjects);
+                    worker, &repo::worker::UsersWorker::databasesWithProjectsFetched,
+                    this, &RepoDialogUserManager::addDatabasesWithProjects);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::customRolesFetched,
-            this, &RepoDialogUserManager::addCustomRoles);
+                    worker, &repo::worker::UsersWorker::customRolesFetched,
+                    this, &RepoDialogUserManager::addCustomRoles);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::finished,
-            ui->progressBar, &QProgressBar::hide);
+                    worker, &repo::worker::UsersWorker::finished,
+                    ui->progressBar, &QProgressBar::hide);
+
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::finished,
-            this, &RepoDialogUserManager::finish);
+                    worker, &repo::worker::UsersWorker::finished,
+                    this, &RepoDialogUserManager::unlockMutex);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::progressRangeChanged,
-            ui->progressBar, &QProgressBar::setRange);
+                    worker, &repo::worker::UsersWorker::finished,
+                    this, &RepoDialogUserManager::finish);
 
         QObject::connect(
-            worker, &repo::worker::UsersWorker::progressValueChanged,
-            ui->progressBar, &QProgressBar::setValue);
-			threadPool.start(worker);
+                    worker, &repo::worker::UsersWorker::progressRangeChanged,
+                    ui->progressBar, &QProgressBar::setRange);
+
+        QObject::connect(
+                    worker, &repo::worker::UsersWorker::progressValueChanged,
+                    ui->progressBar, &QProgressBar::setValue);
+        threadPool.start(worker);
 
         //----------------------------------------------------------------------
         // Clear any previous entries
@@ -223,41 +229,40 @@ void repo::gui::RepoDialogUserManager::refresh(
 
 void repo::gui::RepoDialogUserManager::removeItem()
 {
-	repo::core::model::RepoUser user = this->getUser();
+    repo::core::model::RepoUser user = this->getUser();
     switch(QMessageBox::warning(this,
-        tr("Remove user?"),
-        tr("Are you sure you want to remove '") + QString::fromStdString(user.getUserName()) + "'?",
-        tr("&Yes"),
-        tr("&No"),
-        QString::null, 1, 1))
-        {
-            case 0: // yes
-				refresh(user, repo::worker::UsersWorker::Command::DROP); 
-				//FIXME get a worker to do the work, then signal finish to refresh like db widget.
-                break;
-            case 1: // no
-                std::cout << "Remove user warning box cancelled by user." << std::endl;
-                break;
-        }
+                                tr("Remove user?"),
+                                tr("Are you sure you want to remove '") + QString::fromStdString(user.getUserName()) + "'?",
+                                tr("&Yes"),
+                                tr("&No"),
+                                QString::null, 1, 1))
+    {
+    case 0: // yes
+        refresh(user, repo::worker::UsersWorker::Command::DROP);
+        //FIXME get a worker to do the work, then signal finish to refresh like db widget.
+        break;
+    case 1: // no
+        std::cout << "Remove user warning box cancelled by user." << std::endl;
+        break;
+    }
 }
 
 void repo::gui::RepoDialogUserManager::showEditDialog(const repo::core::model::RepoUser &user )
 {
-	RepoDialogUser userDialog(dbCache->getConnection(ui->hostComboBox->currentText()),
-		controller, user, databasesWithProjects, customRolesList, this);
+    RepoDialogUser userDialog(dbCache->getConnection(ui->hostComboBox->currentText()),
+                              controller, user, databasesWithProjects, customRolesList, this);
     if (QDialog::Rejected == userDialog.exec())
     {
-		repoLog("User profile dialog cancelled by user.\n");
+        repoLog("User profile dialog cancelled by user.\n");
         std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
     }
     else // QDialog::Accepted
     {
-		repoLog("create or update user...\n");
+        repoLog("create or update user...\n");
         // Create or update user
-		refresh(userDialog.getUpdatedUser(), 
-			userDialog.isNewUser() ? 
-			repo::worker::UsersWorker::Command::INSERT
-			: repo::worker::UsersWorker::Command::UPDATE
-			);
+        refresh(userDialog.getUpdatedUser(),
+                userDialog.isNewUser()
+                ? repo::worker::UsersWorker::Command::INSERT
+                : repo::worker::UsersWorker::Command::UPDATE);
     }
 }
