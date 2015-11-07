@@ -137,13 +137,13 @@ void RepoFederationDialog::addProjectsToFederation()
             //------------------------------------------------------------------
 
             QList<QStandardItem*> row;            
-            row << repo::widgets::RepoWidgetTreeFilterable::createItem(project);
+            row << new repo::primitives::RepoStandardItem(project);
             row[0]->setData(var);
 
-            row << repo::widgets::RepoWidgetTreeFilterable::createItem("master");
+            row << new repo::primitives::RepoStandardItem("master");
             row[1]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
 
-            row << repo::widgets::RepoWidgetTreeFilterable::createItem("head");
+            row << new repo::primitives::RepoStandardItem("head");
 			row[2]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
             item->appendRow(row);
         }

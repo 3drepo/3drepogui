@@ -24,6 +24,7 @@
 #include "../../dialogs/repodialoguser.h"
 #include "../../primitives/repoidbcache.h"
 #include "../workers/repo_worker_users.h"
+#include "../primitives/repo_standard_item.h"
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_user.h>
