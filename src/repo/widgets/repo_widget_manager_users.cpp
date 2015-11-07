@@ -60,14 +60,12 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     QVariant var;
     var.setValue(user);
 
-    QStandardItem *item = new QStandardItem();
-    item->setText(QString::fromStdString(user.getUserName()));
+    QStandardItem *item = RepoWidgetTreeFilterable::createItem(
+                QString::fromStdString(user.getUserName()));
     item->setData(var);
-    item->setEnabled(true);
     item->setCheckable(true);
     item->setCheckState(Qt::Checked);
     item->setTristate(false);
-    item->setEditable(false);
     row.append(item);
 
     // First Name
@@ -83,14 +81,10 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
                    QString::fromStdString(user.getEmail())));
 
     // Projects count
-    row.append(RepoWidgetTreeFilterable::createItem(
-                   QString::number(user.getProjectsList().size()),
-                   (qulonglong)(user.getProjectsList().size())));
+    row.append(RepoWidgetTreeFilterable::createItem(user.getProjectsList().size()));
 
     // Roles count
-    row.append(RepoWidgetTreeFilterable::createItem(
-                   QString::number(user.getRolesList().size()),
-                   (qulonglong)(user.getRolesList().size())));
+    row.append(RepoWidgetTreeFilterable::createItem(user.getRolesList().size()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

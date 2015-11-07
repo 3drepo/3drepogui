@@ -25,6 +25,8 @@
 #include <QTreeView>
 #include <QSettings>
 
+#include <stdint.h>
+
 namespace Ui {
 class RepoWidgetTreeFilterable;
 }
@@ -178,18 +180,52 @@ public :
 
 public :
 
-    //! Returns a standard item.
-    static QStandardItem *createItem(
-            const QString& text,
-            const QVariant& data = QVariant(),
-            Qt::Alignment alignment = Qt::AlignLeft,
-            bool enabled = true);
+//    //! Returns a standard item.
+//    static QStandardItem *createItem(
+//            const QVariant& label,
+//            const QVariant& data = QVariant(),
+//            Qt::Alignment alignment = Qt::AlignLeft,
+//            bool enabled = true);
 
 //    //! Creates a default non-editable item from a given string.
 //    static QStandardItem *createItem(const QString &);
 
 //    //! Creates a default non-editable item from a given variant.
 //    static QStandardItem *createItem(const QVariant&);
+
+    //! Returns a non-editable item with set properties.
+    static QStandardItem* createItem(
+            const QString&,
+            const QVariant&,
+            Qt::Alignment = Qt::AlignLeft,
+            bool enabled = true);
+
+    static QStandardItem* createItem(
+            const QVariant&,
+            Qt::Alignment = Qt::AlignLeft);
+
+    static QStandardItem* createItem(uint64_t);
+
+    static QStandardItem* setItem(
+            QStandardItem*,
+            const QString&,
+            const QVariant&,
+            int role = Qt::UserRole + 1);
+
+    static QStandardItem* setItemNumber(QStandardItem*, uint64_t);
+
+    static QStandardItem* setItemFileSize(QStandardItem*, uint64_t);
+
+    //! Returns a human readable string of kilobytes, megabytes etc.
+    static QString toFileSize(uint64_t bytes);
+
+    //! Returns the current locale string representation.
+    template <class T>
+    static QString toLocaleString(const T & value)
+    {
+        QLocale locale;
+        return locale.toString(value);
+    }
 
 protected:
 

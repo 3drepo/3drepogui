@@ -37,12 +37,12 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     ui->progressBar->hide();
 
     QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsInserted,
-        this, &RepoWidgetTreeFilterable::updateCountLabel);
+                proxy, &QSortFilterProxyModel::rowsInserted,
+                this, &RepoWidgetTreeFilterable::updateCountLabel);
 
     QObject::connect(
-        proxy, &QSortFilterProxyModel::rowsRemoved,
-        this, &RepoWidgetTreeFilterable::updateCountLabel);
+                proxy, &QSortFilterProxyModel::rowsRemoved,
+                this, &RepoWidgetTreeFilterable::updateCountLabel);
 
     QSettings settings(parent);
     ui->treeView->header()->restoreState(
@@ -209,20 +209,22 @@ void RepoWidgetTreeFilterable::setRootIsDecorated(bool on)
     ui->treeView->setRootIsDecorated(on);
 }
 
-QStandardItem *RepoWidgetTreeFilterable::createItem(
-        const QString& text,
-        const QVariant& data,
-        Qt::Alignment alignment,
-        bool enabled)
-{
-    QStandardItem* item = new QStandardItem(text);
-    item->setData(data);
-    item->setEditable(false);
-    item->setTextAlignment(alignment);
-    item->setEnabled(enabled);
-    item->setToolTip(text);
-    return item;
-}
+//QStandardItem *RepoWidgetTreeFilterable::createItem(
+//        const QVariant& label,
+//        const QVariant& data,
+//        Qt::Alignment alignment,
+//        bool enabled)
+//{
+//    QStandardItem* item = new QStandardItem();
+//    if (label.type() == QVariant::String)
+//        item->setText(label.toString());
+//    item->setData(data);
+//    item->setEditable(false);
+//    item->setTextAlignment(alignment);
+//    item->setEnabled(enabled);
+//    item->setToolTip(label.toString());
+//    return item;
+//}
 
 //QStandardItem *RepoWidgetTreeFilterable::createItem(const QString &data)
 //{
@@ -243,3 +245,81 @@ QStandardItem *RepoWidgetTreeFilterable::createItem(
 //    item->setData(data);
 //    return item;
 //}
+
+
+//------------------------------------------------------------------------------
+
+QStandardItem * RepoWidgetTreeFilterable::createItem(
+        const QString& text,
+        const QVariant& data,
+        Qt::Alignment alignment,
+        bool enabled)
+{
+    QStandardItem* item = new QStandardItem();
+    item->setEditable(false);
+    item->setTextAlignment(alignment);
+    item->setEnabled(enabled);
+    setItem(item, text, data);
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+QStandardItem * RepoWidgetTreeFilterable::createItem(
+        const QVariant& data,
+        Qt::Alignment alignment)
+{
+    return createItem(data.toString(), data, alignment);
+}
+
+QStandardItem * RepoWidgetTreeFilterable::createItem(uint64_t number)
+{
+    return setItemNumber(createItem(number, Qt::AlignRight), number);
+}
+
+//------------------------------------------------------------------------------
+
+QStandardItem *RepoWidgetTreeFilterable::setItem(
+        QStandardItem * item,
+        const QString& text,
+        const QVariant& data,
+        int role)
+{
+    item->setText(text);
+    item->setToolTip(text);
+    item->setData(data, role);
+    return item;
+}
+
+//------------------------------------------------------------------------------
+
+QStandardItem *RepoWidgetTreeFilterable::setItemNumber(QStandardItem * item, uint64_t value)
+{
+    return setItem(item, toLocaleString((qulonglong)value), (qulonglong)value, Qt::DisplayRole);
+}
+
+QStandardItem *RepoWidgetTreeFilterable::setItemFileSize(QStandardItem * item, uint64_t value)
+{
+    return setItem(item, toFileSize((qulonglong)value), (qulonglong)value, Qt::DisplayRole);
+}
+
+QString RepoWidgetTreeFilterable::toFileSize(uint64_t bytes)
+{
+    QString value;
+    if (0 != bytes)
+    {
+        QLocale locale;
+        //stream << setprecision(2) << fixed;
+        static const int unit = 1024;
+        if (bytes < unit)
+            value = locale.toString((double) bytes, 'f', 2) + " B";
+        else
+        {
+            int exp = (int) (std::log(bytes) / std::log(unit));
+            static const std::string prefixes = ("KMGTPEZY");
+            char prefix = prefixes.at(exp-1);
+            value = locale.toString((bytes / pow(unit, exp)), 'f', 2) + " " + prefix + "B";
+        }
+    }
+    return  value;
+}
