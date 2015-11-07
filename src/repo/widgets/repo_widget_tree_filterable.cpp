@@ -18,12 +18,7 @@
 #include "repo_widget_tree_filterable.h"
 #include "ui_repo_widget_tree_filterable.h"
 
-
 using namespace repo::widgets;
-
-const QString RepoWidgetTreeFilterable::COLUMNS_SETTINGS =
-        "RepoWidgetTreeFilterableColumnsSettings";
-
 
 RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     : QWidget(parent)
@@ -43,18 +38,10 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     QObject::connect(
                 proxy, &QSortFilterProxyModel::rowsRemoved,
                 this, &RepoWidgetTreeFilterable::updateCountLabel);
-
-    QSettings settings(parent);
-    ui->treeView->header()->restoreState(
-                settings.value(COLUMNS_SETTINGS).toByteArray());
-
 }
 
 RepoWidgetTreeFilterable::~RepoWidgetTreeFilterable()
 {    
-    QSettings settings(this->parentWidget());
-    settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
-
     delete ui;
 
     if (model)
@@ -209,41 +196,17 @@ void RepoWidgetTreeFilterable::setRootIsDecorated(bool on)
     ui->treeView->setRootIsDecorated(on);
 }
 
-//QStandardItem *RepoWidgetTreeFilterable::createItem(
-//        const QVariant& label,
-//        const QVariant& data,
-//        Qt::Alignment alignment,
-//        bool enabled)
-//{
-//    QStandardItem* item = new QStandardItem();
-//    if (label.type() == QVariant::String)
-//        item->setText(label.toString());
-//    item->setData(data);
-//    item->setEditable(false);
-//    item->setTextAlignment(alignment);
-//    item->setEnabled(enabled);
-//    item->setToolTip(label.toString());
-//    return item;
-//}
+void RepoWidgetTreeFilterable::storeHeaders(const QString &label)
+{
+    QSettings settings(this);
+    settings.setValue(label, ui->treeView->header()->saveState());
+}
 
-//QStandardItem *RepoWidgetTreeFilterable::createItem(const QString &data)
-//{
-//    QStandardItem *item = new QStandardItem(data);
-//    item->setEditable(false);
-//    item->setToolTip(data);
-//    return item;
-//}
-
-//QStandardItem *RepoWidgetTreeFilterable::createItem(
-//    const QVariant& data)
-//{
-//    QStandardItem* item = new QStandardItem();
-//    item->setEditable(false);
-//    item->setTextAlignment(Qt::AlignRight);
-//    item->setText(data.toString());
-//    item->setToolTip(data.toString());
-//    item->setData(data);
-//    return item;
-//}
-
-
+void RepoWidgetTreeFilterable::restoreHeaders(
+        const QList<QString> &headers,
+        const QString &label)
+{
+    setHeaders(headers);
+    QSettings settings(this);
+    ui->treeView->header()->restoreState(settings.value(label).toByteArray());
+}

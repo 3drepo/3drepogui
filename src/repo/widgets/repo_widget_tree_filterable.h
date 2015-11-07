@@ -38,8 +38,6 @@ class RepoWidgetTreeFilterable : public QWidget
 {
     Q_OBJECT
 
-    static const QString COLUMNS_SETTINGS;
-
 public:
 
     //! Constructs a default model (no headers) and default basic proxy.
@@ -122,9 +120,6 @@ public:
 
 public :
 
-    //! Sets the headers on this model.
-    void setHeaders(const QList<QString>& headers);
-
     //! Takes ownership of the given proxy pointer (and deletes memory appropriately).
     void setProxyModel(QSortFilterProxyModel* proxy = new QSortFilterProxyModel());
 
@@ -176,24 +171,17 @@ public :
     void setNoSelection()
     { setSelectionMode(QAbstractItemView::NoSelection); }
 
+    //! Sets whether table items left-most items are offset from left or not.
     void setRootIsDecorated(bool on);
 
-public :
+    //! Sets the headers on this model.
+    void setHeaders(const QList<QString>& headers);
 
-//    //! Returns a standard item.
-//    static QStandardItem *createItem(
-//            const QVariant& label,
-//            const QVariant& data = QVariant(),
-//            Qt::Alignment alignment = Qt::AlignLeft,
-//            bool enabled = true);
+    //! Stores header settings to given label
+    void storeHeaders(const QString &label);
 
-//    //! Creates a default non-editable item from a given string.
-//    static QStandardItem *createItem(const QString &);
-
-//    //! Creates a default non-editable item from a given variant.
-//    static QStandardItem *createItem(const QVariant&);
-
-
+    //! Sets header columns and restores header settings based on a given label.
+    void restoreHeaders(const QList<QString> &headers, const QString &label);
 
 protected:
 

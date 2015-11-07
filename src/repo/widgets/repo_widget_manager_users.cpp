@@ -19,6 +19,7 @@
 
 using namespace repo::widgets;
 
+const QString RepoWidgetManagerUsers::COLUMNS_SETTINGS = "RepoWidgetManagerUsersHeaders";
 
 RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
@@ -30,13 +31,16 @@ RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
     headers << tr("Email") << tr("Projects") << tr("Roles");
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
-    filterableTree->setHeaders(headers);
+    filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
 }
 
-RepoWidgetManagerUsers::~RepoWidgetManagerUsers() {}
+RepoWidgetManagerUsers::~RepoWidgetManagerUsers()
+{
+    getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
+}
 
 void RepoWidgetManagerUsers::addCustomRoles(const std::list<std::string> &list)
 {

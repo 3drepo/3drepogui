@@ -48,6 +48,8 @@ class RepoWidgetManagerUsers : public RepoWidgetTreeEditable
 {
     Q_OBJECT
 
+    static const QString COLUMNS_SETTINGS;
+
     enum class Columns { USERNAME, FIRST_NAME, LAST_NAME, EMAIL, PROJECTS, ROLES };
 
 public:
