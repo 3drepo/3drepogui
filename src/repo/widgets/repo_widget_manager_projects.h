@@ -29,9 +29,9 @@ class RepoWidgetManagerProjects : public RepoWidgetTreeEditable
 {
     Q_OBJECT
 
-//    static const QString COLUMNS_SETTINGS;
+    static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { ROLE, DATABASE, COLLECTION, READ, WRITE };
+    enum class Columns { PROJECT, DESCRIPTION, OWNER, PERMISSIONS, TYPE, USERS };
 
 public:
 

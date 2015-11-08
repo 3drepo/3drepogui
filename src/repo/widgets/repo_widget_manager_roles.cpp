@@ -19,9 +19,29 @@
 
 using namespace repo::widgets;
 
+const QString RepoWidgetManagerRoles::COLUMNS_SETTINGS = "RepoWidgetManagerRolesColumnsSettings";
+
 RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
-{}
+{
+    QList<QString> headers;
+    headers << tr("Role") << tr("Database") << tr("Collection");
+    headers << tr("Read") << tr("Write");
+
+    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
+    filterableTree->setRootIsDecorated(false);
+
+    clear();
+}
 
 RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
-{}
+{
+    // FIXME: put back in once the column headers are agreed upon
+//     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
+}
+
+void RepoWidgetManagerRoles::refresh()
+{
+
+}

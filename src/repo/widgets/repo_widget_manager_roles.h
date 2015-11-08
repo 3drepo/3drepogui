@@ -29,7 +29,7 @@ class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
 {
     Q_OBJECT
 
-//    static const QString COLUMNS_SETTINGS;
+    static const QString COLUMNS_SETTINGS;
 
     enum class Columns { ROLE, DATABASE, COLLECTION, READ, WRITE };
 
@@ -48,7 +48,7 @@ public slots:
     virtual void edit(const QModelIndex &index) {}
 
     //! Refreshes the current list
-    virtual void refresh() {}
+    virtual void refresh();
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() {}

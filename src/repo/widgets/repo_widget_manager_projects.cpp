@@ -19,9 +19,21 @@
 
 using namespace repo::widgets;
 
+const QString RepoWidgetManagerProjects::COLUMNS_SETTINGS = "RepoWidgetManagerProjectsColumnsSettings";
+
 RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
-{}
+{
+    QList<QString> headers;
+    headers << tr("Project") << tr("Description") << tr("Owner");
+    headers << tr("Permissions") << tr("Type") << tr("Users");
+
+    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
+    filterableTree->setRootIsDecorated(false);
+
+    clear();
+}
 
 RepoWidgetManagerProjects::~RepoWidgetManagerProjects()
 {}
