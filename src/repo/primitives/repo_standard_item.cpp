@@ -39,20 +39,6 @@ RepoStandardItem::RepoStandardItem(
     setEditable(false);
 }
 
-RepoStandardItem::RepoStandardItem(std::string &label)
-    : RepoStandardItem(QString::fromStdString(label))
-{}
-
-RepoStandardItem::RepoStandardItem(uint64_t number, bool filesize)
-    : RepoStandardItem(
-          filesize
-          ? toFileSize((qlonglong)number)
-          : toLocaleString((qulonglong)number),
-          (qulonglong)number,
-          Qt::DisplayRole, // this makes numbers sortable as numbers and not strings
-          Qt::AlignRight)
-{}
-
 QString RepoStandardItem::toFileSize(uint64_t bytes)
 {
     QString value;

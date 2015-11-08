@@ -19,6 +19,7 @@
 #include <QString>
 #include <QLocale>
 
+#include <string>
 #include <stdint.h>
 
 namespace repo {
@@ -45,13 +46,21 @@ public :
             bool enabled = true);
 
     //! Creates default non-editable item from std::string.
-    RepoStandardItem(std::string &label);
+    RepoStandardItem(const std::string &label) : RepoStandardItem(QString::fromStdString(label)) {}
 
     /**
-     * Creates a sortable non-editable item from number. If filesie is true,
-     * returns a sortable filesize string item.
+     * Creates a sortable non-editable item from given number. If the filesie is
+     * true, returns a sortable filesize string item.
      */
-    RepoStandardItem(uint64_t number, bool filesize = false);
+    RepoStandardItem(uint64_t number, bool filesize = false)
+        : RepoStandardItem(
+              filesize
+              ? toFileSize((qlonglong)number)
+              : toLocaleString((qulonglong)number),
+              (qulonglong)number,
+              Qt::DisplayRole, // this makes numbers sortable as numbers and not strings
+              Qt::AlignRight)
+    {}
 
 public :
 

@@ -140,10 +140,10 @@ void RepoFederationDialog::addProjectsToFederation()
             row << new repo::primitives::RepoStandardItem(project);
             row[0]->setData(var);
 
-            row << new repo::primitives::RepoStandardItem("master");
+            row << new repo::primitives::RepoStandardItem(QString("master"));
             row[1]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
 
-            row << new repo::primitives::RepoStandardItem("head");
+            row << new repo::primitives::RepoStandardItem(QString("head"));
 			row[2]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
             item->appendRow(row);
         }
