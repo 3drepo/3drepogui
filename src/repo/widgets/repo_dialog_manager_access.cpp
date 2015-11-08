@@ -16,17 +16,17 @@
  */
 
 
-#include "repo_dialog_access_manager.h"
-#include "ui_repo_dialog_access_manager.h"
+#include "repo_dialog_manager_access.h"
+#include "ui_repo_dialog_manager_access.h"
 
 using namespace repo::widgets;
 
-RepoDialogAccessManager::RepoDialogAccessManager(
+RepoDialogManagerAccess::RepoDialogManagerAccess(
         const repo::gui::RepoIDBCache *dbCache,
         repo::RepoController *controller,
         QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::RepoDialogAccessManager)
+    , ui(new Ui::RepoDialogManagerAccess)
     , dbCache(dbCache)
     , controller(controller)
 {
@@ -41,31 +41,31 @@ RepoDialogAccessManager::RepoDialogAccessManager(
 
 
     QObject::connect(ui->refreshPushButton, &QPushButton::pressed,
-                     this, &RepoDialogAccessManager::refresh);
+                     this, &RepoDialogManagerAccess::refresh);
 
     QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(refresh()));
 
 }
 
-RepoDialogAccessManager::~RepoDialogAccessManager()
+RepoDialogManagerAccess::~RepoDialogManagerAccess()
 {
     delete ui;
 }
 
-int RepoDialogAccessManager::exec()
+int RepoDialogManagerAccess::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void RepoDialogAccessManager::refresh()
+void RepoDialogManagerAccess::refresh()
 {
     ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->userManagerWidget->refresh();
 }
 
-void RepoDialogAccessManager::keyPressEvent(QKeyEvent* e)
+void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)
 {
     switch (e->key())
     {
@@ -77,12 +77,12 @@ void RepoDialogAccessManager::keyPressEvent(QKeyEvent* e)
     QWidget::keyPressEvent(e);
 }
 
-repo::RepoToken* RepoDialogAccessManager::getToken() const
+repo::RepoToken* RepoDialogManagerAccess::getToken() const
 {
     return dbCache ? dbCache->getConnection(ui->hostComboBox->currentText()) : 0;
 }
 
-std::string RepoDialogAccessManager::getDatabase() const
+std::string RepoDialogManagerAccess::getDatabase() const
 {
     return ui->databaseComboBox->currentText().toStdString();
 }

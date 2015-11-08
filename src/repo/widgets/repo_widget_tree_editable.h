@@ -52,20 +52,11 @@ signals :
 
 public slots :
 
-    //! Cancels all running threads and waits for their completion.
-    virtual bool cancelAllThreads();
-
-    //! Clears the model.
-    virtual void clear();
-
     //! Updates selected item.
     virtual void edit() = 0;
 
     //! Updates item based on model index.
     virtual void edit(const QModelIndex &index) = 0;
-
-    //! Called when loading is finished.
-    virtual void finish();
 
     //! Refreshes the current list
     virtual void refresh() = 0;
@@ -73,18 +64,29 @@ public slots :
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() = 0;
 
-    //! Selects the data from the given item.
-    virtual void select(const QItemSelection &, const QItemSelection &);
-
     //! Shows edit dialog.
     virtual void showEditDialog() = 0;
+
+public slots :
+
+    //! Cancels all running threads and waits for their completion.
+    virtual bool cancelAllThreads();
+
+    //! Clears the model.
+    virtual void clear();
+
+    //! Called when loading is finished.
+    virtual void finish();
+
+    //! Selects the data from the given item.
+    virtual void select(const QItemSelection &, const QItemSelection &);
 
     //! Shows custom context menu for treeView.
     virtual void showCustomContextMenu(const QPoint &);
 
 public :
 
-    RepoWidgetTreeFilterable* getFilterableTree();
+    virtual RepoWidgetTreeFilterable* getFilterableTree();
 
 protected :
 

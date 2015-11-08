@@ -47,7 +47,7 @@
 #include "renderers/repo_3ddiffrenderer.h"
 
 //------------------------------------------------------------------------------
-#include "repo/widgets/repo_dialog_access_manager.h"
+#include "repo/widgets/repo_dialog_manager_access.h"
 
 //------------------------------------------------------------------------------
 
@@ -628,7 +628,7 @@ void repo::gui::RepoGUI::open3DDiff()
 
 void repo::gui::RepoGUI::openAccessManager()
 {
-    repo::widgets::RepoDialogAccessManager accessManager(
+    repo::widgets::RepoDialogManagerAccess accessManager(
                 ui->widgetRepository,
                 controller,
                 (QWidget*) this);

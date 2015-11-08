@@ -23,24 +23,24 @@
 #include "../../primitives/repoidbcache.h"
 
 namespace Ui {
-class RepoDialogAccessManager;
+class RepoDialogManagerAccess;
 }
 
 namespace repo {
 namespace widgets {
 
-class RepoDialogAccessManager : public QDialog
+class RepoDialogManagerAccess : public QDialog
 {
     Q_OBJECT
 
 public:
 
-    explicit RepoDialogAccessManager(
+    explicit RepoDialogManagerAccess(
             const repo::gui::RepoIDBCache *dbCache,
             repo::RepoController *controller,
             QWidget *parent = 0);
 
-    ~RepoDialogAccessManager();
+    ~RepoDialogManagerAccess();
 
 public slots :
 
@@ -61,7 +61,7 @@ public :
 
 private:
 
-    Ui::RepoDialogAccessManager *ui;
+    Ui::RepoDialogManagerAccess *ui;
 
     const repo::gui::RepoIDBCache *dbCache;
 

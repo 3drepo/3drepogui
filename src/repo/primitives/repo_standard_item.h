@@ -46,7 +46,8 @@ public :
             bool enabled = true);
 
     //! Creates default non-editable item from std::string.
-    RepoStandardItem(const std::string &label) : RepoStandardItem(QString::fromStdString(label)) {}
+    RepoStandardItem(const std::string &label)
+        : RepoStandardItem(QString::fromStdString(label)) {}
 
     /**
      * Creates a sortable non-editable item from given number. If the filesie is
