@@ -21,6 +21,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_widget_tree_editable.h"
+#include "repo_widget_tree_clickable.h"
 #include "../../dialogs/repodialoguser.h"
 #include "../../primitives/repoidbcache.h"
 #include "../workers/repo_worker_users.h"

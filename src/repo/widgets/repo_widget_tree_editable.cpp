@@ -32,9 +32,6 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
         ui->filterableTreeWidget->getSelectionModel(), &QItemSelectionModel::selectionChanged,
         this, &RepoWidgetTreeEditable::select);
 
-    QObject::connect(ui->filterableTreeWidget, SIGNAL(doubleClicked(const QModelIndex &)),
-                     this, SLOT(edit(const QModelIndex &)));
-
     QObject::connect(
         ui->addPushButton, SIGNAL(pressed()),
                 this, SLOT(showEditDialog()));
