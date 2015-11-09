@@ -36,7 +36,7 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     , scene(scene)
     , ui(new Ui::RepoDialogCommit)
     , skip(0)
-    , modifiedNodesCount(scene ? scene->getModifiedNodesID().size() : 0)
+    , modifiedNodesCount(scene ? scene->getTotalNodesChanged() : 0)
 {
     //FIXME: this should pop up the project and database names as default selection according to what's inside the scene graph
     ui->setupUi(this);
@@ -126,7 +126,7 @@ QString repo::gui::RepoDialogCommit::getMessage()
     return ui->messagePlainTextEdit->toPlainText();
 }
 
-void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
+void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node, const QString &status)
 {
     if (node)
     {
@@ -147,9 +147,8 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
         item->setTristate(false);
         item->setEditable(false);
         row.append(item);
-
-        std::string type = node->getType();
-        if (REPO_NODE_TYPE_METADATA == type)
+		const repo::core::model::NodeType type = node->getTypeAsEnum();
+        if (repo::core::model::NodeType::METADATA == type)
             item->setIcon(RepoFontAwesome::getMetadataIcon());
 
         //----------------------------------------------------------------------
@@ -157,10 +156,9 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
         item = new QStandardItem(QString::fromStdString(node->getType()));
         item->setEditable(false);
         row.append(item);
-
         //----------------------------------------------------------------------
         // Status
-        item = new QStandardItem(tr("added"));
+        item = new QStandardItem(status);
         item->setEditable(false);
         row.append(item);
 
@@ -171,7 +169,6 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
                                          node->getUniqueID())));
         item->setEditable(false);
         row.append(item);
-
         //----------------------------------------------------------------------
         // SID
         item = new QStandardItem(
@@ -179,10 +176,13 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node)
                         UUIDtoString(node->getSharedID())));
         item->setEditable(false);
         row.append(item);
-
         //----------------------------------------------------------------------
         model->appendRow(row);
     }
+	else
+	{
+		repoLogError("Error trying to fetch node information for a node that has a status of " + status.toStdString() + ": nullptr");
+	}
 }
 
 void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)

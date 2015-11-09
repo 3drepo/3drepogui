@@ -115,7 +115,7 @@ public :
 
 public slots:
 
-    void addNode(repo::core::model::RepoNode *node);
+    void addNode(repo::core::model::RepoNode *node, const QString &status);
 
     void editItem(const QModelIndex &);
 
