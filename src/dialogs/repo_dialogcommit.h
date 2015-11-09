@@ -171,7 +171,7 @@ private:
     int skip;
 
     //! Number of modified nodes.
-    std::vector<repoUUID>::size_type modifiedNodesCount;
+    int modifiedNodesCount;
 
     //! Mutex lock for loading modified objects.
     QMutex mutex;
