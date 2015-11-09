@@ -38,7 +38,9 @@ HEADERS +=  \
 	src/repo/logger/repo_subscriber_abstract.h \
 	src/repo/primitives/repo_standard_item.h \
 	src/repo/settings/repo_settings_credentials.h \
-	src/repo/widgets/repo_dialog_access_manager.h \
+	src/repo/widgets/repo_dialog_manager_access.h \
+	src/repo/widgets/repo_widget_manager_projects.h \
+	src/repo/widgets/repo_widget_manager_roles.h \
 	src/repo/widgets/repo_widget_manager_users.h \
 	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_editable.h \
@@ -98,7 +100,9 @@ SOURCES +=  \
 	src/repo/logger/repo_subscriber_abstract.cpp \
 	src/repo/primitives/repo_standard_item.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
-	src/repo/widgets/repo_dialog_access_manager.cpp \
+	src/repo/widgets/repo_dialog_manager_access.cpp \
+	src/repo/widgets/repo_widget_manager_projects.cpp \
+	src/repo/widgets/repo_widget_manager_roles.cpp \
 	src/repo/widgets/repo_widget_manager_users.cpp \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_editable.cpp \
@@ -136,7 +140,7 @@ FORMS +=  \
 	forms/repo_dialogcommit.ui \
 	forms/repo_dialogconnect.ui \
 	forms/repo_dialoghistory.ui \
-	forms/repo_dialog_access_manager.ui \
+	forms/repo_dialog_manager_access.ui \
 	forms/repo_genericdialog.ui \
 	forms/repo_maptilesdialog.ui \
 	forms/repo_transformationdialog.ui \

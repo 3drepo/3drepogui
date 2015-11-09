@@ -15,12 +15,12 @@
 
 #===============================================================================
 # CHANGE THESE TO YOUR LIBRARY DIRECTORES IF YOU ARE NOT USING ENV. VARIABLES
-ASSIMPDIR = c:/local/assimp
-BOOSTDIR = c:/local/boost_1_58_0/
-BOOST_LIB_DIR = c:/local/boost_1_58_0/lib64-msvc-12.0/
-BOUNCERDIR = c:/local/3drepobouncer/
-GLCLIBDIR = c:/local/GLC_lib/
-MONGODIR = c:/local/mongo-cxx-driver/
+ASSIMPDIR = $$(ASSIMP_ROOT)
+BOOSTDIR = $$(BOOST_ROOT)
+BOOST_LIB_DIR = $$(BOOST_LIBRARYDIR)
+BOUNCERDIR = $$(REPOBOUNCER_ROOT)
+GLCLIBDIR = $$(GLC_ROOT)
+MONGODIR = $$(MONGO_ROOT)
 
 BOUNCER_VERS = 1_0
 # EDIT THESE IF YOU ARE A WINDOWS USER
