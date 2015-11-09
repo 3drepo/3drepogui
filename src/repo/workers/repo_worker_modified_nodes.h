@@ -59,7 +59,7 @@ public slots :
 signals :
 
     //! Emitted whenever modified node is being iterated.
-    void modifiedNode(repo::core::model::RepoNode *node);
+    void modifiedNode(repo::core::model::RepoNode *node, const QString &status);
 
 private:
 
