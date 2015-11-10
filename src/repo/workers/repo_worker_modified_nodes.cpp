@@ -48,7 +48,6 @@ void RepoWorkerModifiedNodes::run()
         emit progressRangeChanged(0, modifiedNodes.size());
 		int i = skip;
 		int base = i;
-		repoLog("i = " + std::to_string(i) + " skip = " + std::to_string(skip) + " limit = " + std::to_string(limit) + " added node size = " + std::to_string(addedNodes.size()));
         //----------------------------------------------------------------------
         // Emit nodes one by one
 		for (;
@@ -57,12 +56,9 @@ void RepoWorkerModifiedNodes::run()
 			i < (skip + limit);
 		++i)
 		{
-			repoLog("Emitting a node for added");
 			emit modifiedNode(scene->getNodeBySharedID(addedNodes[i-base]), QString("added"));
 			emit progressValueChanged(++jobsDone);
 		}
-		repoLog("[after added] i = " + std::to_string(i) + " skip = " + std::to_string(skip) + " limit = " + std::to_string(limit) + " mod node size = " + std::to_string(modifiedNodes.size()));
-
 		base = i;
         for (;
              !cancelled &&
@@ -70,12 +66,9 @@ void RepoWorkerModifiedNodes::run()
              i < (skip + limit);
              ++i)
         {                       
-			repoLog("Emitting a node for modified");
 			emit modifiedNode(scene->getNodeBySharedID(modifiedNodes[i - base]), QString("modified"));
             emit progressValueChanged(++jobsDone);
         }
-			 repoLog("[after modified] i = " + std::to_string(i) + " skip = " + std::to_string(skip) + " limit = " + std::to_string(limit) + " del node size = " + std::to_string(removedNodes.size()));
-
 		base = i;
 		for (;
 			!cancelled &&
@@ -83,7 +76,6 @@ void RepoWorkerModifiedNodes::run()
 			i < (skip + limit);
 		++i)
 		{
-			repoLog("Emitting a node for removed");
 			emit modifiedNode(removedNodes[i - base], QString("removed"));
 			emit progressValueChanged(++jobsDone);
 		}
