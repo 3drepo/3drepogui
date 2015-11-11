@@ -672,12 +672,11 @@ void repo::gui::RepoGUI::optimizeGraph()
 {
     if (const RepoGLCWidget *widget = getActiveWidget())
     {
-      /*  core::RepoGraphScene* scene = widget->getRepoScene();
-        core::RepoGraphOptimizer optimizer(scene);
+        repo::core::model::RepoScene* scene = widget->getRepoScene();
 
-        optimizer.collapseZeroMeshTransformations();
-
-        optimizer.collapseSingleMeshTransformations();*/
+		//FIXME: the controller needs to load the unoptimized graph if it isn't loaded
+		//So it needs the right token. 
+		controller->reduceTransformations(ui->widgetRepository->getSelectedConnection(), scene);
     }
 }
 

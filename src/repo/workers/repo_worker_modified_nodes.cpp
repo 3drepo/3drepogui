@@ -43,19 +43,42 @@ void RepoWorkerModifiedNodes::run()
     if (scene && !cancelled)
     {
         std::vector<repoUUID> modifiedNodes = scene->getModifiedNodesID();
+		std::vector<repoUUID> addedNodes = scene->getAddedNodesID();
+		std::vector<repo::core::model::RepoNode*> removedNodes = scene->getRemovedNodes();
         emit progressRangeChanged(0, modifiedNodes.size());
-
+		int i = skip;
+		int base = i;
         //----------------------------------------------------------------------
         // Emit nodes one by one
-        for (int i = skip;
+		for (;
+			!cancelled &&
+			i < addedNodes.size() + base &&
+			i < (skip + limit);
+		++i)
+		{
+			emit modifiedNode(scene->getNodeBySharedID(addedNodes[i-base]), QString("added"));
+			emit progressValueChanged(++jobsDone);
+		}
+		base = i;
+        for (;
              !cancelled &&
-             i < modifiedNodes.size() &&
+			 i < modifiedNodes.size() + base  &&
              i < (skip + limit);
              ++i)
         {                       
-            emit modifiedNode(scene->getNodeBySharedID(modifiedNodes[i]));
+			emit modifiedNode(scene->getNodeBySharedID(modifiedNodes[i - base]), QString("modified"));
             emit progressValueChanged(++jobsDone);
         }
+		base = i;
+		for (;
+			!cancelled &&
+			i < removedNodes.size() + base  &&
+			i < (skip + limit);
+		++i)
+		{
+			emit modifiedNode(removedNodes[i - base], QString("removed"));
+			emit progressValueChanged(++jobsDone);
+		}
     }
     //--------------------------------------------------------------------------
     // Done
