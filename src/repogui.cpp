@@ -658,12 +658,17 @@ void repo::gui::RepoGUI::optimizeGraph()
 {
     if (const RepoGLCWidget *widget = getActiveWidget())
     {
+		RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
 		repo::worker::OptimizeWorker *worker = 
 			new repo::worker::OptimizeWorker(controller, ui->widgetRepository->getSelectedConnection(), scene);
 		
-		QObject::connect(worker, SIGNAL(progress(int, int)), widget, SLOT(progress(int, int)));
-		QObject::connect(worker, SIGNAL(finished()), this, SLOT(refresh()));
+		if (activeWindow)
+		{
+			QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+		}
+
+
         //----------------------------------------------------------------------
         // Fire up the asynchronous calculation.
         QThreadPool::globalInstance()->start(worker);
