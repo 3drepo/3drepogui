@@ -8,4 +8,7 @@
         <file alias="select.vert">resources/select.vert</file>
         <file alias="select.frag">resources/select.frag</file>
     </qresource>
+    <qresource prefix="/">
+        <file alias="fontawesome">submodules/Font-Awesome/fonts/fontawesome-webfont.ttf</file>
+    </qresource>
 </RCC>
