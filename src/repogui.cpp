@@ -39,6 +39,7 @@
 #include "widgets/reposelectiontreedockwidget.h"
 #include "repo/workers/repo_worker_commit.h"
 #include "repo/workers/repo_worker_file_export.h"
+#include "repo/workers/repo_worker_optimize.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
 #include "dialogs/repoabstractmanagerdialog.h"
@@ -672,11 +673,20 @@ void repo::gui::RepoGUI::optimizeGraph()
 {
     if (const RepoGLCWidget *widget = getActiveWidget())
     {
+		RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
+		repo::worker::OptimizeWorker *worker = 
+			new repo::worker::OptimizeWorker(controller, ui->widgetRepository->getSelectedConnection(), scene);
+		
+		if (activeWindow)
+		{
+			QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
+		}
 
-		//FIXME: the controller needs to load the unoptimized graph if it isn't loaded
-		//So it needs the right token. 
-		controller->reduceTransformations(ui->widgetRepository->getSelectedConnection(), scene);
+
+        //----------------------------------------------------------------------
+        // Fire up the asynchronous calculation.
+        QThreadPool::globalInstance()->start(worker);
     }
 }
 
