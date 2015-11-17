@@ -83,31 +83,50 @@ public:
     static QIcon getHostIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_ComputerIcon); } // getIconStatic(fa_laptop); }
 
-    //! Returns pre-defined branch icon.
+    //! Returns a pre-defined branch icon.
     static QIcon getBranchIcon()
     { return getIconStatic(fa_code_fork); }
 
-    //! Returns pre-defined database icon.
+    //! Returns a pre-defined connect icon in blue.
+    static QIcon getConnectIcon()
+    { return getInstance().getIcon(fa_sign_in, QColor(0, 122, 204)); }
+
+    //! Returns a pre-defined disconnect icon in dark red.
+    static QIcon getDisconnectIcon()
+    { return getInstance().getIcon(fa_sign_out, QColor(Qt::darkRed)); }
+
+    //! Returns a pre-defined database icon.
     static QIcon getDatabaseIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_DriveHDIcon); } // getIconStatic(fa_database); }
 
-    //! Returns pre-defined project icon.
+    //! Returns a pre-defined project icon.
     static QIcon getProjectIcon()
     { return getIconStatic(fa_list_alt); }
 
-    //! Returns pre-defined history icon.
+    //! Returns a pre-defined history icon.
     static QIcon getHistoryIcon()
     { return getIconStatic(fa_history); }
 
-    //! Returns pre-defined manager icon.
+    //! Returns a pre-defined manager icon.
     static QIcon getManagerIcon()
     { return getIconStatic(fa_dashboard); }
 
+    //! Returns a pre-defined user manager icon.
     static QIcon getUserManagerIcon()
     { return getIconStatic(fa_users); }
 
+    //! Returns a pre-defined metadata icon.
     static QIcon getMetadataIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_FileIcon); }
+
+    //! Returns a pre-defined authentication icon (key).
+    static QIcon getAuthenticationIcon()
+    { return getIconStatic(fa_key); }
+
+    //! Returns commit icon.
+    static QIcon getCommitIcon()
+    { return getInstance().getIcon(
+                    RepoFontAwesome::fa_upload, QColor(Qt::darkGreen));}
 
     //--------------------------------------------------------------------------
 

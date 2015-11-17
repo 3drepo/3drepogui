@@ -16,14 +16,10 @@
  */
 
 #include "repo_mdiarea.h"
+#include "../repo/workers/repo_worker_scene_graph.h"
 #include "../renderers/repo_glcwidget.h"
-
-#include "../renderers/repo_oculus.h"
-#include "../renderers/repooculustexturerenderer.h"
 #include "../renderers/repo_webview.h"
 
-//------------------------------------------------------------------------------
-#include "../workers/repo_workerfetchrevision.h"
 
 repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
@@ -44,7 +40,7 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
     //--------------------------------------------------------------------------
 	// Needed for 3D file loading and signal passing.
 	qRegisterMetaType<GLC_World>("GLC_World&");
-	qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
+	//qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
 
 	qRegisterMetaType<QVector<GLfloat>>("QVector<GLfloat>");
 
@@ -189,16 +185,18 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWidget(QWidget* widge
 }
 
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
+	repo::RepoController *controller,
     const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidgetFromFile(fullPath);
+    repoSubWindow->setWidgetFromFile(fullPath, controller);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-        &fpsTimer, &QTimer::timeout,
-        repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME: timer timeout
+//	QObject::connect(
+//        &fpsTimer, &QTimer::timeout,
+//        repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
 	this->update();
 	this->repaint();
@@ -206,7 +204,8 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 }
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	const repo::core::MongoClientWrapper& mongo,
+	repo::RepoController *controller,
+	const repo::RepoToken      * token,
 	const QString& database,
     const QString& project,
 	const QUuid& id,
@@ -217,20 +216,22 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-            &fpsTimer, &QTimer::timeout,
-            repoSubWindow->widget<QGLWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME
+//	QObject::connect(
+//            &fpsTimer, &QTimer::timeout,
+//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    RepoWorkerFetchRevision* worker = new RepoWorkerFetchRevision(mongo, database, project, id, headRevision);
-	connect(worker, SIGNAL(finished(repo::core::RepoGraphScene *, GLC_World &)),
-		repoSubWindow, SLOT(finishedLoading(repo::core::RepoGraphScene *, GLC_World &)));
+   repo::worker::SceneGraphWorker* worker = 
+	   new repo::worker::SceneGraphWorker(controller, token, database, project, id, headRevision);
+	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
+		repoSubWindow, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
 
 	QObject::connect(
 		repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
-		worker, &RepoWorkerFetchRevision::cancel, Qt::DirectConnection);
+		worker, &repo::worker::SceneGraphWorker::cancel, Qt::DirectConnection);
 
     //--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
@@ -249,53 +250,20 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-	QObject::connect(
-            &fpsTimer, &QTimer::timeout,
-			repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::updateGL);
+    // FIXME
+//    QObject::connect(
+//            &fpsTimer, &QTimer::timeout,
+//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
 
 	this->update();
 	this->repaint();
 	return repoSubWindow;
 }
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addOculusTextureSubWindow()
-{
-    return addSubWidget(new RepoOculusTextureRenderer());
-}
-
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
 {
     return addSubWidget(new RepoWebView());
 }
-
-repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindowToOculus()
-{
-    RepoMdiSubWindow* repoSubWindow = activeSubWindow();    
-    RepoGLCWidget* oldWidget = repoSubWindow->widget<RepoGLCWidget*>();
-
-    if (!oldWidget)
-        repoSubWindow = NULL;
-    else
-    {
-
-        //----------------------------------------------------------------------
-        // Disable double buffering
-        RepoOculus *oculus = new RepoOculus(
-                    repoSubWindow,
-                    RepoOculus::singleBufferFormat(),
-                    oldWidget->windowTitle());
-        oculus->setGLCWorld(oldWidget->getGLCWorld());
-
-        repoSubWindow->setWidget(oculus);
-        repoSubWindow->show();
-
-        this->update();
-        this->repaint();
-    }
-    return repoSubWindow;
-}
-
-
 
 QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	bool onlyVisible,

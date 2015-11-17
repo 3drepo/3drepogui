@@ -22,6 +22,8 @@
 #include "repo_mdisubwindow.h"
 #include "../renderers/repo_glcwidget.h"
 //------------------------------------------------------------------------------
+#include <repo/repo_controller.h>
+//------------------------------------------------------------------------------
 #include <GLC_World>
 //------------------------------------------------------------------------------
 #include <QtGui>
@@ -75,13 +77,15 @@ public :
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * using Assimp library from the given full file path.
 	 */
-    RepoMdiSubWindow* addSubWindow(const QString&);
+	RepoMdiSubWindow* addSubWindow(repo::RepoController * controller, const QString& path);
 
 	/*!
 	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
 	 * from the database given a database.
 	 */
-    RepoMdiSubWindow* addSubWindow(const repo::core::MongoClientWrapper& mongo,
+    RepoMdiSubWindow* addSubWindow(
+		repo::RepoController *controller,
+		const repo::RepoToken      * token,
         const QString& database,
         const QString &project,
         const QUuid& id = QUuid(),
@@ -98,12 +102,6 @@ public :
 	 */
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
-
-    //! Transforms active subwindow to oculus rendering.
-    RepoMdiSubWindow *activeSubWindowToOculus();
-
-    //! Adds texture subwindow to render oculus view on desktop.
-    RepoMdiSubWindow* addOculusTextureSubWindow();
 
     //! Adds a web view subwindow
     RepoMdiSubWindow* addWebViewSubWindow();

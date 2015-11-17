@@ -20,12 +20,10 @@
 
 //------------------------------------------------------------------------------
 // Core
-#include "graph/repo_graph_scene.h"
+#include <repo/repo_controller.h>
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../workers/repo_worker_assimp.h"
-#include "../workers/repo_workerfetchrevision.h"
 
 //------------------------------------------------------------------------------
 #include <GLC_World>
@@ -81,7 +79,7 @@ public :
      * progress of individual processes and format conversions
 	 * from Assimp aiScene to GLC_World and RepoGraphScene.
 	 */
-    void setWidgetFromFile(const QString& fullFilePath);
+	void setWidgetFromFile(const QString& fullFilePath, repo::RepoController *controller);
 
 	/*!
 	 * Sets the widget as the internal widget of this subwindow. The internal 
@@ -117,7 +115,9 @@ public :
 public slots :
 
 	//! Sets the two scene representations on the widget.
-	void finishedLoading(repo::core::RepoGraphScene *, GLC_World &);
+	void finishedLoadingScene(repo::core::model::RepoScene *);
+
+	void finishedLoadingGLC(repo::core::model::RepoScene *, GLC_World &);
 
 	/*! 
 	 * Updates the current state of the progress bar with the values specified.

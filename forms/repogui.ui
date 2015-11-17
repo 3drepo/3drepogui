@@ -46,6 +46,7 @@
      <string>Repositories</string>
     </property>
     <addaction name="actionConnect"/>
+    <addaction name="actionDisconnect"/>
     <addaction name="actionRefresh"/>
     <addaction name="separator"/>
     <addaction name="actionHead"/>
@@ -54,6 +55,7 @@
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
     <addaction name="actionFederate"/>
+    <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
     <addaction name="actionUserManager"/>
     <addaction name="actionProject_Manager"/>
@@ -85,7 +87,6 @@
     </property>
     <addaction name="actionLink"/>
     <addaction name="separator"/>
-    <addaction name="actionOculus"/>
     <addaction name="actionWeb_View"/>
     <addaction name="separator"/>
     <addaction name="actionScene_Graph"/>
@@ -98,7 +99,14 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <addaction name="actionMetadataManager"/>
+    <widget class="QMenu" name="menuMetadata">
+     <property name="title">
+      <string>Metadata</string>
+     </property>
+     <addaction name="actionAttachPDF"/>
+     <addaction name="actionMetadataManager"/>
+    </widget>
+    <addaction name="menuMetadata"/>
     <addaction name="actionOptimize_Graph"/>
     <addaction name="separator"/>
     <addaction name="action3D_Diff"/>
@@ -475,7 +483,7 @@
   </action>
   <action name="actionMetadataManager">
    <property name="text">
-    <string>Load Metatada</string>
+    <string>Attach CSV Metadata...</string>
    </property>
   </action>
   <action name="actionOptimize_Graph">
@@ -509,6 +517,27 @@
   <action name="actionFederate">
    <property name="text">
     <string>Federate...</string>
+   </property>
+  </action>
+  <action name="actionAttachPDF">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Attach PDF...</string>
+   </property>
+  </action>
+  <action name="actionAddMapTiles">
+   <property name="text">
+    <string>Add Map Tiles...</string>
+   </property>
+  </action>
+  <action name="actionDisconnect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Disconnect</string>
    </property>
   </action>
  </widget>

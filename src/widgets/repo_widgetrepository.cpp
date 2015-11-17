@@ -17,6 +17,13 @@
 
 #include "repo_widgetrepository.h"
 
+#include "../repo/workers/repo_worker_database.h"
+#include "../repo/workers/repo_worker_collection.h"
+#include "../repo/logger/repo_logger.h"
+
+
+const QString repo::gui::RepoWidgetRepository::DATABASES_COLUMNS_SETTINGS = "RepoWidgetRepositoryColumnsSettings";
+
 //------------------------------------------------------------------------------
 repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     : QWidget(parent)
@@ -36,8 +43,8 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     databasesProxyModel = new RepoSortFilterProxyModel((QWidget*)this, false);
 	enableFiltering(
         ui->databasesTreeView,
-		databasesModel, 
-		databasesProxyModel, 
+		databasesModel,
+		databasesProxyModel,
         ui->databasesFilterLineEdit);
     ui->databasesTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
 
@@ -52,8 +59,8 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     collectionProxyModel = new RepoSortFilterProxyModel((QWidget*)this, true);
 	enableFiltering(
         ui->collectionTreeView,
-		collectionModel, 
-		collectionProxyModel, 
+		collectionModel,
+		collectionProxyModel,
         ui->collectionFilterLineEdit);
 	
     ui->collectionTreeView->sortByColumn(RepoDatabasesColumns::NAME, Qt::SortOrder::AscendingOrder);
@@ -64,12 +71,24 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
     ui->databasesProgressBar->hide();
     ui->collectionProgressBar->hide();
+
+	token = nullptr;
+	controller = nullptr;
+
+    QSettings settings(this);
+    ui->databasesTreeView->header()->restoreState(
+                settings.value(DATABASES_COLUMNS_SETTINGS).toByteArray());
+
 }
 
 //------------------------------------------------------------------------------
 
 repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
-{
+{   
+    QSettings settings(this);
+    settings.setValue(DATABASES_COLUMNS_SETTINGS, ui->databasesTreeView->header()->saveState());
+
+
 	cancelAllThreads();
     //--------------------------------------------------------------------------
 	delete databasesProxyModel;
@@ -106,7 +125,7 @@ QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host
     return databases;
 }
 
-repo::core::MongoClientWrapper  repo::gui::RepoWidgetRepository::getConnection(
+repo::RepoToken*  repo::gui::RepoWidgetRepository::getConnection(
         const QString &host) const
 {
     // TODO: implement multiple host connections.
@@ -152,11 +171,26 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
     return projects.toList();
 }
 
+bool repo::gui::RepoWidgetRepository::disconnectDB()
+{
+    bool success = (token != nullptr);
+    if (token)
+    {
+        controller->disconnectFromDatabase(token);
+        delete token;
+        token = nullptr;
+        clearDatabaseModel();
+        clearCollectionModel();
+    }
+    return success;
+}
+
 void repo::gui::RepoWidgetRepository::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,
     // all get refreshes
-    fetchDatabases(getSelectedConnection());
+    if (token)
+        fetchDatabases(controller, token);
 }
 
 //------------------------------------------------------------------------------
@@ -170,52 +204,53 @@ bool repo::gui::RepoWidgetRepository::cancelAllThreads()
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::fetchDatabases(
-        const repo::core::MongoClientWrapper& mongo)
+        repo::RepoController *controller, repo::RepoToken *token)
 {
     //--------------------------------------------------------------------------
 	// Cancel any previously running threads.
 	if (cancelAllThreads())
 	{
-		this->mongo = mongo;
+		this->controller = controller;
+		this->token      = token;
 
         std::cout << "Fetching databases..." << std::endl;
 				
         //----------------------------------------------------------------------
-		RepoWorkerDatabases * worker = new RepoWorkerDatabases(mongo);	
+		repo::worker::DatabaseWorker * worker = new repo::worker::DatabaseWorker(controller, token);
 		worker->setAutoDelete(true);
 
         //----------------------------------------------------------------------
 		// Direct connection ensures cancel signal is processed ASAP
 		QObject::connect(
 			this, &RepoWidgetRepository::cancel,
-			worker, &RepoWorkerDatabases::cancel, Qt::DirectConnection);
+			worker, &repo::worker::DatabaseWorker::cancel, Qt::DirectConnection);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::hostFetched,
+			worker, &repo::worker::DatabaseWorker::hostFetched,
 			this, &RepoWidgetRepository::addHost);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::databaseFetched,
+			worker, &repo::worker::DatabaseWorker::databaseFetched,
 			this, &RepoWidgetRepository::addDatabase);
 
         QObject::connect(
-                    worker, &RepoWorkerDatabases::databaseFinished,
+			worker, &repo::worker::DatabaseWorker::databaseFinished,
                     this, &RepoWidgetRepository::incrementDatabaseRow);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::collectionFetched,
+			worker, &repo::worker::DatabaseWorker::collectionFetched,
 			this, &RepoWidgetRepository::addCollection);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::finished,
+			worker, &repo::worker::DatabaseWorker::finished,
             ui->databasesProgressBar, &QProgressBar::hide);
 		
 		QObject::connect(
-			worker, &RepoWorkerDatabases::progressRangeChanged,
+			worker, &repo::worker::DatabaseWorker::progressRangeChanged,
             ui->databasesProgressBar, &QProgressBar::setRange);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::progressValueChanged,
+			worker, &repo::worker::DatabaseWorker::progressValueChanged,
             ui->databasesProgressBar, &QProgressBar::setValue);
 
         //----------------------------------------------------------------------
@@ -230,40 +265,41 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(
 
 void repo::gui::RepoWidgetRepository::fetchCollection()
 {	
-	fetchCollection(getSelectedConnection(), getSelectedDatabase(), getSelectedCollection());
+	fetchCollection(getSelectedDatabase(), getSelectedCollection());
 }
+
 //------------------------------------------------------------------------------
 
 void repo::gui::RepoWidgetRepository::fetchCollection(
-	const repo::core::MongoClientWrapper& mongo, 
 	const QString& database, 
 	const QString& collection)
 {
 	if (!database.isEmpty() && !collection.isEmpty()) //&& cancelAllThreads())
 	{
         std::cout << "Fetching collection..." << std::endl;
-		RepoWorkerCollection* worker = new RepoWorkerCollection(mongo, database, collection);	
+		repo::worker::CollectionWorker* worker = new repo::worker::CollectionWorker
+			(controller, token, database.toStdString(), collection.toStdString());
 		worker->setAutoDelete(true);
 
 		// Direct connection ensures cancel signal is processed ASAP
 		QObject::connect(
 			this, &RepoWidgetRepository::cancel,
-			worker, &RepoWorkerCollection::cancel, Qt::DirectConnection);
+			worker, &repo::worker::CollectionWorker::cancel, Qt::DirectConnection);
 
 		QObject::connect(
-			worker, &RepoWorkerCollection::keyValuePairAdded,
+			worker, &repo::worker::CollectionWorker::keyValuePairAdded,
 			this, &RepoWidgetRepository::addKeyValuePair);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::finished,
+			worker, &repo::worker::CollectionWorker::finished,
             ui->collectionProgressBar, &QProgressBar::hide);
 		
 		QObject::connect(
-			worker, &RepoWorkerDatabases::progressRangeChanged,
+			worker, &repo::worker::CollectionWorker::progressRangeChanged,
             ui->collectionProgressBar, &QProgressBar::setRange);
 
 		QObject::connect(
-			worker, &RepoWorkerDatabases::progressValueChanged,
+			worker, &repo::worker::CollectionWorker::progressValueChanged,
             ui->collectionProgressBar, &QProgressBar::setValue);
 		
         //----------------------------------------------------------------------
@@ -297,8 +333,6 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
     // TODO: be careful when adding multiple mongo connections. This counter
     // won't work with more than one async addCollection call.
     databaseRowCounter = 0;
-
-//    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::NAME);
 }
 
 //------------------------------------------------------------------------------
@@ -322,12 +356,13 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::addCollection(core::RepoCollStats stats)
+void repo::gui::RepoWidgetRepository::addCollection(
+	const repo::core::model::CollectionStats &stats)
 {
     QString collection = QString::fromStdString(stats.getCollection());
-    unsigned long long count = stats.getCount();
-    unsigned long long size = stats.getActualSizeOnDisk();
-    unsigned long long allocated = stats.getStorageSize();
+    qulonglong count     = (qulonglong)stats.getCount();
+    qulonglong size      = (qulonglong)stats.getActualSizeOnDisk();
+    qulonglong allocated = (qulonglong)stats.getStorageSize();
 
     if (QStandardItem *host = databasesModel->invisibleRootItem()->child(
 		databasesModel->invisibleRootItem()->rowCount()-1, RepoDatabasesColumns::NAME))
@@ -397,10 +432,6 @@ void repo::gui::RepoWidgetRepository::addKeyValuePair(
 void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 {	
 	databasesModel->removeRows(0, databasesModel->rowCount());	
-    //--------------------------------------------------------------------------
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::COUNT);
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::SIZE);
-    ui->databasesTreeView->resizeColumnToContents(RepoDatabasesColumns::ALLOCATED);
     ui->databasesFilterLineEdit->clear();
 }
 
@@ -408,10 +439,7 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 
 void repo::gui::RepoWidgetRepository::clearCollectionModel()
 {
-	collectionModel->removeRows(0, collectionModel->rowCount());	
-    //--------------------------------------------------------------------------
-    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::VALUE);
-    ui->collectionTreeView->resizeColumnToContents(RepoCollectionColumns::TYPE);
+    collectionModel->removeRows(0, collectionModel->rowCount());
     ui->collectionFilterLineEdit->clear();
 }
 
@@ -607,16 +635,16 @@ void repo::gui::RepoWidgetRepository::setItem(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, unsigned long long value)
+void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, uint64_t value)
 {
-    setItem(item, toLocaleString(value), value);
+    setItem(item, toLocaleString((qulonglong)value), (qulonglong)value);
 }
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, unsigned long long value)
+void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, uint64_t value)
 {
-    setItem(item, toFileSize(value), value);
+    setItem(item, toFileSize((qulonglong)value), (qulonglong)value);
 }
 
 QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
@@ -647,7 +675,7 @@ QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
 	return icon;
 }
 
-QString repo::gui::RepoWidgetRepository::toFileSize(unsigned long long int bytes)
+QString repo::gui::RepoWidgetRepository::toFileSize(uint64_t bytes)
  {
     QString value;
     if (0 != bytes)

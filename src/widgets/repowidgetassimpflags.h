@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+//FIXME: RENAME!!!
 #ifndef REPO_WIDGET_ASSIMP_FLAGS_H
 #define REPO_WIDGET_ASSIMP_FLAGS_H
 
@@ -23,11 +23,6 @@
 // Qt
 #include <QWidget>
 #include <QSettings>
-
-//------------------------------------------------------------------------------
-// Core
-#include <RepoWrapperAssimp>
-#include <assimp/postprocess.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -51,6 +46,8 @@ class RepoWidgetAssimpFlags : public QWidget
 public:
 
     explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
+
+	RepoSettings* getSettings() const { return settings; }
 
     ~RepoWidgetAssimpFlags();
 
@@ -84,7 +81,7 @@ private :
     Ui::RepoWidgetAssimpFlags *ui;
 
     //! Persistent application settings.
-    RepoSettings settings;
+    RepoSettings *settings;
 
 };
 

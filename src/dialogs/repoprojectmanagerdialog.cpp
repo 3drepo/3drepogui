@@ -19,11 +19,15 @@
 #include "repoprojectmanagerdialog.h"
 #include "ui_repoabstractmanagerdialog.h"
 #include "repoprojectsettingsdialog.h"
+#include "../repo/workers/repo_worker_project_settings.h"
+
 
 repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
-        const RepoIDBCache *cache,
-        QWidget *parent)
-    : RepoAbstractManagerDialog(cache, parent)
+	repo::RepoController *controller,
+	const RepoIDBCache *cache,
+	QWidget *parent)
+	: RepoAbstractManagerDialog(cache, parent),
+	controller(controller)
 {
     setWindowTitle("Project Manager");
 
@@ -31,42 +35,42 @@ repo::gui::RepoProjectManagerDialog::RepoProjectManagerDialog(
     // Users
     model->setColumnCount(7);
     model->setHeaderData(
-                Columns::PROJECT,
+                (int) Columns::PROJECT,
                 Qt::Horizontal,
                 tr("Project"));
     model->setHeaderData(
-                Columns::DESCRIPTION,
+				(int) Columns::DESCRIPTION,
                 Qt::Horizontal,
                 tr("Description"));
     model->setHeaderData(
-                Columns::OWNER,
+				(int) Columns::OWNER,
                 Qt::Horizontal,
                 tr("Owner"));
     model->setHeaderData(
-                Columns::GROUP,
+				(int) Columns::GROUP,
                 Qt::Horizontal,
                 tr("Group"));
     model->setHeaderData(
-                Columns::PERMISSIONS,
+				(int) Columns::PERMISSIONS,
                 Qt::Horizontal,
                 tr("Permissions"));
     model->setHeaderData(
-                Columns::TYPE,
+				(int) Columns::TYPE,
                 Qt::Horizontal,
                 tr("Type"));
     model->setHeaderData(
-                Columns::USERS,
+				(int) Columns::USERS,
                 Qt::Horizontal,
                 tr("Users"));
 
-    ui->treeView->sortByColumn(Columns::PROJECT, Qt::SortOrder::AscendingOrder);
+	ui->treeView->sortByColumn((int)Columns::PROJECT, Qt::SortOrder::AscendingOrder);
     clear();
 }
 
 repo::gui::RepoProjectManagerDialog::~RepoProjectManagerDialog() {}
 
 void repo::gui::RepoProjectManagerDialog::addProjectSettings(
-        core::RepoProjectSettings projectSettings)
+        repo::core::model::RepoProjectSettings projectSettings)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
@@ -75,7 +79,7 @@ void repo::gui::RepoProjectManagerDialog::addProjectSettings(
     var.setValue(projectSettings);
 
     // Project
-    QStandardItem *item = createItem(QString::fromStdString(projectSettings.getProject()));
+    QStandardItem *item = createItem(QString::fromStdString(projectSettings.getProjectName()));
     item->setData(var);
     row.append(item);
 
@@ -101,68 +105,61 @@ void repo::gui::RepoProjectManagerDialog::addProjectSettings(
     model->invisibleRootItem()->appendRow(row);
 }
 
-void repo::gui::RepoProjectManagerDialog::clear(bool resizeColumns)
-{
-    RepoAbstractManagerDialog::clear(resizeColumns);
-
-    ui->treeView->resizeColumnToContents(Columns::OWNER);
-    ui->treeView->resizeColumnToContents(Columns::GROUP);
-    ui->treeView->resizeColumnToContents(Columns::PERMISSIONS);
-    ui->treeView->resizeColumnToContents(Columns::TYPE);
-    ui->treeView->resizeColumnToContents(Columns::USERS);
-}
-
-repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
+repo::core::model::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings()
 {
     return getProjectSettings(ui->treeView->selectionModel()->currentIndex());
 }
 
-repo::core::RepoProjectSettings repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
+repo::core::model::RepoProjectSettings 
+	repo::gui::RepoProjectManagerDialog::getProjectSettings(const QModelIndex &index)
 {
-    core::RepoProjectSettings projectSettings;
+	repo::core::model::RepoProjectSettings projectSettings;
     if (index.isValid())
     {
-        QModelIndex userIndex = index.sibling(index.row(), Columns::PROJECT);
-        projectSettings = userIndex.data(Qt::UserRole+1).value<core::RepoProjectSettings>();
+        QModelIndex userIndex = index.sibling(index.row(), (int)Columns::PROJECT);
+		projectSettings = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoProjectSettings>();
     }
     return projectSettings;
 }
 
 
 
-void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
+void repo::gui::RepoProjectManagerDialog::refresh(
+	const repo::core::model::RepoProjectSettings &settings,
+	const bool                                         &isDelete)
 {
     if (cancelAllThreads())
     {
-        core::MongoClientWrapper mongo = dbCache->getConnection(ui->hostComboBox->currentText());
+        const RepoToken *token = dbCache->getConnection(ui->hostComboBox->currentText());
         std::string database = ui->databaseComboBox->currentText().toStdString();
 
-        RepoWorkerProjectSettings* worker = new RepoWorkerProjectSettings(mongo, database, command);
+		repo::worker::ProjectSettingsWorker* worker = 
+			new repo::worker::ProjectSettingsWorker(token, controller, database, settings, isDelete);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP
         QObject::connect(
             this, &RepoProjectManagerDialog::cancel,
-            worker, &RepoWorkerProjectSettings::cancel, Qt::DirectConnection);
+			worker, &repo::worker::ProjectSettingsWorker::cancel, Qt::DirectConnection);
 
         QObject::connect(
-            worker, &RepoWorkerProjectSettings::projectSettingsFetched,
+			worker, &repo::worker::ProjectSettingsWorker::projectSettingsFetched,
             this, &RepoProjectManagerDialog::addProjectSettings);
 
         QObject::connect(
-            worker, &RepoWorkerProjectSettings::finished,
+			worker, &repo::worker::ProjectSettingsWorker::finished,
             ui->progressBar, &QProgressBar::hide);
 
         QObject::connect(
-            worker, &RepoWorkerProjectSettings::finished,
+			worker, &repo::worker::ProjectSettingsWorker::finished,
             this, &RepoProjectManagerDialog::finish);
 
         QObject::connect(
-            worker, &RepoWorkerProjectSettings::progressRangeChanged,
+			worker, &repo::worker::ProjectSettingsWorker::progressRangeChanged,
             ui->progressBar, &QProgressBar::setRange);
 
         QObject::connect(
-            worker, &RepoWorkerProjectSettings::progressValueChanged,
+			worker, &repo::worker::ProjectSettingsWorker::progressValueChanged,
             ui->progressBar, &QProgressBar::setValue);
 
         //----------------------------------------------------------------------
@@ -179,16 +176,16 @@ void repo::gui::RepoProjectManagerDialog::refresh(const core::RepoBSON &command)
 
 void repo::gui::RepoProjectManagerDialog::removeItem()
 {
-    core::RepoProjectSettings projectSettings = this->getProjectSettings();
+	repo::core::model::RepoProjectSettings projectSettings = this->getProjectSettings();
     switch(QMessageBox::warning(this,
         tr("Remove project settings?"),
-        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProject()) + "'?",
+        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProjectName()) + "'?",
         tr("&Yes"),
         tr("&No"),
         QString::null, 1, 1))
         {
             case 0: // yes
-                refresh(projectSettings.drop());
+                refresh(projectSettings, true);
                 break;
             case 1: // no
                 std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
@@ -197,7 +194,7 @@ void repo::gui::RepoProjectManagerDialog::removeItem()
 }
 
 void repo::gui::RepoProjectManagerDialog::showEditDialog(
-        const core::RepoProjectSettings &projectSettings)
+	const repo::core::model::RepoProjectSettings &projectSettings)
 {
     RepoProjectSettingsDialog projectDialog(projectSettings, this);
     if (QDialog::Rejected == projectDialog.exec())
@@ -207,7 +204,7 @@ void repo::gui::RepoProjectManagerDialog::showEditDialog(
     else // QDialog::Accepted
     {
         // Create or update project
-        refresh(projectDialog.getCommand());
+        refresh(projectDialog.getSettings(), false);
     }
 }
 

@@ -25,21 +25,19 @@
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
 #include <QCompleter>
+#include <QSettings>
 
 //------------------------------------------------------------------------------
 // Repo Core
-#include <RepoWrapperMongo>
-#include <RepoCollStats>
+#include <repo/repo_controller.h>
 
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repoidbcache.h"
-#include "../workers/repo_workerdatabases.h"
-#include "../workers/repo_workercollection.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
-#include "repo_lineedit.h"
+#include "../widgets/repo_lineedit.h"
 
 namespace Ui {
     class RepoWidgetRepository;
@@ -57,6 +55,8 @@ class RepoWidgetRepository : public QWidget, public RepoIDBCache
 
 	//! Collection header positions
 	enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
+
+    static const QString DATABASES_COLUMNS_SETTINGS;
 
 public :
 
@@ -87,8 +87,8 @@ public slots :
     virtual QList<QString> getCollections(const QString &host, const QString &database) const
     { return QList<QString>(); }
 
-    //! Returns connection corresponding to given host.
-    virtual core::MongoClientWrapper getConnection(const QString &host) const;
+    ////! Returns connection corresponding to given host.
+    virtual repo::RepoToken* getConnection(const QString &host) const;
 
     //! Returns a list of available hosts.
     virtual QList<QString> getHosts() const;
@@ -100,7 +100,7 @@ public slots :
      * Returns a copy of a selected connection. It is necessary to reconnect
      * and reauthenticate.
      */
-    core::MongoClientWrapper getSelectedConnection() const { return mongo; }
+    repo::RepoToken* getSelectedConnection() const { return token; }
 
     //! Returns a list of available databases.
     QList<QString> getDatabases(const QString& host) const;
@@ -115,6 +115,9 @@ public slots :
 
 public slots :
 
+    //! Disconnects database connection, if any.
+    bool disconnectDB();
+
     //! Refreshes all connected databases. Only one at the moment.
     void refresh();
 		
@@ -122,14 +125,13 @@ public slots :
 	bool cancelAllThreads();
 
 	//! Fetches databases from the server.
-	void fetchDatabases(const repo::core::MongoClientWrapper&);
+	void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
 
 	//! Fetches currently selected collection (if any) from the server.
 	void fetchCollection();
 
-	//! Fetches collection.
+	////! Fetches collection.
 	void fetchCollection(
-		const repo::core::MongoClientWrapper& /* clientConnection */, 
 		const QString& /* database */, 
 		const QString& /* collection */);
 
@@ -137,7 +139,7 @@ public slots :
 
 	void addDatabase(QString name);
 
-    void addCollection(core::RepoCollStats stats);
+    void addCollection(const repo::core::model::CollectionStats &stats);
 
 	void addKeyValuePair(
 		QVariant /* key */, 
@@ -176,8 +178,6 @@ public :
     // Getters
     //
     //--------------------------------------------------------------------------
-
-
 
 	//! Returns selected collection, empty string if none selected.
 	QString getSelectedCollection() const;
@@ -236,9 +236,9 @@ private :
 	
 	static void setItem(QStandardItem*, const QString&, const QVariant&);
 
-	static void setItemSize(QStandardItem*, unsigned long long);
+	static void setItemSize(QStandardItem*, uint64_t);
 
-	static void setItemCount(QStandardItem*, unsigned long long);
+	static void setItemCount(QStandardItem*, uint64_t);
 
 	/*! Returns icon if collection contains recognized string such as "scene" or "history",
      *	empty icon otherwise.
@@ -246,7 +246,7 @@ private :
 	QIcon getIcon(const QString& collection) const;
 
     //! Returns a human readable string of kilobytes, megabytes etc.
-    static QString toFileSize(unsigned long long int bytes);
+    static QString toFileSize(uint64_t bytes);
 
     //! Returns the current locale string representation.
     template <class T>
@@ -264,6 +264,7 @@ private :
 
 private :
 
+    //! Access to ui elements
     Ui::RepoWidgetRepository *ui;
 
 	//! Default model for the databases.
@@ -281,9 +282,13 @@ private :
 	//! Private thread pool local to this object only.
 	QThreadPool threadPool;
 
-	//! TODO: improve (should enable multiple DB connections at once)
-    core::MongoClientWrapper mongo;
+    //! Database controller
+    repo::RepoController *controller;
 
+    //! Connection token
+    repo::RepoToken *token;
+
+    //! Counter of database rows
     int databaseRowCounter;
 };
 

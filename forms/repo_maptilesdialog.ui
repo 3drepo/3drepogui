@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RepoMapTilesDialog</class>
+ <widget class="QDialog" name="RepoMapTilesDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>711</width>
+    <height>346</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Map Tiles</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="0" colspan="3">
+       <widget class="QLabel" name="widthLabel">
+        <property name="text">
+         <string>Width</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="nameLabel">
+        <property name="text">
+         <string>Name</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" colspan="2">
+       <widget class="QSpinBox" name="tiltSpinBox"/>
+      </item>
+      <item row="1" column="7" colspan="2">
+       <widget class="QDoubleSpinBox" name="tileSpinBox">
+        <property name="decimals">
+         <number>12</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="tiltLabel">
+        <property name="text">
+         <string>Tilt</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QLabel" name="tileSizeLabel">
+        <property name="text">
+         <string>Tile Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="5">
+       <widget class="QLabel" name="latLabel">
+        <property name="text">
+         <string>Latitude</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QLabel" name="zoomLabel">
+        <property name="text">
+         <string>Zoom</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="7" colspan="2">
+       <widget class="QDoubleSpinBox" name="latSpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3" colspan="2">
+       <widget class="QDoubleSpinBox" name="longSpinBox">
+        <property name="decimals">
+         <number>9</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="7" colspan="2">
+       <widget class="QSpinBox" name="zoomSpinBox"/>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLabel" name="longLabel">
+        <property name="text">
+         <string>Longitude</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QDoubleSpinBox" name="xSpinBox">
+        <property name="decimals">
+         <number>12</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3">
+       <widget class="QLabel" name="coordLabel_3">
+        <property name="text">
+         <string>Centre Y</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="6">
+       <widget class="QLabel" name="coordLabel_4">
+        <property name="text">
+         <string>Centre Z</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="7" colspan="2">
+       <widget class="QDoubleSpinBox" name="zSpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="coordLabel_2">
+        <property name="text">
+         <string>Centre X</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="4" colspan="2">
+       <widget class="QDoubleSpinBox" name="ySpinBox">
+        <property name="decimals">
+         <number>11</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" colspan="2">
+       <widget class="QSpinBox" name="widthSpinBox"/>
+      </item>
+      <item row="0" column="3" colspan="4">
+       <widget class="QLineEdit" name="nameLineEdit"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="ButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>nameLineEdit</tabstop>
+  <tabstop>widthSpinBox</tabstop>
+  <tabstop>tileSpinBox</tabstop>
+  <tabstop>tiltSpinBox</tabstop>
+  <tabstop>zoomSpinBox</tabstop>
+  <tabstop>longSpinBox</tabstop>
+  <tabstop>latSpinBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>ButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>RepoMapTilesDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>ButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>RepoMapTilesDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

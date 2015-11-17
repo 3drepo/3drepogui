@@ -21,8 +21,11 @@
 
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repocomboboxdelegate.h"
+#include "../repo/logger/repo_logger.h"
 
-repo::gui::RepoFederationDialog::RepoFederationDialog(
+using namespace repo::gui;
+
+RepoFederationDialog::RepoFederationDialog(
         RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
@@ -99,12 +102,12 @@ repo::gui::RepoFederationDialog::RepoFederationDialog(
         this, SLOT(showFederationMenu(QPoint)));
 }
 
-repo::gui::RepoFederationDialog::~RepoFederationDialog()
+RepoFederationDialog::~RepoFederationDialog()
 {
     delete ui;
 }
 
-void repo::gui::RepoFederationDialog::addAvailableProject(const QString &project)
+void RepoFederationDialog::addAvailableProject(const QString &project)
 {
     QStandardItem *item = new QStandardItem(project);
     item->setEditable(false);
@@ -113,7 +116,7 @@ void repo::gui::RepoFederationDialog::addAvailableProject(const QString &project
 }
 
 
-void repo::gui::RepoFederationDialog::addProjectsToFederation()
+void RepoFederationDialog::addProjectsToFederation()
 {
     QStandardItem *item = getCurrentFederatedItem();
     if (item)
@@ -126,8 +129,8 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
             //------------------------------------------------------------------
 
             RepoTransRefPair p;
-            p.first = core::RepoNodeTransformation("<transformation>");
-            p.second = core::RepoNodeReference(database, project.toStdString());
+			p.first = repo::core::model::RepoBSONFactory::makeTransformationNode();
+			p.second = repo::core::model::RepoBSONFactory::makeReferenceNode(database, project.toStdString());
             QVariant var;
             var.setValue(p);
 
@@ -138,34 +141,35 @@ void repo::gui::RepoFederationDialog::addProjectsToFederation()
             row[0]->setData(var);
 
             row << RepoFilterableTreeWidget::createItem("master");
-            row[1]->setEditable(true);
+            row[1]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
 
             row << RepoFilterableTreeWidget::createItem("head");
-            row[2]->setEditable(true);
+			row[2]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
             item->appendRow(row);
         }
         ui->federatedWidget->expandItem(item);
     }
 }
 
-int repo::gui::RepoFederationDialog::exec()
+int RepoFederationDialog::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void repo::gui::RepoFederationDialog::refresh()
+void RepoFederationDialog::refresh()
 {
     ui->availableWidget->clear();
 
     // TODO: make multithreaded
     QStringList availableProjects = dbCache->getProjects(ui->hostComboBox->currentText(), ui->databaseComboBox->currentText());
+
     for (QString project : availableProjects)
         addAvailableProject(project);
 }
 
 
-void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
+void RepoFederationDialog::removeProjectsFromFederation()
 {
     QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
     QModelIndexList selectedIndexes = getFederatedSelection();
@@ -179,9 +183,8 @@ void repo::gui::RepoFederationDialog::removeProjectsFromFederation()
     }
 }
 
-void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
+void RepoFederationDialog::showFederationMenu(const QPoint &point)
 {
-
     bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
     QTreeView *treeView = ui->federatedWidget->getTreeView();
     QMenu menu(treeView);
@@ -203,18 +206,17 @@ void repo::gui::RepoFederationDialog::showFederationMenu(const QPoint &point)
     menu.exec(treeView->mapToGlobal(point));
 }
 
-void repo::gui::RepoFederationDialog::showTransformationDialog()
+void RepoFederationDialog::showTransformationDialog()
 {
-    RepoTransformationDialog *d = new RepoTransformationDialog(getCurrentFederatedTransformation(), this);
-    if (d->exec())
+    RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
+    if (d.exec())
     {
-        core::RepoNodeTransformation transformation = d->getTransformation();
-        for (QModelIndex selectedIndex :getFederatedSelection())
+		repo::core::model::TransformationNode transformation = d.getTransformation();
+        for (QModelIndex selectedIndex : getFederatedSelection())
         {
             RepoTransRefPair p =
                     selectedIndex.data(Qt::UserRole+1).value<RepoTransRefPair>();
 
-            transformation.setRandomIDs();
             p.first = transformation;
 
             QVariant var;
@@ -222,11 +224,10 @@ void repo::gui::RepoFederationDialog::showTransformationDialog()
             ui->federatedWidget->getModel()->setData(selectedIndex, var,Qt::UserRole+1);
         }
     }
-    delete d;
 }
 
 
-QStandardItem *repo::gui::RepoFederationDialog::getCurrentFederatedItem() const
+QStandardItem *RepoFederationDialog::getCurrentFederatedItem() const
 {
     QModelIndex proxyCurrent = ui->federatedWidget->getSelectionModel()->currentIndex();
     QStandardItem *item = 0;
@@ -241,10 +242,10 @@ QStandardItem *repo::gui::RepoFederationDialog::getCurrentFederatedItem() const
     return item;
 }
 
-repo::core::RepoNodeTransformation repo::gui::RepoFederationDialog::getCurrentFederatedTransformation() const
+repo::core::model::TransformationNode RepoFederationDialog::getCurrentFederatedTransformation() const
 {
     QStandardItem *item = getCurrentFederatedItem();
-    core::RepoNodeTransformation transformation;
+	repo::core::model::TransformationNode transformation;
     if (item)
     {
         RepoTransRefPair p =
@@ -256,50 +257,43 @@ repo::core::RepoNodeTransformation repo::gui::RepoFederationDialog::getCurrentFe
 
 //------------------------------------------------------------------------------
 
-QModelIndexList repo::gui::RepoFederationDialog::getAvailableSelection() const
+QModelIndexList RepoFederationDialog::getAvailableSelection() const
 {
     return ui->availableWidget->getCurrentSelection();
 }
 
-QModelIndexList repo::gui::RepoFederationDialog::getFederatedSelection() const
+QModelIndexList RepoFederationDialog::getFederatedSelection() const
 {
     return ui->federatedWidget->getCurrentSelection();
 }
 
-repo::core::RepoGraphScene *repo::gui::RepoFederationDialog::getFederation()
+std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoFederationDialog::getFederation()
 {
-    // TODO: update scene to add the nodes into nodesByUniqueID map!
-    core::RepoGraphScene *scene = new core::RepoGraphScene();
-    getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem(),
-                                    scene->getRoot());
-    scene->getRoot()->setName("<root>");
 
-    return scene;
+	return getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem());
 }
 
-void repo::gui::RepoFederationDialog::getFederationRecursively(
-        QStandardItem *parentItem,
-        core::RepoNodeAbstract *parentNode)
+std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
+	RepoFederationDialog::getFederationRecursively(
+        QStandardItem *parentItem)
 {
-    if (parentItem && parentNode)
-    {
-        for (int i = 0; i < parentItem->rowCount(); ++i)
-        {
-            QStandardItem *childItem = parentItem->child(i, Columns::PROJECT);
+	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> fedMap;
+	if (parentItem)
+	{
+		for (int i = 0; i < parentItem->rowCount(); ++i)
+		{
+			QStandardItem *childItem = parentItem->child(i, Columns::PROJECT);
 
-            RepoTransRefPair p =
-                    childItem->data(Qt::UserRole+1).value<RepoTransRefPair>();
-            core::RepoNodeTransformation *t = new core::RepoNodeTransformation(p.first);
-            parentNode->addChild(t);
-            t->addParent(parentNode);
+			RepoTransRefPair p =
+				childItem->data(Qt::UserRole + 1).value<RepoTransRefPair>();
+			fedMap[p.first] = p.second;
+			//------------------------------------------------------------------
+			// Recursive call (base case is not having any more children (rows)
+			std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  childmap
+				= getFederationRecursively(childItem);
+			fedMap.insert(childmap.begin(), childmap.end());
+		}
+	}
 
-            core::RepoNodeReference *ref = new core::RepoNodeReference(p.second);
-            t->addChild(ref);
-            ref->addParent(t);
-
-            //------------------------------------------------------------------
-            // Recursive call (base case is not having any more children (rows)
-            getFederationRecursively(childItem, t);
-        }
-    }
+	return fedMap;
 }

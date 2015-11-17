@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>322</width>
-    <height>519</height>
+    <width>331</width>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,6 +71,13 @@
      </property>
      <property name="textVisible">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="countLabel">
+     <property name="text">
+      <string>Showing 0 of 0</string>
      </property>
     </widget>
    </item>

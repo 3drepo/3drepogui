@@ -22,8 +22,6 @@
 #include "repo_glcwidget.h"
 #include "../primitives/repo_color.h"
 
-#include <Repo3DDiff>
-
 namespace repo {
 namespace gui {
 
@@ -41,8 +39,8 @@ protected :
     RepoGLCWidget *widgetA;
 
     RepoGLCWidget *widgetB;
-
-    core::Repo3DDiff *diff;
+/*
+    core::Repo3DDiff *diff;*/
 
 }; // end class
 

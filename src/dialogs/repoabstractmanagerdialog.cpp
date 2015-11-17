@@ -21,6 +21,8 @@
 
 #include "../primitives/repo_fontawesome.h"
 
+const QString repo::gui::RepoAbstractManagerDialog::COLUMNS_SETTINGS = "RepoAbstractManagerDialogColumnsSettings";
+
 repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
         const RepoIDBCache *dbCache,
         QWidget *parent)
@@ -31,9 +33,11 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getManagerIcon());
 
-    dbCache->setHostsComboBox(ui->hostComboBox);
-    dbCache->setDatabasesComboBox(ui->databaseComboBox);
-
+    if (dbCache)
+    {
+        dbCache->setHostsComboBox(ui->hostComboBox);
+        dbCache->setDatabasesComboBox(ui->databaseComboBox);
+    }
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(this);
     proxy = new QSortFilterProxyModel(this);
@@ -84,10 +88,17 @@ repo::gui::RepoAbstractManagerDialog::RepoAbstractManagerDialog(
 
     QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)),
                      this, SLOT(showCustomContextMenu(const QPoint&)));
+
+    QSettings settings(this->parentWidget());
+    ui->treeView->header()->restoreState(
+                settings.value(COLUMNS_SETTINGS).toByteArray());
 }
 
 repo::gui::RepoAbstractManagerDialog::~RepoAbstractManagerDialog()
 {
+    QSettings settings(this->parentWidget());
+    settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
+
     cancelAllThreads();
     delete model;
     delete proxy;
@@ -96,19 +107,14 @@ repo::gui::RepoAbstractManagerDialog::~RepoAbstractManagerDialog()
 
 bool repo::gui::RepoAbstractManagerDialog::cancelAllThreads()
 {
-    emit cancel();
+    //emit cancel();
     return threadPool.waitForDone(); // msecs
 }
 
 
-void repo::gui::RepoAbstractManagerDialog::clear(bool resizeColumns)
+void repo::gui::RepoAbstractManagerDialog::clear()
 {
     model->removeRows(0, model->rowCount());
-
-    if (resizeColumns)
-        for (int i = 0; i < model->columnCount(); ++i)
-            ui->treeView->resizeColumnToContents(i);
-
     ui->filterLineEdit->clear();
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);

@@ -15,20 +15,59 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repogui.h"
+
+
 #include <QApplication>
 #include <QResource>
+
+#include <repo/repo_controller.h>
+#include <repo/lib/repo_listener_abstract.h>
+
+#include "repogui.h"
+#include "repo/logger/repo_logger.h"
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+//    a.setAttribute(Qt::AA_UseDesktopOpenGL); // Qt5.5 support
+    a.setAttribute(Qt::AA_ShareOpenGLContexts); // https://blog.qt.io/blog/2014/09/10/qt-weekly-19-qopenglwidget/
 
     QCoreApplication::setOrganizationName("3D Repo");
     QCoreApplication::setOrganizationDomain("3drepo.org");
     QCoreApplication::setApplicationName("3D Repo GUI");
     QCoreApplication::setApplicationVersion("0.0.1");
 
-    repo::gui::RepoGUI w;
+	std::vector<repo::lib::RepoAbstractListener*> listeners;
+	listeners.push_back(repo::logger::RepoLogger::getInstance());
+
+	repo::RepoController *controller = new repo::RepoController(listeners);
+
+	//check env var to see whether a debug level is set
+	char* debug = getenv("REPO_DEBUG");
+	char* verbose = getenv("REPO_VERBOSE");
+
+	if (verbose)
+	{
+		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
+	}
+	else if (debug)
+	{
+		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::DEBUG);
+	}
+	else
+	{
+		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
+	}
+
+	controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
+
+	if (verbose) free(verbose);
+	if (debug)   free(debug);
+	
+    repo::gui::RepoGUI w(controller);
+
+
     w.show();
     w.startup();
 

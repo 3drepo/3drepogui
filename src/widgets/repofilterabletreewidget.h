@@ -25,6 +25,7 @@
 #include <QProgressBar>
 #include <QAbstractItemView>
 #include <QTreeView>
+#include <QSettings>
 
 namespace Ui {
     class RepoFilterableTreeWidget;
@@ -37,6 +38,8 @@ namespace gui {
 class RepoFilterableTreeWidget : public QWidget
 {
     Q_OBJECT
+
+    static const QString COLUMNS_SETTINGS;
 
 public:
 
@@ -92,9 +95,22 @@ public:
 
     QItemSelectionModel *getSelectionModel() const;
 
+    QStandardItem *getCurrentItem(int column = 0) const;
+
+    /*! Returns current selection indexes which is the number of columns by
+     * the number of rows selected.
+     */
     QModelIndexList getCurrentSelection() const;
 
     QTreeView *getTreeView() const;
+
+    //! Proxy
+    QStandardItem *getItemFromProxy(const QModelIndex &proxyIndex, int column = 0) const;
+
+    //! Model
+    QStandardItem *getItemFromSource(const QModelIndex &sourceIndex, int column = 0) const;
+
+
 
     //--------------------------------------------------------------------------
     //
