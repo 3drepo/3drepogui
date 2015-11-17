@@ -19,30 +19,59 @@
 #include "repo_3ddiffrenderer.h"
 
 repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
+	repo::RepoController *controller,
+	const repo::RepoToken *token,
         RepoGLCWidget *widgetA,
         RepoGLCWidget *widgetB)
-    : widgetA(widgetA)
-    , widgetB(widgetB)
+    : 
+	controller(controller),
+	token(token),
+	widgetA(widgetA),
+    widgetB(widgetB)
 {
-//    diff = new core::Repo3DDiff(widgetA->getRepoScene(), widgetB->getRepoScene());
+
+	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
+	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
+
+	std::vector<repoUUID> added, deleted, modified;
+	controller->compareScenesByIDs(token, sceneA, sceneB, added, deleted, modified);
+
+	for (const repoUUID id : added)
+	{
+		
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::green);
+	}
+
+	for (const repoUUID id : deleted)
+	{
+
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH )
+			widgetA->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::red);
+	}
+
+	for (const repoUUID id : modified)
+	{
+
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::blue);	
+
+	}
+
+	widgetB->repaintCurrent();
 //
-//    // TODO: make asynchronous
-//    diff->diff();
+//	//================================================= OLD CODE
 //
-//    core::RepoSelfSimilarSet selfSimilarSetA = diff->getSelfSimilarSetA();
-//
-//
-//    core::RepoSelfSimilarSet::iterator keysIt, valuesIt;
-//    for (keysIt = selfSimilarSetA.begin(); keysIt != selfSimilarSetA.end(); keysIt = valuesIt)
-//    {
-//        std::string key = (*keysIt).first;
-//        cout << endl;
-//        cout << "  key = '" << key << "'" << endl;
-//
-//        RepoColor color = RepoColor::getNext();
-//
-//
-//
+//    
 //
 //        std::pair<core::RepoSelfSimilarSet::iterator, core::RepoSelfSimilarSet::iterator> keyRange = selfSimilarSetA.equal_range(key);
 //        // Iterate over all map elements with key == key
@@ -60,17 +89,6 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 //                                                     0.9, color);
 //        }
 //    }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //    std::string currentKey("");
 //    RepoColor color;

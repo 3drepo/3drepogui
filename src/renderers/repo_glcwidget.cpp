@@ -681,6 +681,7 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceRenderProperties(
 void repo::gui::RepoGLCWidget::setGLCOccurrenceOpacity(
 	const QString &occurrenceName, qreal opacity, const QColor &color)
 {
+	repoLog("changing occurence properties for " + occurrenceName.toStdString());
 	GLC_RenderProperties properties;
 	if (opacity < 1.0)
 	{
