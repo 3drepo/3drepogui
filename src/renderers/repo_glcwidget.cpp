@@ -594,8 +594,12 @@ void repo::gui::RepoGLCWidget::setCamera(const CameraView& view)
 		glcViewport.cameraHandle()->setIsoView();
 	}
 
-	if (!glcWorld.isEmpty())
+	if (!glcWorld.isEmpty() && !glcWorld.boundingBox().isEmpty())
 		glcViewport.reframe(glcWorld.boundingBox());
+	else
+	{
+		repoLogError("GLC world is empty or bounding box is empty!");
+	}
 
     update();
 	emit cameraChangedSignal(*glcViewport.cameraHandle());
