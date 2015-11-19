@@ -494,11 +494,15 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             repo::core::model::RepoScene *refScene = scene->getSceneFromReference(scene->getViewGraph(),
         		node->getSharedID());
             repoLog("loading reference scene : " + ((repo::core::model::ReferenceNode*)node)->getProjectName());
-            if (refScene && refScene->getAllMeshes().size() > 0)
+            if (refScene && (refScene->getAllMeshes().size() > 0 || refScene->getAllReferences().size() > 0))
         	{
                 //There is nothing to visualise if there are no meshes
         		occurrence = convertSceneToOccurance(refScene);
         	}
+            else
+            {
+                repoLog("Referenced scene has no referenced nodes or meseh nodes. Skipping...");
+            }
 
         	break;
         }//switch
