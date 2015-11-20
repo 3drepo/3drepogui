@@ -614,7 +614,7 @@ void repo::gui::RepoGUI::open3DDiff()
             ui->actionLink->setChecked(true);
             ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 
-            Repo3DDiffRenderer(widgetA, widgetB);
+			Repo3DDiffRenderer(controller, ui->widgetRepository->getSelectedConnection(), widgetA, widgetB);
         }
     }
     else

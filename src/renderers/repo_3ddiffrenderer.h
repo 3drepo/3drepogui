@@ -21,6 +21,7 @@
 
 #include "repo_glcwidget.h"
 #include "../primitives/repo_color.h"
+#include <repo/repo_controller.h>
 
 namespace repo {
 namespace gui {
@@ -30,7 +31,11 @@ class Repo3DDiffRenderer
 {
 
 public:
-    Repo3DDiffRenderer(RepoGLCWidget *widgetA, RepoGLCWidget *widgetB);
+    Repo3DDiffRenderer(
+		repo::RepoController *controller,
+		const repo::RepoToken *token, 
+		RepoGLCWidget *widgetA, 
+		RepoGLCWidget *widgetB);
 
     ~Repo3DDiffRenderer();
 
@@ -39,6 +44,9 @@ protected :
     RepoGLCWidget *widgetA;
 
     RepoGLCWidget *widgetB;
+
+	repo::RepoController *controller;
+	const repo::RepoToken *token;
 /*
     core::Repo3DDiff *diff;*/
 
