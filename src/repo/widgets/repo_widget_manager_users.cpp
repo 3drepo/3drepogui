@@ -101,13 +101,13 @@ void RepoWidgetManagerUsers::edit(const QModelIndex &index)
     showEditDialog(getUser(index));
 }
 
-repo::core::model::RepoUser RepoWidgetManagerUsers::getUser()
+repo::core::model::RepoUser RepoWidgetManagerUsers::getUser() const
 {
     return getUser(getFilterableTree()->getCurrentIndex());
 }
 
 repo::core::model::RepoUser RepoWidgetManagerUsers::getUser(
-        const QModelIndex &index)
+        const QModelIndex &index) const
 {
     repo::core::model::RepoUser user;
     if (index.isValid())

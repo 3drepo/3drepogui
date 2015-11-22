@@ -76,10 +76,10 @@ public slots:
     void edit(const QModelIndex &index);
 
     //! Returns a currently selected user if any.
-    repo::core::model::RepoUser getUser();
+    repo::core::model::RepoUser getUser() const;
 
     //! Returns a user specified by the model index.
-    repo::core::model::RepoUser getUser(const QModelIndex &index);
+    repo::core::model::RepoUser getUser(const QModelIndex &index) const;
 
     virtual void refresh()
     { refresh(repo::core::model::RepoUser(),

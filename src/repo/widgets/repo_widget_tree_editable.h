@@ -91,7 +91,7 @@ public slots :
 
 public :
 
-    virtual RepoWidgetTreeFilterable* getFilterableTree();
+    virtual RepoWidgetTreeFilterable* getFilterableTree() const;
 
 protected :
 

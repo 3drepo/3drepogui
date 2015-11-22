@@ -27,7 +27,7 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
     QList<QString> headers;
-    headers << tr("Role") << tr("Collection");
+    headers << tr("Role") << tr("Database") << tr("Collection");
     headers << tr("Privileges") << tr("Access Rights") << tr("Inherited Roles");
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
@@ -61,9 +61,11 @@ void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
     item->setTristate(false);
     row.append(item);
 
+    // Database
+    row.append(new primitives::RepoStandardItem(role.getDatabase()));
+
     // Collection
-    std::string collection = role.getStringField(REPO_ROLE_LABEL_COLLECTION);
-    row.append(new primitives::RepoStandardItem(collection));
+    row.append(new primitives::RepoStandardItem(std::string()));
 
     // Privileges
     row.append(new primitives::RepoStandardItem(role.getPrivileges().size()));
@@ -76,6 +78,34 @@ void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);
+}
+
+
+void RepoWidgetManagerRoles::edit()
+{
+    showEditDialog(getRole());
+}
+
+void RepoWidgetManagerRoles::edit(const QModelIndex &index)
+{
+    showEditDialog(getRole(index));
+}
+
+repo::core::model::RepoRole RepoWidgetManagerRoles::getRole() const
+{
+    return getRole(getFilterableTree()->getCurrentIndex());
+}
+
+repo::core::model::RepoRole RepoWidgetManagerRoles::getRole(
+        const QModelIndex &index) const
+{
+    repo::core::model::RepoRole role;
+    if (index.isValid())
+    {
+        QModelIndex roleIndex = index.sibling(index.row(), (int) Columns::ROLE);
+        role = roleIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoRole>();
+    }
+    return role;
 }
 
 
@@ -142,3 +172,23 @@ void RepoWidgetManagerRoles::setDBConnection(
     this->database = database;
 }
 
+void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
+{
+    repo::widgets::RepoDialogRole roleDialog(role, this);
+    if (QDialog::Rejected == roleDialog.exec())
+    {
+        repoLog("Role dialog cancelled by user.\n");
+        std::cout << tr("Role dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        repoLog("create or update role...\n");
+        // Create or update user
+//        refresh(userDialog.getUpdatedUser(),
+//                userDialog.isNewUser()
+//                ? repo::worker::UsersWorker::Command::INSERT
+//                : repo::worker::UsersWorker::Command::UPDATE);
+    }
+
+
+}
