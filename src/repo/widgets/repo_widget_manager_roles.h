@@ -77,10 +77,10 @@ public slots:
 
 public :
 
-    void setDBConnection(
-            repo::RepoController *controller,
+    void setDBConnection(repo::RepoController *controller,
             const repo::RepoToken* token,
-            const std::string& database);
+            const std::string& database,
+            const QStringList &projects);
 
 private :
 
@@ -89,6 +89,8 @@ private :
     std::string database;
 
     repo::RepoController *controller;
+
+    QStringList projects;
 
 };
 

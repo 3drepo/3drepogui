@@ -45,7 +45,10 @@ public :
 
     ~RepoComboBoxDelegate();
 
-    QWidget *createEditor(QWidget * parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
+    QWidget *createEditor(
+            QWidget * parent,
+            const QStyleOptionViewItem &,
+            const QModelIndex &index) const;
 
 private :
 

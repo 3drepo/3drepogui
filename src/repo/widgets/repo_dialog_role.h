@@ -22,10 +22,20 @@
 // Qt
 #include <QDialog>
 #include <QString>
+#include <QHash>
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QTreeWidgetItem>
+#include <QStringList>
+
+//------------------------------------------------------------------------------
+// GUI
+#include "../../primitives/repocomboboxdelegate.h"
 
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_role.h>
+
 
 namespace Ui {
 class RepoDialogRole;
@@ -42,9 +52,25 @@ public:
 
     explicit RepoDialogRole(
             const repo::core::model::RepoRole &role,
+            const QStringList &projects,
             QWidget *parent = 0);
 
     ~RepoDialogRole();
+
+public slots:
+
+    QTreeWidgetItem *addItem();
+
+    QTreeWidgetItem *addItem(
+            const std::string &project,
+            const repo::core::model::AccessRight &rw);
+
+    //! Removes currently selected Access Rights item.
+    void removeItem();
+
+private :
+
+    QString accessRightToString(const repo::core::model::AccessRight &rw);
 
 private:
 
@@ -53,6 +79,12 @@ private:
 
     // Role to edit
     repo::core::model::RepoRole role;
+
+    //! RW delegate
+    repo::gui::RepoComboBoxDelegate *rwDelegate;
+
+    QStringList projects;
+
 };
 
 } // end widgets

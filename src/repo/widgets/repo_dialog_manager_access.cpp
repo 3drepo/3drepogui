@@ -64,7 +64,13 @@ void RepoDialogManagerAccess::refresh()
     ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->userManagerWidget->refresh();
 
-    ui->rolesManagerWidget->setDBConnection(controller, getToken(), getDatabase());
+    QStringList projects = dbCache->getProjects(ui->hostComboBox->currentText(),
+                                                ui->databaseComboBox->currentText());
+    ui->rolesManagerWidget->setDBConnection(controller, getToken(), getDatabase(), projects);
+
+
+
+
     ui->rolesManagerWidget->refresh();
 }
 

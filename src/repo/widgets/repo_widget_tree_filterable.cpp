@@ -90,6 +90,7 @@ void RepoWidgetTreeFilterable::clear()
 {
     model->removeRows(0, model->rowCount());
     ui->lineEdit->clear();
+    updateCountLabel();
 }
 
 

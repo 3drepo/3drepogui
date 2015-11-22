@@ -165,16 +165,18 @@ void RepoWidgetManagerRoles::refresh()
 void RepoWidgetManagerRoles::setDBConnection(
         repo::RepoController *controller,
         const repo::RepoToken* token,
-        const std::string& database)
+        const std::string& database,
+        const QStringList &projects)
 {
     this->controller = controller;
     this->token = token;
     this->database = database;
+    this->projects = projects;
 }
 
 void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
 {
-    repo::widgets::RepoDialogRole roleDialog(role, this);
+    repo::widgets::RepoDialogRole roleDialog(role, projects, this);
     if (QDialog::Rejected == roleDialog.exec())
     {
         repoLog("Role dialog cancelled by user.\n");

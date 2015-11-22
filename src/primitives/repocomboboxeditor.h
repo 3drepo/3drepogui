@@ -44,12 +44,16 @@ public:
 
     typedef QList<std::list<std::string> > SeparatedEntries;
 
+public :
+
     explicit RepoComboBoxEditor(const SeparatedEntries &entries, QWidget *parent = 0);
 
     ~RepoComboBoxEditor();
 
 public:
+
     QString value() const;
+
     void setValue(QString value);
 
     //! Returns an editor widget with the given parent.
@@ -57,6 +61,14 @@ public:
 
     //! Returns empty QByteArray.
     QByteArray valuePropertyName() const;
+
+public :
+
+    static SeparatedEntries getSeparatedEntries(
+            const std::list<std::string> &list);
+
+    static SeparatedEntries getSeparatedEntries(
+            const QStringList &list);
 
 private:
 
