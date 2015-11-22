@@ -63,6 +63,9 @@ void RepoDialogManagerAccess::refresh()
 {
     ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->userManagerWidget->refresh();
+
+    ui->rolesManagerWidget->setDBConnection(controller, getToken(), getDatabase());
+    ui->rolesManagerWidget->refresh();
 }
 
 void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)

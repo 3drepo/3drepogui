@@ -56,6 +56,7 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_modified_nodes.h \
 	src/repo/workers/repo_worker_optimize.h \
 	src/repo/workers/repo_worker_project_settings.h \
+	src/repo/workers/repo_worker_roles.h \
 	src/repo/workers/repo_worker_scene_graph.h \
 	src/repo/workers/repo_worker_users.h \
 	src/widgets/reposelectiontreedockwidget.h \
@@ -119,6 +120,7 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_modified_nodes.cpp \
 	src/repo/workers/repo_worker_optimize.cpp \
 	src/repo/workers/repo_worker_project_settings.cpp \
+	src/repo/workers/repo_worker_roles.cpp \
 	src/repo/workers/repo_worker_scene_graph.cpp \
 	src/repo/workers/repo_worker_users.cpp \
 	src/widgets/reposelectiontreedockwidget.cpp \

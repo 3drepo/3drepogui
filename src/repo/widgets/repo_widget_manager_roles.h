@@ -21,6 +21,13 @@
 // GUI
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
+#include "../workers/repo_worker_roles.h"
+
+//------------------------------------------------------------------------------
+// CORE
+#include <repo/core/model/bson/repo_bson_role.h>
+
+Q_DECLARE_METATYPE(repo::core::model::RepoRole)
 
 namespace repo {
 namespace widgets {
@@ -31,7 +38,7 @@ class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
 
     static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { ROLE, DATABASE, COLLECTION, READ, WRITE };
+    enum class Columns { ROLE, COLLECTION, PRIVILEGES, PROJECT_ACCESS_RIGHTS, INHERITED_ROLES };
 
 public:
 
@@ -40,6 +47,8 @@ public:
     ~RepoWidgetManagerRoles();
 
 public slots:
+
+    void addRole(const repo::core::model::RepoRole &role);
 
     //! Updates selected item.
     virtual void edit() {}
@@ -55,6 +64,21 @@ public slots:
 
     //! Shows edit dialog.
     virtual void showEditDialog() {}
+
+public :
+
+    void setDBConnection(
+            repo::RepoController *controller,
+            const repo::RepoToken* token,
+            const std::string& database);
+
+private :
+
+    const repo::RepoToken* token;
+
+    std::string database;
+
+    repo::RepoController *controller;
 
 };
 

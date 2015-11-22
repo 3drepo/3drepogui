@@ -17,6 +17,8 @@
 
 #include "repo_widget_manager_roles.h"
 
+#include "../primitives/repo_standard_item.h"
+
 using namespace repo::widgets;
 
 const QString RepoWidgetManagerRoles::COLUMNS_SETTINGS = "RepoWidgetManagerRolesColumnsSettings";
@@ -25,8 +27,8 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
     QList<QString> headers;
-    headers << tr("Role") << tr("Database") << tr("Collection");
-    headers << tr("Read") << tr("Write");
+    headers << tr("Role") << tr("Collection");
+    headers << tr("Privileges") << tr("Access Rights") << tr("Inherited Roles");
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -41,7 +43,102 @@ RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
 //     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
+
+
+void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
+{
+    QList<QStandardItem *> row;
+    //--------------------------------------------------------------------------
+    // User object itself
+    QVariant var;
+    var.setValue(role);
+
+    repo::primitives::RepoStandardItem *item =
+            new repo::primitives::RepoStandardItem(role.getName());
+    item->setData(var);
+    item->setCheckable(true);
+    item->setCheckState(Qt::Checked);
+    item->setTristate(false);
+    row.append(item);
+
+    // Collection
+    std::string collection = role.getStringField(REPO_ROLE_LABEL_COLLECTION);
+    row.append(new primitives::RepoStandardItem(collection));
+
+    // Privileges
+    row.append(new primitives::RepoStandardItem(role.getPrivileges().size()));
+
+    // Project access rights
+    row.append(new primitives::RepoStandardItem(role.getProjectAccessRights().size()));
+
+    // Inherited roles
+    row.append(new primitives::RepoStandardItem(role.getInheritedRoles().size()));
+
+    //--------------------------------------------------------------------------
+    getFilterableTree()->addTopLevelRow(row);
+}
+
+
+
 void RepoWidgetManagerRoles::refresh()
 {
+    if (mutex.tryLock() && cancelAllThreads())
+    {
+        QProgressBar* progressBar = getFilterableTree()->getProgressBar();
 
+        repo::worker::RepoWorkerRoles* worker =
+                new repo::worker::RepoWorkerRoles(token, controller, database);
+        worker->setAutoDelete(true);
+
+        // Direct connection ensures cancel signal is processed ASAP
+        QObject::connect(
+                    this, &RepoWidgetManagerRoles::cancel,
+                    worker, &repo::worker::RepoWorkerRoles::cancel, Qt::DirectConnection);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::roleFetched,
+                    this, &RepoWidgetManagerRoles::addRole);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::finished,
+                    progressBar, &QProgressBar::hide);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::finished,
+                    this, &RepoWidgetManagerRoles::unlockMutex);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::finished,
+                    this, &RepoWidgetManagerRoles::finish);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::progressRangeChanged,
+                    progressBar, &QProgressBar::setRange);
+
+        QObject::connect(
+                    worker, &repo::worker::RepoWorkerRoles::progressValueChanged,
+                    progressBar, &QProgressBar::setValue);
+        threadPool.start(worker);
+
+        //----------------------------------------------------------------------
+        // Clear any previous entries
+        clear();
+
+        //----------------------------------------------------------------------
+        progressBar->show();
+        //        ui->hostComboBox->setEnabled(false);
+        //        ui->databaseComboBox->setEnabled(false);
+
+    }
 }
+
+void RepoWidgetManagerRoles::setDBConnection(
+        repo::RepoController *controller,
+        const repo::RepoToken* token,
+        const std::string& database)
+{
+    this->controller = controller;
+    this->token = token;
+    this->database = database;
+}
+

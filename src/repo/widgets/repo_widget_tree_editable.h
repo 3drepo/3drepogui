@@ -23,6 +23,7 @@
 
 //------------------------------------------------------------------------------
 // Qt
+#include <QMutex>
 #include <QWidget>
 #include <QThreadPool>
 #include <QStandardItemModel>
@@ -84,6 +85,10 @@ public slots :
     //! Shows custom context menu for treeView.
     virtual void showCustomContextMenu(const QPoint &);
 
+    //! Unlocks refresh mutex.
+    virtual void unlockMutex() { mutex.unlock(); }
+
+
 public :
 
     virtual RepoWidgetTreeFilterable* getFilterableTree();
@@ -92,6 +97,9 @@ protected :
 
     //! Threadpool for this object only.
     QThreadPool threadPool;
+
+    //! Refresh mutex.
+    QMutex mutex;
 
     Ui::RepoWidgetTreeEditable *ui;
 };
