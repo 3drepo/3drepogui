@@ -43,7 +43,9 @@ public:
     RepoWorkerRoles(
             const repo::RepoToken *token,
             repo::RepoController *controller,
-            const std::string &database);
+            const std::string &database,
+            const repo::core::model::RepoRole &role = repo::core::model::RepoRole(),
+            Command command = Command::INSERT);
 
     //! Default empty destructor.
     ~RepoWorkerRoles();
@@ -67,6 +69,10 @@ private:
 
     //! Database name.
     const std::string database;
+
+    repo::core::model::RepoRole role;
+
+    Command command;
 
 }; // end class
 

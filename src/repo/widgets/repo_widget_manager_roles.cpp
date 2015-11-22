@@ -27,8 +27,8 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
     QList<QString> headers;
-    headers << tr("Role") << tr("Database") << tr("Collection");
-    headers << tr("Privileges") << tr("Access Rights") << tr("Inherited Roles");
+    headers << tr("Role") << tr("Database");
+    headers << tr("Access Rights") << tr("Privileges") << tr("Inherited Roles");
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -64,14 +64,11 @@ void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
     // Database
     row.append(new primitives::RepoStandardItem(role.getDatabase()));
 
-    // Collection
-    row.append(new primitives::RepoStandardItem(std::string()));
+    // Project access rights
+    row.append(new primitives::RepoStandardItem(role.getProjectAccessRights().size()));
 
     // Privileges
     row.append(new primitives::RepoStandardItem(role.getPrivileges().size()));
-
-    // Project access rights
-    row.append(new primitives::RepoStandardItem(role.getProjectAccessRights().size()));
 
     // Inherited roles
     row.append(new primitives::RepoStandardItem(role.getInheritedRoles().size()));
@@ -110,14 +107,21 @@ repo::core::model::RepoRole RepoWidgetManagerRoles::getRole(
 
 
 
-void RepoWidgetManagerRoles::refresh()
+void RepoWidgetManagerRoles::refresh(
+        const repo::core::model::RepoRole &role,
+        repo::worker::RepoWorkerRoles::Command command)
 {
     if (mutex.tryLock() && cancelAllThreads())
     {
         QProgressBar* progressBar = getFilterableTree()->getProgressBar();
 
         repo::worker::RepoWorkerRoles* worker =
-                new repo::worker::RepoWorkerRoles(token, controller, database);
+                new repo::worker::RepoWorkerRoles(
+                    token,
+                    controller,
+                    database,
+                    role,
+                    command);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP
@@ -174,9 +178,36 @@ void RepoWidgetManagerRoles::setDBConnection(
     this->projects = projects;
 }
 
+
+void RepoWidgetManagerRoles::removeItem()
+{
+    repo::core::model::RepoRole role = this->getRole();
+    switch(QMessageBox::warning(this,
+                                tr("Remove role?"),
+                                tr("Are you sure you want to remove '") + QString::fromStdString(role.getName()) + "'?",
+                                tr("&Yes"),
+                                tr("&No"),
+                                QString::null, 1, 1))
+    {
+    case 0: // yes
+        refresh(role, repo::worker::RepoWorkerRoles::Command::DROP);
+        //FIXME: get a worker to do the work, then signal finish to refresh like db widget.
+        break;
+    case 1: // no
+        std::cout << "Remove role warning box cancelled by user." << std::endl;
+        break;
+    }
+}
+
+
+
 void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
 {
-    repo::widgets::RepoDialogRole roleDialog(role, projects, this);
+    repo::widgets::RepoDialogRole roleDialog(
+                role,
+                QString::fromStdString(database),
+                projects,
+                this);
     if (QDialog::Rejected == roleDialog.exec())
     {
         repoLog("Role dialog cancelled by user.\n");
@@ -186,10 +217,10 @@ void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &r
     {
         repoLog("create or update role...\n");
         // Create or update user
-//        refresh(userDialog.getUpdatedUser(),
-//                userDialog.isNewUser()
-//                ? repo::worker::UsersWorker::Command::INSERT
-//                : repo::worker::UsersWorker::Command::UPDATE);
+        refresh(roleDialog.getUpdatedRole(),
+                roleDialog.isNewRole()
+                ? repo::worker::RepoWorkerRoles::Command::INSERT
+                : repo::worker::RepoWorkerRoles::Command::UPDATE);
     }
 
 

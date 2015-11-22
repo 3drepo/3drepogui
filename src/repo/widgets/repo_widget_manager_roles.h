@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include <QMessageBox>
+
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_widget_tree_editable.h"
@@ -39,7 +41,7 @@ class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
 
     static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { ROLE, DATABASE, COLLECTION, PRIVILEGES, ACCESS_RIGHTS, INHERITED_ROLES };
+    enum class Columns { ROLE, DATABASE, ACCESS_RIGHTS, PRIVILEGES, INHERITED_ROLES };
 
 public:
 
@@ -64,11 +66,18 @@ public slots:
     //! Returns role based on given model index.
     repo::core::model::RepoRole getRole(const QModelIndex &index) const;
 
-    //! Refreshes the current list
-    virtual void refresh();
+    //! Refreshes the current list.
+    virtual void refresh()
+    { refresh(repo::core::model::RepoRole(),
+              repo::worker::RepoWorkerRoles::Command::INSERT); }
+
+    //! Refreshes the current list.
+    void refresh(
+            const core::model::RepoRole &role,
+            repo::worker::RepoWorkerRoles::Command command);
 
     //! Removes item and refreshes the DB if necessary.
-    virtual void removeItem() {}
+    virtual void removeItem();
 
     //! Shows edit dialog.
     virtual void showEditDialog() { showEditDialog(repo::core::model::RepoRole()); }

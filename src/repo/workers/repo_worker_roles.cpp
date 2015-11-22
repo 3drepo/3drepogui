@@ -23,10 +23,14 @@ using namespace repo::worker;
 RepoWorkerRoles::RepoWorkerRoles(
         const repo::RepoToken *token,
         repo::RepoController *controller,
-        const std::string &database)
+        const std::string &database,
+        const repo::core::model::RepoRole &role,
+        Command command)
     : token(token)
     , controller(controller)
     , database(database)
+    , role(role)
+    , command(command)
 {
     qRegisterMetaType<repo::core::model::RepoUser>("repo::core::model::RepoRole");
 }
@@ -43,16 +47,37 @@ void RepoWorkerRoles::run()
     int jobsDone = 0;
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
+    //--------------------------------------------------------------------------
+    // Execute command (such as drop or update user) if any
+    if (!role.isEmpty())
+    {
+        switch (command)
+        {
+        case Command::INSERT :
+            repoLog("Adding new role\n");
+            controller->insertRole(token, role);
+            break;
+        case Command::UPDATE :
+            repoLog("Updating role\n");
+            controller->updateRole(token, role);
+            break;
+        case Command::DROP:
+            repoLog("Removing role\n");
+            controller->removeRole(token, role);
+        }
+    }
+
+
     std::vector<repo::core::model::RepoRole> roles =
             controller->getRolesFromDatabase(token, database);
 
+    jobsCount = roles.size();
+    emit progressRangeChanged(0, jobsCount);
     for (int i = 0; i < roles.size(); ++i)
     {
         emit roleFetched(roles[i]);
+        emit progressValueChanged(jobsDone++);
     }
-
-    emit progressValueChanged(jobsDone++);
-
 
     //--------------------------------------------------------------------------
     emit progressValueChanged(jobsCount);

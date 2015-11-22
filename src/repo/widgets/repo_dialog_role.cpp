@@ -23,6 +23,7 @@ using namespace repo::widgets;
 
 RepoDialogRole::RepoDialogRole(
         const repo::core::model::RepoRole &role,
+        const QString &database,
         const QStringList &projects,
         QWidget *parent)
     : QDialog(parent)
@@ -31,8 +32,10 @@ RepoDialogRole::RepoDialogRole(
     , ui(new Ui::RepoDialogRole)
 {
     ui->setupUi(this);
-
-    ui->databaseComboBox->addItem(QString::fromStdString(role.getDatabase()));
+    ui->databaseComboBox->addItem(
+                role.getDatabase().empty()
+                ? database
+                : QString::fromStdString(role.getDatabase()));
     ui->databaseComboBox->setEnabled(false);
     ui->nameLineEdit->setText(QString::fromStdString(role.getName()));
 
@@ -47,7 +50,10 @@ RepoDialogRole::RepoDialogRole(
     rwSepEntries << repo::gui::RepoComboBoxEditor::getSeparatedEntries(projects);
     rwSepEntries << repo::gui::RepoComboBoxEditor::getSeparatedEntries(rwList);
     rwDelegate = new repo::gui::RepoComboBoxDelegate(rwSepEntries);
-    ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
+
+    if (projects.size() > 0)
+        ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
+
     ui->accessRightsTreeWidget->setItemDelegateForColumn(1, rwDelegate);
 
     //--------------------------------------------------------------------------
@@ -113,6 +119,47 @@ void RepoDialogRole::removeItem()
     }
 }
 
+std::string RepoDialogRole::getName() const
+{
+    return ui->nameLineEdit->text().toStdString();
+}
+
+std::string RepoDialogRole::getDatabase() const
+{
+    return ui->databaseComboBox->currentText().toStdString();
+}
+
+std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() const
+{
+    std::vector<repo::core::model::RepoPermission> permissions;
+    for (int i = 0; i < ui->accessRightsTreeWidget->topLevelItemCount(); ++i)
+    {
+        repo::core::model::RepoPermission permission;
+        QTreeWidgetItem *item = ui->accessRightsTreeWidget->topLevelItem(i);
+
+        if (item)
+        {
+            permission.database = getDatabase();
+            permission.project = item->data(0, Qt::EditRole).toString().toStdString();
+            permission.permission = stringToAccessRight(item->data(1, Qt::EditRole).toString());
+            permissions.push_back(permission);
+        }
+    }
+    return permissions;
+}
+
+bool RepoDialogRole::isNewRole() const
+{
+    return getName() != role.getName();
+}
+
+repo::core::model::RepoRole RepoDialogRole::getUpdatedRole()
+{
+    repo::core::model::RepoRole role = repo::core::model::RepoBSONFactory::makeRepoRole(
+                getName(), getDatabase(), getPermissions());
+    return role;
+}
+
 QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight &rw)
 {
     QString str;
@@ -129,4 +176,17 @@ QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight
         break;
     }
     return str;
+}
+
+repo::core::model::AccessRight RepoDialogRole::stringToAccessRight(
+        const QString &str)
+{
+    repo::core::model::AccessRight ar;
+    if (str == tr("Read"))
+        ar = repo::core::model::AccessRight::READ;
+    else if (str == tr("ReadWrite"))
+        ar = repo::core::model::AccessRight::READ_WRITE;
+    else if (str == tr("Write"))
+        ar = repo::core::model::AccessRight::WRITE;
+    return ar;
 }

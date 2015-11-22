@@ -35,6 +35,7 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_role.h>
+#include <repo/core/model/bson/repo_bson_factory.h>
 
 
 namespace Ui {
@@ -52,6 +53,7 @@ public:
 
     explicit RepoDialogRole(
             const repo::core::model::RepoRole &role,
+            const QString &database,
             const QStringList &projects,
             QWidget *parent = 0);
 
@@ -68,9 +70,23 @@ public slots:
     //! Removes currently selected Access Rights item.
     void removeItem();
 
+    std::string getName() const;
+
+    std::string getDatabase() const;
+
+    std::vector<repo::core::model::RepoPermission> getPermissions() const;
+
+    bool isNewRole() const;
+
+public :
+
+    repo::core::model::RepoRole getUpdatedRole();
+
 private :
 
-    QString accessRightToString(const repo::core::model::AccessRight &rw);
+    static QString accessRightToString(const repo::core::model::AccessRight &rw);
+
+    static repo::core::model::AccessRight stringToAccessRight(const QString &str);
 
 private:
 
