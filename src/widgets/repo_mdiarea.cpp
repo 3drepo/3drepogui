@@ -17,7 +17,7 @@
 
 #include "repo_mdiarea.h"
 #include "../repo/workers/repo_worker_scene_graph.h"
-#include "../renderers/repo_glcwidget.h"
+#include "../renderers/repo_widget_rendering.h"
 #include "../renderers/repo_webview.h"
 
 
@@ -40,15 +40,13 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
     //--------------------------------------------------------------------------
 	// Needed for 3D file loading and signal passing.
 	qRegisterMetaType<GLC_World>("GLC_World&");
-	//qRegisterMetaType<repo::core::RepoGraphScene>("repo::core::RepoGraphScene*");
-
 	qRegisterMetaType<QVector<GLfloat>>("QVector<GLfloat>");
 
 
     //--------------------------------------------------------------------------
-	// RepoGLCWidget selection
+    // RepoRenderingWidget selection
 	qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
-	qRegisterMetaType<const repo::gui::RepoGLCWidget*>("const repo::gui::RepoGLCWidget*");
+    qRegisterMetaType<const repo::gui::RepoRenderingWidget*>("const repo::gui::RepoRenderingWidget*");
 
 
     //--------------------------------------------------------------------------
@@ -71,12 +69,12 @@ repo::gui::RepoMdiArea::~RepoMdiArea()
 
 void repo::gui::RepoMdiArea::chainSubWindows(bool checked)
 {
-	std::vector<RepoGLCWidget *> visited;
-    std::vector<RepoGLCWidget*>::size_type i, j;
-    std::vector<RepoGLCWidget*> widgets = getWidgets<RepoGLCWidget*>();
+    std::vector<RepoRenderingWidget *> visited;
+    std::vector<RepoRenderingWidget*>::size_type i, j;
+    std::vector<RepoRenderingWidget*> widgets = getWidgets<RepoRenderingWidget*>();
     for (j = 0; j < widgets.size(); ++j)
     {
-        RepoGLCWidget * widget = widgets[j];
+        RepoRenderingWidget * widget = widgets[j];
         // dis/connect hooks to all previous windows
 		for(i = 0; i != visited.size(); ++i)
 		{
@@ -130,7 +128,7 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 //         ++it)
 //	{
 //        RepoMdiSubWindow *subWindow = *it;
-//        RepoGLCWidget *widget = subWindow->widget<RepoGLCWidget*>();
+//        RepoRenderingWidget *widget = subWindow->widget<RepoRenderingWidget*>();
 //        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
 //        for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
 //             i < meshes.size(); ++i)
@@ -196,7 +194,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
     // FIXME: timer timeout
 //	QObject::connect(
 //        &fpsTimer, &QTimer::timeout,
-//        repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
+//        repoSubWindow->widget<RepoRenderingWidget*>(), &RepoRenderingWidget::update);
 
 	this->update();
 	this->repaint();
@@ -219,7 +217,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
     // FIXME
 //	QObject::connect(
 //            &fpsTimer, &QTimer::timeout,
-//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
+//            repoSubWindow->widget<RepoRenderingWidget*>(), &RepoRenderingWidget::update);
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -243,7 +241,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 }
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-	RepoGLCWidget* widget)
+    RepoRenderingWidget* widget)
 {
 	RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
 	repoSubWindow->setWidget(widget);
@@ -253,7 +251,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
     // FIXME
 //    QObject::connect(
 //            &fpsTimer, &QTimer::timeout,
-//            repoSubWindow->widget<RepoGLCWidget*>(), &RepoGLCWidget::update);
+//            repoSubWindow->widget<RepoRenderingWidget*>(), &RepoRenderingWidget::update);
 
 	this->update();
 	this->repaint();

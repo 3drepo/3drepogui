@@ -19,7 +19,7 @@
 #ifndef REPO_3D_DIFF_RENDERER_H
 #define REPO_3D_DIFF_RENDERER_H
 
-#include "repo_glcwidget.h"
+#include "repo_widget_rendering.h"
 #include "../primitives/repo_color.h"
 #include <repo/repo_controller.h>
 
@@ -34,16 +34,16 @@ public:
     Repo3DDiffRenderer(
 		repo::RepoController *controller,
 		const repo::RepoToken *token, 
-		RepoGLCWidget *widgetA, 
-		RepoGLCWidget *widgetB);
+        RepoRenderingWidget *widgetA,
+        RepoRenderingWidget *widgetB);
 
     ~Repo3DDiffRenderer();
 
 protected :
 
-    RepoGLCWidget *widgetA;
+    RepoRenderingWidget *widgetA;
 
-    RepoGLCWidget *widgetB;
+    RepoRenderingWidget *widgetB;
 
 	repo::RepoController *controller;
 	const repo::RepoToken *token;
