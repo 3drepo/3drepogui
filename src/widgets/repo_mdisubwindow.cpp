@@ -17,7 +17,7 @@
 
 #include "repo_mdisubwindow.h"
 #include "../widgets/repowidgetassimpflags.h"
-#include "../renderers/repo_widget_rendering.h"
+#include "../repo/widgets//repo_widget_rendering.h"
 #include "../primitives/repo_fontawesome.h"
 
 #include "../repo/workers/repo_worker_glc_export.h"
@@ -77,7 +77,7 @@ RepoMdiSubWindow::~RepoMdiSubWindow()
 
 void RepoMdiSubWindow::setWidget(const QString& windowTitle)
 {
-    setWidget(new RepoRenderingWidget(0, windowTitle));
+    setWidget(new widgets::RepoRenderingWidget(0, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -85,7 +85,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath, repo::RepoController *controller)
 {
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new RepoRenderingWidget(0, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widgets::RepoRenderingWidget(0, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -158,7 +158,7 @@ void RepoMdiSubWindow::finishedLoadingScene(
 void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
 {
 	repoLog("finished Loading GLC");
-    RepoRenderingWidget *widget = dynamic_cast<RepoRenderingWidget*>(this->widget());
+    widgets::RepoRenderingWidget *widget = dynamic_cast<widgets::RepoRenderingWidget*>(this->widget());
 	if (widget)
 	{
 		if (repoScene)

@@ -17,9 +17,9 @@
 
 
 #include "repo_widget_rendering.h"
-#include "../primitives/repo_fontawesome.h"
-#include "../primitives/repo_color.h"
-#include "../repo/logger/repo_logger.h"
+#include "../../primitives/repo_fontawesome.h"
+#include "../../primitives/repo_color.h"
+#include "../logger/repo_logger.h"
 //------------------------------------------------------------------------------
 #include <iostream>
 //------------------------------------------------------------------------------
@@ -61,16 +61,18 @@ uint32_t GetTickCount()
 #endif
 
 
+using namespace repo::gui::widgets;
+
 //------------------------------------------------------------------------------
 //
 // Static variables
 //
 //------------------------------------------------------------------------------
-const double repo::gui::RepoRenderingWidget::ZOOM_FACTOR = 1.2;
+const double RepoRenderingWidget::ZOOM_FACTOR = 1.2;
 
-//QList<GLC_Shader*> repo::gui::RepoRenderingWidget::shaders;
+//QList<GLC_Shader*> RepoRenderingWidget::shaders;
 
-repo::gui::RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, const QString& windowTitle)
+RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, const QString& windowTitle)
     : QOpenGLWidget(parent)
 	, glcLight()
 	, glcViewport()
@@ -136,14 +138,14 @@ repo::gui::RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, const QStri
 
 }
 
-void repo::gui::RepoRenderingWidget::repaintCurrent()
+void RepoRenderingWidget::repaintCurrent()
 {
     makeCurrent();
     paintGL();
     doneCurrent();
 }
 
-repo::gui::RepoRenderingWidget::~RepoRenderingWidget()
+RepoRenderingWidget::~RepoRenderingWidget()
 {
     makeCurrent();
 
@@ -169,7 +171,7 @@ repo::gui::RepoRenderingWidget::~RepoRenderingWidget()
 // OpenGL
 //
 //------------------------------------------------------------------------------
-void repo::gui::RepoRenderingWidget::initializeGL()
+void RepoRenderingWidget::initializeGL()
 {
     initializeOpenGLFunctions();
     GLC_State::init();
@@ -228,7 +230,7 @@ void repo::gui::RepoRenderingWidget::initializeGL()
 	GLC_RenderStatistics::setActivationFlag(true);
 }
 
-void repo::gui::RepoRenderingWidget::initializeShaders()
+void RepoRenderingWidget::initializeShaders()
 {
     makeCurrent();
 	
@@ -299,7 +301,7 @@ void repo::gui::RepoRenderingWidget::initializeShaders()
 
 }
 
-void repo::gui::RepoRenderingWidget::paintGL()
+void RepoRenderingWidget::paintGL()
 {
 	try
 	{
@@ -404,7 +406,7 @@ void repo::gui::RepoRenderingWidget::paintGL()
 	//QGLFramebufferObject::bindDefault();
 }
 
-void repo::gui::RepoRenderingWidget::paintInfo()
+void RepoRenderingWidget::paintInfo()
 {
 	static QLocale locale;
 	//--------------------------------------------------------------------------
@@ -505,13 +507,13 @@ void repo::gui::RepoRenderingWidget::paintInfo()
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void repo::gui::RepoRenderingWidget::resizeGL(int width, int height)
+void RepoRenderingWidget::resizeGL(int width, int height)
 {
     makeCurrent();
 	glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
 }
 
-void repo::gui::RepoRenderingWidget::reframe(const GLC_BoundingBox& boundingBox)
+void RepoRenderingWidget::reframe(const GLC_BoundingBox& boundingBox)
 {
 	const GLC_BoundingBox collectionBox = glcWorld.boundingBox();
 	if (boundingBox.isEmpty())
@@ -537,7 +539,7 @@ void repo::gui::RepoRenderingWidget::reframe(const GLC_BoundingBox& boundingBox)
 	}
 }
 
-void repo::gui::RepoRenderingWidget::reframeOnSelection()
+void RepoRenderingWidget::reframeOnSelection()
 {
 	GLC_BoundingBox SelectionBox;
 	PointerViewInstanceHash* pSelections = glcWorld.collection()->selection();
@@ -557,17 +559,17 @@ void repo::gui::RepoRenderingWidget::reframeOnSelection()
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoRenderingWidget::broadcastCameraChange()
+void RepoRenderingWidget::broadcastCameraChange()
 {
 	emit cameraChangedSignal(*glcViewport.cameraHandle());
 }
 
-void repo::gui::RepoRenderingWidget::setCamera(const GLC_Camera& camera)
+void RepoRenderingWidget::setCamera(const GLC_Camera& camera)
 {
 	glcViewport.cameraHandle()->setCam(camera);
     update();
 }
-void repo::gui::RepoRenderingWidget::setCamera(const CameraView& view)
+void RepoRenderingWidget::setCamera(const CameraView& view)
 {
 	switch (view)
 	{
@@ -605,7 +607,7 @@ void repo::gui::RepoRenderingWidget::setCamera(const CameraView& view)
 	emit cameraChangedSignal(*glcViewport.cameraHandle());
 }
 
-void repo::gui::RepoRenderingWidget::setGLCMeshColors(
+void RepoRenderingWidget::setGLCMeshColors(
 	const QString &name,
 	const QVector<GLfloat> &colors,
     const bool isupdate)
@@ -621,7 +623,7 @@ void repo::gui::RepoRenderingWidget::setGLCMeshColors(
 	}
 }
 
-void repo::gui::RepoRenderingWidget::setGLCMeshColors(
+void RepoRenderingWidget::setGLCMeshColors(
 	const float r,
 	const float g,
 	const float b,
@@ -646,7 +648,7 @@ void repo::gui::RepoRenderingWidget::setGLCMeshColors(
     update();
 }
 
-void repo::gui::RepoRenderingWidget::setGLCMeshOpacity(const QString &name, qreal opacity)
+void RepoRenderingWidget::setGLCMeshOpacity(const QString &name, qreal opacity)
 {
 	GLC_Mesh* glcMesh = getGLCMesh(name);
 	if (glcMesh)
@@ -662,7 +664,7 @@ void repo::gui::RepoRenderingWidget::setGLCMeshOpacity(const QString &name, qrea
 	}
 }
 
-void repo::gui::RepoRenderingWidget::setGLCOccurrenceRenderProperties(
+void RepoRenderingWidget::setGLCOccurrenceRenderProperties(
 	const QString &occurrenceName,
 	const GLC_RenderProperties &properties)
 {
@@ -682,7 +684,7 @@ void repo::gui::RepoRenderingWidget::setGLCOccurrenceRenderProperties(
 
 }
 
-void repo::gui::RepoRenderingWidget::setGLCOccurrenceOpacity(
+void RepoRenderingWidget::setGLCOccurrenceOpacity(
 	const QString &occurrenceName, qreal opacity, const QColor &color)
 {
 	repoLog("changing occurence properties for " + occurrenceName.toStdString());
@@ -700,7 +702,7 @@ void repo::gui::RepoRenderingWidget::setGLCOccurrenceOpacity(
 	setGLCOccurrenceRenderProperties(occurrenceName, properties);
 }
 
-void repo::gui::RepoRenderingWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
+void RepoRenderingWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
 {
     QHash<QString, GLC_StructOccurrence *>::iterator it = glcOccurrences.find(occurrenceName);
 	if (glcOccurrences.end() != it)
@@ -710,12 +712,12 @@ void repo::gui::RepoRenderingWidget::setGLCOccurenceVisibility(const QString &oc
 	}
 }
 
-void repo::gui::RepoRenderingWidget::setInfoVisibility(const bool visible)
+void RepoRenderingWidget::setInfoVisibility(const bool visible)
 {
 	isInfoVisible = visible;
 }
 
-void repo::gui::RepoRenderingWidget::setBackgroundColor(
+void RepoRenderingWidget::setBackgroundColor(
 	const QColor &color,
     const bool isupdate)
 {
@@ -724,7 +726,7 @@ void repo::gui::RepoRenderingWidget::setBackgroundColor(
         update();
 }
 
-void repo::gui::RepoRenderingWidget::linkCameras(
+void RepoRenderingWidget::linkCameras(
 	const RepoRenderingWidget *widget,
 	const bool & on) const
 {
@@ -749,7 +751,7 @@ void repo::gui::RepoRenderingWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
+void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 {
 	if (this->repoScene)
 		delete this->repoScene;
@@ -757,7 +759,7 @@ void repo::gui::RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *
 	this->repoScene = repoScene;
 }
 
-void repo::gui::RepoRenderingWidget::setGLCWorld(GLC_World glcWorld)
+void RepoRenderingWidget::setGLCWorld(GLC_World glcWorld)
 {
 	repoLog("Setting GLC World...");
 	repoLog("\tGLC World empty: " + std::to_string(glcWorld.isEmpty()));
@@ -785,7 +787,7 @@ void repo::gui::RepoRenderingWidget::setGLCWorld(GLC_World glcWorld)
 //
 //------------------------------------------------------------------------------
 
-std::vector<std::string> repo::gui::RepoRenderingWidget::getSelectionList() const
+std::vector<std::string> RepoRenderingWidget::getSelectionList() const
 {
 	std::vector<std::string> selectedNames;
     QList<GLC_StructOccurrence *> occurrences = glcWorld.selectedOccurrenceList();
@@ -798,7 +800,7 @@ std::vector<std::string> repo::gui::RepoRenderingWidget::getSelectionList() cons
 	return selectedNames;
 }
 
-repo::core::model::RepoNode* repo::gui::RepoRenderingWidget::getSelectedNode() const
+repo::core::model::RepoNode* RepoRenderingWidget::getSelectedNode() const
 {
 	repo::core::model::RepoNode *node = 0;
 	if (glcWorld.selectionSize() > 0)
@@ -808,7 +810,7 @@ repo::core::model::RepoNode* repo::gui::RepoRenderingWidget::getSelectedNode() c
 	return node;
 }
 
-GLC_Mesh* repo::gui::RepoRenderingWidget::getGLCMesh(const QString &name) const
+GLC_Mesh* RepoRenderingWidget::getGLCMesh(const QString &name) const
 {
 	GLC_Mesh * glcMesh = 0;
 	QHash<QString, GLC_Mesh*>::const_iterator it = glcMeshes.find(name);
@@ -817,7 +819,7 @@ GLC_Mesh* repo::gui::RepoRenderingWidget::getGLCMesh(const QString &name) const
 	return glcMesh;
 }
 
-QImage repo::gui::RepoRenderingWidget::renderQImage(int w, int h)
+QImage RepoRenderingWidget::renderQImage(int w, int h)
 {
 	// See https://bugreports.qt-project.org/browse/QTBUG-33186
 
@@ -851,7 +853,7 @@ QImage repo::gui::RepoRenderingWidget::renderQImage(int w, int h)
 
 //------------------------------------------------------------------------------
 // Create GLC_Object to display
-void repo::gui::RepoRenderingWidget::addBoundingBox(
+void RepoRenderingWidget::addBoundingBox(
 	const double lx,
 	const double ly,
 	const double lz,
@@ -872,12 +874,12 @@ void repo::gui::RepoRenderingWidget::addBoundingBox(
 	glcViewCollection.add(box);
 }
 
-void repo::gui::RepoRenderingWidget::clearBoundingBoxes()
+void RepoRenderingWidget::clearBoundingBoxes()
 {
 	glcViewCollection.clear();
 }
 
-void repo::gui::RepoRenderingWidget::toggleOctree()
+void RepoRenderingWidget::toggleOctree()
 {
 	if (glcViewCollection.isEmpty())
 	{
@@ -904,7 +906,7 @@ void repo::gui::RepoRenderingWidget::toggleOctree()
 // User interaction
 //
 //------------------------------------------------------------------------------
-void repo::gui::RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
+void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 {
 	switch (e->key())
 	{
@@ -1066,7 +1068,7 @@ void repo::gui::RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
 }
-void repo::gui::RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
+void RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
 {
 	//if (glcMoverController.hasActiveMover()) return;
 	switch (e->button())
@@ -1096,7 +1098,7 @@ void repo::gui::RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mousePressEvent(e);
 }
-void repo::gui::RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
+void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
 	if (Qt::LeftButton == e->button())
 	{
@@ -1109,7 +1111,7 @@ void repo::gui::RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseDoubleClickEvent(e);
 }
-void repo::gui::RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
+void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 {
 	if (glcMoverController.hasActiveMover() &&
 		glcMoverController.move(GLC_UserInput(e->x(), e->y())))
@@ -1126,7 +1128,7 @@ void repo::gui::RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseMoveEvent(e);
 }
-void repo::gui::RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
+void RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
 {
 	if (glcMoverController.hasActiveMover())
 	{
@@ -1137,7 +1139,7 @@ void repo::gui::RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseReleaseEvent(e);
 }
-void repo::gui::RepoRenderingWidget::wheelEvent(QWheelEvent * e)
+void RepoRenderingWidget::wheelEvent(QWheelEvent * e)
 {
 	GLC_FlyMover* flyMover = dynamic_cast<GLC_FlyMover*>(glcMoverController.activeMover());
 	if (flyMover)
@@ -1155,7 +1157,7 @@ void repo::gui::RepoRenderingWidget::wheelEvent(QWheelEvent * e)
     QOpenGLWidget::wheelEvent(e);
 }
 
-void repo::gui::RepoRenderingWidget::select(int x, int y, bool multiSelection,
+void RepoRenderingWidget::select(int x, int y, bool multiSelection,
     QMouseEvent *event)
 {
     const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
@@ -1186,7 +1188,7 @@ void repo::gui::RepoRenderingWidget::select(int x, int y, bool multiSelection,
     select(selectionID, multiSelection);
 }
 
-void repo::gui::RepoRenderingWidget::select(GLC_uint selectionID,
+void RepoRenderingWidget::select(GLC_uint selectionID,
     bool multiSelection,
     bool unselectSelected,
     bool isUpdate)
@@ -1239,7 +1241,7 @@ void repo::gui::RepoRenderingWidget::select(GLC_uint selectionID,
         update();
 }
 
-void repo::gui::RepoRenderingWidget::select(
+void RepoRenderingWidget::select(
 	const QString &name,
 	bool multiSelection,
 	bool unselectSelected,
@@ -1256,7 +1258,7 @@ void repo::gui::RepoRenderingWidget::select(
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoRenderingWidget::extractMeshes(GLC_StructOccurrence * occurrence)
+void RepoRenderingWidget::extractMeshes(GLC_StructOccurrence * occurrence)
 {
 	if (occurrence)
 	{

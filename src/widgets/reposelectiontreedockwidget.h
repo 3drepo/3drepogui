@@ -26,7 +26,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../renderers/repo_widget_rendering.h"
+#include "../repo/widgets/repo_widget_rendering.h"
 #include "../dialogs/repo_transformationdialog.h"
 #include "../primitives/repo_fontawesome.h"
 
@@ -46,7 +46,7 @@ class RepoSelectionTreeDockWidget : public QDockWidget
 public:
 
     explicit RepoSelectionTreeDockWidget(
-            RepoRenderingWidget *glcWidget,
+            widgets::RepoRenderingWidget *glcWidget,
             QWidget *parent = 0);
 
     ~RepoSelectionTreeDockWidget();
@@ -93,7 +93,7 @@ private:
 
     Ui::RepoSelectionTreeDockWidget *ui;
 
-    RepoRenderingWidget* glcWidget;
+    widgets::RepoRenderingWidget* glcWidget;
 
 };
 

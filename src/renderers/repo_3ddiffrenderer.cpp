@@ -21,8 +21,8 @@
 repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::RepoController *controller,
 	const repo::RepoToken *token,
-        RepoRenderingWidget *widgetA,
-        RepoRenderingWidget *widgetB)
+        widgets::RepoRenderingWidget *widgetA,
+        widgets::RepoRenderingWidget *widgetB)
     : 
 	controller(controller),
 	token(token),

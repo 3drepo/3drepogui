@@ -22,7 +22,7 @@
 #include "../primitives/repo_sortfilterproxymodel.h"
 
 repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
-        RepoRenderingWidget *glcWidget,
+        widgets::RepoRenderingWidget *glcWidget,
         QWidget *parent)
     : QDockWidget(parent)
     , glcWidget(glcWidget)

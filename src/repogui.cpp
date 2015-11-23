@@ -316,7 +316,7 @@ void repo::gui::RepoGUI::addMapTiles()
 
 }
 
-void repo::gui::RepoGUI::addSelectionTree(RepoRenderingWidget* widget, Qt::DockWidgetArea area)
+void repo::gui::RepoGUI::addSelectionTree(widgets::RepoRenderingWidget* widget, Qt::DockWidgetArea area)
 {
     RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
     this->addDockWidget(area, dock);
@@ -330,7 +330,7 @@ void repo::gui::RepoGUI::addSelectionTree(RepoRenderingWidget* widget, Qt::DockW
 void repo::gui::RepoGUI::commit()
 {
     RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
-    const RepoRenderingWidget *widget = getActiveWidget();
+    const widgets::RepoRenderingWidget *widget = getActiveWidget();
 
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
@@ -524,9 +524,9 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-repo::gui::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget()
+repo::gui::widgets::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget()
 {
-    RepoRenderingWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::RepoRenderingWidget *>();
+    widgets::RepoRenderingWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::widgets::RepoRenderingWidget *>();
     if (!widget)
         std::cerr << tr("A 3D window has to be open.").toStdString() << std::endl;
     return widget;
@@ -535,7 +535,7 @@ repo::gui::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget()
 const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene()
 {
 	const repo::core::model::RepoScene *scene = 0;
-    if (const RepoRenderingWidget *widget = getActiveWidget())
+    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
 }
@@ -601,8 +601,8 @@ void repo::gui::RepoGUI::open3DDiff()
     ui->mdiArea->closeHiddenSubWindows();
     if (ui->mdiArea->subWindowList().count() == 2)
     {
-        RepoRenderingWidget *widgetA = dynamic_cast<RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
-        RepoRenderingWidget *widgetB = dynamic_cast<RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
+        widgets::RepoRenderingWidget *widgetA = dynamic_cast<widgets::RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
+        widgets::RepoRenderingWidget *widgetB = dynamic_cast<widgets::RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
 
         if (widgetA && widgetB)
         {
@@ -633,7 +633,7 @@ void repo::gui::RepoGUI::openFile()
 
 void repo::gui::RepoGUI::openMetadataManager()
 {
-    if (const RepoRenderingWidget *widget = getActiveWidget())
+    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
     {
         QString filePath = QFileDialog::getOpenFileName(
             this,
@@ -656,7 +656,7 @@ void repo::gui::RepoGUI::openMetadataManager()
 
 void repo::gui::RepoGUI::optimizeGraph()
 {
-    if (const RepoRenderingWidget *widget = getActiveWidget())
+    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
     {
 		RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
@@ -715,7 +715,7 @@ void repo::gui::RepoGUI::reportIssue() const
 
 void repo::gui::RepoGUI::saveAs()
 {
-    if (const RepoRenderingWidget *widget = getActiveWidget())
+    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
     {
         // TODO: create export worker
         QString path = QFileDialog::getSaveFileName(
@@ -748,8 +748,8 @@ void repo::gui::RepoGUI::saveAs()
 
 void repo::gui::RepoGUI::saveScreenshot()
 {
-    const repo::gui::RepoRenderingWidget * widget = getActiveWidget();
-    std::vector<repo::gui::RepoRenderingWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::RepoRenderingWidget*>();
+    const repo::gui::widgets::RepoRenderingWidget * widget = getActiveWidget();
+    std::vector<repo::gui::widgets::RepoRenderingWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::widgets::RepoRenderingWidget*>();
 
     if (widgets.size() == 0)
     {
@@ -766,7 +766,7 @@ void repo::gui::RepoGUI::saveScreenshot()
         QFileInfo fileInfo(path);
         for (int i = 0; i < widgets.size(); ++i)
         {
-            repo::gui::RepoRenderingWidget *widget = widgets[i];
+            repo::gui::widgets::RepoRenderingWidget *widget = widgets[i];
             if (widget)
             {
                 QString newPath = fileInfo.absolutePath() + QDir::separator() + fileInfo.baseName() + QString::number(i);
