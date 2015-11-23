@@ -92,7 +92,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Permissions</string>
+          <string>Permission</string>
          </property>
         </column>
        </widget>

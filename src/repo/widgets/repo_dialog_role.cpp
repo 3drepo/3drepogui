@@ -20,43 +20,44 @@
 #include "ui_repo_dialog_role.h"
 
 using namespace repo::widgets;
+using namespace repo::gui;
 
-RepoDialogRole::RepoDialogRole(
-        const repo::core::model::RepoRole &role,
-        const QString &database,
-        const QStringList &projects,
-        QWidget *parent)
+const RepoComboBoxEditor::SeparatedEntries RepoDialogRole::rwSeparatedEntries =
+        RepoComboBoxEditor::getSeparatedEntries({
+                                                    tr("Read").toStdString(),
+                                                    tr("Write").toStdString(),
+                                                    tr("ReadWrite").toStdString()});
+
+RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
+                               const QString &currentDatabase,
+                               const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+                               QWidget *parent)
     : QDialog(parent)
     , role(role)
-    , projects(projects)
+    , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
+    , rwDelegate(nullptr)
 {
     ui->setupUi(this);
-    ui->databaseComboBox->addItem(
-                role.getDatabase().empty()
-                ? database
-                : QString::fromStdString(role.getDatabase()));
-    ui->databaseComboBox->setEnabled(false);
+
+    QObject::connect(ui->databaseComboBox, &QComboBox::currentTextChanged,
+                     this, &RepoDialogRole::setDelegate);
+
+    //--------------------------------------------------------------------------
+    // Set database combo box
+    for (std::pair<std::string, std::list<std::string> > entry : databasesWithProjects)
+    {
+        ui->databaseComboBox->addItem(QString::fromStdString(entry.first));
+    }
+
+    //--------------------------------------------------------------------------
+    // Set name
     ui->nameLineEdit->setText(QString::fromStdString(role.getName()));
-
-
-    //--------------------------------------------------------------------------
-    // RW delegate
-    std::list<std::string> rwList;
-    rwList.push_back("Read");
-    rwList.push_back("Write");
-    rwList.push_back("ReadWrite");
-    QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSepEntries;
-    rwSepEntries << repo::gui::RepoComboBoxEditor::getSeparatedEntries(projects);
-    rwSepEntries << repo::gui::RepoComboBoxEditor::getSeparatedEntries(rwList);
-    rwDelegate = new repo::gui::RepoComboBoxDelegate(rwSepEntries);
-
-    if (projects.size() > 0)
-        ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
-
-    ui->accessRightsTreeWidget->setItemDelegateForColumn(1, rwDelegate);
-
-    //--------------------------------------------------------------------------
+    // Set database
+    ui->databaseComboBox->setCurrentText(
+                role.getDatabase().empty()
+                ? currentDatabase
+                : QString::fromStdString(role.getDatabase()));
     // Set permissions
     std::vector<repo::core::model::RepoPermission> permissions = role.getProjectAccessRights();
     for (repo::core::model::RepoPermission p : permissions)
@@ -64,28 +65,49 @@ RepoDialogRole::RepoDialogRole(
         addItem(p.project, p.permission);
     }
 
+
+
+
     //--------------------------------------------------------------------------
     // Connect buttons
     QObject::connect(
                 ui->addPushButton, SIGNAL(pressed()),
                 this, SLOT(addItem()));
     QObject::connect(
-        ui->removePushButton, &QPushButton::pressed,
-        this, &RepoDialogRole::removeItem);
+                ui->removePushButton, &QPushButton::pressed,
+                this, &RepoDialogRole::removeItem);
 }
 
 RepoDialogRole::~RepoDialogRole()
 {
     delete ui;
-    delete rwDelegate;
+
+    if (rwDelegate)
+    {
+        delete rwDelegate;
+        rwDelegate = nullptr;
+    }
 }
 
 QTreeWidgetItem *RepoDialogRole::addItem()
 {
-    std::string project = projects.size() > ui->accessRightsTreeWidget->model()->rowCount()
-            ? projects[ui->accessRightsTreeWidget->model()->rowCount()].toStdString()
-            : "";
+    std::string database = ui->databaseComboBox->currentText().toStdString();
+    std::map<std::string, std::list<std::string> >::iterator it =
+            databasesWithProjects.find(database);
 
+    std::string project = tr("project").toStdString();
+    if (it != databasesWithProjects.end())
+    {
+        std::list<std::string> projects = it->second;
+        if (projects.size() > ui->accessRightsTreeWidget->model()->rowCount())
+        {
+            std::list<std::string>::iterator pit = projects.begin();
+            std::advance(pit, ui->accessRightsTreeWidget->model()->rowCount());
+            project = (*pit);
+        }
+        else
+            project = "";
+    }
     return addItem(project, repo::core::model::AccessRight::READ);
 }
 
@@ -150,7 +172,30 @@ std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() 
 
 bool RepoDialogRole::isNewRole() const
 {
-    return getName() != role.getName();
+    return getName() != role.getName() || getDatabase() != role.getDatabase();
+}
+
+
+void RepoDialogRole::setDelegate(const QString &database)
+{
+    std::map<std::string, std::list<std::string> >::iterator it =
+            databasesWithProjects.find(database.toStdString());
+
+    if (it != databasesWithProjects.end())
+    {
+        QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSEList;
+        rwSEList << repo::gui::RepoComboBoxEditor::getSeparatedEntries(it->second);
+        rwSEList << rwSeparatedEntries;
+
+        if (rwDelegate)
+        {
+            delete rwDelegate;
+            rwDelegate = nullptr;
+        }
+        rwDelegate = new repo::gui::RepoComboBoxDelegate(rwSEList);
+        ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
+        ui->accessRightsTreeWidget->setItemDelegateForColumn(1, rwDelegate);
+    }
 }
 
 repo::core::model::RepoRole RepoDialogRole::getUpdatedRole()

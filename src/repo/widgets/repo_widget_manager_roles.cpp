@@ -203,10 +203,19 @@ void RepoWidgetManagerRoles::removeItem()
 
 void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
 {
+
+    //--------------------------------------------------------------------------
+    // Get mapping of databases with their associated projects.
+    std::map<std::string, std::list<std::string> > databasesWithProjects =
+        controller->getDatabasesWithProjects(token, controller->getDatabases(token));
+//	emit databasesWithProjectsFetched(databasesWithProjects);
+
+
+
     repo::widgets::RepoDialogRole roleDialog(
                 role,
                 QString::fromStdString(database),
-                projects,
+                databasesWithProjects,
                 this);
     if (QDialog::Rejected == roleDialog.exec())
     {
