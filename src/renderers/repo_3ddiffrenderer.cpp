@@ -19,109 +19,81 @@
 #include "repo_3ddiffrenderer.h"
 
 repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
+	repo::RepoController *controller,
+	const repo::RepoToken *token,
         RepoGLCWidget *widgetA,
         RepoGLCWidget *widgetB)
-    : widgetA(widgetA)
-    , widgetB(widgetB)
+    : 
+	controller(controller),
+	token(token),
+	widgetA(widgetA),
+    widgetB(widgetB)
 {
-//    diff = new core::Repo3DDiff(widgetA->getRepoScene(), widgetB->getRepoScene());
-//
-//    // TODO: make asynchronous
-//    diff->diff();
-//
-//    core::RepoSelfSimilarSet selfSimilarSetA = diff->getSelfSimilarSetA();
-//
-//
-//    core::RepoSelfSimilarSet::iterator keysIt, valuesIt;
-//    for (keysIt = selfSimilarSetA.begin(); keysIt != selfSimilarSetA.end(); keysIt = valuesIt)
-//    {
-//        std::string key = (*keysIt).first;
-//        cout << endl;
-//        cout << "  key = '" << key << "'" << endl;
-//
-//        RepoColor color = RepoColor::getNext();
-//
-//
-//
-//
-//        std::pair<core::RepoSelfSimilarSet::iterator, core::RepoSelfSimilarSet::iterator> keyRange = selfSimilarSetA.equal_range(key);
-//        // Iterate over all map elements with key == key
-//        for (valuesIt = keyRange.first;  valuesIt != keyRange.second;  ++valuesIt)
-//        {
-//            cout << "    value = " << (*valuesIt).second << " : " << (*valuesIt).second->getName() << endl;
-//
-////                    QMetaObject::invokeMethod(
-////                                widgetA, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-////                                Q_ARG(QString, QString::fromStdString((*valuesIt).second->getName())),
-////                                Q_ARG(qreal, 0.9),
-////                                Q_ARG(QColor, color));
-//
-//                    widgetA->setGLCOccurrenceOpacity(QString::fromStdString((*valuesIt).second->getName()),
-//                                                     0.9, color);
-//        }
-//    }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//    std::string currentKey("");
-//    RepoColor color;
-//
-//    for (auto it = selfSimilarSetA.begin(); it != selfSimilarSetA.end(); ++it)
-//    {
-//
-//        core::RepoPCA pca = ((core::RepoNodeMesh*)(it->second))->getPCA();
-//        const double lx = pca.getPrincipalComponent(core::RepoPCA::U).magnitude;
-//        const double ly = pca.getPrincipalComponent(core::RepoPCA::V).magnitude;
-//        const double lz = pca.getPrincipalComponent(core::RepoPCA::W).magnitude;
-//
-//        //                widgetA->addBoundingBox(
-//        //                            pca.getUVWBoundingBox().getLengthX(),
-//        //                            pca.getUVWBoundingBox().getLengthY(),
-//        //                            pca.getUVWBoundingBox().getLengthZ(),
-//        //                            pca.getXYZTransformationMatrix());
-//
-//        core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);
-//        widgetA->addBoundingBox(mesh->getBoundingBox().getLengthX(),
-//                                mesh->getBoundingBox().getLengthY(),
-//                                mesh->getBoundingBox().getLengthZ(),
-//                                core::RepoNodeTransformation::matrixToVector(mesh->getBoundingBoxTransformation()));
-//    }
-//    widgetA->updateGL();
-//
-//
-//    //------------------------------------------------------------------
-//
-//    core::RepoSelfSimilarSet selfSimilarSetB = diff->getSelfSimilarSetB();
-//    for (auto it = selfSimilarSetB.begin(); it != selfSimilarSetB.end(); ++it)
-//    {
-//        if(currentKey.compare(it->first))
-//        {
-//            currentKey = it->first;
-//            color = RepoColor::getNext();
-//        }
-//
-//        //				QMetaObject::invokeMethod(
-//        //					widgetB, "setGLCOccurrenceOpacity", Qt::QueuedConnection,
-//        //					Q_ARG(QString, QString::fromStdString(it->second->getName())),
-//        //					Q_ARG(qreal, 0.9),
-//        //					Q_ARG(QColor, color));
-//
-//        core::RepoNodeMesh* mesh = (core::RepoNodeMesh*)(it->second);
-//        widgetB->addBoundingBox(mesh->getBoundingBox().getLengthX(),
-//                                mesh->getBoundingBox().getLengthY(),
-//                                mesh->getBoundingBox().getLengthZ(),
-//                                core::RepoNodeTransformation::matrixToVector(mesh->getBoundingBoxTransformation()));
-//    }
-//    widgetB->paintGL();
+
+	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
+	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
+
+	repo::manipulator::diff::DiffResult aRes, bRes;
+	//FIXME : Probably should move this out, this class should purely be about rendering differences
+	controller->compareScenesByIDs(token, sceneA, sceneB, aRes, bRes);
+	//TODO: If it is a modification of a transformation or a transformation has been added, it needs to 
+	// highlight the entire subtree as everything is moved.
+
+	for (const repoUUID id : bRes.added)
+	{
+		
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::green);
+
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
+			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
+	}
+
+
+	for (const repoUUID id : bRes.modified)
+	{
+
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+			0.9, Qt::cyan);
+
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
+			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
+	}
+
+	for (const repoUUID id : aRes.added)
+	{
+
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH )
+			widgetA->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::red);
+
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
+			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
+	}
+
+	for (const repoUUID id : aRes.modified)
+	{
+
+		//colour widgetB's graph to reflect the comparison
+		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widgetA->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+				0.9, Qt::cyan);	
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
+			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
+	}
+
+
+	widgetA->repaintCurrent();
+	widgetB->repaintCurrent();
 }
 
 repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()

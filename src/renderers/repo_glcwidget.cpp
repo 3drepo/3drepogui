@@ -594,8 +594,12 @@ void repo::gui::RepoGLCWidget::setCamera(const CameraView& view)
 		glcViewport.cameraHandle()->setIsoView();
 	}
 
-	if (!glcWorld.isEmpty())
+	if (!glcWorld.isEmpty() && !glcWorld.boundingBox().isEmpty())
 		glcViewport.reframe(glcWorld.boundingBox());
+	else
+	{
+		repoLogError("GLC world is empty or bounding box is empty!");
+	}
 
     update();
 	emit cameraChangedSignal(*glcViewport.cameraHandle());
@@ -681,6 +685,7 @@ void repo::gui::RepoGLCWidget::setGLCOccurrenceRenderProperties(
 void repo::gui::RepoGLCWidget::setGLCOccurrenceOpacity(
 	const QString &occurrenceName, qreal opacity, const QColor &color)
 {
+	repoLog("changing occurence properties for " + occurrenceName.toStdString());
 	GLC_RenderProperties properties;
 	if (opacity < 1.0)
 	{
