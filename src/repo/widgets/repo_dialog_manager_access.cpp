@@ -63,6 +63,15 @@ void RepoDialogManagerAccess::refresh()
 {
     ui->userManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->userManagerWidget->refresh();
+
+    QStringList projects = dbCache->getProjects(ui->hostComboBox->currentText(),
+                                                ui->databaseComboBox->currentText());
+    ui->rolesManagerWidget->setDBConnection(controller, getToken(), getDatabase(), projects);
+
+
+
+
+    ui->rolesManagerWidget->refresh();
 }
 
 void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)

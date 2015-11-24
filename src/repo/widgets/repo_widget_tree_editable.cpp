@@ -122,7 +122,7 @@ void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
 
 }
 
-RepoWidgetTreeFilterable* RepoWidgetTreeEditable::getFilterableTree()
+RepoWidgetTreeFilterable* RepoWidgetTreeEditable::getFilterableTree() const
 {
     return ui->filterableTreeWidget;
 }

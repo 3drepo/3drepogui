@@ -76,10 +76,10 @@ public slots:
     void edit(const QModelIndex &index);
 
     //! Returns a currently selected user if any.
-    repo::core::model::RepoUser getUser();
+    repo::core::model::RepoUser getUser() const;
 
     //! Returns a user specified by the model index.
-    repo::core::model::RepoUser getUser(const QModelIndex &index);
+    repo::core::model::RepoUser getUser(const QModelIndex &index) const;
 
     virtual void refresh()
     { refresh(repo::core::model::RepoUser(),
@@ -98,9 +98,6 @@ public slots:
     //! Shows the user dialog and saves edits to the database.
     void showEditDialog(const repo::core::model::RepoUser &user);
 
-    //! Unlocks refresh mutex.
-    void unlockMutex() { mutex.unlock(); }
-
 public :
 
     void setDBConnection(
@@ -115,9 +112,6 @@ private:
 
     //! Mapping of databases to their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;
-
-    //! Refresh mutex.
-    QMutex mutex;
 
     const repo::RepoToken* token;
 

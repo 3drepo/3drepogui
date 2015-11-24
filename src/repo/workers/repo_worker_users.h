@@ -28,69 +28,69 @@
 #include "../logger/repo_logger.h"
 
 namespace repo {
-	namespace worker {
+namespace worker {
 
-		//! Worker class to that fetches individual users from given Mongo client.
-		class UsersWorker : public RepoAbstractWorker
-		{
+//! Worker class that fetches individual users from given Mongo client.
+class UsersWorker : public RepoAbstractWorker
+{
 
-			Q_OBJECT
-		public:
-
-
-			enum class Command { DROP, INSERT, UPDATE };
+    Q_OBJECT
+public:
 
 
+    enum class Command { DROP, INSERT, UPDATE };
 
-			/**
-			* Default worker constructor.
-			* @param token repo token for the connection
-			* @param controller controller to talk to the core library
-			* @param database name of the database where users are stored
-			* @param user user to update/delete (empty if none)
-			* @param isUpdate true - update/insert user, false - delete user
-			*/
-			UsersWorker(
-				const repo::RepoToken *token,
-				repo::RepoController  *controller,
-				const std::string &database,
-				const repo::core::model::RepoUser &user = repo::core::model::RepoUser(),
-				const Command            &op = Command::INSERT);
 
-			//! Default empty destructor.
-			~UsersWorker();
 
-		signals:
+    /**
+            * Default worker constructor.
+            * @param token repo token for the connection
+            * @param controller controller to talk to the core library
+            * @param database name of the database where users are stored
+            * @param user user to update/delete (empty if none)
+            * @param isUpdate true - update/insert user, false - delete user
+            */
+    UsersWorker(
+            const repo::RepoToken *token,
+            repo::RepoController  *controller,
+            const std::string &database,
+            const repo::core::model::RepoUser &user = repo::core::model::RepoUser(),
+            const Command            &op = Command::INSERT);
 
-			//! Emitted when user is fetched.
-			void userFetched(const repo::core::model::RepoUser &);
+    //! Default empty destructor.
+    ~UsersWorker();
 
-			//! Emitted when all databases with associated projects are fetched.
-			void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
+signals:
 
-			//! Emitted when custom roles are fetched.
-			void customRolesFetched(const std::list<std::string> &);
+    //! Emitted when user is fetched.
+    void userFetched(const repo::core::model::RepoUser &);
 
-			public slots :
+    //! Emitted when all databases with associated projects are fetched.
+    void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
 
-			void run();
+    //! Emitted when custom roles are fetched.
+    void customRolesFetched(const std::list<std::string> &);
 
-		private:
+public slots :
 
-			//! Database connector.
-			const repo::RepoToken *token;
-			repo::RepoController *controller;
+    void run();
 
-			//! Database name.
-			const std::string database;
+private:
 
-			//! User to be create or updated or deleted in the database.
-			const repo::core::model::RepoUser user;
-			const Command command;
+    //! Database connector.
+    const repo::RepoToken *token;
+    repo::RepoController *controller;
 
-		}; // end class
+    //! Database name.
+    const std::string database;
 
-	} // end namespace core
+    //! User to be create or updated or deleted in the database.
+    const repo::core::model::RepoUser user;
+    const Command command;
+
+}; // end class
+
+} // end namespace worker
 } // end namespace repo
 
 

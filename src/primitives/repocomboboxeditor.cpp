@@ -67,3 +67,22 @@ QByteArray repo::gui::RepoComboBoxEditor::valuePropertyName() const
 {
     return QByteArray();
 }
+
+repo::gui::RepoComboBoxEditor::SeparatedEntries repo::gui::RepoComboBoxEditor::getSeparatedEntries(
+        const std::list<std::string> &list)
+{
+    repo::gui::RepoComboBoxEditor::SeparatedEntries se;
+    se << list;
+    return se;
+}
+
+repo::gui::RepoComboBoxEditor::SeparatedEntries repo::gui::RepoComboBoxEditor::getSeparatedEntries(
+        const QStringList &stringList)
+{
+    std::list<std::string > list;
+    for (QString s : stringList)
+    {
+        list.push_back(s.toStdString());
+    }
+    return getSeparatedEntries(list);
+}

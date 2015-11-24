@@ -17,11 +17,6 @@
 
 #include "repo_worker_users.h"
 #include "../logger/repo_logger.h"
-//------------------------------------------------------------------------------
-// Core
-
-
-//------------------------------------------------------------------------------
 
 using namespace repo::worker;
 
@@ -54,7 +49,7 @@ void UsersWorker::run()
 	int jobsDone = 0;
 	emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
-	//------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	// Execute command (such as drop or update user) if any
 	if (!user.isEmpty())
 	{
@@ -74,7 +69,7 @@ void UsersWorker::run()
 		}
 	}
 
-	//------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	// Get mapping of databases with their associated projects.
 	// This is long running job!
 	std::list<std::string> databases = controller->getDatabases(token);
@@ -84,10 +79,10 @@ void UsersWorker::run()
 	emit progressRangeChanged(0, jobsCount);
 	emit progressValueChanged(jobsDone++);
 
-	//------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	std::auto_ptr<mongo::DBClientCursor> cursor;
 	std::list<std::string> fields; // projection, empty at the moment
-	//------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 	// Get custom roles
 	std::list<std::string> roles;
 	fields.clear();

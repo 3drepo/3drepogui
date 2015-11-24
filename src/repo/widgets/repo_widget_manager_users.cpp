@@ -101,13 +101,13 @@ void RepoWidgetManagerUsers::edit(const QModelIndex &index)
     showEditDialog(getUser(index));
 }
 
-repo::core::model::RepoUser RepoWidgetManagerUsers::getUser()
+repo::core::model::RepoUser RepoWidgetManagerUsers::getUser() const
 {
     return getUser(getFilterableTree()->getCurrentIndex());
 }
 
 repo::core::model::RepoUser RepoWidgetManagerUsers::getUser(
-        const QModelIndex &index)
+        const QModelIndex &index) const
 {
     repo::core::model::RepoUser user;
     if (index.isValid())
@@ -127,7 +127,12 @@ void RepoWidgetManagerUsers::refresh(
         QProgressBar* progressBar = getFilterableTree()->getProgressBar();
 
         repo::worker::UsersWorker* worker =
-                new repo::worker::UsersWorker(token, controller, database, user, command);
+                new repo::worker::UsersWorker(
+                    token,
+                    controller,
+                    database,
+                    user,
+                    command);
         worker->setAutoDelete(true);
 
         // Direct connection ensures cancel signal is processed ASAP

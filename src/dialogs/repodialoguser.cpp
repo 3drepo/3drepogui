@@ -62,8 +62,7 @@ repo::gui::RepoDialogUser::RepoDialogUser(
                                        QColor(Qt::gray)));
 
     if (!user.isEmpty() && user.isValid())
-    {
-        
+    {        
 		setAvatar(user.getAvatarAsRawData());
     }
 
@@ -190,7 +189,6 @@ repo::gui::RepoDialogUser::~RepoDialogUser()
         QString database = i.next();
         delete projectsDelegates.take(database);
         delete rolesDelegates.take(database);
-
     }
 }
 
