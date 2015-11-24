@@ -32,7 +32,7 @@ bool RepoMultithreader::cancelAllThreads()
 
 void RepoMultithreader::connectWorker(
         const RepoAbstractWorker *worker,
-        const QProgressBar *progressBar)
+        QProgressBar *progressBar)
 {
     if (worker)
     {
@@ -46,7 +46,7 @@ void RepoMultithreader::connectWorker(
                     worker, &RepoAbstractWorker::finished,
                     &mutex, &RepoMutex::unlockSlot);
 
-        // Link progress bar, too, if provided
+        // Link progress bar, too, if not null
         if (progressBar)
         {
             QObject::connect(
@@ -61,19 +61,21 @@ void RepoMultithreader::connectWorker(
             QObject::connect(
                         worker, &repo::worker::RepoAbstractWorker::finished,
                         progressBar, &QProgressBar::hide);
+
+            progressBar->show();
         }
     }
 }
 
 void RepoMultithreader::connectAndStartWorker(
         RepoAbstractWorker *worker,
-        const QProgressBar *progressBar)
+        QProgressBar *progressBar)
 {
     connectWorker(worker, progressBar);
     startWorker(worker);
 }
 
-bool RepoMultithreader::isSafeToRun()
+bool RepoMultithreader::isReady()
 {
     return mutex.tryLock() && cancelAllThreads();
 }

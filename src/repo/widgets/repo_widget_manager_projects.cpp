@@ -16,6 +16,7 @@
  */
 
 #include "repo_widget_manager_projects.h"
+#include "../primitives/repo_standard_item.h"
 
 using namespace repo::widgets;
 
@@ -24,9 +25,13 @@ const QString RepoWidgetManagerProjects::COLUMNS_SETTINGS = "RepoWidgetManagerPr
 RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
-    QList<QString> headers;
-    headers << tr("Project") << tr("Description") << tr("Owner");
-    headers << tr("Permissions") << tr("Type") << tr("Users");
+    QList<QString> headers = {
+        tr("Project"),
+        tr("Description"),
+        tr("Owner"),
+        tr("Permissions"),
+        tr("Type"),
+        tr("Users")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -38,3 +43,130 @@ RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
 RepoWidgetManagerProjects::~RepoWidgetManagerProjects()
 {}
 
+void RepoWidgetManagerProjects::addProjectSettings(
+        repo::core::model::RepoProjectSettings projectSettings)
+{
+    QList<QStandardItem *> row;
+    //--------------------------------------------------------------------------
+    // Project object itself
+    QVariant var;
+    var.setValue(projectSettings);
+    repo::primitives::RepoStandardItem *item =
+            new repo::primitives::RepoStandardItem(projectSettings.getProjectName());
+    item->setData(var);
+    item->setCheckable(true);
+    item->setCheckState(Qt::Checked);
+    item->setTristate(false);
+    row.append(item);
+
+    // Description
+    row.append(new primitives::RepoStandardItem(projectSettings.getDescription()));
+
+    // Owner
+    row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
+
+    // Group
+    row.append(new primitives::RepoStandardItem(projectSettings.getGroup()));
+
+    // Permissions
+    row.append(new primitives::RepoStandardItem(projectSettings.getPermissionsString()));
+
+    // Type
+    row.append(new primitives::RepoStandardItem(projectSettings.getType()));
+
+    // Users count
+    row.append(new primitives::RepoStandardItem(projectSettings.getUsers().size()));
+
+    //--------------------------------------------------------------------------
+    getFilterableTree()->addTopLevelRow(row);
+}
+
+repo::core::model::RepoProjectSettings RepoWidgetManagerProjects::getProjectSettings()
+{
+    return getProjectSettings(getFilterableTree()->getCurrentIndex());
+}
+
+repo::core::model::RepoProjectSettings
+   RepoWidgetManagerProjects::getProjectSettings(const QModelIndex &index)
+{
+    repo::core::model::RepoProjectSettings projectSettings;
+    if (index.isValid())
+    {
+        QModelIndex userIndex = index.sibling(index.row(), (int)Columns::PROJECT);
+        projectSettings = userIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoProjectSettings>();
+    }
+    return projectSettings;
+}
+
+
+
+void RepoWidgetManagerProjects::refresh(
+        const repo::core::model::RepoProjectSettings &settings,
+    bool isDelete)
+{
+    if (isReady())
+    {        
+        repo::worker::ProjectSettingsWorker* worker =
+            new repo::worker::ProjectSettingsWorker(
+                    token,
+                    controller,
+                    database,
+                    settings,
+                    isDelete);
+
+        QObject::connect(
+            worker, &repo::worker::ProjectSettingsWorker::projectSettingsFetched,
+            this, &RepoWidgetManagerProjects::addProjectSettings);
+
+        //----------------------------------------------------------------------
+        // Clear any previous entries
+        clear();
+
+        //----------------------------------------------------------------------
+        connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
+    }
+}
+
+void RepoWidgetManagerProjects::removeItem()
+{
+    repo::core::model::RepoProjectSettings projectSettings = this->getProjectSettings();
+    switch(QMessageBox::warning(this,
+        tr("Remove project settings?"),
+        tr("Are you sure you want to remove '") + QString::fromStdString(projectSettings.getProjectName()) + "'?",
+        tr("&Yes"),
+        tr("&No"),
+        QString::null, 1, 1))
+        {
+            case 0: // yes
+                refresh(projectSettings, true);
+                break;
+            case 1: // no
+                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
+                break;
+        }
+}
+
+void RepoWidgetManagerProjects::showEditDialog(
+    const repo::core::model::RepoProjectSettings &projectSettings)
+{
+    repo::gui::RepoProjectSettingsDialog projectDialog(projectSettings, this);
+    if (QDialog::Rejected == projectDialog.exec())
+    {
+        std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
+    }
+    else // QDialog::Accepted
+    {
+        // Create or update project
+        refresh(projectDialog.getSettings(), false);
+    }
+}
+
+void RepoWidgetManagerProjects::setDBConnection(
+        repo::RepoController *controller,
+        const repo::RepoToken* token,
+        const std::string& database)
+{
+    this->controller = controller;
+    this->token = token;
+    this->database = database;
+}

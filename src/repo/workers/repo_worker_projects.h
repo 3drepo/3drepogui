@@ -29,8 +29,6 @@
 namespace repo {
 namespace worker {
 
-typedef std::map<std::string, std::list<std::string> > RepoDatabasesWithProjects;
-
 class RepoWorkerProjects : public RepoAbstractWorker
 {
 
@@ -51,8 +49,7 @@ signals:
     void databasesFetched(const std::list<std::string> &);
 
     //! Emitted when all databases with associated projects are fetched.
-    void databasesWithProjectsFetched(const RepoDatabasesWithProjects&);
-
+    void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
 
 public slots :
 

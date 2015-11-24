@@ -17,10 +17,17 @@
 
 #pragma once
 
+#include <QMessageBox>
+
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
+#include "../../dialogs/repoprojectsettingsdialog.h"
+#include "../workers/repo_worker_project_settings.h"
+#include <repo/core/model/bson/repo_bson_project_settings.h>
+
+Q_DECLARE_METATYPE(repo::core::model::RepoProjectSettings)
 
 namespace repo {
 namespace widgets {
@@ -41,20 +48,49 @@ public:
 
 public slots:
 
+    void addProjectSettings(repo::core::model::RepoProjectSettings);
+
     //! Updates selected item.
     virtual void edit() {}
 
     //! Updates item based on model index.
-    virtual void edit(const QModelIndex &index) {}
+    void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
 
-    //! Refreshes the current list
-    virtual void refresh() {}
+    repo::core::model::RepoProjectSettings getProjectSettings();
 
-    //! Removes item and refreshes the DB if necessary.
-    virtual void removeItem() {}
+    repo::core::model::RepoProjectSettings getProjectSettings(const QModelIndex &index);
 
-    //! Shows edit dialog.
-    virtual void showEditDialog() {}
+
+    //! Refreshes the current list of users by fetching from a database.
+    void refresh()
+    {
+        refresh(repo::core::model::RepoProjectSettings(), false);
+    }
+
+    void refresh(
+        const repo::core::model::RepoProjectSettings &settings,
+        bool isDelete);
+
+    //! Removes currently selected item if any.
+    void removeItem();
+
+    void showEditDialog() { showEditDialog(repo::core::model::RepoProjectSettings()); }
+
+    void showEditDialog(const repo::core::model::RepoProjectSettings &);
+
+public :
+
+    void setDBConnection(repo::RepoController *controller,
+            const repo::RepoToken* token,
+            const std::string& database);
+
+private :
+
+    const repo::RepoToken* token;
+
+    std::string database;
+
+    repo::RepoController *controller;
 
 };
 

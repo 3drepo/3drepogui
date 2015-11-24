@@ -63,17 +63,9 @@ RepoWidgetTreeEditable::~RepoWidgetTreeEditable()
 //    QSettings settings(this->parentWidget());
 //    settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
     //--------------------------------------------------------------------------
-    cancelAllThreads();
 
     delete ui;
 }
-
-bool RepoWidgetTreeEditable::cancelAllThreads()
-{
-    //emit cancel();
-    return threadPool.waitForDone(); // msecs
-}
-
 
 void RepoWidgetTreeEditable::clear()
 {

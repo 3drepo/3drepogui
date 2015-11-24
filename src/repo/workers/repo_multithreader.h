@@ -52,14 +52,14 @@ public:
     //! Connects the worker's basic signals with progressing and finishing slots.
     void connectWorker(
             const RepoAbstractWorker *worker,
-            const QProgressBar *progressBar = 0);
+            QProgressBar *progressBar = 0);
 
     void connectAndStartWorker(
             RepoAbstractWorker *worker,
-            const QProgressBar *progressBar = 0);
+            QProgressBar *progressBar = 0);
 
-    //! Returns true if safe to run another single worker, false otherwise.
-    bool isSafeToRun();
+    //! Returns true if ready to run another single worker, false otherwise.
+    bool isReady();
 
     //! Starts the worker
     void startWorker(RepoAbstractWorker *worker);

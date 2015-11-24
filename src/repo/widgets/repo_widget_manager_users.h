@@ -25,6 +25,7 @@
 #include "../../primitives/repoidbcache.h"
 #include "../workers/repo_worker_users.h"
 #include "../primitives/repo_standard_item.h"
+
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_user.h>
@@ -63,9 +64,6 @@ public slots:
     //! Adds a fresh list of custom roles.
     void addCustomRoles(const std::list<std::string> &);
 
-    //! Adds a fresh mapping of databases with their associated projects.
-    void addDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &);
-
     //! Adds user to the list of users.
     void addUser(const repo::core::model::RepoUser &user);
 
@@ -97,6 +95,8 @@ public slots:
 
     //! Shows the user dialog and saves edits to the database.
     void showEditDialog(const repo::core::model::RepoUser &user);
+
+    void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 
 public :
 

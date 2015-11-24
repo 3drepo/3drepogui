@@ -44,7 +44,7 @@ RepoDialogManagerAccess::RepoDialogManagerAccess(
                      this, &RepoDialogManagerAccess::refresh);
 
     QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
-                     (QObject *) this, SLOT(refresh()));
+                     this, SLOT(refresh()));
 
 }
 
@@ -63,12 +63,22 @@ void RepoDialogManagerAccess::refresh()
 {
     //--------------------------------------------------------------------------
     // Retrieve databases with their projects
-    if (isSafeToRun())
+    if (isReady())
     {
         repo::worker::RepoWorkerProjects* worker =
                 new repo::worker::RepoWorkerProjects(
                     controller,
                     getToken());
+
+        QObject::connect(worker,
+                         &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
+                         ui->rolesManagerWidget,
+                         &RepoWidgetManagerRoles::setDatabasesWithProjects);
+
+        QObject::connect(worker,
+                         &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
+                         ui->userManagerWidget,
+                         &RepoWidgetManagerUsers::setDatabasesWithProjects);
 
         connectAndStartWorker(worker);
     }
@@ -78,6 +88,9 @@ void RepoDialogManagerAccess::refresh()
 
     ui->rolesManagerWidget->setDBConnection(controller, getToken(), getDatabase());
     ui->rolesManagerWidget->refresh();
+
+    ui->projectsManagerWidget->setDBConnection(controller, getToken(), getDatabase());
+    ui->projectsManagerWidget->refresh();
 
 }
 

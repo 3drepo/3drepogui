@@ -31,11 +31,13 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../../primitives/repocomboboxdelegate.h"
+#include "../workers/repo_worker_projects.h"
 
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_role.h>
 #include <repo/core/model/bson/repo_bson_factory.h>
+
 
 
 namespace Ui {
@@ -89,7 +91,6 @@ public slots:
 
     //! Sets current delegate based on given database.
     void setDelegate(const QString &database);
-
 
 public :
 

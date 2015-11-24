@@ -20,6 +20,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_widget_tree_filterable.h"
+#include "../workers/repo_multithreader.h"
 
 //------------------------------------------------------------------------------
 // Qt
@@ -36,7 +37,7 @@ namespace Ui { class RepoWidgetTreeEditable; }
 namespace repo {
 namespace widgets {
 
-class RepoWidgetTreeEditable : public QWidget
+class RepoWidgetTreeEditable : public QWidget, public repo::worker::RepoMultithreader
 {
     Q_OBJECT
 
@@ -45,11 +46,6 @@ public:
     explicit RepoWidgetTreeEditable(QWidget *parent = 0);
 
     ~RepoWidgetTreeEditable();
-
-signals :
-
-    //! Emitted whenever running threads are to be cancelled.
-    void cancel();
 
 public slots :
 
@@ -70,9 +66,6 @@ public slots :
 
 public slots :
 
-    //! Cancels all running threads and waits for their completion.
-    virtual bool cancelAllThreads();
-
     //! Clears the model.
     virtual void clear();
 
@@ -82,21 +75,11 @@ public slots :
     //! Shows custom context menu for treeView.
     virtual void showCustomContextMenu(const QPoint &);
 
-    //! Unlocks refresh mutex.
-    virtual void unlockMutex() { mutex.unlock(); }
-
-
 public :
 
     virtual RepoWidgetTreeFilterable* getFilterableTree() const;
 
 protected :
-
-    //! Threadpool for this object only.
-    QThreadPool threadPool;
-
-    //! Refresh mutex.
-    QMutex mutex;
 
     Ui::RepoWidgetTreeEditable *ui;
 };

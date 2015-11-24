@@ -18,6 +18,7 @@
 #include "repo_widget_manager_users.h"
 
 using namespace repo::widgets;
+using namespace repo::worker;
 
 const QString RepoWidgetManagerUsers::COLUMNS_SETTINGS = "RepoWidgetManagerUsersHeaders";
 
@@ -26,9 +27,13 @@ RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
     , token(nullptr)
     , controller(nullptr)
 {
-    QList<QString> headers;
-    headers << tr("Username") << tr("First Name") << tr("Last Name");
-    headers << tr("Email") << tr("Projects") << tr("Roles");
+    QList<QString> headers = {
+        tr("Username"),
+        tr("First Name"),
+        tr("Last Name"),
+        tr("Email"),
+        tr("Projects"),
+        tr("Roles")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -47,13 +52,6 @@ void RepoWidgetManagerUsers::addCustomRoles(const std::list<std::string> &list)
     customRolesList.clear();
     customRolesList = list;
     customRolesList.sort();
-}
-
-void RepoWidgetManagerUsers::addDatabasesWithProjects(
-        const std::map<std::string, std::list<std::string> > &mapping)
-{
-    databasesWithProjects.clear();
-    databasesWithProjects = mapping;
 }
 
 void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
@@ -122,62 +120,24 @@ void RepoWidgetManagerUsers::refresh(
         const repo::core::model::RepoUser& user,
         const repo::worker::UsersWorker::Command& command)
 {
-    if (mutex.tryLock() && cancelAllThreads())
+    if (isReady())
     {
-        QProgressBar* progressBar = getFilterableTree()->getProgressBar();
+        // Clear any previous entries
+        clear();
 
-        repo::worker::UsersWorker* worker =
-                new repo::worker::UsersWorker(
+        UsersWorker* worker = new UsersWorker(
                     token,
                     controller,
                     database,
                     user,
                     command);
-        worker->setAutoDelete(true);
-
-        // Direct connection ensures cancel signal is processed ASAP
         QObject::connect(
-                    this, &RepoWidgetManagerUsers::cancel,
-                    worker, &repo::worker::UsersWorker::cancel, Qt::DirectConnection);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::userFetched,
+                    worker, &UsersWorker::userFetched,
                     this, &RepoWidgetManagerUsers::addUser);
-
         QObject::connect(
-                    worker, &repo::worker::UsersWorker::databasesWithProjectsFetched,
-                    this, &RepoWidgetManagerUsers::addDatabasesWithProjects);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::customRolesFetched,
+                    worker, &UsersWorker::customRolesFetched,
                     this, &RepoWidgetManagerUsers::addCustomRoles);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::finished,
-                    progressBar, &QProgressBar::hide);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::finished,
-                    this, &RepoWidgetManagerUsers::unlockMutex);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::progressRangeChanged,
-                    progressBar, &QProgressBar::setRange);
-
-        QObject::connect(
-                    worker, &repo::worker::UsersWorker::progressValueChanged,
-                    progressBar, &QProgressBar::setValue);
-        threadPool.start(worker);
-
-        //----------------------------------------------------------------------
-        // Clear any previous entries
-        clear();
-
-        //----------------------------------------------------------------------
-        progressBar->show();
-        //        ui->hostComboBox->setEnabled(false);
-        //        ui->databaseComboBox->setEnabled(false);
-
+        connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
     }
 }
 
@@ -224,6 +184,13 @@ void RepoWidgetManagerUsers::showEditDialog(const repo::core::model::RepoUser &u
                 ? repo::worker::UsersWorker::Command::INSERT
                 : repo::worker::UsersWorker::Command::UPDATE);
     }
+}
+
+void RepoWidgetManagerUsers::setDatabasesWithProjects(
+        const std::map<std::string, std::list<std::string> > &rdwp)
+{
+    this->databasesWithProjects.clear();
+    this->databasesWithProjects = rdwp;
 }
 
 

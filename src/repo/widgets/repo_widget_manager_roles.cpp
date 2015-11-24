@@ -16,7 +16,6 @@
  */
 
 #include "repo_widget_manager_roles.h"
-
 #include "../primitives/repo_standard_item.h"
 
 using namespace repo::widgets;
@@ -26,9 +25,12 @@ const QString RepoWidgetManagerRoles::COLUMNS_SETTINGS = "RepoWidgetManagerRoles
 RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
-    QList<QString> headers;
-    headers << tr("Role") << tr("Database");
-    headers << tr("Access Rights") << tr("Privileges") << tr("Inherited Roles");
+    QList<QString> headers = {
+        tr("Role"),
+        tr("Database"),
+        tr("Access Rights"),
+        tr("Privileges"),
+        tr("Inherited Roles")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -39,8 +41,7 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
 
 RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
 {
-    // FIXME: put back in once the column headers are agreed upon
-//     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
+     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
 
@@ -111,9 +112,10 @@ void RepoWidgetManagerRoles::refresh(
         const repo::core::model::RepoRole &role,
         repo::worker::RepoWorkerRoles::Command command)
 {
-    if (mutex.tryLock() && cancelAllThreads())
+    if (isReady())
     {
-        QProgressBar* progressBar = getFilterableTree()->getProgressBar();
+        // Clear any previous entries
+        clear();
 
         repo::worker::RepoWorkerRoles* worker =
                 new repo::worker::RepoWorkerRoles(
@@ -122,43 +124,10 @@ void RepoWidgetManagerRoles::refresh(
                     database,
                     role,
                     command);
-        worker->setAutoDelete(true);
-
-        // Direct connection ensures cancel signal is processed ASAP
-        QObject::connect(
-                    this, &RepoWidgetManagerRoles::cancel,
-                    worker, &repo::worker::RepoWorkerRoles::cancel, Qt::DirectConnection);
-
         QObject::connect(
                     worker, &repo::worker::RepoWorkerRoles::roleFetched,
                     this, &RepoWidgetManagerRoles::addRole);
-
-        QObject::connect(
-                    worker, &repo::worker::RepoWorkerRoles::finished,
-                    progressBar, &QProgressBar::hide);
-
-        QObject::connect(
-                    worker, &repo::worker::RepoWorkerRoles::finished,
-                    this, &RepoWidgetManagerRoles::unlockMutex);
-
-        QObject::connect(
-                    worker, &repo::worker::RepoWorkerRoles::progressRangeChanged,
-                    progressBar, &QProgressBar::setRange);
-
-        QObject::connect(
-                    worker, &repo::worker::RepoWorkerRoles::progressValueChanged,
-                    progressBar, &QProgressBar::setValue);
-        threadPool.start(worker);
-
-        //----------------------------------------------------------------------
-        // Clear any previous entries
-        clear();
-
-        //----------------------------------------------------------------------
-        progressBar->show();
-        //        ui->hostComboBox->setEnabled(false);
-        //        ui->databaseComboBox->setEnabled(false);
-
+        connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
     }
 }
 
@@ -193,15 +162,8 @@ void RepoWidgetManagerRoles::removeItem()
     }
 }
 
-
-
 void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
 {
-    //--------------------------------------------------------------------------
-    // Get mapping of databases with their associated projects.
-    std::map<std::string, std::list<std::string> > databasesWithProjects =
-        controller->getDatabasesWithProjects(token, controller->getDatabases(token));
-
     repo::widgets::RepoDialogRole roleDialog(
                 role,
                 QString::fromStdString(database),
@@ -215,12 +177,17 @@ void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &r
     else // QDialog::Accepted
     {
         repoLog("create or update role...\n");
-        // Create or update user
+        // Create or update role
         refresh(roleDialog.getUpdatedRole(),
                 roleDialog.isNewRole()
                 ? repo::worker::RepoWorkerRoles::Command::INSERT
                 : repo::worker::RepoWorkerRoles::Command::UPDATE);
     }
+}
 
-
+void RepoWidgetManagerRoles::setDatabasesWithProjects(
+        const std::map<std::string, std::list<std::string> > &rdwp)
+{
+    this->databasesWithProjects.clear();
+    this->databasesWithProjects = rdwp;
 }

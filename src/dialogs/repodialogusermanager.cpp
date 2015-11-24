@@ -186,17 +186,12 @@ void repo::gui::RepoDialogUserManager::refresh(
                     this, &RepoDialogUserManager::addUser);
 
         QObject::connect(
-                    worker, &repo::worker::UsersWorker::databasesWithProjectsFetched,
-                    this, &RepoDialogUserManager::addDatabasesWithProjects);
-
-        QObject::connect(
                     worker, &repo::worker::UsersWorker::customRolesFetched,
                     this, &RepoDialogUserManager::addCustomRoles);
 
         QObject::connect(
                     worker, &repo::worker::UsersWorker::finished,
                     ui->progressBar, &QProgressBar::hide);
-
 
         QObject::connect(
                     worker, &repo::worker::UsersWorker::finished,

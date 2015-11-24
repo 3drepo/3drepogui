@@ -17,12 +17,11 @@
 
 #pragma once
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Repo Core
 #include <repo/repo_controller.h>
 
-
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Repo GUI
 #include "repo_worker_abstract.h"
 #include "../logger/repo_logger.h"
@@ -33,14 +32,11 @@ namespace worker {
 //! Worker class that fetches individual users from given Mongo client.
 class UsersWorker : public RepoAbstractWorker
 {
-
     Q_OBJECT
+
 public:
 
-
     enum class Command { DROP, INSERT, UPDATE };
-
-
 
     /**
             * Default worker constructor.
@@ -65,9 +61,6 @@ signals:
     //! Emitted when user is fetched.
     void userFetched(const repo::core::model::RepoUser &);
 
-    //! Emitted when all databases with associated projects are fetched.
-    void databasesWithProjectsFetched(const std::map<std::string, std::list<std::string> >&);
-
     //! Emitted when custom roles are fetched.
     void customRolesFetched(const std::list<std::string> &);
 
@@ -86,6 +79,8 @@ private:
 
     //! User to be create or updated or deleted in the database.
     const repo::core::model::RepoUser user;
+
+    //! Command to execute on user.
     const Command command;
 
 }; // end class

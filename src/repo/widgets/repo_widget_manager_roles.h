@@ -84,6 +84,8 @@ public slots:
 
     virtual void showEditDialog(const repo::core::model::RepoRole &role);
 
+    void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
+
 public :
 
     void setDBConnection(repo::RepoController *controller,
@@ -97,6 +99,8 @@ private :
     std::string database;
 
     repo::RepoController *controller;
+
+    std::map<std::string, std::list<std::string> > databasesWithProjects;
 
 };
 

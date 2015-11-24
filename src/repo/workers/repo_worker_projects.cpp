@@ -31,7 +31,7 @@ RepoWorkerProjects::RepoWorkerProjects(
       token(token)
 {
     qRegisterMetaType<std::list<std::string> >("std::list<std::string>");
-    qRegisterMetaType<RepoDatabasesWithProjects>("RepoDatabasesWithProjects");
+    qRegisterMetaType<std::map<std::string, std::list<std::string> > >("std::map<std::string, std::list<std::string> >");
 }
 
 RepoWorkerProjects::~RepoWorkerProjects() {}
@@ -52,7 +52,7 @@ void RepoWorkerProjects::run()
     emit databasesFetched(databases);
     emit progressValueChanged(jobsDone++);
 
-    RepoDatabasesWithProjects databasesWithProjects =
+    std::map<std::string, std::list<std::string> > databasesWithProjects =
         controller->getDatabasesWithProjects(token, databases);
 
     emit databasesWithProjectsFetched(databasesWithProjects);
