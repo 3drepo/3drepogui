@@ -29,7 +29,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 	widgetA(widgetA),
     widgetB(widgetB)
 {
-
+/*
 	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
 	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
@@ -93,7 +93,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 
 
 	widgetA->repaintCurrent();
-	widgetB->repaintCurrent();
+    widgetB->repaintCurrent();*/
 }
 
 repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()

@@ -35,6 +35,8 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/renderer/repo_renderer_abstract.h \
+	src/repo/renderer/repo_renderer_glc.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_widget_rendering.h \
 	src/repo/workers/repo_worker_abstract.h \
@@ -92,6 +94,8 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/renderer/repo_renderer_abstract.cpp \
+	src/repo/renderer/repo_renderer_glc.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_widget_rendering.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \

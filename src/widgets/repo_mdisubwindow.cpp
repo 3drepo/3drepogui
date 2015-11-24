@@ -77,7 +77,7 @@ RepoMdiSubWindow::~RepoMdiSubWindow()
 
 void RepoMdiSubWindow::setWidget(const QString& windowTitle)
 {
-    setWidget(new widgets::RepoRenderingWidget(0, windowTitle));
+    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -85,7 +85,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath, repo::RepoController *controller)
 {
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new widgets::RepoRenderingWidget(0, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -136,35 +136,23 @@ void RepoMdiSubWindow::finishedLoadingScene(
     repo::core::model::RepoScene *repoScene)
 {
 	repoLog("finished loading repo scene");
-	//We have a scene, fire up the GLC worker to get a GLC World representation
-	//--------------------------------------------------------------------------
-	// Establish and connect the new worker.
-	repo::worker::GLCExportWorker* worker =
-		new repo::worker::GLCExportWorker(repoScene);
-	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *, GLC_World &)),
-		this, SLOT(finishedLoadingGLC(repo::core::model::RepoScene *,GLC_World &)));
-	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 
-	QObject::connect(
-		this, &RepoMdiSubWindow::aboutToDelete,
-		worker, &repo::worker::GLCExportWorker::cancel, Qt::DirectConnection);
+	widgets::RepoRenderingWidget *widget = dynamic_cast<widgets::RepoRenderingWidget*>(this->widget());
 
-	//--------------------------------------------------------------------------
-	// Fire up the asynchronous calculation.
-	QThreadPool::globalInstance()->start(worker);
+	if (widget)
+	{
+		if (repoScene)
+			widget->setRepoScene(repoScene);
+		
+	}
 
 }
 
 void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
 {
 	repoLog("finished Loading GLC");
-    widgets::RepoRenderingWidget *widget = dynamic_cast<widgets::RepoRenderingWidget*>(this->widget());
-	if (widget)
-	{
-		if (repoScene)
-	           widget->setRepoScene(repoScene);
-		widget->setGLCWorld(glcWorld);
-	}
+    
+	
 }
 
 void RepoMdiSubWindow::progress(int value, int maximum)
