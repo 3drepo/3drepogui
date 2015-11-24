@@ -18,9 +18,13 @@
 #pragma once
 
 #include <QDialog>
+#include <QMutex>
+#include <QThreadPool>
 
 #include "../../primitives/repo_fontawesome.h"
 #include "../../primitives/repoidbcache.h"
+#include "../workers/repo_worker_projects.h"
+#include "../workers/repo_multithreader.h"
 
 namespace Ui {
 class RepoDialogManagerAccess;
@@ -29,7 +33,9 @@ class RepoDialogManagerAccess;
 namespace repo {
 namespace widgets {
 
-class RepoDialogManagerAccess : public QDialog
+class RepoDialogManagerAccess
+        : public QDialog
+        , repo::worker::RepoMultithreader
 {
     Q_OBJECT
 
@@ -41,6 +47,7 @@ public:
             QWidget *parent = 0);
 
     ~RepoDialogManagerAccess();
+
 
 public slots :
 
@@ -59,6 +66,7 @@ public :
 
     std::string getDatabase() const;
 
+
 private:
 
     Ui::RepoDialogManagerAccess *ui;
@@ -66,6 +74,8 @@ private:
     const repo::gui::RepoIDBCache *dbCache;
 
     repo::RepoController *controller;
+
+
 
 };
 

@@ -90,12 +90,6 @@ void RepoWidgetTreeEditable::select(
     ui->editPushButton->setEnabled(true);
 }
 
-void RepoWidgetTreeEditable::finish()
-{
-//    ui->hostComboBox->setEnabled(true);
-//    ui->databaseComboBox->setEnabled(true);
-}
-
 void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
 {
 //    QMenu menu(ui->treeView);

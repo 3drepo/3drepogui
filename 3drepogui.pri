@@ -46,6 +46,8 @@ HEADERS +=  \
 	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_editable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
+	src/repo/workers/repo_multithreader.h \
+	src/repo/workers/repo_mutex.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -56,6 +58,7 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_history.h \
 	src/repo/workers/repo_worker_modified_nodes.h \
 	src/repo/workers/repo_worker_optimize.h \
+	src/repo/workers/repo_worker_projects.h \
 	src/repo/workers/repo_worker_project_settings.h \
 	src/repo/workers/repo_worker_roles.h \
 	src/repo/workers/repo_worker_scene_graph.h \
@@ -111,6 +114,8 @@ SOURCES +=  \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_editable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \
+	src/repo/workers/repo_multithreader.cpp \
+	src/repo/workers/repo_mutex.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
@@ -121,6 +126,7 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_history.cpp \
 	src/repo/workers/repo_worker_modified_nodes.cpp \
 	src/repo/workers/repo_worker_optimize.cpp \
+	src/repo/workers/repo_worker_projects.cpp \
 	src/repo/workers/repo_worker_project_settings.cpp \
 	src/repo/workers/repo_worker_roles.cpp \
 	src/repo/workers/repo_worker_scene_graph.cpp \

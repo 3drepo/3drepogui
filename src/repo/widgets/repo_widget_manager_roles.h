@@ -88,8 +88,7 @@ public :
 
     void setDBConnection(repo::RepoController *controller,
             const repo::RepoToken* token,
-            const std::string& database,
-            const QStringList &projects);
+            const std::string& database);
 
 private :
 
@@ -98,8 +97,6 @@ private :
     std::string database;
 
     repo::RepoController *controller;
-
-    QStringList projects;
 
 };
 

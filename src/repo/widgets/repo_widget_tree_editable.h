@@ -76,9 +76,6 @@ public slots :
     //! Clears the model.
     virtual void clear();
 
-    //! Called when loading is finished.
-    virtual void finish();
-
     //! Selects the data from the given item.
     virtual void select(const QItemSelection &, const QItemSelection &);
 

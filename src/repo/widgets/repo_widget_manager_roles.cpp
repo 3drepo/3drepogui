@@ -142,10 +142,6 @@ void RepoWidgetManagerRoles::refresh(
                     this, &RepoWidgetManagerRoles::unlockMutex);
 
         QObject::connect(
-                    worker, &repo::worker::RepoWorkerRoles::finished,
-                    this, &RepoWidgetManagerRoles::finish);
-
-        QObject::connect(
                     worker, &repo::worker::RepoWorkerRoles::progressRangeChanged,
                     progressBar, &QProgressBar::setRange);
 
@@ -169,13 +165,11 @@ void RepoWidgetManagerRoles::refresh(
 void RepoWidgetManagerRoles::setDBConnection(
         repo::RepoController *controller,
         const repo::RepoToken* token,
-        const std::string& database,
-        const QStringList &projects)
+        const std::string& database)
 {
     this->controller = controller;
     this->token = token;
     this->database = database;
-    this->projects = projects;
 }
 
 
@@ -203,14 +197,10 @@ void RepoWidgetManagerRoles::removeItem()
 
 void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
 {
-
     //--------------------------------------------------------------------------
     // Get mapping of databases with their associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects =
         controller->getDatabasesWithProjects(token, controller->getDatabases(token));
-//	emit databasesWithProjectsFetched(databasesWithProjects);
-
-
 
     repo::widgets::RepoDialogRole roleDialog(
                 role,

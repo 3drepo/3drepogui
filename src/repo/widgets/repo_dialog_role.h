@@ -87,6 +87,7 @@ public slots:
     //! Returns true if the role name is different from original, false otherwise.
     bool isNewRole() const;
 
+    //! Sets current delegate based on given database.
     void setDelegate(const QString &database);
 
 

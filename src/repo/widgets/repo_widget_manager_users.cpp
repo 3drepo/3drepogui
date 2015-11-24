@@ -161,10 +161,6 @@ void RepoWidgetManagerUsers::refresh(
                     this, &RepoWidgetManagerUsers::unlockMutex);
 
         QObject::connect(
-                    worker, &repo::worker::UsersWorker::finished,
-                    this, &RepoWidgetManagerUsers::finish);
-
-        QObject::connect(
                     worker, &repo::worker::UsersWorker::progressRangeChanged,
                     progressBar, &QProgressBar::setRange);
 
