@@ -39,6 +39,7 @@ RepoDialogManagerAccess::RepoDialogManagerAccess(
         dbCache->setDatabasesComboBox(ui->databaseComboBox);
     }
 
+    //--------------------------------------------------------------------------
 
     QObject::connect(ui->refreshPushButton, &QPushButton::pressed,
                      this, &RepoDialogManagerAccess::refresh);

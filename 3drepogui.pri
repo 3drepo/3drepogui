@@ -11,9 +11,7 @@ HEADERS +=  \
 	src/dialogs/repodialogabout.h \
 	src/dialogs/repodialogsettings.h \
 	src/dialogs/repodialoguser.h \
-	src/dialogs/repodialogusermanager.h \
 	src/dialogs/repofederationdialog.h \
-	src/dialogs/repoprojectmanagerdialog.h \
 	src/dialogs/repoprojectsettingsdialog.h \
 	src/dialogs/repo_dialogcommit.h \
 	src/dialogs/repo_dialogconnect.h \
@@ -79,9 +77,7 @@ SOURCES +=  \
 	src/dialogs/repodialogabout.cpp \
 	src/dialogs/repodialogsettings.cpp \
 	src/dialogs/repodialoguser.cpp \
-	src/dialogs/repodialogusermanager.cpp \
 	src/dialogs/repofederationdialog.cpp \
-	src/dialogs/repoprojectmanagerdialog.cpp \
 	src/dialogs/repoprojectsettingsdialog.cpp \
 	src/dialogs/repo_dialogcommit.cpp \
 	src/dialogs/repo_dialogconnect.cpp \

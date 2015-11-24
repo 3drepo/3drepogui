@@ -55,11 +55,9 @@
     <addaction name="separator"/>
     <addaction name="actionCommit"/>
     <addaction name="actionFederate"/>
+    <addaction name="separator"/>
     <addaction name="actionAccessManager"/>
     <addaction name="actionAddMapTiles"/>
-    <addaction name="separator"/>
-    <addaction name="actionUserManager"/>
-    <addaction name="actionProject_Manager"/>
     <addaction name="separator"/>
     <addaction name="actionDrop"/>
    </widget>

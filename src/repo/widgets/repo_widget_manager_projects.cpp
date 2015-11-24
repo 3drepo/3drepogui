@@ -41,7 +41,10 @@ RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
 }
 
 RepoWidgetManagerProjects::~RepoWidgetManagerProjects()
-{}
+{
+
+    // TODO: store column settings
+}
 
 void RepoWidgetManagerProjects::addProjectSettings(
         repo::core::model::RepoProjectSettings projectSettings)
@@ -64,9 +67,6 @@ void RepoWidgetManagerProjects::addProjectSettings(
 
     // Owner
     row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
-
-    // Group
-    row.append(new primitives::RepoStandardItem(projectSettings.getGroup()));
 
     // Permissions
     row.append(new primitives::RepoStandardItem(projectSettings.getPermissionsString()));

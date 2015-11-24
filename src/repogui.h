@@ -142,12 +142,6 @@ public slots:
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
 
-    //! Opens user management dialog box.
-    void openUserManager() const;
-
-    //! Opens project management dialog box.
-    void openProjectManager() const;
-
     void optimizeGraph();
 
     //! Refreshes currently connected database.
