@@ -730,30 +730,27 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 }
 void RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
 {
-	//switch (e->button())
-	//{
-	//case (Qt::RightButton) :
-	//	this->setCursor(Qt::ClosedHandCursor);
-	//	glcMoverController.setActiveMover(
- //           GLC_MoverController::TurnTable,
-	//		GLC_UserInput(e->x(), e->y()));
- //       update();
-	//	break;
-	//case (Qt::LeftButton) :
-	//	this->setCursor(Qt::SizeAllCursor);
-	//	glcMoverController.setActiveMover(
-	//		GLC_MoverController::Pan,
-	//		GLC_UserInput(e->x(), e->y()));
- //       update();
-	//	break;
-	//case (Qt::MidButton) :
-	//	this->setCursor(Qt::CrossCursor);
-	//	glcMoverController.setActiveMover(
-	//		GLC_MoverController::Fly,
-	//		GLC_UserInput(e->x(), e->y()));
- //       update();
-	//	break;
-	//}
+	switch (e->button())
+	{
+	case (Qt::RightButton) :
+		this->setCursor(Qt::ClosedHandCursor);
+        renderer->startNavigation(renderer::NavMode::TURNTABLE, e->x(), e->y());
+        update();
+		break;
+	case (Qt::LeftButton) :
+		this->setCursor(Qt::SizeAllCursor);
+        renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
+        update();
+		break;
+	case (Qt::MidButton) :
+		this->setCursor(Qt::CrossCursor);
+        renderer->startNavigation(renderer::NavMode::FLY, e->x(), e->y());
+        update();
+		break;
+	}
+
+	mousePressed = true;
+
 	// Pass on the event to parent.
     QOpenGLWidget::mousePressEvent(e);
 }
@@ -772,29 +769,27 @@ void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 }
 void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 {
-//	if (glcMoverController.hasActiveMover() &&
-//		glcMoverController.move(GLC_UserInput(e->x(), e->y())))
-//	{
-//        update();
-//		emit cameraChangedSignal(*glcViewport.cameraHandle());
-//	}
-//	else
-//	{
-////            select(e->x(),e->y(), false, e);
-////            update();
-//    }
-//
+
+	if (mousePressed && renderer->move(e->x(), e->y()))
+	{
+		//in Navigation mode
+		update();
+		emit cameraChangedSignal(renderer->getCurrentCamera());
+	}
+
 	// Pass on the event to parent.
     QOpenGLWidget::mouseMoveEvent(e);
 }
 void RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-	//if (glcMoverController.hasActiveMover())
-	//{
-	//	this->setCursor(Qt::ArrowCursor);
-	//	glcMoverController.setNoMover();
- //       update();
-	//}
+	if (mousePressed)
+	{
+		renderer->stopNavigation();
+		this->setCursor(Qt::ArrowCursor);
+		mousePressed = false;
+		update();
+	}
+	
 	// Pass on the event to parent.
     QOpenGLWidget::mouseReleaseEvent(e);
 }

@@ -75,6 +75,26 @@ namespace repo {
 				virtual void loadModel(repo::core::model::RepoScene *scene);
 
 				/**
+				* Navigate around the model
+				* @param x position in x
+				* @param y position in y
+				*/
+				virtual bool move(const int &x, const int &y);
+
+				/**
+				* Start navigate around the model
+				* @param mode which navigation mode
+				* @param x position in x
+				* @param y position in y
+				*/
+				virtual void startNavigation(const NavMode &mode, const int &x, const int &y);
+
+				/**
+				* Stop navigation
+				*/
+				virtual void stopNavigation();
+
+				/**
 				* Render scene
 				* @param painter for painting Info (pass in nullptr if disabled)
 				* @param screenHeight (ignored if painter is null)

@@ -329,6 +329,7 @@ namespace repo {
 				//! True is info is to be rendered, false otherwise.
 				bool isInfoVisible;
 
+				bool mousePressed;
 
 			}; // end 
 

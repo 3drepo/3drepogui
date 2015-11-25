@@ -184,6 +184,48 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 	QThreadPool::globalInstance()->start(worker);
 }
 
+bool GLCRenderer::move(const int &x, const int &y)
+{
+
+	return 	glcMoverController.hasActiveMover() &&
+		glcMoverController.move(GLC_UserInput(x, y));
+}
+
+void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
+{
+
+	switch (mode)
+	{
+	case NavMode::TURNTABLE:
+		glcMoverController.setActiveMover(
+			GLC_MoverController::TurnTable,
+			GLC_UserInput(x, y));
+		break;
+
+	case NavMode::PAN:
+		glcMoverController.setActiveMover(
+			GLC_MoverController::Pan,
+			GLC_UserInput(x, y));
+		break;
+
+	case NavMode::FLY:
+		glcMoverController.setActiveMover(
+			GLC_MoverController::Fly,
+			GLC_UserInput(x, y));
+		break;
+	default:
+		repoLogError("Unrecognised mode: " + std::to_string((int)mode));
+	}
+	
+}
+
+void GLCRenderer::stopNavigation()
+{
+	if (glcMoverController.hasActiveMover())
+	{
+		glcMoverController.setNoMover();
+	}
+}
 
 void GLCRenderer::setGLCWorld(GLC_World &world)
 {

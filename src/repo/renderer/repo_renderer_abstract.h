@@ -33,6 +33,7 @@ namespace repo {
 
 			//! Standard camera positions type.
 			enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
+			enum class NavMode { TURNTABLE, PAN, FLY };
 			
 			struct CameraSettings
 			{
@@ -70,6 +71,28 @@ namespace repo {
 				* @param scene Scene to load
 				*/
 				virtual void loadModel(repo::core::model::RepoScene *scene) = 0;
+
+
+				/**
+				* Navigate around the model
+				* @param x position in x
+				* @param y position in y
+				* @return returns true upon success
+				*/
+				virtual bool move(const int &x, const int &y) = 0;
+
+				/**
+				* Turn on navigation mode
+				* @param mode which navigation mode
+				* @param x position in x
+				* @param y position in y
+				*/
+				virtual void startNavigation(const NavMode &mode, const int &x, const int &y) = 0;
+
+				/**
+				* Stop navigation
+				*/
+				virtual void stopNavigation() = 0;
 
 				/**
 				* Render scene
