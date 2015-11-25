@@ -114,6 +114,18 @@ CameraSettings GLCRenderer::getCurrentCamera()
 	return convertToCameraSettings(glcViewport.cameraHandle());
 }
 
+bool GLCRenderer::increaseFlyVelocity(const float &vel)
+{
+	bool success;
+
+	GLC_FlyMover* flyMover = dynamic_cast<GLC_FlyMover*>(glcMoverController.activeMover());
+	if (success = flyMover)
+	{
+		flyMover->increaseVelocity(vel);
+	}
+	return success;
+}
+
 void GLCRenderer::initialize()
 {
 	initializeOpenGLFunctions();
@@ -535,5 +547,11 @@ void GLCRenderer::setCamera(const CameraView& view)
 		repoLogError("GLC world is empty or bounding box is empty!");
 	}
 
+	emit cameraChangedSignal(getCurrentCamera());
+}
+
+void GLCRenderer::zoom(const float &zoom)
+{
+	glcViewport.cameraHandle()->zoom(zoom);
 	emit cameraChangedSignal(getCurrentCamera());
 }

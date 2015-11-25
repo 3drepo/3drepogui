@@ -61,6 +61,14 @@ namespace repo {
 				*/
 				virtual CameraSettings getCurrentCamera() = 0;
 
+
+				/**
+				* Increase velocity 
+				* @param vel velocity delta
+				* @return returns true upon success
+				*/
+				virtual bool increaseFlyVelocity(const float &vel) = 0;
+
 				/**
 				* Initialise renderer
 				*/
@@ -142,6 +150,13 @@ namespace repo {
 				* @param color colour to change to
 				*/
 				virtual void setBackgroundColor(const QColor &color) = 0;
+
+				/**
+				* Zoom/unzoom camera
+				* @param zoom zoom factor
+				*/
+
+				virtual void zoom(const float &zoom) = 0;
 						
 			signals :
 				/**

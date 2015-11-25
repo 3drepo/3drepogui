@@ -795,18 +795,12 @@ void RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 void RepoRenderingWidget::wheelEvent(QWheelEvent * e)
 {
-	/*GLC_FlyMover* flyMover = dynamic_cast<GLC_FlyMover*>(glcMoverController.activeMover());
-	if (flyMover)
+	if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
 	{
-		flyMover->increaseVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3);
+		renderer->zoom(e->delta() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
+		update();
 	}
-	else
-	{
-		glcViewport.cameraHandle()->zoom(e->delta() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
-        update();
-		emit cameraChangedSignal(*glcViewport.cameraHandle());
-	}
-*/
+
 	// Pass on the event to parent.
     QOpenGLWidget::wheelEvent(e);
 }
