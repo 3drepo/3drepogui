@@ -174,7 +174,7 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 	connect(worker, &repo::worker::GLCExportWorker::finished,
 		this, &GLCRenderer::setGLCWorld);
 	//FIXME:
-	//connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
+	connect(worker, &repo::worker::GLCExportWorker::progress, this, &GLCRenderer::workerProgress);
 
 	//QObject::connect(
 	//	this, &RepoMdiSubWindow::aboutToDelete,

@@ -112,6 +112,8 @@ namespace repo {
 				//! Sets a camera view from a pre-defined set of possibilities.
                 void setPredefinedCamera(const repo::gui::renderer::CameraView&);
 
+				void rendererProgress(int value, int maximum) { emit modelLoadProgress(value, maximum); }
+
 				////! Sets the per-vertex colours on a mesh identified by its string name.
 				///*!
 				//* Sets the per-vertex colours each as [r,g,b,a] on a single mesh. Hence,
@@ -160,6 +162,8 @@ namespace repo {
 			signals:
 
 				void cameraChangedSignal(const renderer::CameraSettings &camera);
+
+				void modelLoadProgress(int value, int maximum);
 
 				void selectionChanged(const RepoRenderingWidget *, std::vector<std::string>);
 

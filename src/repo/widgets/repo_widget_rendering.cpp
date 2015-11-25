@@ -409,6 +409,10 @@ void RepoRenderingWidget::linkCameras(
 
 void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 {
+	
+	connect(
+		renderer, &renderer::AbstractRenderer::modelLoadProgress,
+		this, &RepoRenderingWidget::rendererProgress);
 	if (repoScene)
 	{
 		if (this->repoScene)
@@ -429,6 +433,8 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 	{
 		repoLogError("Failed to load repoScene!");
 	}
+
+
 }
 
 

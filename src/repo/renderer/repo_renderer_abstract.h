@@ -131,9 +131,12 @@ namespace repo {
 				*/
 				void cameraChangedSignal(const CameraSettings &camera);
 
-                        public slots :
+				void modelLoadProgress(int value, int maximum);
+
+			public slots :
 				void updateRenderer() { emit repaintNeeded(); };
 				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera()); };
+                                void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};
 
 			protected:
 				RepoFPSCounter fpsCounter;

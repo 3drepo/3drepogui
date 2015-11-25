@@ -141,6 +141,10 @@ void RepoMdiSubWindow::finishedLoadingScene(
 
 	if (widget)
 	{
+		connect(
+			widget, &widgets::RepoRenderingWidget::modelLoadProgress,
+			this, &RepoMdiSubWindow::progress);
+
 		if (repoScene)
 			widget->setRepoScene(repoScene);
 		
