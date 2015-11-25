@@ -114,6 +114,8 @@ namespace repo {
 
 				void rendererProgress(int value, int maximum) { emit modelLoadProgress(value, maximum); }
 
+				void cancelOperations() { emit cancelRenderingOps(); }
+
 				////! Sets the per-vertex colours on a mesh identified by its string name.
 				///*!
 				//* Sets the per-vertex colours each as [r,g,b,a] on a single mesh. Hence,
@@ -162,6 +164,8 @@ namespace repo {
 			signals:
 
 				void cameraChangedSignal(const renderer::CameraSettings &camera);
+
+				void cancelRenderingOps();
 
 				void modelLoadProgress(int value, int maximum);
 

@@ -17,6 +17,7 @@
 
 
 #include "repo_worker_abstract.h"
+#include <repo/lib/repo_log.h>
 
 using namespace repo::worker;
 
@@ -36,4 +37,5 @@ void RepoAbstractWorker::connect(QThread * thread)
 void RepoAbstractWorker::cancel()
 {
 	cancelled = true;
+	repoLog("Cancelling worker operations...");
 }

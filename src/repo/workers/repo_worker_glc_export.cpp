@@ -180,7 +180,7 @@ void GLCExportWorker::run()
 {
 	repoLog("Running GLC Export worker..");
 
-    if (scene && scene->getRoot(scene->getViewGraph()))
+	if (!cancelled && scene && scene->getRoot(scene->getViewGraph()))
     {
         repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
         //-------------------------------------------------------------------------
@@ -260,7 +260,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     for (auto &texture : textures)
     {
-        if (texture)
+		if (texture && !cancelled)
         {
             GLC_Texture* glcTexture = convertGLCTexture((repoModel::TextureNode*)texture);
             if (glcTexture)
@@ -289,7 +289,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     for (auto &material : materials)
     {
-        if (material)
+		if (material && !cancelled)
         {
             GLC_Material* glcMat = convertGLCMaterial(
                 (repoModel::MaterialNode*)material, parentToGLCTexture);
@@ -317,7 +317,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCMeshes;
     for (auto &mesh : meshes)
     {
-        if (mesh)
+		if (mesh && !cancelled)
         {
             GLC_3DRep* glcMesh = convertGLCMesh(
                 (repoModel::MeshNode*)mesh, parentToGLCMaterial);
@@ -343,7 +343,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
     for (auto &camera : cameras)
     {
-        if (camera)
+		if (camera && !cancelled)
         {
             //FIXME: cameras don't really work. Disabled from visualisation for now.
             //GLC_3DRep* glcCamera = convertGLCCamera(
@@ -411,7 +411,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
                 //has meshes
                 for (auto &glcMesh : it->second)
                 {
-                    if (glcMesh)
+					if (glcMesh&& !cancelled)
                     {
                         if (pRep)
                             // instead of merging pRep

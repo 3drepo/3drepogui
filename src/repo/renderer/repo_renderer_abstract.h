@@ -131,9 +131,12 @@ namespace repo {
 				*/
 				void cameraChangedSignal(const CameraSettings &camera);
 
+				void killWorker();
+
 				void modelLoadProgress(int value, int maximum);
 
-			public slots :
+			public slots :				
+				void cancelOperations() { emit killWorker(); };
 				void updateRenderer() { emit repaintNeeded(); };
 				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera()); };
                                 void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};

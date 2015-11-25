@@ -145,6 +145,10 @@ void RepoMdiSubWindow::finishedLoadingScene(
 			widget, &widgets::RepoRenderingWidget::modelLoadProgress,
 			this, &RepoMdiSubWindow::progress);
 
+		QObject::connect(
+		 this, &RepoMdiSubWindow::aboutToDelete,
+		 widget, &widgets::RepoRenderingWidget::cancelOperations, Qt::DirectConnection);
+
 		if (repoScene)
 			widget->setRepoScene(repoScene);
 		

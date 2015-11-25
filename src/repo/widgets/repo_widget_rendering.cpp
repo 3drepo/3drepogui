@@ -413,6 +413,10 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 	connect(
 		renderer, &renderer::AbstractRenderer::modelLoadProgress,
 		this, &RepoRenderingWidget::rendererProgress);
+
+	connect(
+		this, &RepoRenderingWidget::cancelRenderingOps,
+		renderer, &renderer::AbstractRenderer::cancelOperations);
 	if (repoScene)
 	{
 		if (this->repoScene)

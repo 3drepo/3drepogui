@@ -173,12 +173,11 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 		new repo::worker::GLCExportWorker(scene);
 	connect(worker, &repo::worker::GLCExportWorker::finished,
 		this, &GLCRenderer::setGLCWorld);
-	//FIXME:
 	connect(worker, &repo::worker::GLCExportWorker::progress, this, &GLCRenderer::workerProgress);
 
-	//QObject::connect(
-	//	this, &RepoMdiSubWindow::aboutToDelete,
-	//	worker, &repo::worker::GLCExportWorker::cancel, Qt::DirectConnection);
+	QObject::connect(
+		this, &AbstractRenderer::killWorker,
+		worker, &repo::worker::GLCExportWorker::cancel, Qt::DirectConnection);
 
 	//--------------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
