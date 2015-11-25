@@ -139,7 +139,6 @@ repo::gui::RepoDialogUser::RepoDialogUser(
         //----------------------------------------------------------------------
         // Acess Rights
         addItems(Tabs::PROJECTS, user.getProjectsList());
-        addItems(Tabs::GROUPS, user.getGroupsList());
         addItems(Tabs::ROLES, user.getRolesList());
         addItems(Tabs::API_KEYS, user.getAPIKeysList());
     }
@@ -203,18 +202,6 @@ QTreeWidgetItem * repo::gui::RepoDialogUser::addAPIKey(
     return item;
 }
 
-QTreeWidgetItem * repo::gui::RepoDialogUser::addGroup(
-        const std::pair<std::string, std::string> &group)
-{
-    QTreeWidgetItem *item = addItem(
-                group,
-                ui->groupsTreeWidget);
-    ui->groupsTreeWidget->scrollToItem(item);
-	ui->groupsTreeWidget->setCurrentItem(item, (int)Columns::DATABASE);
-    return item;
-}
-
-
 QTreeWidgetItem * repo::gui::RepoDialogUser::addItem()
 {
     return addItem(static_cast<Tabs>(ui->accessRightsTabWidget->currentIndex()));
@@ -233,12 +220,6 @@ QTreeWidgetItem* repo::gui::RepoDialogUser::addItem(
             item = addProject(std::make_pair(""+admin,""));
         else
             item = addProject(pair);
-        break;
-    case Tabs::GROUPS :
-        if (pair.first.empty() && pair.second.empty())
-            item = addGroup(std::make_pair(""+admin,"group"));
-        else
-            item = addGroup(pair);
         break;
     case Tabs::ROLES :
         if (pair.first.empty() && pair.second.empty())
@@ -327,9 +308,6 @@ void repo::gui::RepoDialogUser::removeItem()
     case Tabs::PROJECTS :
         item = ui->projectsTreeWidget->currentItem();
         break;
-    case Tabs::GROUPS :
-        item = ui->groupsTreeWidget->currentItem();
-        break;
     case Tabs::ROLES :
         item = ui->rolesTreeWidget->currentItem();
         break;
@@ -354,12 +332,6 @@ std::string repo::gui::RepoDialogUser::getFirstName() const
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getAPIKeys() const
 {
     return getItems(ui->apiKeysTreeWidget);
-}
-
-
-std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getGroups() const
-{
-    return getItems(ui->groupsTreeWidget);
 }
 
 std::list<std::pair<std::string, std::string> > repo::gui::RepoDialogUser::getItems(QTreeWidget *widget) const
@@ -476,7 +448,7 @@ repo::core::model::RepoUser repo::gui::RepoDialogUser::getUpdatedUser() const
                 getEmail(),
                 getProjects(),
                 getRoles(),
-                getGroups(),
+                std::list<std::pair<std::string, std::string> >(),
                 getAPIKeys(),
                 avatar);
 }
@@ -485,8 +457,6 @@ bool repo::gui::RepoDialogUser::isNewUser() const
 {
 	return getUsername() != user.getUserName();
 }
-
-
 
 void repo::gui::RepoDialogUser::setAvatar(const std::vector<char> &image)
 {

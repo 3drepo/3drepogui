@@ -6,23 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
-    <height>369</height>
+    <width>442</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Project Settings</string>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="projectGroupBox">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Project:</string>
      </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
-     <layout class="QFormLayout" name="formLayout_3">
+     <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="nameLabel">
         <property name="text">
@@ -38,16 +38,16 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="descriptionLabel">
+       <widget class="QLabel" name="ownerSetterLabel">
         <property name="text">
-         <string>Description:</string>
+         <string>Owner:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="descriptionLineEdit">
-        <property name="placeholderText">
-         <string>Description</string>
+       <widget class="QComboBox" name="ownerComboBox">
+        <property name="editable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -65,6 +65,9 @@
         </property>
         <property name="editable">
          <bool>true</bool>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
         </property>
         <item>
          <property name="text">
@@ -103,38 +106,17 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="ownerSetterLabel">
+      <item row="3" column="0">
+       <widget class="QLabel" name="descriptionLabel">
         <property name="text">
-         <string>Owner:</string>
+         <string>Description:</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QComboBox" name="ownerComboBox">
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="groupSetterLabel">
-        <property name="text">
-         <string>Group:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="groupComboBox">
-        <property name="editable">
-         <bool>true</bool>
+      <item row="3" column="1">
+       <widget class="QTextEdit" name="descriptionTextEdit">
+        <property name="placeholderText">
+         <string>Description</string>
         </property>
        </widget>
       </item>
@@ -142,32 +124,23 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="permissionsGroupBox">
+    <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Permissions:</string>
+      <string>Properties:</string>
      </property>
-     <property name="flat">
+     <property name="checkable">
       <bool>true</bool>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>12</number>
+      </property>
       <item>
-       <widget class="QFrame" name="frame">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="lineWidth">
-         <number>0</number>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QFormLayout" name="formLayout_3">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -180,182 +153,190 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="2">
-          <widget class="QLabel" name="writeLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="pinSizeLabel">
            <property name="text">
-            <string>Write:</string>
+            <string>Pin Size:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="readLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+          <widget class="QDoubleSpinBox" name="pinSizeDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="text">
-            <string>Read:</string>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
            </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QLabel" name="executeLabel">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="decimals">
+            <number>2</number>
            </property>
-           <property name="text">
-            <string>Execute:</string>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
            </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QCheckBox" name="ownerWriteCheckBox">
-           <property name="text">
-            <string>W</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <widget class="QCheckBox" name="ownerExecuteCheckBox">
-           <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QCheckBox" name="publicWriteCheckBox">
-           <property name="text">
-            <string>W</string>
+           <property name="value">
+            <double>1.600000000000000</double>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="ownerLabel">
+          <widget class="QLabel" name="avatarHeightLabel">
            <property name="text">
-            <string>Owner:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QCheckBox" name="publicReadCheckBox">
-           <property name="text">
-            <string>R</string>
+            <string>Avatar Height:</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QCheckBox" name="ownerReadCheckBox">
-           <property name="text">
-            <string>R</string>
+          <widget class="QDoubleSpinBox" name="avatarHeightDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="publicLabel">
-           <property name="text">
-            <string>Public:</string>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
            </property>
-          </widget>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="octalLabel">
-           <property name="text">
-            <string>Octal:</string>
+           <property name="decimals">
+            <number>2</number>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QCheckBox" name="groupExecuteCheckBox">
-           <property name="text">
-            <string>X</string>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QCheckBox" name="groupReadCheckBox">
-           <property name="text">
-            <string>R</string>
+           <property name="value">
+            <double>1.600000000000000</double>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="groupLabel">
+          <widget class="QLabel" name="visibilityLimitLabel">
            <property name="text">
-            <string>Group:</string>
+            <string>Visibility Limit:</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
-          <widget class="QCheckBox" name="groupWriteCheckBox">
-           <property name="text">
-            <string>W</string>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="visibilityLimitDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>1000.000000000000000</double>
            </property>
           </widget>
          </item>
-         <item row="1" column="4">
-          <widget class="QCheckBox" name="uidCheckBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QFormLayout" name="formLayout_4">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="speedLabel">
            <property name="text">
-            <string>Set UID</string>
+            <string>Speed:</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="3">
-          <widget class="QCheckBox" name="publicExecuteCheckBox">
+         <item row="1" column="0">
+          <widget class="QLabel" name="zNearLabel">
            <property name="text">
-            <string>X</string>
+            <string>z-Near:</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="4">
-          <widget class="QCheckBox" name="gidCheckBox">
-           <property name="enabled">
-            <bool>false</bool>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="speedDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
-           <property name="text">
-            <string>Set GID</string>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
            </property>
-          </widget>
-         </item>
-         <item row="4" column="1" colspan="3">
-          <widget class="QLineEdit" name="octalLineEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+           <property name="decimals">
+            <number>2</number>
            </property>
-           <property name="text">
-            <string>0000</string>
+           <property name="minimum">
+            <double>-179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
            </property>
-           <property name="maxLength">
-            <number>4</number>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
            </property>
-           <property name="clearButtonEnabled">
-            <bool>false</bool>
+           <property name="value">
+            <double>5.000000000000000</double>
            </property>
           </widget>
          </item>
-         <item row="3" column="4">
-          <widget class="QCheckBox" name="stickyBitCheckBox">
-           <property name="enabled">
-            <bool>false</bool>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="zNearDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="minimum">
+            <double>-179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>0.010000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="zFarLabel">
            <property name="text">
-            <string>Sticky bit</string>
+            <string>z-Far:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="zFarDoubleSpinBox">
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>true</bool>
+           </property>
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <double>179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>1000.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -363,13 +344,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
     </widget>
    </item>
    <item>

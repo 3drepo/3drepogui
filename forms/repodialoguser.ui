@@ -318,60 +318,6 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="groupsTab">
-         <attribute name="title">
-          <string>Groups</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QTreeWidget" name="groupsTreeWidget">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::AllEditTriggers</set>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string>Database</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Group</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="rolesTab">
          <attribute name="title">
           <string>Roles</string>

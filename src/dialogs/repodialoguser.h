@@ -54,7 +54,7 @@ class RepoDialogUser : public QDialog
     enum class Columns { DATABASE, VALUE };
 
     //! Access rights tabs.
-    enum  class Tabs { PROJECTS, GROUPS, ROLES, API_KEYS };
+    enum  class Tabs { PROJECTS, ROLES, API_KEYS };
 
 public:
 
@@ -74,9 +74,6 @@ public slots:
 
     //! Adds an API Key pair to the API Keys table.
     QTreeWidgetItem *addAPIKey(const std::pair<std::string, std::string> &);
-
-    //! Adds a DB Group pair to the Groups table.
-    QTreeWidgetItem *addGroup(const std::pair<std::string, std::string> &);
 
     //! Adds Access Rights item depending on the selected tab.
     QTreeWidgetItem *addItem();
@@ -130,9 +127,6 @@ public :
 
     //! Returns the first name currently set in the dialog if any.
     std::string getFirstName() const;
-
-    //! Returns a list of groups as db, role pairs.
-    std::list<std::pair<std::string, std::string> > getGroups() const;
 
     //! Returns a list of items as db, value pairs from given tree widget.
     std::list<std::pair<std::string, std::string> > getItems(QTreeWidget *) const;

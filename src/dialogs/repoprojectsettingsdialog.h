@@ -40,56 +40,22 @@ class RepoProjectSettingsDialog : public QDialog
 
     enum Permissions { BITS, OWNER, GROUP, PUBLIC };
 
-
 public:
+
     explicit RepoProjectSettingsDialog(
 		repo::core::model::RepoProjectSettings projectSettings,
             QWidget *parent = 0);
+
     ~RepoProjectSettingsDialog();
 
-public slots :
-
-    //! Updates permissions octal based on corresponding check boxes.
-    void updatePermissionsOctal();
-
-    //! Updates permissions octal based on corresponding value.
-	void updatePermissionsOctal(const std::vector<bool> perm);
-
-    //! Updates permissions octal based on set text.
-    void updatePermissionsOctal(const QString &value);
-
 public :
-
-    static unsigned short getOctal(
-            const QCheckBox *r,
-            const QCheckBox *w,
-            const QCheckBox *x);
-
-    static void setOctal(
-            QCheckBox *r,
-            QCheckBox *w,
-            QCheckBox *x,
-            int value);
 
     //! Returns bson.
     repo::core::model::RepoProjectSettings getSettings() const;
 
-protected :
-
-    void connectPermissionsOctal();
-    void disconnectPermissionsOctal();
-
-    void setPermissionsCheckBoxes(
-         unsigned short octal,
-         QCheckBox *r, unsigned short rMask,
-         QCheckBox *w, unsigned short wMask,
-         QCheckBox *x, unsigned short xMask);
-
 private:
 
     Ui::RepoProjectSettingsDialog *ui;
-
-    QList<QCheckBox*> checkboxes;
 
 }; // end class
 
