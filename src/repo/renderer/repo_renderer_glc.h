@@ -123,7 +123,7 @@ namespace repo {
 				*/
 				virtual void setBackgroundColor(const QColor &color);
 
-				void setGLCWorld(repo::core::model::RepoScene *scene, GLC_World &world);
+				void setGLCWorld(GLC_World &world);
 
 			protected:				
 

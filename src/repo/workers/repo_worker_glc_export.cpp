@@ -207,12 +207,6 @@ void GLCExportWorker::run()
         }
 
         GLC_World wholeGraph = glcWorld ? GLC_World(*glcWorld) : GLC_World();
-
-        repoLog("setting GLC World...");
-        repoLog("\tGLC World empty: " + std::to_string(glcWorld->isEmpty()));
-        repoLog("\tGLC World size: " + std::to_string(glcWorld->size()));
-        repoLog("\tGLC World #vertex: " + std::to_string(glcWorld->numberOfVertex()));
-
         if (glcWorld)
         {
             glcWorld->clear();
@@ -224,12 +218,7 @@ void GLCExportWorker::run()
 		}
         //--------------------------------------------------------------------------
 
-		repoLog("sending GLC World...");
-        repoLog("\tGLC World empty: " + std::to_string(wholeGraph.isEmpty()));
-        repoLog("\tGLC World size: " + std::to_string(wholeGraph.size()));
-        repoLog("\tGLC World #vertex: " + std::to_string(wholeGraph.numberOfVertex()));
-
-        emit finished(scene, wholeGraph);
+        emit finished(wholeGraph);
     }
     else{
         repoLog("Trying to produce a GLC representation with a nullptr to scene!");
