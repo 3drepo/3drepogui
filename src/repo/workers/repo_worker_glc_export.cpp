@@ -218,7 +218,8 @@ void GLCExportWorker::run()
 		}
         //--------------------------------------------------------------------------
 
-        emit finished(wholeGraph);
+		if (!cancelled)
+			emit finished(wholeGraph);
     }
     else{
         repoLog("Trying to produce a GLC representation with a nullptr to scene!");

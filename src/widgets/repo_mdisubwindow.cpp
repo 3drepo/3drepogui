@@ -63,8 +63,6 @@ RepoMdiSubWindow::RepoMdiSubWindow(
 
 RepoMdiSubWindow::~RepoMdiSubWindow()
 {
-	emit aboutToDelete();
-
 	removeWidget();
 
 	if (progressBar)
@@ -83,6 +81,7 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 		//need to wait for worker to finish before closing or 
 		//this may cause seg faults.
 		repoLog("waiting on worker to recover before closing..");
+        emit aboutToDelete();
 		awaitingClose = true;
 		closeEvent->ignore();
 	}
