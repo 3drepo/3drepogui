@@ -117,14 +117,15 @@ public slots :
 	//! Sets the two scene representations on the widget.
 	void finishedLoadingScene(repo::core::model::RepoScene *);
 
-	void finishedLoadingGLC(repo::core::model::RepoScene *, GLC_World &);
-
 	/*! 
 	 * Updates the current state of the progress bar with the values specified.
 	 * This method makes the progress bar visible unless the value is non-zero
 	 * and equals the maximum in which case the progress bar is hidden.
 	 */
 	void progress(int value, int maximum);
+
+protected:
+	void closeEvent(QCloseEvent *closeEvent);
 	
 private :
 
@@ -137,6 +138,8 @@ private :
 	QBoxLayout * boxLayout; //!< Box layout of the window.
 
 	QProgressBar * progressBar; //!< Progress bar
+
+	bool awaitingClose;
 };
 
 } // end namespace gui

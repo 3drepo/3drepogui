@@ -33,6 +33,7 @@ RepoMdiSubWindow::RepoMdiSubWindow(
         QWidget *parent,
         Qt::WindowFlags flags)
         : QMdiSubWindow(parent, flags)
+        , awaitingClose(nullptr)
 {
     //--------------------------------------------------------------------------
 	// General settings
@@ -73,6 +74,23 @@ RepoMdiSubWindow::~RepoMdiSubWindow()
 	if (boxLayout)
 		delete boxLayout;
 	boxLayout = NULL;
+}
+
+void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
+{
+	if (progressBar->isVisible())
+	{
+		//need to wait for worker to finish before closing or 
+		//this may cause seg faults.
+		repoLog("waiting on worker to recover before closing..");
+		awaitingClose = true;
+		closeEvent->ignore();
+	}
+	else
+	{
+		QMdiSubWindow::closeEvent(closeEvent);
+	}
+
 }
 
 void RepoMdiSubWindow::setWidget(const QString& windowTitle)
@@ -156,13 +174,6 @@ void RepoMdiSubWindow::finishedLoadingScene(
 
 }
 
-void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
-{
-	repoLog("finished Loading GLC");
-    
-	
-}
-
 void RepoMdiSubWindow::progress(int value, int maximum)
 {
 	if (progressBar->maximum() != maximum)
@@ -170,8 +181,13 @@ void RepoMdiSubWindow::progress(int value, int maximum)
 	progressBar->setValue(value);
 
 	if (value > 0 && value == maximum)
-	{
+	{		
 		progressBar->hide();
+		if (awaitingClose)
+		{
+			close();
+		}
+		awaitingClose = false;
 		//this->widget()->setCursor(QCursor(Qt::ArrowCursor));
 		//boxLayout->update();
 	}
