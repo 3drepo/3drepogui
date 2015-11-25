@@ -186,13 +186,21 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 }
 
 
-void GLCRenderer::setGLCWorld(repo::core::model::RepoScene *scene, GLC_World world)
+void GLCRenderer::setGLCWorld(repo::core::model::RepoScene *scene, GLC_World &world)
 {
+	if (scene)
+	{
+		repoLog("has scene");
+	}
+	else
+	{
+		repoLogError("null ptr to scene!");
+	}
 	repoLog("Setting GLC World...");
-	repoLog("\tGLC World empty: " + std::to_string(glcWorld.isEmpty()));
-	repoLog("\tGLC World size: " + std::to_string(glcWorld.size()));
-	repoLog("\tGLC World #vertex: " + std::to_string(glcWorld.numberOfVertex()));
-	this->glcWorld = glcWorld;
+	repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
+	repoLog("\tGLC World size: " + std::to_string(world.size()));
+	repoLog("\tGLC World #vertex: " + std::to_string(world.numberOfVertex()));
+	this->glcWorld = world;
 	this->glcWorld.collection()->setLodUsage(true, &glcViewport);
 	this->glcWorld.collection()->setVboUsage(true);
 

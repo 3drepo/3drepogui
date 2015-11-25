@@ -80,7 +80,7 @@ namespace repo {
 		signals:
 
 			//! Emitted when loading is finished. Passes Repo scene and GLC world.
-			void finished(repo::core::model::RepoScene*, GLC_World&);
+            void finished(repo::core::model::RepoScene*, GLC_World&);
 
 		private:
 			repo::core::model::RepoScene* scene;
