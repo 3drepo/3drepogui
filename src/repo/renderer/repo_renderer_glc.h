@@ -118,6 +118,14 @@ namespace repo {
 				* @param height new height
 				*/
 				virtual void resizeWindow(const int &width, const int &height);
+				
+				/**
+				* Select a component given a position. This will highlight the component
+				* @param x position in x
+				* @param y position in y
+				* @param multiSelection if multiple objects should be highlighted
+				*/
+				virtual void selectComponent(const int &x, const int &y, bool multiSelection);
 
 				/**
 				* Set activiation flag

@@ -208,18 +208,13 @@ namespace repo {
 				* Takes the length of the bounding box in x, y and z and the transformation
 				* matrix to reposition the box from [0,0,0] to the desired location in space.
 				*/
-				void addBoundingBox(const double lx, const double ly, const double lz,
-					const std::vector<double>& transformationMatrix);
+				//void addBoundingBox(const double lx, const double ly, const double lz,
+				//	const std::vector<double>& transformationMatrix);
 
-				//! Removes and deletes all bounding boxes.
-				void clearBoundingBoxes();
+				////! Removes and deletes all bounding boxes.
+				//void clearBoundingBoxes();
 
-				void toggleOctree();
-
-				//void select(GLC_uint selectionID,
-				//	bool multiSelection = false,
-				//	bool unselectSelected = true,
-				//	bool isUpdate = true);
+				//void toggleOctree();
 
 				//void select(const QString &meshName,
 				//	bool multiSelection = false,

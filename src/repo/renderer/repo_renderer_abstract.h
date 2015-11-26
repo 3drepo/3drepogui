@@ -44,7 +44,7 @@ namespace repo {
 
 			class AbstractRenderer : public QObject, protected QOpenGLFunctions
 			{
-                            Q_OBJECT
+				Q_OBJECT
 			public:
 				AbstractRenderer();
 
@@ -60,7 +60,6 @@ namespace repo {
 				* @return returns camera settings in the form of CameraSettings
 				*/
 				virtual CameraSettings getCurrentCamera() = 0;
-
 
 				/**
 				* Increase velocity 
@@ -88,6 +87,8 @@ namespace repo {
 				* @return returns true upon success
 				*/
 				virtual bool move(const int &x, const int &y) = 0;
+
+				virtual void selectComponent(const int &x, const int &y, bool multiSelection) = 0;
 
 				/**
 				* Turn on navigation mode
@@ -177,7 +178,7 @@ namespace repo {
 				void cancelOperations() { emit killWorker(); };
 				void updateRenderer() { emit repaintNeeded(); };
 				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera()); };
-                                void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};
+				void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};
 
 			protected:
 				RepoFPSCounter fpsCounter;

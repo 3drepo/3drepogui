@@ -756,13 +756,14 @@ void RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
 }
 void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
-	//if (Qt::LeftButton == e->button())
-	//{
-	//	bool multiSelection = (
-	//		(e->modifiers() == Qt::ControlModifier) ||
-	//		(e->modifiers() == Qt::ShiftModifier));
-	//	select(e->x(), e->y(), multiSelection, e);
-	//}
+	if (Qt::LeftButton == e->button())
+	{
+		repoLog("left button double clicked.");
+		bool multiSelection = (
+			(e->modifiers() == Qt::ControlModifier) ||
+			(e->modifiers() == Qt::ShiftModifier));
+		select(e->x(), e->y(), multiSelection, e);
+	}
 
 	// Pass on the event to parent.
     QOpenGLWidget::mouseDoubleClickEvent(e);
@@ -805,86 +806,14 @@ void RepoRenderingWidget::wheelEvent(QWheelEvent * e)
     QOpenGLWidget::wheelEvent(e);
 }
 
-//void RepoRenderingWidget::select(int x, int y, bool multiSelection,
-//    QMouseEvent *event)
-//{
-//    const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
-//    if (spacePartitioningIsUsed)
-//    {
-//        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
-//        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
-//        glcWorld.collection()->setSpacePartitionningUsage(false);
-//    }
-//
-////	setAutoBufferSwap(false);
-////    setUpdatesEnabled(false);
-////    glcWorld.collection()->setLodUsage(true, &glcViewport);
-//
-//    GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
-//
-////    glcWorld.collection()->setLodUsage(false, &glcViewport);
-//
-//
-//
-//    if (spacePartitioningIsUsed)
-//    {
-//        glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
-//        glcWorld.collection()->setSpacePartitionningUsage(true);
-//    }
-//
-//    std::clog << "Selection ID: " << selectionID << std::endl;
-//    select(selectionID, multiSelection);
-//}
+void RepoRenderingWidget::select(int x, int y, bool multiSelection,
+    QMouseEvent *event)
+{
+	renderer->selectComponent(x, y, multiSelection);
+	update();
 
-//void RepoRenderingWidget::select(GLC_uint selectionID,
-//    bool multiSelection,
-//    bool unselectSelected,
-//    bool isUpdate)
-//{
-    //if (glcWorld.containsOccurrence(selectionID))
-    //{
-    //    if (unselectSelected
-    //        && (!glcWorld.isSelected(selectionID))
-    //        && (glcWorld.selectionSize() > 0)
-    //        && (!multiSelection))
-    //    {
-    //        glcWorld.unselectAll();
-    //        emit selectionChanged(this, getSelectionList());
-    //        //emit unselectAll();
-    //    }
-    //    if (!glcWorld.isSelected(selectionID))
-    //    {
-    //        glcWorld.select(selectionID);
-    //        emit selectionChanged(this, getSelectionList());
-    //        //emit updateSelection(m_World.collection()->selection());
-    //    }
-    //    else if (unselectSelected && glcWorld.isSelected(selectionID) && multiSelection)
-    //    {
-    //        glcWorld.unselect(selectionID);
-    //        emit selectionChanged(this, getSelectionList());
-    //        //emit updateSelection(m_World.collection()->selection());
-    //    }
-    //    else
-    //    {
-    //        if (unselectSelected)
-    //            glcWorld.unselectAll();
-    //        glcWorld.select(selectionID);
+}
 
-    //        emit selectionChanged(this, getSelectionList());
-    //        //emit updateSelection(m_World.collection()->selection());
-    //    }
-    //}
-    //else if (unselectSelected && (glcWorld.selectionSize() > 0) && (!multiSelection))
-    //{
-    //    // if a geometry is selected, unselect it
-    //    glcWorld.unselectAll();
-    //    emit selectionChanged(this, getSelectionList());
-    //    //emit unselectAll();
-    //}
-
-    //if (isUpdate)
-    //    update();
-//}
 
 /*
 void RepoRenderingWidget::select(

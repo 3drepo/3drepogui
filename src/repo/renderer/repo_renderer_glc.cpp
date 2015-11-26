@@ -476,6 +476,59 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
 	glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
 }
 
+void GLCRenderer::selectComponent(const int &x, const int &y, bool multiSelection)
+{
+	const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
+	if (spacePartitioningIsUsed)
+	{
+		GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
+		glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
+		glcWorld.collection()->setSpacePartitionningUsage(false);
+		glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
+		glcWorld.collection()->setSpacePartitionningUsage(true);
+	}
+
+	GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
+
+	if (glcWorld.containsOccurrence(selectionID))
+	{
+		if ((!glcWorld.isSelected(selectionID))
+			&& (glcWorld.selectionSize() > 0)
+			&& (!multiSelection))
+		{
+			glcWorld.unselectAll();
+			//emit selectionChanged(this, getSelectionList());
+		}
+		if (!glcWorld.isSelected(selectionID))
+		{
+			glcWorld.select(selectionID);
+			//emit selectionChanged(this, getSelectionList());
+		}
+		else if (glcWorld.isSelected(selectionID) && multiSelection)
+		{
+			glcWorld.unselect(selectionID);
+			//emit selectionChanged(this, getSelectionList());
+		}
+		else
+		{
+			glcWorld.unselectAll();
+			glcWorld.select(selectionID);
+
+			//emit selectionChanged(this, getSelectionList());
+		}
+	}
+	else if (glcWorld.selectionSize() && (!multiSelection))
+	{		
+		// if a geometry is selected, unselect it
+		glcWorld.unselectAll();
+		//emit selectionChanged(this, getSelectionList());
+	}
+	else
+	{
+		repoLogError("Failed to pin point object for selection");
+	}
+}
+
 void GLCRenderer::setActivationFlag(const bool &flag)
 {
 	GLC_RenderStatistics::setActivationFlag(true);
