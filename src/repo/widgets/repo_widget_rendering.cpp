@@ -115,9 +115,6 @@ void RepoRenderingWidget::repaintCurrent()
 RepoRenderingWidget::~RepoRenderingWidget()
 {
     makeCurrent();
-
-
-    // FIXME: delete shader
 	renderer->deleteShaders(context()); 
 
 	if (repoScene)
@@ -564,15 +561,10 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 		{
 			renderer->toggleSelectAll();			
             update();
-		}
-	//case Qt::Key_T:
-	//	if (glIsEnabled(GL_TEXTURE_2D))
-	//		glDisable(GL_TEXTURE_2D);
-	//	else
-	//		glEnable(GL_TEXTURE_2D);
- //       update();
-	//	break;
+			break;
+		}	
 	//case Qt::Key_C:
+		//TODO:
 	//	if (glIsEnabled(GL_CULL_FACE))
 	//	{
 	//		glDisable(GL_CULL_FACE);
@@ -584,49 +576,17 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 	//		glEnable(GL_CULL_FACE);
 	//		//glFrontFace(false ? GL_CCW : GL_CW);
 	//	}
- //       update();
-	//	break;
-	//case Qt::Key_L:
-	//	if (glIsEnabled(GL_LIGHTING))
-	//		glDisable(GL_LIGHTING);
-	//	else
-	//		glEnable(GL_LIGHTING);
- //       update();
-	//	break;
-	//case Qt::Key_W:
-	//{
-	//	isWireframe = !isWireframe;
-	//	setMode(isWireframe ? GL_LINE : GL_FILL);
- //       update();
-	//	break;
-	//}
+
+	case Qt::Key_W:
+	{
+		renderer->toggleWireframe();
+        update();
+		break;
+	}
 	case Qt::Key_P:
 		renderer->toggleProjection();
         update();
 		break;
-	//case Qt::Key_R:
-	//{
-	//	QHash<QString, GLC_Mesh*>::iterator it;
-	//	for (it = glcMeshes.begin(); it != glcMeshes.end(); ++it)
-	//	{
-	//		GLC_Mesh *glcMesh = it.value();
-	//		float r = (float)rand() / (RAND_MAX);
-	//		float g = (float)rand() / (RAND_MAX);
-	//		float b = (float)rand() / (RAND_MAX);
-	//		// Always [r,g,b,a] hence times 4
-	//		QVector<GLfloat> vector(glcMesh->VertexCount() * 4);
-	//		for (unsigned int i = 0; i < vector.size(); i += 4)
-	//		{
-	//			vector[i + 0] = r;
-	//			vector[i + 1] = g;
-	//			vector[i + 2] = b;
-	//			vector[i + 3] = 0.9f;
-	//		}
-	//		setGLCMeshColors(glcMesh->name(), vector);
-	//	}
- //       update();
-	//	break;
-	//}
 	case Qt::Key_Q:
 	{
 		QColor color = QColorDialog::getColor(Qt::white,
@@ -703,7 +663,6 @@ void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
 	if (Qt::LeftButton == e->button())
 	{
-		repoLog("left button double clicked.");
 		bool multiSelection = (
 			(e->modifiers() == Qt::ControlModifier) ||
 			(e->modifiers() == Qt::ShiftModifier));

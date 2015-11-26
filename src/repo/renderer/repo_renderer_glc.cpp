@@ -37,6 +37,7 @@ GLCRenderer::GLCRenderer() :
 , glc3DWidgetManager(&glcViewport)
 , renderingFlag(glc::ShadingFlag)
 , shaderID(0)
+, isWireframe(false)
 {
 	QObject::connect(&glcViewport, &GLC_Viewport::updateOpenGL,
 		this, &AbstractRenderer::updateRenderer);
@@ -214,10 +215,12 @@ void GLCRenderer::renderingMode(const RenderMode &mode)
 	case RenderMode::WIREFRAME:
 		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
 		renderingFlag = glc::ShadingFlag;
+		isWireframe = true;
 		break;
 	case RenderMode::WIREFRAME_SHADING:
 		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_FILL);
 		renderingFlag = glc::WireRenderFlag;
+		isWireframe = true;
 		break;
 	case RenderMode::SHADING:
 		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_FILL);
@@ -662,6 +665,12 @@ void GLCRenderer::toggleSelectAll()
 		glcWorld.unselectAll();
 	else
 		glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
+}
+
+void GLCRenderer::toggleWireframe()
+{
+	isWireframe = !isWireframe;
+	glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, isWireframe ? GL_LINE : GL_FILL);
 }
 
 void GLCRenderer::zoom(const float &zoom)

@@ -181,6 +181,12 @@ namespace repo {
 				virtual void toggleSelectAll() = 0;
 
 				/**
+				* Toggle between show/hide the wireframe
+				*/
+				virtual void toggleWireframe() = 0;
+
+
+				/**
 				* Zoom/unzoom camera
 				* @param zoom zoom factor
 				*/

@@ -188,6 +188,11 @@ namespace repo {
 				virtual void toggleSelectAll();
 
 				/**
+				* Toggle between show/hide the wireframe
+				*/
+				virtual void toggleWireframe();
+
+				/**
 				* Zoom/unzoom camera
 				* @param zoom zoom factor
 				*/
@@ -225,6 +230,7 @@ namespace repo {
 				GLC_3DViewCollection glcUICollection; //! The main collection of UI components (such as axes).
 				GLC_MoverController glcMoverController; //! The navigation controller of the scene (arc ball, fly etc).
 				glc::RenderFlag renderingFlag; //! Rendering flag.
+				bool isWireframe;
 
 				//! Globally applied shader ID.
 				GLuint shaderID;
