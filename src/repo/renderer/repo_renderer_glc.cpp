@@ -203,6 +203,32 @@ bool GLCRenderer::move(const int &x, const int &y)
 		glcMoverController.move(GLC_UserInput(x, y));
 }
 
+void GLCRenderer::renderingMode(const RenderMode &mode)
+{
+	switch (mode)
+	{
+	case RenderMode::POINT:
+		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_POINT);
+		renderingFlag = glc::ShadingFlag;
+		break;
+	case RenderMode::WIREFRAME:
+		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_LINE);
+		renderingFlag = glc::ShadingFlag;
+		break;
+	case RenderMode::WIREFRAME_SHADING:
+		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_FILL);
+		renderingFlag = glc::WireRenderFlag;
+		break;
+	case RenderMode::SHADING:
+		glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, GL_FILL);
+		renderingFlag = glc::ShadingFlag;
+		break;
+	default:
+		repoLogError("Unsupported rendering mode: " + std::to_string((int)mode));
+
+	}
+}
+
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
 {
 

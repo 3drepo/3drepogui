@@ -34,6 +34,7 @@ namespace repo {
 			//! Standard camera positions type.
 			enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
 			enum class NavMode { TURNTABLE, PAN, FLY };
+			enum class RenderMode {POINT, WIREFRAME, WIREFRAME_SHADING, SHADING};
 			
 			struct CameraSettings
 			{
@@ -88,6 +89,11 @@ namespace repo {
 				*/
 				virtual bool move(const int &x, const int &y) = 0;
 
+				/**
+				* Change rendering mode
+				* @param mode to render in.
+				*/
+				virtual void renderingMode(const RenderMode &mode) = 0;
 				
 				/**
 				* Select a component given the position

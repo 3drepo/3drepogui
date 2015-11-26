@@ -540,14 +540,6 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 //	glcViewCollection.clear();
 //}
 //
-void RepoRenderingWidget::toggleOctree()
-{
-	renderer->toggleOctree();
-
-	
-    update();
-}
-
 //------------------------------------------------------------------------------
 //
 // User interaction
@@ -648,37 +640,35 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 	}
 	case  Qt::Key_O:
 	{
-		toggleOctree();
+		renderer->toggleOctree();
+		update();
+		break;
 	}
-	//break;
-	//case Qt::Key_F1: // Points
-	//{
-	//	setMode(GL_POINT);
-	//	setRenderingFlag(glc::ShadingFlag);
- //       update();
-	//	break;
-	//}
-	//case Qt::Key_F2: // Triangle wireframe
-	//{
-	//	setMode(GL_LINE);
-	//	setRenderingFlag(glc::ShadingFlag);
- //       update();
-	//	break;
-	//}
-	//case Qt::Key_F3: // Shading with polygon wireframe
-	//{
-	//	setMode(GL_FILL);
-	//	setRenderingFlag(glc::WireRenderFlag);
- //       update();
-	//	break;
-	//}
-	//case Qt::Key_F4: // Shading
-	//{
-	//	setMode(GL_FILL);
-	//	setRenderingFlag(glc::ShadingFlag);
- //       update();
-	//	break;
-	//}
+	case Qt::Key_F1: // Points
+	{
+
+		renderer->renderingMode(renderer::RenderMode::POINT);
+        update();
+		break;
+	}
+	case Qt::Key_F2: // Triangle wireframe
+	{
+		renderer->renderingMode(renderer::RenderMode::WIREFRAME);
+        update();
+		break;
+	}
+	case Qt::Key_F3: // Shading with polygon wireframe
+	{	
+		renderer->renderingMode(renderer::RenderMode::WIREFRAME_SHADING);
+        update();
+		break;
+	}
+	case Qt::Key_F4: // Shading
+	{
+		renderer->renderingMode(renderer::RenderMode::SHADING);
+        update();
+		break;
+	}
 	}
 	// Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);

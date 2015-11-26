@@ -191,12 +191,6 @@ namespace repo {
 				//! Sets the globally applied shader from the shaders list.
 				//void setShader(GLuint id) { shaderID = id; }
 
-				//! Sets the rendering flag.
-	/*			inline void setRenderingFlag(glc::RenderFlag renderingFlag)
-				{
-					this->renderingFlag = renderingFlag;
-				}*/
-
 				//! Sets the rendering mode (GL_POINT, GL_LINE, GL_FILL)
 				//inline void setMode(GLenum mode)
 				//{
@@ -214,8 +208,7 @@ namespace repo {
 				////! Removes and deletes all bounding boxes.
 				//void clearBoundingBoxes();
 
-                void toggleOctree();
-
+                
 				//void select(const QString &meshName,
 				//	bool multiSelection = false,
 				//	bool unselectSelected = true,

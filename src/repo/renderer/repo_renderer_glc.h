@@ -90,6 +90,12 @@ namespace repo {
 				virtual bool move(const int &x, const int &y);
 
 				/**
+				* Change rendering mode
+				* @param mode to render in.
+				*/
+				virtual void renderingMode(const RenderMode &mode);
+
+				/**
 				* Start navigate around the model
 				* @param mode which navigation mode
 				* @param x position in x
