@@ -603,6 +603,20 @@ void GLCRenderer::setCamera(const CameraView& view)
 	emit cameraChangedSignal(getCurrentCamera());
 }
 
+void GLCRenderer::toggleProjection()
+{
+	glcViewport.setToOrtho(!glcViewport.useOrtho());
+}
+
+void GLCRenderer::toggleSelectAll()
+{
+	if (glcWorld.collection()->selectionSize() ==
+		glcWorld.collection()->drawableObjectsSize())
+		glcWorld.unselectAll();
+	else
+		glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
+}
+
 void GLCRenderer::zoom(const float &zoom)
 {
 	glcViewport.cameraHandle()->zoom(zoom);

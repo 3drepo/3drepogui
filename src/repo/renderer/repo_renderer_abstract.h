@@ -88,6 +88,13 @@ namespace repo {
 				*/
 				virtual bool move(const int &x, const int &y) = 0;
 
+				
+				/**
+				* Select a component given the position
+				* @param x position in x
+				* @param position in y
+				* @param multiSelection true if allow multiple selection
+				*/
 				virtual void selectComponent(const int &x, const int &y, bool multiSelection) = 0;
 
 				/**
@@ -151,6 +158,16 @@ namespace repo {
 				* @param color colour to change to
 				*/
 				virtual void setBackgroundColor(const QColor &color) = 0;
+
+				/**
+				* Toggle between different projection modes
+				*/
+				virtual void toggleProjection() = 0;
+
+				/**
+				* Toggle Select/Unselect all objects that are currently visible
+				*/
+				virtual void toggleSelectAll() = 0;
 
 				/**
 				* Zoom/unzoom camera

@@ -159,7 +159,21 @@ namespace repo {
 				*/
 				virtual void setBackgroundColor(const QColor &color);
 
+				/**
+				* Set the world to render to be the world provided
+				* @param world the world to render
+				*/
 				void setGLCWorld(GLC_World &world);
+
+				/**
+				* Toggle between different projection modes
+				*/
+				virtual void toggleProjection() ;
+
+				/**
+				* Toggle Select/Unselect all objects that are currently visible
+				*/
+				virtual void toggleSelectAll();
 
 				/**
 				* Zoom/unzoom camera

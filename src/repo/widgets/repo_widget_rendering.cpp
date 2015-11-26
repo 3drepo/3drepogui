@@ -581,16 +581,12 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 		renderer->zoom(ZOOM_FACTOR);
         update();
 		break;
-	//case Qt::Key_A:
-	//	if ((e->modifiers() == Qt::ControlModifier))
-	//	{
-	//		if (glcWorld.collection()->selectionSize() ==
-	//			glcWorld.collection()->drawableObjectsSize())
-	//			glcWorld.unselectAll();
-	//		else
-	//			glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
- //           update();
-	//	}
+	case Qt::Key_A:
+		if ((e->modifiers() == Qt::ControlModifier))
+		{
+			renderer->toggleSelectAll();			
+            update();
+		}
 	//case Qt::Key_T:
 	//	if (glIsEnabled(GL_TEXTURE_2D))
 	//		glDisable(GL_TEXTURE_2D);
@@ -626,10 +622,10 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
  //       update();
 	//	break;
 	//}
-	//case Qt::Key_P:
-	//	glcViewport.setToOrtho(!glcViewport.useOrtho());
- //       update();
-	//	break;
+	case Qt::Key_P:
+		renderer->toggleProjection();
+        update();
+		break;
 	//case Qt::Key_R:
 	//{
 	//	QHash<QString, GLC_Mesh*>::iterator it;
