@@ -540,27 +540,13 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 //	glcViewCollection.clear();
 //}
 //
-//void RepoRenderingWidget::toggleOctree()
-//{
-//	if (glcViewCollection.isEmpty())
-//	{
-//		GLC_Material* mat = new GLC_Material(Qt::red);
-//		mat->setOpacity(0.1);
-//		GLC_SpacePartitioning* spacePartitioning = glcWorld.collection()->spacePartitioningHandle();
-//		if (spacePartitioning)
-//		{
-//			GLC_Octree* octree = dynamic_cast<GLC_Octree*>(spacePartitioning);
-//			if (octree)
-//			{
-//				octree->createBox(mat, &glcViewCollection);
-//
-//			}
-//		}
-//	}
-//	else
-//		glcViewCollection.clear();
-//    update();
-//}
+void RepoRenderingWidget::toggleOctree()
+{
+	renderer->toggleOctree();
+
+	
+    update();
+}
 
 //------------------------------------------------------------------------------
 //
@@ -649,21 +635,21 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
  //       update();
 	//	break;
 	//}
-	//case Qt::Key_Q:
-	//{
-	//	QColor color = QColorDialog::getColor(Qt::white,
-	//		this,
-	//		"Color picker");
-	//	if (color.isValid())
-	//	{
-	//		setBackgroundColor(color);
-	//	}
-	//	break;
-	//}
-	//case  Qt::Key_O:
-	//{
-	//	toggleOctree();
-	//}
+	case Qt::Key_Q:
+	{
+		QColor color = QColorDialog::getColor(Qt::white,
+			this,
+			"Color picker");
+		if (color.isValid())
+		{
+			setBackgroundColor(color);
+		}
+		break;
+	}
+	case  Qt::Key_O:
+	{
+		toggleOctree();
+	}
 	//break;
 	//case Qt::Key_F1: // Points
 	//{

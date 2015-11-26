@@ -214,7 +214,7 @@ namespace repo {
 				////! Removes and deletes all bounding boxes.
 				//void clearBoundingBoxes();
 
-				//void toggleOctree();
+                void toggleOctree();
 
 				//void select(const QString &meshName,
 				//	bool multiSelection = false,

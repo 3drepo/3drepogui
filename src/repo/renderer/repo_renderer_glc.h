@@ -165,6 +165,12 @@ namespace repo {
 				*/
 				void setGLCWorld(GLC_World &world);
 
+
+				/**
+				* Toggle between show/hide octree
+				*/
+				virtual void toggleOctree();
+
 				/**
 				* Toggle between different projection modes
 				*/

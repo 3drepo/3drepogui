@@ -160,6 +160,11 @@ namespace repo {
 				virtual void setBackgroundColor(const QColor &color) = 0;
 
 				/**
+				* Toggle between show/hide octree
+				*/
+				virtual void toggleOctree() = 0;
+
+				/**
 				* Toggle between different projection modes
 				*/
 				virtual void toggleProjection() = 0;

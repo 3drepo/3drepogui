@@ -603,6 +603,27 @@ void GLCRenderer::setCamera(const CameraView& view)
 	emit cameraChangedSignal(getCurrentCamera());
 }
 
+void GLCRenderer::toggleOctree()
+{
+	if (glcViewCollection.isEmpty())
+	{
+		GLC_Material* mat = new GLC_Material(Qt::red);
+		mat->setOpacity(0.1);
+		GLC_SpacePartitioning* spacePartitioning = glcWorld.collection()->spacePartitioningHandle();
+		if (spacePartitioning)
+		{
+			GLC_Octree* octree = dynamic_cast<GLC_Octree*>(spacePartitioning);
+			if (octree)
+			{
+				octree->createBox(mat, &glcViewCollection);
+
+			}
+		}
+	}
+	else
+		glcViewCollection.clear();
+}
+
 void GLCRenderer::toggleProjection()
 {
 	glcViewport.setToOrtho(!glcViewport.useOrtho());
