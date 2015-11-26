@@ -569,45 +569,18 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 //------------------------------------------------------------------------------
 void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 {
-	//switch (e->key())
-	//{
-	//case Qt::Key_0:
-	//	renderer->setShaderID(0);
- //       update();
-	//	break;
-	//case Qt::Key_1:
-	//	if (shaders.size() > 0)
-	//	{
-	//		shaderID = shaders[0]->id();
- //           update();
-	//	}
-	//	break;
-	//case Qt::Key_2:
-	//	if (shaders.size() > 1)
-	//	{
-	//		shaderID = shaders[1]->id();
- //           update();
-	//	}
-	//	break;
-	//case Qt::Key_3:
-	//	if (shaders.size() > 2)
-	//	{
-	//		shaderID = shaders[2]->id();
- //           update();
-	//	}
-	//	break;
-	//case Qt::Key_Minus:
-	//case Qt::Key_Underscore:
-	//	glcViewport.cameraHandle()->zoom(1 / ZOOM_FACTOR);
- //       update();
-	//	emit cameraChangedSignal(*glcViewport.cameraHandle());
-	//	break;
-	//case Qt::Key_Plus:
-	//case Qt::Key_Equal:
-	//	glcViewport.cameraHandle()->zoom(ZOOM_FACTOR);
-	//	emit cameraChangedSignal(*glcViewport.cameraHandle());
- //       update();
-	//	break;
+	switch (e->key())
+	{
+	case Qt::Key_Minus:
+	case Qt::Key_Underscore:
+		renderer->zoom(1 / ZOOM_FACTOR);
+        update();
+		break;
+	case Qt::Key_Plus:
+	case Qt::Key_Equal:
+		renderer->zoom(ZOOM_FACTOR);
+        update();
+		break;
 	//case Qt::Key_A:
 	//	if ((e->modifiers() == Qt::ControlModifier))
 	//	{
@@ -724,7 +697,7 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
  //       update();
 	//	break;
 	//}
-	//}
+	}
 	// Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
 }
