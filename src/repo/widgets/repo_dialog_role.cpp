@@ -53,6 +53,7 @@ RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
     //--------------------------------------------------------------------------
     // Set name
     ui->nameLineEdit->setText(QString::fromStdString(role.getName()));
+
     // Set database
     ui->databaseComboBox->setCurrentText(
                 role.getDatabase().empty()
@@ -65,6 +66,17 @@ RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
         addItem(p.project, p.permission);
     }
 
+    // TODO: set color
+    // Set color
+
+    //--------------------------------------------------------------------------
+    // Set modules
+
+    QTreeWidgetItem *itm =new QTreeWidgetItem();
+    itm->setText(0,"Clipping Plane");
+    itm->setFlags(itm->flags() | Qt::ItemIsUserCheckable);
+    itm->setCheckState(0, Qt::Checked);
+    ui->modulesTreeWidget->addTopLevelItem(itm);
 
 
 
@@ -76,6 +88,9 @@ RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
     QObject::connect(
                 ui->removePushButton, &QPushButton::pressed,
                 this, &RepoDialogRole::removeItem);
+    QObject::connect(
+                ui->colorPickerPushButton, &QPushButton::pressed,
+                this, &RepoDialogRole::showColorDialog);
 }
 
 RepoDialogRole::~RepoDialogRole()
@@ -175,6 +190,17 @@ bool RepoDialogRole::isNewRole() const
     return getName() != role.getName() || getDatabase() != role.getDatabase();
 }
 
+void RepoDialogRole::showColorDialog()
+{
+    QColor oldColor(ui->colorLineEdit->text());
+    QColor color = QColor(
+                QColorDialog::getColor(
+                    oldColor, this));
+
+    if (color.isValid())
+        ui->colorLineEdit->setText(color.name(QColor::HexRgb));
+
+}
 
 void RepoDialogRole::setDelegate(const QString &database)
 {

@@ -27,11 +27,13 @@
 #include <QItemDelegate>
 #include <QTreeWidgetItem>
 #include <QStringList>
+#include <QColorDialog>
 
 //------------------------------------------------------------------------------
 // GUI
 #include "../../primitives/repocomboboxdelegate.h"
 #include "../workers/repo_worker_projects.h"
+#include "../../primitives/repo_color.h"
 
 //------------------------------------------------------------------------------
 // CORE
@@ -77,6 +79,8 @@ public slots:
     //! Removes currently selected Access Rights item.
     void removeItem();
 
+//    std::string getColor() const;
+
     //! Returns role name.
     std::string getName() const;
 
@@ -89,8 +93,11 @@ public slots:
     //! Returns true if the role name is different from original, false otherwise.
     bool isNewRole() const;
 
+    void showColorDialog();
+
     //! Sets current delegate based on given database.
     void setDelegate(const QString &database);
+
 
 public :
 
