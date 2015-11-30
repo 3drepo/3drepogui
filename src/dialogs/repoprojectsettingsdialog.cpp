@@ -32,7 +32,7 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
     if (!projectSettings.isEmpty())
     {
         ui->nameLineEdit->setText(QString::fromStdString(projectSettings.getProjectName()));
-        ui->descriptionTextEdit->setText(QString::fromStdString(projectSettings.getDescription()));
+        ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(projectSettings.getDescription()));
         ui->typeComboBox->setCurrentText(QString::fromStdString(projectSettings.getType()));
         ui->ownerComboBox->setCurrentText(QString::fromStdString(projectSettings.getOwner()));
     }
@@ -54,5 +54,5 @@ repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::get
                 ui->ownerComboBox->currentText().toStdString(),
                 std::string(),
                 ui->typeComboBox->currentText().toStdString(),
-                ui->descriptionTextEdit->toPlainText().toStdString());
+                ui->descriptionPlainTextEdit->toPlainText().toStdString());
 }

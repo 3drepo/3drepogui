@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>434</width>
     <height>340</height>
    </rect>
   </property>
@@ -114,7 +114,16 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QTextEdit" name="descriptionTextEdit">
+       <widget class="QPlainTextEdit" name="descriptionPlainTextEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
+        </property>
         <property name="placeholderText">
          <string>Description</string>
         </property>
@@ -124,12 +133,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QGroupBox" name="propertiesGroupBox">
      <property name="title">
       <string>Properties:</string>
      </property>
      <property name="checkable">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="checked">
       <bool>false</bool>
