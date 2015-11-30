@@ -35,6 +35,9 @@
       </item>
       <item>
        <widget class="QLabel" name="label_4">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Human readable alias for current connection. Can be anything.</string>
         </property>
@@ -78,6 +81,9 @@
        </item>
        <item row="3" column="1">
         <widget class="QLabel" name="label_5">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Server address for MongoDB. This can be either a domain name or an IP address.</string>
          </property>
@@ -105,6 +111,9 @@
        </item>
        <item row="5" column="1">
         <widget class="QLabel" name="label_6">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Port number for MongoDB. Default is 27017.</string>
          </property>
@@ -176,6 +185,9 @@
        </item>
        <item row="1" column="1">
         <widget class="QLabel" name="label_2">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="text">
           <string>Database to authenticate against. Admin database requires special privileges.</string>
          </property>

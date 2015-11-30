@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>393</width>
-    <height>475</height>
+    <width>388</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +45,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QLabel" name="nameExplanationLabel">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>User defined role name. Has to be unique within a databse.</string>
         </property>
@@ -69,57 +72,11 @@
       </item>
       <item row="3" column="1">
        <widget class="QLabel" name="label">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Database this role applies to.</string>
-        </property>
-        <property name="wordWrap">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QWidget" name="widget_2" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QLineEdit" name="colorLineEdit">
-           <property name="placeholderText">
-            <string>#RRGGBB</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="colorPickerPushButton">
-           <property name="text">
-            <string>Choose...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Color:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Color assigned to this role to distinguish it from other roles.</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
@@ -130,24 +87,28 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Access Rights:</string>
+    <widget class="QTabWidget" name="tabWidget_2">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="tabPosition">
-         <enum>QTabWidget::South</enum>
-        </property>
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="permissionsTab">
-         <attribute name="title">
-          <string>Permissions</string>
-         </attribute>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <widget class="QWidget" name="settingsTab">
+      <attribute name="title">
+       <string>Settings</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_3">
+       <property name="labelAlignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Color:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QWidget" name="widget_2" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -161,44 +122,115 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QTreeWidget" name="accessRightsTreeWidget">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+           <widget class="QLineEdit" name="colorLineEdit">
+            <property name="placeholderText">
+             <string>#RRGGBB</string>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="colorPickerPushButton">
+            <property name="text">
+             <string>Choose...</string>
             </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="indentation">
-             <number>6</number>
-            </property>
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string>Project</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Permission</string>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="modulesTab">
-         <attribute name="title">
-          <string>Modules</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_3">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Color assigned to this role to distinguish it from other roles.</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Description:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPlainTextEdit" name="plainTextEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::AdjustToContents</enum>
+         </property>
+         <property name="backgroundVisible">
+          <bool>false</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Description</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="permissionsTab">
+      <attribute name="title">
+       <string>Permissions</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QTreeWidget" name="accessRightsTreeWidget">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="lineWidth">
+          <number>1</number>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="indentation">
+          <number>6</number>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Project</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Permission</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -212,79 +244,53 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QTreeWidget" name="modulesTreeWidget">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+           <widget class="QPushButton" name="addPushButton">
+            <property name="text">
+             <string>Add</string>
             </property>
-            <property name="frameShadow">
-             <enum>QFrame::Plain</enum>
-            </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <column>
-             <property name="text">
-              <string>Module</string>
-             </property>
-            </column>
            </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="removePushButton">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="widget" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="QPushButton" name="addPushButton">
-           <property name="text">
-            <string>Add</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="removePushButton">
-           <property name="text">
-            <string>Remove</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="modulesTab">
+      <attribute name="title">
+       <string>Modules</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QTreeWidget" name="modulesTreeWidget">
+         <column>
+          <property name="text">
+           <string>Module</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
