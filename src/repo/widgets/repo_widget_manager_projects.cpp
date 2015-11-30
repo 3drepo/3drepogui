@@ -69,13 +69,13 @@ void RepoWidgetManagerProjects::addProjectSettings(
     row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
 
     // Permissions
-    row.append(new primitives::RepoStandardItem(projectSettings.getPermissionsString()));
+//    row.append(new primitives::RepoStandardItem(projectSettings.getPermissionsString()));
 
     // Type
     row.append(new primitives::RepoStandardItem(projectSettings.getType()));
 
     // Users count
-    row.append(new primitives::RepoStandardItem(projectSettings.getUsers().size()));
+//    row.append(new primitives::RepoStandardItem(projectSettings.getUsers().size()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);
