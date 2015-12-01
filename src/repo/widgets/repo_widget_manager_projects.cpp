@@ -141,7 +141,7 @@ void RepoWidgetManagerProjects::removeItem()
 void RepoWidgetManagerProjects::showEditDialog(
     const repo::core::model::RepoProjectSettings &projectSettings)
 {
-    repo::gui::RepoProjectSettingsDialog projectDialog(projectSettings, this);
+    RepoDialogProject projectDialog(projectSettings, this);
     if (QDialog::Rejected == projectDialog.exec())
     {
         std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
