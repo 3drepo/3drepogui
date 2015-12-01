@@ -29,9 +29,7 @@ RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
         tr("Project"),
         tr("Description"),
         tr("Owner"),
-        tr("Permissions"),
-        tr("Type"),
-        tr("Users")};
+        tr("Type")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -68,14 +66,8 @@ void RepoWidgetManagerProjects::addProjectSettings(
     // Owner
     row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
 
-    // Permissions
-    row.append(new primitives::RepoStandardItem(projectSettings.getPermissionsString()));
-
     // Type
     row.append(new primitives::RepoStandardItem(projectSettings.getType()));
-
-    // Users count
-    row.append(new primitives::RepoStandardItem(projectSettings.getUsers().size()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

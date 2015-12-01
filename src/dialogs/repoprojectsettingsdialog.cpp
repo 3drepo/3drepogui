@@ -63,7 +63,6 @@ repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::get
     return repo::core::model::RepoBSONFactory::makeRepoProjectSettings(
                 ui->nameLineEdit->text().toStdString(),
                 ui->ownerComboBox->currentText().toStdString(),
-                std::string(),
                 ui->typeComboBox->currentText().toStdString(),
                 ui->descriptionPlainTextEdit->toPlainText().toStdString());
 }
