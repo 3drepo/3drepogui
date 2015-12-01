@@ -48,7 +48,7 @@ public:
 
     ~RepoProjectSettingsDialog();
 
-public :
+public slots :
 
     //! Returns bson.
     repo::core::model::RepoProjectSettings getSettings() const;

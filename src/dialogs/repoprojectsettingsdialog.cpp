@@ -21,7 +21,9 @@
 
 #include <repo/core/model/bson/repo_bson_factory.h>
 
-repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
+using namespace repo::gui;
+
+RepoProjectSettingsDialog::RepoProjectSettingsDialog(
 	repo::core::model::RepoProjectSettings projectSettings,
         QWidget *parent) :
     QDialog(parent),
@@ -35,13 +37,22 @@ repo::gui::RepoProjectSettingsDialog::RepoProjectSettingsDialog(
         ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(projectSettings.getDescription()));
         ui->typeComboBox->setCurrentText(QString::fromStdString(projectSettings.getType()));
         ui->ownerComboBox->setCurrentText(QString::fromStdString(projectSettings.getOwner()));
+
+
+        // pinSize
+        // AvatarHeight
+        // VisibilityLimit
+        // Speed
+        // zNear
+        // zFar
     }
 }
 
-repo::gui::RepoProjectSettingsDialog::~RepoProjectSettingsDialog()
+RepoProjectSettingsDialog::~RepoProjectSettingsDialog()
 {
     delete ui;
 }
+
 
 repo::core::model::RepoProjectSettings repo::gui::RepoProjectSettingsDialog::getSettings() const
 {
