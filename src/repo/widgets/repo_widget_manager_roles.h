@@ -29,8 +29,10 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/core/model/bson/repo_bson_role.h>
+#include <repo/core/model/bson/repo_bson_role_settings.h>
 
 Q_DECLARE_METATYPE(repo::core::model::RepoRole)
+Q_DECLARE_METATYPE(repo::core::model::RepoRoleSettings)
 
 namespace repo {
 namespace widgets {
@@ -41,7 +43,7 @@ class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
 
     static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { ROLE, DATABASE, ACCESS_RIGHTS, PRIVILEGES, INHERITED_ROLES };
+    enum class Columns { COLOR, ROLE, DATABASE, ACCESS_RIGHTS, PRIVILEGES, INHERITED_ROLES };
 
 public:
 
@@ -52,7 +54,8 @@ public:
 public slots:
 
     //! Adds role to the roles table (tree widget).
-    void addRole(const repo::core::model::RepoRole &role);
+    void addRole(const repo::core::model::RepoRole &role,
+                 const repo::core::model::RepoRoleSettings &settings);
 
     //! Updates selected item.
     virtual void edit();
@@ -66,23 +69,36 @@ public slots:
     //! Returns role based on given model index.
     repo::core::model::RepoRole getRole(const QModelIndex &index) const;
 
+    repo::core::model::RepoRoleSettings getRoleSettings() const;
+
+    //! Returns role settings based on given model index.
+    repo::core::model::RepoRoleSettings getRoleSettings(const QModelIndex &index) const;
+
     //! Refreshes the current list.
     virtual void refresh()
     { refresh(repo::core::model::RepoRole(),
+              repo::core::model::RepoRoleSettings(),
               repo::worker::RepoWorkerRoles::Command::INSERT); }
 
     //! Refreshes the current list.
     void refresh(
-            const core::model::RepoRole &role,
+            const repo::core::model::RepoRole &role,
+            const repo::core::model::RepoRoleSettings &settings,
             repo::worker::RepoWorkerRoles::Command command);
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem();
 
     //! Shows edit dialog.
-    virtual void showEditDialog() { showEditDialog(repo::core::model::RepoRole()); }
+    virtual void showEditDialog()
+    {
+        showEditDialog(repo::core::model::RepoRole(),
+                       repo::core::model::RepoRoleSettings());
+    }
 
-    virtual void showEditDialog(const repo::core::model::RepoRole &role);
+    virtual void showEditDialog(
+            const repo::core::model::RepoRole &role,
+            const repo::core::model::RepoRoleSettings &settings);
 
     void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 

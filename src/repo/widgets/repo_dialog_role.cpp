@@ -28,12 +28,15 @@ const RepoComboBoxEditor::SeparatedEntries RepoDialogRole::rwSeparatedEntries =
                                                     tr("Write").toStdString(),
                                                     tr("ReadWrite").toStdString()});
 
-RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
-                               const QString &currentDatabase,
-                               const std::map<std::string, std::list<std::string> > &databasesWithProjects,
-                               QWidget *parent)
+RepoDialogRole::RepoDialogRole(
+        const repo::core::model::RepoRole &role,
+        const repo::core::model::RepoRoleSettings &settings,
+        const QString &currentDatabase,
+       const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+       QWidget *parent)
     : QDialog(parent)
     , role(role)
+    , settings(settings)
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
     , rwDelegate(nullptr)
@@ -66,11 +69,14 @@ RepoDialogRole::RepoDialogRole(const repo::core::model::RepoRole &role,
         addItem(p.project, p.permission);
     }
 
-    // TODO: set color
-    // Set color
+    // Color
+    ui->colorLineEdit->setText(QString::fromStdString(settings.getColor()));
+
+    // Description
+    ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(settings.getDescription()));
 
     //--------------------------------------------------------------------------
-    // Set modules
+    // TODO: modules
 
     QTreeWidgetItem *itm =new QTreeWidgetItem();
     itm->setText(0,"Clipping Plane");
@@ -156,6 +162,16 @@ void RepoDialogRole::removeItem()
     }
 }
 
+std::string RepoDialogRole::getColor() const
+{
+    return ui->colorLineEdit->text().toStdString();
+}
+
+std::string RepoDialogRole::getDescription() const
+{
+    return ui->descriptionPlainTextEdit->toPlainText().toStdString();
+}
+
 std::string RepoDialogRole::getName() const
 {
     return ui->nameLineEdit->text().toStdString();
@@ -164,6 +180,15 @@ std::string RepoDialogRole::getName() const
 std::string RepoDialogRole::getDatabase() const
 {
     return ui->databaseComboBox->currentText().toStdString();
+}
+
+std::vector<std::string> RepoDialogRole::getModules() const
+{
+    std::vector<std::string> modules;
+
+    // TODO: retrieve set modules
+
+    return modules;
 }
 
 std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() const
@@ -187,7 +212,8 @@ std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() 
 
 bool RepoDialogRole::isNewRole() const
 {
-    return getName() != role.getName() || getDatabase() != role.getDatabase();
+    return getName() != role.getName() ||
+            getDatabase() != role.getDatabase();
 }
 
 void RepoDialogRole::showColorDialog()
@@ -224,12 +250,22 @@ void RepoDialogRole::setDelegate(const QString &database)
     }
 }
 
-repo::core::model::RepoRole RepoDialogRole::getUpdatedRole()
+repo::core::model::RepoRole RepoDialogRole::getUpdatedRole() const
 {
     repo::core::model::RepoRole role = repo::core::model::RepoBSONFactory::makeRepoRole(
                 getName(), getDatabase(), getPermissions());
     return role;
 }
+
+repo::core::model::RepoRoleSettings RepoDialogRole::getUpdatedRoleSettings() const
+{
+    repo::core::model::RepoRoleSettings settings =
+            repo::core::model::RepoBSONFactory::makeRepoRoleSettings(
+                getName(),getColor(), getDescription(), getModules());
+    return settings;
+}
+
+
 
 QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight &rw)
 {

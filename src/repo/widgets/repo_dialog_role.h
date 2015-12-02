@@ -40,8 +40,6 @@
 #include <repo/core/model/bson/repo_bson_role.h>
 #include <repo/core/model/bson/repo_bson_factory.h>
 
-
-
 namespace Ui {
 class RepoDialogRole;
 }
@@ -60,6 +58,7 @@ public:
 
     explicit RepoDialogRole(
             const repo::core::model::RepoRole &role,
+            const repo::core::model::RepoRoleSettings &settings,
             const QString &currentDatabase,
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
             QWidget *parent = 0);
@@ -79,7 +78,11 @@ public slots:
     //! Removes currently selected Access Rights item.
     void removeItem();
 
-//    std::string getColor() const;
+    std::string getColor() const;
+
+    std::string getDescription() const;
+
+    std::vector<std::string> getModules() const;
 
     //! Returns role name.
     std::string getName() const;
@@ -90,9 +93,10 @@ public slots:
     //! Returns a vector of permissions
     std::vector<repo::core::model::RepoPermission> getPermissions() const;
 
-    //! Returns true if the role name is different from original, false otherwise.
+    //! Returns true if the role or DB are different from originals, false otherwise.
     bool isNewRole() const;
 
+    //! Shows color dialog and sets selected color.
     void showColorDialog();
 
     //! Sets current delegate based on given database.
@@ -102,7 +106,9 @@ public slots:
 public :
 
     //! Returns updated role.
-    repo::core::model::RepoRole getUpdatedRole();
+    repo::core::model::RepoRole getUpdatedRole() const;
+
+    repo::core::model::RepoRoleSettings getUpdatedRoleSettings() const;
 
 private :
 
@@ -119,6 +125,9 @@ private:
 
     //! Role to edit
     repo::core::model::RepoRole role;
+
+    //! Role settings to edit
+    repo::core::model::RepoRoleSettings settings;
 
     //! RW delegate
     repo::gui::RepoComboBoxDelegate *rwDelegate;

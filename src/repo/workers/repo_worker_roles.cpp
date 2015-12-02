@@ -20,19 +20,21 @@
 
 using namespace repo::worker;
 
-RepoWorkerRoles::RepoWorkerRoles(
-        const repo::RepoToken *token,
+RepoWorkerRoles::RepoWorkerRoles(const repo::RepoToken *token,
         repo::RepoController *controller,
         const std::string &database,
         const repo::core::model::RepoRole &role,
+        const repo::core::model::RepoRoleSettings &settings,
         Command command)
     : token(token)
     , controller(controller)
     , database(database)
     , role(role)
+    , settings(settings)
     , command(command)
 {
-    qRegisterMetaType<repo::core::model::RepoUser>("repo::core::model::RepoRole");
+    qRegisterMetaType<repo::core::model::RepoRole>("repo::core::model::RepoRole");
+    qRegisterMetaType<repo::core::model::RepoRoleSettings>("repo::core::model::RepoRoleSettings");
 }
 
 //------------------------------------------------------------------------------
@@ -49,10 +51,12 @@ void RepoWorkerRoles::run()
 
     if (controller && token)
     {
-        //--------------------------------------------------------------------------
+
+        //----------------------------------------------------------------------
         // Execute command (such as drop or update user) if any
         if (!role.isEmpty())
         {
+            emit progressRangeChanged(0, jobsCount++);
             switch (command)
             {
             case Command::INSERT :
@@ -66,18 +70,78 @@ void RepoWorkerRoles::run()
             case Command::DROP:
                 repoLog("Removing role\n");
                 controller->removeRole(token, role);
+                break;
             }
+            emit progressValueChanged(jobsDone++);
+        }
+
+        //----------------------------------------------------------------------
+        if (!settings.isEmpty())
+        {
+            emit progressRangeChanged(0, jobsCount++);
+            switch (command)
+            {
+            case Command::INSERT :
+            case Command::UPDATE :
+                repoLog("Upserting role settings\n");
+                controller->upsertRoleSettings(token, database, role);
+                break;
+            case Command::DROP:
+                repoLog("Removing role\n");
+                controller->removeRoleSettings(token, database, role);
+                break;
+            }
+            emit progressValueChanged(jobsDone++);
         }
 
 
+        //----------------------------------------------------------------------
+        // Retrieve role settings into a map
+        // TODO: once getRoleSettingByName function on controller is coded in
+        // this whole section can go!
+        //----------------------------------------------------------------------
+        // START DELETE
+        //----------------------------------------------------------------------
+        emit progressRangeChanged(0, jobsCount++);
+        std::vector< repo::core::model::RepoRoleSettings > roleSettings =
+                controller->getRoleSettingsFromDatabase(token, database);
+        jobsCount += roleSettings.size();
+        emit progressRangeChanged(0, jobsCount++);
+        std::map<std::string, repo::core::model::RepoRoleSettings> tempSettingsMap;
+        for (auto const & setting : roleSettings)
+        {
+            tempSettingsMap[setting.getName()] = setting;
+            emit progressValueChanged(jobsDone++);
+        }
+        //----------------------------------------------------------------------
+        // END DELETE
+        //----------------------------------------------------------------------
+
+
+
+
+        //----------------------------------------------------------------------
+        // Retrieve roles
+        emit progressRangeChanged(0, jobsCount++);
         std::vector<repo::core::model::RepoRole> roles =
                 controller->getRolesFromDatabase(token, database);
+        emit progressValueChanged(jobsDone++);
 
-        jobsCount = roles.size();
+
+        jobsCount += roles.size();
         emit progressRangeChanged(0, jobsCount);
         for (int i = 0; i < roles.size(); ++i)
         {
-            emit roleFetched(roles[i]);
+
+            // TODO: once getRoleSettingByName function on controller is coded in
+            // retrieve role setting here based on role name one at a time
+            repo::core::model::RepoRoleSettings setting =
+                    controller->getRoleSettingByName(token, database, roles[i].getName());
+
+            // TODO: remove this
+            repo::core::model::RepoRoleSettings tempSetting = tempSettingsMap[roles[i].getName()];
+
+            emit roleFetched(roles[i], tempSetting);
             emit progressValueChanged(jobsDone++);
         }
 

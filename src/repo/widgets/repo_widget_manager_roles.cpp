@@ -26,6 +26,7 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
     QList<QString> headers = {
+        tr("Color"),
         tr("Role"),
         tr("Database"),
         tr("Access Rights"),
@@ -46,20 +47,25 @@ RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
 
 
 
-void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
+void RepoWidgetManagerRoles::addRole(
+        const repo::core::model::RepoRole &role,
+        const repo::core::model::RepoRoleSettings &settings)
 {
     QList<QStandardItem *> row;
-    //--------------------------------------------------------------------------
-    // User object itself
+
+    // Color
+    QVariant qsetting;
+    qsetting.setValue(settings);
+    repo::primitives::RepoStandardItem *item =
+            new repo::primitives::RepoStandardItem(settings.getColor());
+    item->setData(qsetting);
+    row.append(item);
+
+    // Role
     QVariant var;
     var.setValue(role);
-
-    repo::primitives::RepoStandardItem *item =
-            new repo::primitives::RepoStandardItem(role.getName());
+    item = new repo::primitives::RepoStandardItem(role.getName());
     item->setData(var);
-    item->setCheckable(true);
-    item->setCheckState(Qt::Checked);
-    item->setTristate(false);
     row.append(item);
 
     // Database
@@ -81,12 +87,12 @@ void RepoWidgetManagerRoles::addRole(const repo::core::model::RepoRole &role)
 
 void RepoWidgetManagerRoles::edit()
 {
-    showEditDialog(getRole());
+    showEditDialog(getRole(), getRoleSettings());
 }
 
 void RepoWidgetManagerRoles::edit(const QModelIndex &index)
 {
-    showEditDialog(getRole(index));
+    showEditDialog(getRole(index), getRoleSettings(index));
 }
 
 repo::core::model::RepoRole RepoWidgetManagerRoles::getRole() const
@@ -106,10 +112,26 @@ repo::core::model::RepoRole RepoWidgetManagerRoles::getRole(
     return role;
 }
 
+repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings() const
+{
+    return getRoleSettings(getFilterableTree()->getCurrentIndex());
+}
 
+repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings(
+        const QModelIndex &index) const
+{
+    repo::core::model::RepoRoleSettings settings;
+    if (index.isValid())
+    {
+        QModelIndex roleSettingsIndex = index.sibling(index.row(), (int) Columns::COLOR);
+        settings = roleSettingsIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoRoleSettings>();
+    }
+    return settings;
+}
 
 void RepoWidgetManagerRoles::refresh(
         const repo::core::model::RepoRole &role,
+        const repo::core::model::RepoRoleSettings &settings,
         repo::worker::RepoWorkerRoles::Command command)
 {
     if (isReady())
@@ -123,6 +145,7 @@ void RepoWidgetManagerRoles::refresh(
                     controller,
                     database,
                     role,
+                    settings,
                     command);
         QObject::connect(
                     worker, &repo::worker::RepoWorkerRoles::roleFetched,
@@ -145,6 +168,7 @@ void RepoWidgetManagerRoles::setDBConnection(
 void RepoWidgetManagerRoles::removeItem()
 {
     repo::core::model::RepoRole role = this->getRole();
+    repo::core::model::RepoRoleSettings settings = this->getRoleSettings();
     switch(QMessageBox::warning(this,
                                 tr("Remove role?"),
                                 tr("Are you sure you want to remove '") + QString::fromStdString(role.getName()) + "'?",
@@ -153,7 +177,7 @@ void RepoWidgetManagerRoles::removeItem()
                                 QString::null, 1, 1))
     {
     case 0: // yes
-        refresh(role, repo::worker::RepoWorkerRoles::Command::DROP);
+        refresh(role, settings, repo::worker::RepoWorkerRoles::Command::DROP);
         //FIXME: get a worker to do the work, then signal finish to refresh like db widget.
         break;
     case 1: // no
@@ -162,10 +186,13 @@ void RepoWidgetManagerRoles::removeItem()
     }
 }
 
-void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &role)
+void RepoWidgetManagerRoles::showEditDialog(
+        const repo::core::model::RepoRole &role,
+        const repo::core::model::RepoRoleSettings &settings)
 {
     repo::widgets::RepoDialogRole roleDialog(
                 role,
+                settings,
                 QString::fromStdString(database),
                 databasesWithProjects,
                 this);
@@ -179,6 +206,7 @@ void RepoWidgetManagerRoles::showEditDialog(const repo::core::model::RepoRole &r
         repoLog("create or update role...\n");
         // Create or update role
         refresh(roleDialog.getUpdatedRole(),
+                roleDialog.getUpdatedRoleSettings(),
                 roleDialog.isNewRole()
                 ? repo::worker::RepoWorkerRoles::Command::INSERT
                 : repo::worker::RepoWorkerRoles::Command::UPDATE);

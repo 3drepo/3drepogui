@@ -21,7 +21,6 @@
 // Repo Core
 #include <repo/repo_controller.h>
 
-
 //-----------------------------------------------------------------------------
 // Repo GUI
 #include "repo_worker_abstract.h"
@@ -45,6 +44,7 @@ public:
             repo::RepoController *controller,
             const std::string &database,
             const repo::core::model::RepoRole &role = repo::core::model::RepoRole(),
+            const repo::core::model::RepoRoleSettings &settings = repo::core::model::RepoRoleSettings(),
             Command command = Command::INSERT);
 
     //! Default empty destructor.
@@ -53,7 +53,8 @@ public:
 signals:
 
     //! Emitted when a single role is fetched.
-    void roleFetched(const repo::core::model::RepoRole &);
+    void roleFetched(const repo::core::model::RepoRole &,
+                     const repo::core::model::RepoRoleSettings &);
 
 public slots :
 
@@ -71,6 +72,8 @@ private:
     const std::string database;
 
     repo::core::model::RepoRole role;
+
+    repo::core::model::RepoRoleSettings settings;
 
     Command command;
 

@@ -57,7 +57,6 @@ void ProjectSettingsWorker::run()
 	
 	if (!settings.isEmpty())
 	{
-
 		if (isDelete)
 		{
 			repoLog("Removing a project settings...");
@@ -71,7 +70,6 @@ void ProjectSettingsWorker::run()
 
 		}
 	}
-
 	emit progressValueChanged(jobsDone++);
 
 
