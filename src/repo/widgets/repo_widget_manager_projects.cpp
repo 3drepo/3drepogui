@@ -27,9 +27,9 @@ RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
 {
     QList<QString> headers = {
         tr("Project"),
-        tr("Description"),
         tr("Owner"),
-        tr("Type")};
+        tr("Type"),
+        tr("Description")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -60,14 +60,14 @@ void RepoWidgetManagerProjects::addProjectSettings(
     item->setTristate(false);
     row.append(item);
 
-    // Description
-    row.append(new primitives::RepoStandardItem(projectSettings.getDescription()));
-
     // Owner
     row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
 
     // Type
     row.append(new primitives::RepoStandardItem(projectSettings.getType()));
+
+    // Description
+    row.append(new primitives::RepoStandardItem(projectSettings.getDescription()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

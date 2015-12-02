@@ -73,52 +73,27 @@ void RepoWorkerRoles::run()
                 break;
             }
             emit progressValueChanged(jobsDone++);
-        }
 
-        //----------------------------------------------------------------------
-        if (!settings.isEmpty())
-        {
-            emit progressRangeChanged(0, jobsCount++);
-            switch (command)
+            //------------------------------------------------------------------
+            // Settings
+            if (!settings.isEmpty())
             {
-            case Command::INSERT :
-            case Command::UPDATE :
-                repoLog("Upserting role settings\n");
-                controller->upsertRoleSettings(token, database, role);
-                break;
-            case Command::DROP:
-                repoLog("Removing role\n");
-                controller->removeRoleSettings(token, database, role);
-                break;
+                emit progressRangeChanged(0, jobsCount++);
+                switch (command)
+                {
+                case Command::INSERT :
+                case Command::UPDATE :
+                    repoLog("Upserting role settings\n");
+                    controller->upsertRoleSettings(token, role, settings);
+                    break;
+                case Command::DROP:
+                    repoLog("Removing role\n");
+                    controller->removeRoleSettings(token, role, settings);
+                    break;
+                }
+                emit progressValueChanged(jobsDone++);
             }
-            emit progressValueChanged(jobsDone++);
         }
-
-
-        //----------------------------------------------------------------------
-        // Retrieve role settings into a map
-        // TODO: once getRoleSettingByName function on controller is coded in
-        // this whole section can go!
-        //----------------------------------------------------------------------
-        // START DELETE
-        //----------------------------------------------------------------------
-        emit progressRangeChanged(0, jobsCount++);
-        std::vector< repo::core::model::RepoRoleSettings > roleSettings =
-                controller->getRoleSettingsFromDatabase(token, database);
-        jobsCount += roleSettings.size();
-        emit progressRangeChanged(0, jobsCount++);
-        std::map<std::string, repo::core::model::RepoRoleSettings> tempSettingsMap;
-        for (auto const & setting : roleSettings)
-        {
-            tempSettingsMap[setting.getName()] = setting;
-            emit progressValueChanged(jobsDone++);
-        }
-        //----------------------------------------------------------------------
-        // END DELETE
-        //----------------------------------------------------------------------
-
-
-
 
         //----------------------------------------------------------------------
         // Retrieve roles
@@ -132,16 +107,7 @@ void RepoWorkerRoles::run()
         emit progressRangeChanged(0, jobsCount);
         for (int i = 0; i < roles.size(); ++i)
         {
-
-            // TODO: once getRoleSettingByName function on controller is coded in
-            // retrieve role setting here based on role name one at a time
-            repo::core::model::RepoRoleSettings setting =
-                    controller->getRoleSettingByName(token, database, roles[i].getName());
-
-            // TODO: remove this
-            repo::core::model::RepoRoleSettings tempSetting = tempSettingsMap[roles[i].getName()];
-
-            emit roleFetched(roles[i], tempSetting);
+            emit roleFetched(roles[i], controller->getRoleSettings(token, roles[i]));
             emit progressValueChanged(jobsDone++);
         }
 

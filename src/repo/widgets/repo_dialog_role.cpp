@@ -32,8 +32,8 @@ RepoDialogRole::RepoDialogRole(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings,
         const QString &currentDatabase,
-       const std::map<std::string, std::list<std::string> > &databasesWithProjects,
-       QWidget *parent)
+        const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+        QWidget *parent)
     : QDialog(parent)
     , role(role)
     , settings(settings)
@@ -48,7 +48,7 @@ RepoDialogRole::RepoDialogRole(
 
     //--------------------------------------------------------------------------
     // Set database combo box
-    for (std::pair<std::string, std::list<std::string> > entry : databasesWithProjects)
+    for (auto entry : databasesWithProjects)
     {
         ui->databaseComboBox->addItem(QString::fromStdString(entry.first));
     }
@@ -62,41 +62,52 @@ RepoDialogRole::RepoDialogRole(
                 role.getDatabase().empty()
                 ? currentDatabase
                 : QString::fromStdString(role.getDatabase()));
+
     // Set permissions
-    std::vector<repo::core::model::RepoPermission> permissions = role.getProjectAccessRights();
-    for (repo::core::model::RepoPermission p : permissions)
+    for (auto p : role.getProjectAccessRights())
     {
-        addItem(p.project, p.permission);
+        addPermissionItem(p.project, p.permission);
     }
 
     // Color
-    ui->colorLineEdit->setText(QString::fromStdString(settings.getColor()));
+    setColor(QString::fromStdString(settings.getColor()));
 
     // Description
     ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(settings.getDescription()));
 
     //--------------------------------------------------------------------------
-    // TODO: modules
+    // Modules
 
-    QTreeWidgetItem *itm =new QTreeWidgetItem();
-    itm->setText(0,"Clipping Plane");
-    itm->setFlags(itm->flags() | Qt::ItemIsUserCheckable);
-    itm->setCheckState(0, Qt::Checked);
-    ui->modulesTreeWidget->addTopLevelItem(itm);
-
-
+    for (auto m : settings.getModules())
+    {
+        addModuleItem(m);
+    }
 
     //--------------------------------------------------------------------------
     // Connect buttons
     QObject::connect(
-                ui->addPushButton, SIGNAL(pressed()),
-                this, SLOT(addItem()));
+                ui->addPermissionPushButton, SIGNAL(pressed()),
+                this, SLOT(addPermissionItem()));
+
     QObject::connect(
-                ui->removePushButton, &QPushButton::pressed,
-                this, &RepoDialogRole::removeItem);
+                ui->addModulePushButton, SIGNAL(pressed()),
+                this, SLOT(addModuleItem()));
+
+
+    QObject::connect(
+                ui->removePermissionPushButton, &QPushButton::pressed,
+                this, &RepoDialogRole::removePermissionItem);
+    QObject::connect(
+                ui->removeModulePushButton, &QPushButton::pressed,
+                this, &RepoDialogRole::removeModuleItem);
+
     QObject::connect(
                 ui->colorPickerPushButton, &QPushButton::pressed,
                 this, &RepoDialogRole::showColorDialog);
+
+    QObject::connect(
+                ui->colorLineEdit, &QLineEdit::textEdited,
+                this, &RepoDialogRole::setColor);
 }
 
 RepoDialogRole::~RepoDialogRole()
@@ -110,13 +121,13 @@ RepoDialogRole::~RepoDialogRole()
     }
 }
 
-QTreeWidgetItem *RepoDialogRole::addItem()
+QTreeWidgetItem *RepoDialogRole::addPermissionItem()
 {
     std::string database = ui->databaseComboBox->currentText().toStdString();
     std::map<std::string, std::list<std::string> >::iterator it =
             databasesWithProjects.find(database);
 
-    std::string project = tr("project").toStdString();
+    std::string project;
     if (it != databasesWithProjects.end())
     {
         std::list<std::string> projects = it->second;
@@ -126,21 +137,27 @@ QTreeWidgetItem *RepoDialogRole::addItem()
             std::advance(pit, ui->accessRightsTreeWidget->model()->rowCount());
             project = (*pit);
         }
-        else
-            project = "";
     }
-    return addItem(project, repo::core::model::AccessRight::READ);
+    return addPermissionItem(project, repo::core::model::AccessRight::READ);
 }
 
-QTreeWidgetItem *RepoDialogRole::addItem(
+
+
+QTreeWidgetItem *RepoDialogRole::addModuleItem()
+{
+    // TODO: add list of available modules to bouncer or something
+    std::string module = tr("module").toStdString();
+    return addModuleItem(module);
+}
+
+
+QTreeWidgetItem *RepoDialogRole::addPermissionItem(
         const std::string &project,
         const repo::core::model::AccessRight &rw)
 {
     QString qproject = QString::fromStdString(project);
     QString qrw = accessRightToString(rw);
-    QStringList qlist;
-    qlist.append(qproject);
-    qlist.append(qrw);
+    QStringList qlist = { qproject, qrw };
 
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->accessRightsTreeWidget, qlist);
     item->setData(0, Qt::DecorationRole, qproject);
@@ -151,16 +168,38 @@ QTreeWidgetItem *RepoDialogRole::addItem(
     return item;
 }
 
-void RepoDialogRole::removeItem()
+QTreeWidgetItem *RepoDialogRole::addModuleItem(const std::string &module)
 {
-    QTreeWidgetItem *item = 0;
+    QString qmodule = QString::fromStdString(module);
+    QStringList qlist = { qmodule };
+    QTreeWidgetItem *item = new QTreeWidgetItem(ui->modulesTreeWidget, qlist);
+    item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+    ui->modulesTreeWidget->addTopLevelItem(item);
+    return item;
+}
+
+void RepoDialogRole::removePermissionItem()
+{
+    QTreeWidgetItem *item = nullptr;
     item = ui->accessRightsTreeWidget->currentItem();
     if (item)
     {
         delete item;
-        item = 0;
+        item = nullptr;
     }
 }
+
+void RepoDialogRole::removeModuleItem()
+{
+    QTreeWidgetItem *item = nullptr;
+    item = ui->modulesTreeWidget->currentItem();
+    if (item)
+    {
+        delete item;
+        item = nullptr;
+    }
+}
+
 
 std::string RepoDialogRole::getColor() const
 {
@@ -185,9 +224,14 @@ std::string RepoDialogRole::getDatabase() const
 std::vector<std::string> RepoDialogRole::getModules() const
 {
     std::vector<std::string> modules;
-
-    // TODO: retrieve set modules
-
+    for (int i = 0; i < ui->modulesTreeWidget->topLevelItemCount(); ++i)
+    {
+        QTreeWidgetItem *item = ui->modulesTreeWidget->topLevelItem(i);
+        if (item)
+        {
+            modules.push_back(item->data(0, Qt::EditRole).toString().toStdString());
+        }
+    }
     return modules;
 }
 
@@ -224,8 +268,22 @@ void RepoDialogRole::showColorDialog()
                     oldColor, this));
 
     if (color.isValid())
-        ui->colorLineEdit->setText(color.name(QColor::HexRgb));
+    {
+        setColor(color.name(QColor::HexRgb));
+    }
 
+}
+
+void RepoDialogRole::setColor(const QString &hex)
+{
+    if (!hex.isEmpty())
+    {
+        ui->colorLineEdit->setText(hex);
+        ui->colorLineEdit->setStyleSheet("color: "+ hex);
+        // Cannot set background color as it causes flicker
+        // See http://stackoverflow.com/questions/24742851/background-color-of-styled-qlineedit-flickers
+        // and https://bugreports.qt.io/browse/QTBUG-42575
+    }
 }
 
 void RepoDialogRole::setDelegate(const QString &database)

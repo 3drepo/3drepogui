@@ -26,8 +26,8 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
 {
     QList<QString> headers = {
-        tr("Color"),
         tr("Role"),
+        tr("Color"),
         tr("Database"),
         tr("Access Rights"),
         tr("Privileges"),
@@ -45,27 +45,34 @@ RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
      getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
-
-
 void RepoWidgetManagerRoles::addRole(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings)
 {
     QList<QStandardItem *> row;
 
-    // Color
-    QVariant qsetting;
-    qsetting.setValue(settings);
-    repo::primitives::RepoStandardItem *item =
-            new repo::primitives::RepoStandardItem(settings.getColor());
-    item->setData(qsetting);
-    row.append(item);
+    repo::primitives::RepoStandardItem *item = nullptr;
 
     // Role
     QVariant var;
     var.setValue(role);
     item = new repo::primitives::RepoStandardItem(role.getName());
     item->setData(var);
+    row.append(item);
+
+
+    // Color
+    QVariant qsetting;
+    qsetting.setValue(settings);
+    item = new repo::primitives::RepoStandardItem(settings.getColor());
+    item->setData(qsetting);
+
+    if (!settings.getColor().empty())
+    {
+        repo::gui::RepoColor color = repo::gui::RepoColor::fromHex(settings.getColor());
+        item->setData(color, Qt::ForegroundRole);
+        item->setData(color, Qt::BackgroundRole);
+    }
     row.append(item);
 
     // Database

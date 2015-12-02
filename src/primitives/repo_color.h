@@ -71,6 +71,9 @@ public :
 	//! Generates a random colour.
 	static RepoColor getNextRandom();
 
+    //! Returns color from "#RRGGBB" style strings
+    static RepoColor fromHex(const std::string &hexString);
+
 	//! Returns a colour opposite on the colour wheel (HSL style).
 	RepoColor getComplement() const;
 

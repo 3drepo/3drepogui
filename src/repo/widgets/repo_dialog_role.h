@@ -28,6 +28,7 @@
 #include <QTreeWidgetItem>
 #include <QStringList>
 #include <QColorDialog>
+#include <QPalette>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -68,15 +69,21 @@ public:
 public slots:
 
     //! Adds an empty item.
-    QTreeWidgetItem *addItem();
+    QTreeWidgetItem *addPermissionItem();
+
+    QTreeWidgetItem *addModuleItem();
 
     //! Adds an item based on given project and readWrite permission.
-    QTreeWidgetItem *addItem(
+    QTreeWidgetItem *addPermissionItem(
             const std::string &project,
             const repo::core::model::AccessRight &rw);
 
+    QTreeWidgetItem *addModuleItem(const std::string &module);
+
     //! Removes currently selected Access Rights item.
-    void removeItem();
+    void removePermissionItem();
+
+    void removeModuleItem();
 
     std::string getColor() const;
 
@@ -98,6 +105,8 @@ public slots:
 
     //! Shows color dialog and sets selected color.
     void showColorDialog();
+
+    void setColor(const QString &hex);
 
     //! Sets current delegate based on given database.
     void setDelegate(const QString &database);

@@ -43,7 +43,7 @@ class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
 
     static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { COLOR, ROLE, DATABASE, ACCESS_RIGHTS, PRIVILEGES, INHERITED_ROLES };
+    enum class Columns { ROLE, COLOR, DATABASE, ACCESS_RIGHTS, PRIVILEGES, INHERITED_ROLES };
 
 public:
 

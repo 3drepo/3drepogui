@@ -18,6 +18,8 @@
 #include "repo_color.h"
 #include <iostream>
 #include <cmath>
+#include <sstream>
+
 unsigned int repo::gui::RepoColor::colorCounter = 0;
 
 repo::gui::RepoColor::RepoColor() : QColor() {}
@@ -79,6 +81,20 @@ repo::gui::RepoColor repo::gui::RepoColor::getNextRandom()
 			(float)rand()/RAND_MAX,
 			(float)rand()/RAND_MAX,
 			(float)rand()/RAND_MAX);
+}
+
+repo::gui::RepoColor repo::gui::RepoColor::fromHex(const std::string &hexString)
+{
+    unsigned int colorValue;
+    std::stringstream sstream;
+
+    // TODO: add checking if the string starts with # or 0x for instance.
+    std::string numbers = hexString;
+    numbers.erase(0,1);
+
+    sstream << std::hex << numbers;
+    sstream >> colorValue;
+    return RepoColor::fromRgb(colorValue);
 }
 
 repo::gui::RepoColor repo::gui::RepoColor::getComplement() const
