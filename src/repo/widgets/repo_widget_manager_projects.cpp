@@ -55,9 +55,9 @@ void RepoWidgetManagerProjects::addProjectSettings(
     repo::primitives::RepoStandardItem *item =
             new repo::primitives::RepoStandardItem(projectSettings.getProjectName());
     item->setData(var);
-    item->setCheckable(true);
-    item->setCheckState(Qt::Checked);
-    item->setTristate(false);
+//    item->setCheckable(true);
+//    item->setCheckState(Qt::Checked);
+//    item->setTristate(false);
     row.append(item);
 
     // Owner

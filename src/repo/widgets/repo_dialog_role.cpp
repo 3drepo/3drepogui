@@ -63,25 +63,45 @@ RepoDialogRole::RepoDialogRole(
                 ? currentDatabase
                 : QString::fromStdString(role.getDatabase()));
 
-    // Set permissions
+    //--------------------------------------------------------------------------
+    // Settings
+    // Color
+    ui->colorLineEdit->addAction(QIcon(), QLineEdit::LeadingPosition);
+    QObject::connect(ui->colorLineEdit->actions()[0], &QAction::triggered,
+            this, &RepoDialogRole::showColorDialog);
+    setColor(QString::fromStdString(settings.getColor()));
+
+
+    // Description
+    ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(settings.getDescription()));
+
+
+    //--------------------------------------------------------------------------
+    // Permissions
     for (auto p : role.getProjectAccessRights())
     {
         addPermissionItem(p.project, p.permission);
     }
 
-    // Color
-    setColor(QString::fromStdString(settings.getColor()));
+    //--------------------------------------------------------------------------
+    // Privileges
+    for (repo::core::model::RepoPrivilege p : role.getPrivileges())
+    {
+        addPrivilegeItem(
+            p.database,
+            p.collection,
+            repo::core::model::RepoRole::dbActionsToStrings(p.actions));
+    }
 
-    // Description
-    ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(settings.getDescription()));
 
     //--------------------------------------------------------------------------
     // Modules
-
     for (auto m : settings.getModules())
     {
         addModuleItem(m);
     }
+
+
 
     //--------------------------------------------------------------------------
     // Connect buttons
@@ -141,8 +161,6 @@ QTreeWidgetItem *RepoDialogRole::addPermissionItem()
     return addPermissionItem(project, repo::core::model::AccessRight::READ);
 }
 
-
-
 QTreeWidgetItem *RepoDialogRole::addModuleItem()
 {
     // TODO: add list of available modules to bouncer or something
@@ -168,10 +186,33 @@ QTreeWidgetItem *RepoDialogRole::addPermissionItem(
     return item;
 }
 
+
+QTreeWidgetItem *RepoDialogRole::addPrivilegeItem(
+        const std::string &database,
+        const std::string &collection,
+        const std::vector<std::string> &actions)
+{
+    QString qactions;
+    for (std::string action : actions)
+    {
+        qactions += QString::fromStdString(action) + ", ";
+    }
+    qactions.remove(qactions.size()-2, 2);
+
+    QStringList qlist = {
+            QString::fromStdString(database),
+            QString::fromStdString(collection),
+            qactions
+    };
+    QTreeWidgetItem *item = new QTreeWidgetItem(ui->privilegeTreeWidget, qlist);
+    item->setDisabled(true);
+    ui->privilegeTreeWidget->addTopLevelItem(item);
+    return item;
+}
+
 QTreeWidgetItem *RepoDialogRole::addModuleItem(const std::string &module)
 {
-    QString qmodule = QString::fromStdString(module);
-    QStringList qlist = { qmodule };
+    QStringList qlist = { QString::fromStdString(module) };
     QTreeWidgetItem *item = new QTreeWidgetItem(ui->modulesTreeWidget, qlist);
     item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
     ui->modulesTreeWidget->addTopLevelItem(item);
@@ -279,10 +320,10 @@ void RepoDialogRole::setColor(const QString &hex)
     if (!hex.isEmpty())
     {
         ui->colorLineEdit->setText(hex);
-        ui->colorLineEdit->setStyleSheet("color: "+ hex);
-        // Cannot set background color as it causes flicker
-        // See http://stackoverflow.com/questions/24742851/background-color-of-styled-qlineedit-flickers
-        // and https://bugreports.qt.io/browse/QTBUG-42575
+        QPixmap px(16,16);
+        px.fill(repo::gui::RepoColor::fromHex(hex.toStdString()));
+        if (ui->colorLineEdit->actions().size() > 0)
+            ui->colorLineEdit->actions()[0]->setIcon(QIcon(px));
     }
 }
 

@@ -27,11 +27,11 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
 {
     QList<QString> headers = {
         tr("Role"),
-        tr("Color"),
         tr("Database"),
-        tr("Access Rights"),
+        tr("Permissions"),
         tr("Privileges"),
-        tr("Inherited Roles")};
+        tr("Inherited Roles"),
+        tr("Modules")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -53,27 +53,24 @@ void RepoWidgetManagerRoles::addRole(
 
     repo::primitives::RepoStandardItem *item = nullptr;
 
-    // Role
+    //--------------------------------------------------------------------------
+    // Role with color
     QVariant var;
     var.setValue(role);
     item = new repo::primitives::RepoStandardItem(role.getName());
-    item->setData(var);
-    row.append(item);
-
-
-    // Color
-    QVariant qsetting;
-    qsetting.setValue(settings);
-    item = new repo::primitives::RepoStandardItem(settings.getColor());
-    item->setData(qsetting);
-
+    item->setData(var);    
+    QPixmap px(32,32);
     if (!settings.getColor().empty())
     {
-        repo::gui::RepoColor color = repo::gui::RepoColor::fromHex(settings.getColor());
-        item->setData(color, Qt::ForegroundRole);
-        item->setData(color, Qt::BackgroundRole);
+        px.fill(repo::gui::RepoColor::fromHex(settings.getColor()));
     }
+    else
+    {
+        px.fill(QColor(0,0,0,0)); // transparent
+    }
+    item->setIcon(QIcon(px));
     row.append(item);
+
 
     // Database
     row.append(new primitives::RepoStandardItem(role.getDatabase()));
@@ -86,6 +83,13 @@ void RepoWidgetManagerRoles::addRole(
 
     // Inherited roles
     row.append(new primitives::RepoStandardItem(role.getInheritedRoles().size()));
+
+    // Modules
+    QVariant qsetting;
+    qsetting.setValue(settings);
+    item = new primitives::RepoStandardItem(settings.getModules().size());
+    item->setData(qsetting);
+    row.append(item);
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);
@@ -130,7 +134,7 @@ repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings(
     repo::core::model::RepoRoleSettings settings;
     if (index.isValid())
     {
-        QModelIndex roleSettingsIndex = index.sibling(index.row(), (int) Columns::COLOR);
+        QModelIndex roleSettingsIndex = index.sibling(index.row(), (int) Columns::MODULES);
         settings = roleSettingsIndex.data(Qt::UserRole + 1).value<repo::core::model::RepoRoleSettings>();
     }
     return settings;

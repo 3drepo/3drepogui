@@ -28,7 +28,7 @@
 #include <QTreeWidgetItem>
 #include <QStringList>
 #include <QColorDialog>
-#include <QPalette>
+#include <QPixmap>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -77,6 +77,11 @@ public slots:
     QTreeWidgetItem *addPermissionItem(
             const std::string &project,
             const repo::core::model::AccessRight &rw);
+
+    QTreeWidgetItem *addPrivilegeItem(
+            const std::string &database,
+            const std::string &collection,
+            const std::vector<std::string> &actions);
 
     QTreeWidgetItem *addModuleItem(const std::string &module);
 

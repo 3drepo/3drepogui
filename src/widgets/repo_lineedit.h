@@ -34,6 +34,10 @@ namespace gui {
 /*!	
 	Line edit with clear button
 	\sa http://blog.qt.digia.com/blog/2007/06/06/lineedit-with-a-clear-button/
+
+
+    This function is not needed as from QT5.2 line edit now impelements clear
+    button by default!
 */
 class RepoLineEdit : public QLineEdit
 {

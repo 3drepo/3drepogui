@@ -51,7 +51,6 @@ void RepoWorkerRoles::run()
 
     if (controller && token)
     {
-
         //----------------------------------------------------------------------
         // Execute command (such as drop or update user) if any
         if (!role.isEmpty())
@@ -60,19 +59,26 @@ void RepoWorkerRoles::run()
             switch (command)
             {
             case Command::INSERT :
-                repoLog("Adding new role\n");
+                repoLog("Adding new role '" + role.getName() +"'\n");
                 controller->insertRole(token, role);
                 break;
             case Command::UPDATE :
-                repoLog("Updating role\n");
-                controller->updateRole(token, role);
+                repoLog("Updating role '" + role.getName() +"'\n");
+                if (role.getName() != "nodeUserRole")
+                    controller->updateRole(token, role);
+                else
+                    repoLog("Updating 'nodeUserRole' is not allowed!");
                 break;
             case Command::DROP:
-                repoLog("Removing role\n");
-                controller->removeRole(token, role);
+                repoLog("Removing role '" + role.getName() +"'\n");
+                if (role.getName() != "nodeUserRole")
+                    controller->removeRole(token, role);
+                else
+                    repoLog("Removing 'nodeUserRole' is not allowed!");
                 break;
             }
             emit progressValueChanged(jobsDone++);
+
 
             //------------------------------------------------------------------
             // Settings
@@ -83,11 +89,11 @@ void RepoWorkerRoles::run()
                 {
                 case Command::INSERT :
                 case Command::UPDATE :
-                    repoLog("Upserting role settings\n");
+                    repoLog("Upserting role settings '" + settings.getName() +"'\n");
                     controller->upsertRoleSettings(token, role, settings);
                     break;
                 case Command::DROP:
-                    repoLog("Removing role\n");
+                    repoLog("Removing role settings '" + settings.getName() +"'\n");
                     controller->removeRoleSettings(token, role, settings);
                     break;
                 }

@@ -64,10 +64,25 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
 
     repo::primitives::RepoStandardItem *item =
             new repo::primitives::RepoStandardItem(user.getUserName());
+
     item->setData(var);
-    item->setCheckable(true);
-    item->setCheckState(Qt::Checked);
-    item->setTristate(false);
+//    item->setCheckable(true);
+//    item->setCheckState(Qt::Checked);
+//    item->setTristate(false);
+
+    // Add avatar image if present
+    const std::vector<char> image = user.getAvatarAsRawData();
+    if (image.size())
+    {
+        QImage qimage = QImage::fromData((uchar*)&(image.at(0)), image.size());
+        item->setIcon(QIcon(QPixmap::fromImage(qimage)));
+    }
+    else
+    {
+        QPixmap px(32,32);
+        px.fill(QColor(0,0,0,0));
+        item->setIcon(QIcon(px));
+    }
     row.append(item);
 
     // First Name

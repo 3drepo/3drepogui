@@ -115,6 +115,10 @@ public:
     static QIcon getUserManagerIcon()
     { return getIconStatic(fa_users); }
 
+    //! Returns a pre-defined user icon.
+    static QIcon getUserIcon(const QColor &c = QColor(Qt::gray))
+    { return getIconStatic(RepoFontAwesome::fa_user, c); }
+
     //! Returns a pre-defined metadata icon.
     static QIcon getMetadataIcon()
     { return QApplication::style()->standardIcon(QStyle::SP_FileIcon); }
@@ -141,8 +145,11 @@ public:
     QIcon getIcon(int iconOn, int iconOff);
 
     //! Returns icon in a static way.
-    static QIcon getIconStatic(int iconOn)
-    { return RepoFontAwesome::getInstance().getIcon(iconOn); }
+//    static QIcon getIconStatic(int iconOn)
+//    { return RepoFontAwesome::getInstance().getIcon(iconOn); }
+
+    static QIcon getIconStatic(int hex, const QColor &color = QColor(Qt::black))
+    {   return getInstance().getIcon(hex, color); }
 
     /*!
      * Returns a font with a given size in pixels.
