@@ -103,6 +103,10 @@ QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list)
     }
     return item;
 }
+QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QString &a, QString &b)
+{
+    return addRow({a, b});
+}
 
 QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const std::pair<std::string, std::string> &pair)
 {
@@ -118,7 +122,6 @@ void RepoWidgetTreeUnfilterable::addRows(const std::list<std::pair<std::string, 
 std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getItems() const
 {
     std::list<std::pair<std::string, std::string> > list;
-
     if (ui->treeWidget->colorCount() >= 2)
     {
         for (int i = 0; i < ui->treeWidget->topLevelItemCount(); ++i)
@@ -150,6 +153,14 @@ void RepoWidgetTreeUnfilterable::setItemDelegateForRow(const QString &item, int 
     }
 }
 
+void RepoWidgetTreeUnfilterable::setItemDelegateForColumn(const QString &item, int column)
+{
+    if (delegates.contains(item))
+    {
+        ui->treeWidget->setItemDelegateForColumn(column, delegates.value(item));
+    }
+}
+
 void RepoWidgetTreeUnfilterable::updateDelegate(QTreeWidgetItem *current, int column)
 {
     if (delegates.size() > 0 && current && 0 == column)
@@ -168,12 +179,13 @@ void RepoWidgetTreeUnfilterable::updateDelegate(QTreeWidgetItem *current, int co
 }
 
 QString RepoWidgetTreeUnfilterable::updateCountString(
-        QString &string,
+        QString string,
         int oldCount,
         int newCount)
 {
-    int chopCount = QString::number(oldCount).length() + 3; // two brackets + space
+    QLocale locale;
+    int chopCount = locale.toString(oldCount).length() + 3; // 2 brackets + 1 space
     string.chop(chopCount);
-    string += QString(" (") + QString::number(newCount) + QString(")");
+    string += QString(" (") + locale.toString(newCount) + QString(")");
     return string;
 }

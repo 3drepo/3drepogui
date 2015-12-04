@@ -32,8 +32,8 @@ RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
         tr("First Name"),
         tr("Last Name"),
         tr("Email"),
-        tr("Projects"),
-        tr("Roles")};
+        tr("Roles"),
+        tr("API Keys")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
@@ -75,7 +75,7 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     if (image.size())
     {
         QImage qimage = QImage::fromData((uchar*)&(image.at(0)), image.size());
-        item->setIcon(QIcon(QPixmap::fromImage(qimage)));
+        item->setIcon(QIcon(QPixmap::fromImage(qimage.scaled(QSize(32,32), Qt::IgnoreAspectRatio))));
     }
     else
     {
@@ -94,11 +94,11 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     // Email
     row.append(new primitives::RepoStandardItem(user.getEmail()));
 
-    // Projects count
-    row.append(new primitives::RepoStandardItem(user.getProjectsList().size()));
-
     // Roles count
     row.append(new primitives::RepoStandardItem(user.getRolesList().size()));
+
+    // API Keys count
+    row.append(new primitives::RepoStandardItem(user.getAPIKeysList().size()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

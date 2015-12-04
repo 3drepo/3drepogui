@@ -60,6 +60,8 @@ class RepoDialogUser : public QDialog
 {
     Q_OBJECT
 
+    enum class Tab {PROJECTS, ROLES, API_KEYS };
+
 public:
 
     //! Explicit constructor.
@@ -81,6 +83,10 @@ public slots:
     void openImageFileDialog();
 
     void updateProjectsTabCount(int oldRowCount, int newRowCount);
+
+    void updateRolesTabCount(int oldRowCount, int newRowCount);
+
+    void updateApiKeysTabCount(int oldRowCount, int newRowCount);
 
 public :
 

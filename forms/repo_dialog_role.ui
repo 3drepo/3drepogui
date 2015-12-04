@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>444</height>
+    <width>522</width>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,7 +92,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="settingsTab">
       <attribute name="title">
@@ -217,6 +217,9 @@
           <string>Permissions:</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="permissionsUnfilterableTree" native="true"/>
+          </item>
           <item>
            <widget class="QTreeWidget" name="accessRightsTreeWidget">
             <property name="frameShape">
@@ -481,6 +484,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>repo::widgets::RepoWidgetTreeUnfilterable</class>
+   <extends>QWidget</extends>
+   <header>src/repo/widgets/repo_widget_tree_unfilterable.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -53,6 +53,17 @@ RepoDialogUser::RepoDialogUser(
                 this,
                 &RepoDialogUser::updateProjectsTabCount);
 
+    QObject::connect(
+                ui->rolesUnfilterableTreeWidget,
+                &RepoWidgetTreeUnfilterable::rowCountChanged,
+                this,
+                &RepoDialogUser::updateRolesTabCount);
+
+    QObject::connect(
+                ui->apiKeysUnfilterableTreeWidget,
+                &RepoWidgetTreeUnfilterable::rowCountChanged,
+                this,
+                &RepoDialogUser::updateApiKeysTabCount);
 
     //--------------------------------------------------------------------------
     ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
@@ -96,10 +107,8 @@ RepoDialogUser::RepoDialogUser(
     QHash<QString, repo::gui::RepoComboBoxDelegate *> rolesDelegates;
     QHash<QString, repo::gui::RepoComboBoxDelegate *> projectsDelegates;
 
-    for (std::list<std::string>::const_iterator it = databases.begin();
-         it != databases.end(); ++it)
+    for (auto database : databases)
     {
-        std::string database = *it;
         QString qDatabase = QString::fromStdString(database);
 
         //----------------------------------------------------------------------
@@ -120,13 +129,11 @@ RepoDialogUser::RepoDialogUser(
         rolesDelegates.insert(qDatabase, rolesDelegate);
     }
 
-
     // Projects
     QStringList defaultRow = {tr("admin"), tr("<empty>")};
     ui->projectsUnfilterableTreeWidget->setHeaders({tr("Database"), tr("Project")});
     ui->projectsUnfilterableTreeWidget->setNewRowText(defaultRow);
     ui->projectsUnfilterableTreeWidget->setDelegates(projectsDelegates);
-
 
     // Roles
     ui->rolesUnfilterableTreeWidget->setHeaders({tr("Database"), tr("Role")});
@@ -134,12 +141,9 @@ RepoDialogUser::RepoDialogUser(
     ui->rolesUnfilterableTreeWidget->setDelegates(rolesDelegates);
 
     // API Keys
-    ui->apiKeysUnfilterableTreeWidget->setHeaders({tr("Database"), tr("API Key")});
-
-
-
-
-
+    ui->apiKeysUnfilterableTreeWidget->setHeaders({tr("Label"), tr("API Key")});
+    ui->apiKeysUnfilterableTreeWidget->setNewRowText(
+        {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
 
     //--------------------------------------------------------------------------
     // Populate user data
@@ -263,11 +267,31 @@ void RepoDialogUser::openImageFileDialog()
 
 void RepoDialogUser::updateProjectsTabCount(int oldRowCount, int newRowCount)
 {
-    ui->tabWidget->setTabText(0,
+    ui->tabWidget->setTabText((int)Tab::PROJECTS,
                               RepoWidgetTreeUnfilterable::updateCountString(
-                                  ui->tabWidget->tabText(0),
+                                  ui->tabWidget->tabText((int)Tab::PROJECTS),
                                   oldRowCount,
                                   newRowCount));
+}
+
+void RepoDialogUser::updateRolesTabCount(int oldRowCount, int newRowCount)
+{
+    ui->tabWidget->setTabText((int)Tab::ROLES,
+                              RepoWidgetTreeUnfilterable::updateCountString(
+                                  ui->tabWidget->tabText((int)Tab::ROLES),
+                                  oldRowCount,
+                                  newRowCount));
+}
+
+void RepoDialogUser::updateApiKeysTabCount(int oldRowCount, int newRowCount)
+{
+    ui->tabWidget->setTabText((int)Tab::API_KEYS,
+                              RepoWidgetTreeUnfilterable::updateCountString(
+                                  ui->tabWidget->tabText((int)Tab::API_KEYS),
+                                  oldRowCount,
+                                  newRowCount));
+    ui->apiKeysUnfilterableTreeWidget->setNewRowText(
+        {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
 }
 
 repo::core::model::RepoUser RepoDialogUser::getUpdatedUser() const

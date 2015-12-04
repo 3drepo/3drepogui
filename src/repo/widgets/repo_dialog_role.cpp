@@ -74,7 +74,7 @@ RepoDialogRole::RepoDialogRole(
     //--------------------------------------------------------------------------
     // Settings
     // Color
-    ui->colorLineEdit->addAction(QIcon(), QLineEdit::LeadingPosition);
+    ui->colorLineEdit->addAction(QIcon(), QLineEdit::TrailingPosition);
     QObject::connect(ui->colorLineEdit->actions()[0], &QAction::triggered,
             this, &RepoDialogRole::showColorDialog);
     setColor(QString::fromStdString(settings.getColor()));
@@ -86,10 +86,31 @@ RepoDialogRole::RepoDialogRole(
 
     //--------------------------------------------------------------------------
     // Permissions
+    QHash<QString, repo::gui::RepoComboBoxDelegate *> permissionsDelegates;
+    for (std::map<std::string, std::list<std::string> >::iterator it : databasesWithProjects)
+    {
+        QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSEList =
+        { repo::gui::RepoComboBoxEditor::getSeparatedEntries(it->second),
+          rwSeparatedEntries};
+
+        permissionsDelegates.insert(
+                    QString::fromStdString(it->first),
+                    new repo::gui::RepoComboBoxDelegate(rwSEList));
+    }
+    ui->permissionsUnfilterableTree->setDelegates(permissionsDelegates);
+
+
+    ui->permissionsUnfilterableTree->setHeaders({tr("Project"), tr("Permission")});
     for (auto p : role.getProjectAccessRights())
     {
         addPermissionItem(p.project, p.permission);
+        ui->permissionsUnfilterableTree->addRow(
+                    QString::fromStdString(p.project),
+                    accessRightToString(p.permission));
     }
+
+
+
 
     //--------------------------------------------------------------------------
     // Privileges
@@ -337,24 +358,27 @@ void RepoDialogRole::setColor(const QString &hex)
 
 void RepoDialogRole::setDelegate(const QString &database)
 {
-    std::map<std::string, std::list<std::string> >::iterator it =
-            databasesWithProjects.find(database.toStdString());
+//    std::map<std::string, std::list<std::string> >::iterator it =
+//            databasesWithProjects.find(database.toStdString());
 
-    if (it != databasesWithProjects.end())
-    {
-        QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSEList;
-        rwSEList << repo::gui::RepoComboBoxEditor::getSeparatedEntries(it->second);
-        rwSEList << rwSeparatedEntries;
+//    if (it != databasesWithProjects.end())
+//    {
+//        QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSEList;
+//        rwSEList << repo::gui::RepoComboBoxEditor::getSeparatedEntries(it->second);
+//        rwSEList << rwSeparatedEntries;
 
-        if (rwDelegate)
-        {
-            delete rwDelegate;
-            rwDelegate = nullptr;
-        }
-        rwDelegate = new repo::gui::RepoComboBoxDelegate(rwSEList);
-        ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
-        ui->accessRightsTreeWidget->setItemDelegateForColumn(1, rwDelegate);
-    }
+//        if (rwDelegate)
+//        {
+//            delete rwDelegate;
+//            rwDelegate = nullptr;
+//        }
+//        rwDelegate = new repo::gui::RepoComboBoxDelegate(rwSEList);
+//        ui->accessRightsTreeWidget->setItemDelegateForColumn(0, rwDelegate);
+//        ui->accessRightsTreeWidget->setItemDelegateForColumn(1, rwDelegate);
+//    }
+
+    ui->permissionsUnfilterableTree->setItemDelegateForColumn(0, database);
+    ui->permissionsUnfilterableTree->setItemDelegateForColumn(1, database);
 }
 
 repo::core::model::RepoRole RepoDialogRole::getUpdatedRole() const

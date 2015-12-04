@@ -20,6 +20,7 @@
 #include <QTreeWidgetItem>
 #include <QStringList>
 #include <QHash>
+#include <QLocale>
 
 #include "../../primitives/repocomboboxdelegate.h"
 
@@ -71,6 +72,8 @@ public slots :
     //! Adds items as a list. Makes sure the size of the list mataches columns count.
     QTreeWidgetItem *addRow(const QStringList &list);
 
+    QTreeWidgetItem *addRow(const QString &a, QString &b);
+
     QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair);
 
     void addRows(const std::list<std::pair<std::string, std::string> > &list);
@@ -82,6 +85,8 @@ public slots :
     void setItemDelegateForRow(const QString &item);
 
     void setItemDelegateForRow(const QString &item, int row);
+
+    void setItemDelegateForColumn(const QString &item, int column);
 
     void setDelegates(const QHash<QString, repo::gui::RepoComboBoxDelegate* > &delegates)
     {
@@ -99,7 +104,7 @@ public slots :
 public :
 
     //! Chops last chars of type " (oldCount)" and appends " (newCount)"
-    static QString updateCountString(QString &string, int oldCount, int newCount);
+    static QString updateCountString(QString string, int oldCount, int newCount);
 
 private:
 
