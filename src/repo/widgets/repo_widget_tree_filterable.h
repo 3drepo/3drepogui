@@ -43,7 +43,7 @@ public:
     //! Constructs a default model (no headers) and default basic proxy.
     RepoWidgetTreeFilterable(QWidget *parent = 0);
 
-    //! Constructor to remove the UI elements and tree models.
+    //! Destructor to remove the UI elements and tree models.
     ~RepoWidgetTreeFilterable();
 
 signals :

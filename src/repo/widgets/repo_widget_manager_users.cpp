@@ -180,7 +180,7 @@ void RepoWidgetManagerUsers::showEditDialog(
         const repo::core::model::RepoUser &user,
         Action action)
 {
-    repo::gui::RepoDialogUser userDialog(
+    RepoDialogUser userDialog(
                 token,
                 controller,
                 user,

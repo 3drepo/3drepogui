@@ -10,7 +10,6 @@ HEADERS +=  \
 	src/dialogs/repoabstractmanagerdialog.h \
 	src/dialogs/repodialogabout.h \
 	src/dialogs/repodialogsettings.h \
-	src/dialogs/repodialoguser.h \
 	src/dialogs/repofederationdialog.h \
 	src/dialogs/repo_dialogcommit.h \
 	src/dialogs/repo_dialogconnect.h \
@@ -38,12 +37,14 @@ HEADERS +=  \
 	src/repo/widgets/repo_dialog_manager_access.h \
 	src/repo/widgets/repo_dialog_project.h \
 	src/repo/widgets/repo_dialog_role.h \
+	src/repo/widgets/repo_dialog_user.h \
 	src/repo/widgets/repo_widget_manager_projects.h \
 	src/repo/widgets/repo_widget_manager_roles.h \
 	src/repo/widgets/repo_widget_manager_users.h \
 	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_editable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
+	src/repo/widgets/repo_widget_tree_unfilterable.h \
 	src/repo/workers/repo_multithreader.h \
 	src/repo/workers/repo_mutex.h \
 	src/repo/workers/repo_worker_abstract.h \
@@ -76,7 +77,6 @@ SOURCES +=  \
 	src/dialogs/repoabstractmanagerdialog.cpp \
 	src/dialogs/repodialogabout.cpp \
 	src/dialogs/repodialogsettings.cpp \
-	src/dialogs/repodialoguser.cpp \
 	src/dialogs/repofederationdialog.cpp \
 	src/dialogs/repo_dialogcommit.cpp \
 	src/dialogs/repo_dialogconnect.cpp \
@@ -104,12 +104,14 @@ SOURCES +=  \
 	src/repo/widgets/repo_dialog_manager_access.cpp \
 	src/repo/widgets/repo_dialog_project.cpp \
 	src/repo/widgets/repo_dialog_role.cpp \
+	src/repo/widgets/repo_dialog_user.cpp \
 	src/repo/widgets/repo_widget_manager_projects.cpp \
 	src/repo/widgets/repo_widget_manager_roles.cpp \
 	src/repo/widgets/repo_widget_manager_users.cpp \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_editable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \
+	src/repo/widgets/repo_widget_tree_unfilterable.cpp \
 	src/repo/workers/repo_multithreader.cpp \
 	src/repo/workers/repo_mutex.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
@@ -139,7 +141,6 @@ FORMS +=  \
 	forms/repoabstractmanagerdialog.ui \
 	forms/repodialogabout.ui \
 	forms/repodialogsettings.ui \
-	forms/repodialoguser.ui \
 	forms/repofederationdialog.ui \
 	forms/repogui.ui \
 	forms/reposelectiontreedockwidget.ui \
@@ -150,13 +151,15 @@ FORMS +=  \
 	forms/repo_dialog_manager_access.ui \
 	forms/repo_dialog_project.ui \
 	forms/repo_dialog_role.ui \
+	forms/repo_dialog_user.ui \
 	forms/repo_genericdialog.ui \
 	forms/repo_maptilesdialog.ui \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
 	forms/repo_widgetrepository.ui \
 	forms/repo_widget_tree_editable.ui \
-	forms/repo_widget_tree_filterable.ui
+	forms/repo_widget_tree_filterable.ui \
+	forms/repo_widget_tree_unfilterable.ui
 
 RESOURCES +=  \
 	./resources.qrc \
