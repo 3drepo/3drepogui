@@ -57,6 +57,17 @@ public slots:
     void addRole(const repo::core::model::RepoRole &role,
                  const repo::core::model::RepoRoleSettings &settings);
 
+    void addItem()
+    { showEditDialog(); }
+
+    void copyItem()
+    {
+        showEditDialog(
+                    getRole(),
+                    getRoleSettings(),
+                    RepoWidgetTreeEditable::Action::COPY);
+    }
+
     //! Updates selected item.
     virtual void edit();
 
@@ -93,12 +104,14 @@ public slots:
     virtual void showEditDialog()
     {
         showEditDialog(repo::core::model::RepoRole(),
-                       repo::core::model::RepoRoleSettings());
+                       repo::core::model::RepoRoleSettings(),
+                       RepoWidgetTreeEditable::Action::ADD);
     }
 
     virtual void showEditDialog(
             const repo::core::model::RepoRole &role,
-            const repo::core::model::RepoRoleSettings &settings);
+            const repo::core::model::RepoRoleSettings &settings,
+            const RepoWidgetTreeEditable::Action action);
 
     void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 

@@ -106,12 +106,12 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
 
 void RepoWidgetManagerUsers::edit()
 {
-    showEditDialog(getUser());
+    showEditDialog(getUser(), RepoWidgetTreeEditable::Action::EDIT);
 }
 
 void RepoWidgetManagerUsers::edit(const QModelIndex &index)
 {
-    showEditDialog(getUser(index));
+    showEditDialog(getUser(index), RepoWidgetTreeEditable::Action::EDIT);
 }
 
 repo::core::model::RepoUser RepoWidgetManagerUsers::getUser() const
@@ -176,7 +176,9 @@ void RepoWidgetManagerUsers::removeItem()
     }
 }
 
-void RepoWidgetManagerUsers::showEditDialog(const repo::core::model::RepoUser &user )
+void RepoWidgetManagerUsers::showEditDialog(
+        const repo::core::model::RepoUser &user,
+        Action action)
 {
     repo::gui::RepoDialogUser userDialog(
                 token,
@@ -184,6 +186,7 @@ void RepoWidgetManagerUsers::showEditDialog(const repo::core::model::RepoUser &u
                 user,
                 databasesWithProjects,
                 customRolesList,
+                action == RepoWidgetTreeEditable::Action::COPY,
                 this);
     if (QDialog::Rejected == userDialog.exec())
     {
@@ -195,7 +198,8 @@ void RepoWidgetManagerUsers::showEditDialog(const repo::core::model::RepoUser &u
         repoLog("create or update user...\n");
         // Create or update user
         refresh(userDialog.getUpdatedUser(),
-                userDialog.isNewUser()
+                action == RepoWidgetTreeEditable::Action::ADD ||
+                action == RepoWidgetTreeEditable::Action::COPY
                 ? repo::worker::UsersWorker::Command::INSERT
                 : repo::worker::UsersWorker::Command::UPDATE);
     }

@@ -47,6 +47,10 @@ RepoDialogManagerAccess::RepoDialogManagerAccess(
     QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(refresh()));
 
+    QObject::connect(
+                ui->userManagerWidget->getFilterableTree(), &RepoWidgetTreeFilterable::totalCountChanged,
+                this, &RepoDialogManagerAccess::updateUsersTabCount);
+
 }
 
 RepoDialogManagerAccess::~RepoDialogManagerAccess()
@@ -94,6 +98,17 @@ void RepoDialogManagerAccess::refresh()
     ui->projectsManagerWidget->refresh();
 
 }
+
+void RepoDialogManagerAccess::updateUsersTabCount(int count)
+{
+    updateTabCount(0, tr("Users"), count);
+}
+
+void RepoDialogManagerAccess::updateTabCount(int tab, const QString &title, int count)
+{
+    ui->tabWidget->setTabText(tab,  title + " (" + QString::number(count) + ")");
+}
+
 
 void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)
 {

@@ -98,12 +98,18 @@ void RepoWidgetManagerRoles::addRole(
 
 void RepoWidgetManagerRoles::edit()
 {
-    showEditDialog(getRole(), getRoleSettings());
+    showEditDialog(
+                getRole(),
+                getRoleSettings(),
+                RepoWidgetTreeEditable::Action::EDIT);
 }
 
 void RepoWidgetManagerRoles::edit(const QModelIndex &index)
 {
-    showEditDialog(getRole(index), getRoleSettings(index));
+    showEditDialog(
+                getRole(index),
+                getRoleSettings(index),
+                RepoWidgetTreeEditable::Action::EDIT);
 }
 
 repo::core::model::RepoRole RepoWidgetManagerRoles::getRole() const
@@ -199,13 +205,15 @@ void RepoWidgetManagerRoles::removeItem()
 
 void RepoWidgetManagerRoles::showEditDialog(
         const repo::core::model::RepoRole &role,
-        const repo::core::model::RepoRoleSettings &settings)
+        const repo::core::model::RepoRoleSettings &settings,
+        const RepoWidgetTreeEditable::Action action)
 {
     repo::widgets::RepoDialogRole roleDialog(
                 role,
                 settings,
                 QString::fromStdString(database),
                 databasesWithProjects,
+                action == RepoWidgetTreeEditable::Action::COPY,
                 this);
     if (QDialog::Rejected == roleDialog.exec())
     {
@@ -218,9 +226,9 @@ void RepoWidgetManagerRoles::showEditDialog(
         // Create or update role
         refresh(roleDialog.getUpdatedRole(),
                 roleDialog.getUpdatedRoleSettings(),
-                roleDialog.isNewRole()
-                ? repo::worker::RepoWorkerRoles::Command::INSERT
-                : repo::worker::RepoWorkerRoles::Command::UPDATE);
+                action == RepoWidgetTreeEditable::Action::EDIT
+                ? repo::worker::RepoWorkerRoles::Command::UPDATE
+                : repo::worker::RepoWorkerRoles::Command::INSERT);
     }
 }
 

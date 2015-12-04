@@ -32,9 +32,17 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
         ui->filterableTreeWidget->getSelectionModel(), &QItemSelectionModel::selectionChanged,
         this, &RepoWidgetTreeEditable::select);
 
+//    QObject::connect(
+//        ui->addPushButton, SIGNAL(pressed()),
+//                this, SLOT(showEditDialog()));
+
     QObject::connect(
         ui->addPushButton, SIGNAL(pressed()),
-                this, SLOT(showEditDialog()));
+                this, SLOT(addItem()));
+
+    QObject::connect(
+        ui->copyPushButton, SIGNAL(pressed()),
+                this, SLOT(copyItem()));
 
     QObject::connect(
         ui->removePushButton, SIGNAL(pressed()),
@@ -50,20 +58,10 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
 
 //    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)),
 //                     this, SLOT(showCustomContextMenu(const QPoint&)));
-
-    // FIXME: restore
-//    QSettings settings(this->parentWidget());
-//    ui->treeView->header()->restoreState(
-//                settings.value(COLUMNS_SETTINGS).toByteArray());
 }
 
 RepoWidgetTreeEditable::~RepoWidgetTreeEditable()
 {
-    // FIXME: restore
-//    QSettings settings(this->parentWidget());
-//    settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
-    //--------------------------------------------------------------------------
-
     delete ui;
 }
 
@@ -72,6 +70,7 @@ void RepoWidgetTreeEditable::clear()
     ui->filterableTreeWidget->clear();
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);
+    ui->copyPushButton->setEnabled(false);
 }
 
 void RepoWidgetTreeEditable::select(
@@ -80,6 +79,7 @@ void RepoWidgetTreeEditable::select(
 {
     ui->removePushButton->setEnabled(true);
     ui->editPushButton->setEnabled(true);
+    ui->copyPushButton->setEnabled(true);
 }
 
 void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)

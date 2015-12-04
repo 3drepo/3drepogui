@@ -24,7 +24,8 @@
 using namespace repo::widgets;
 
 RepoDialogProject::RepoDialogProject(
-        repo::core::model::RepoProjectSettings projectSettings,
+        const repo::core::model::RepoProjectSettings &projectSettings,
+        bool isCopy,
         QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RepoDialogProject)
@@ -33,7 +34,14 @@ RepoDialogProject::RepoDialogProject(
 
     if (!projectSettings.isEmpty())
     {
-        ui->nameLineEdit->setText(QString::fromStdString(projectSettings.getProjectName()));
+        QString projectName = QString::fromStdString(projectSettings.getProjectName());
+
+        if (isCopy)
+            projectName += " " + tr("(Copy)");
+
+        ui->nameLineEdit->setText(projectName);
+        ui->projectNameGroupBox->setChecked(isCopy && !projectSettings.isEmpty());
+
         ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(projectSettings.getDescription()));
         ui->typeComboBox->setCurrentText(QString::fromStdString(projectSettings.getType()));
         ui->ownerComboBox->setCurrentText(QString::fromStdString(projectSettings.getOwner()));

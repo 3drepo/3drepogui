@@ -38,6 +38,14 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
     QObject::connect(
                 proxy, &QSortFilterProxyModel::rowsRemoved,
                 this, &RepoWidgetTreeFilterable::updateCountLabel);
+
+    QObject::connect(
+                model, &QStandardItemModel::rowsRemoved,
+                this, &RepoWidgetTreeFilterable::notifyOfTotalCountChange);
+
+    QObject::connect(
+                model, &QStandardItemModel::rowsInserted,
+                this, &RepoWidgetTreeFilterable::notifyOfTotalCountChange);
 }
 
 RepoWidgetTreeFilterable::~RepoWidgetTreeFilterable()
@@ -104,6 +112,11 @@ void RepoWidgetTreeFilterable::selectRow(const QStandardItem *item) const
     getSelectionModel()->setCurrentIndex(
                 proxy->mapFromSource(model->indexFromItem(item)),
                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
+}
+
+void RepoWidgetTreeFilterable::notifyOfTotalCountChange()
+{
+    emit totalCountChanged(model->rowCount());
 }
 
 //------------------------------------------------------------------------------

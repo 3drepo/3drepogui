@@ -48,13 +48,21 @@ public:
 
 public slots:
 
+    void addItem()
+    { showEditDialog(); }
+
+    void copyItem()
+    { showEditDialog(getProjectSettings(), Action::COPY); }
+
     void addProjectSettings(repo::core::model::RepoProjectSettings);
 
     //! Updates selected item.
-    virtual void edit() {}
+    virtual void edit()
+    { showEditDialog(getProjectSettings(), Action::EDIT); }
 
     //! Updates item based on model index.
-    void edit(const QModelIndex &index) { showEditDialog(getProjectSettings(index)); }
+    void edit(const QModelIndex &index)
+    { showEditDialog(getProjectSettings(index), Action::EDIT); }
 
     repo::core::model::RepoProjectSettings getProjectSettings();
 
@@ -74,9 +82,12 @@ public slots:
     //! Removes currently selected item if any.
     void removeItem();
 
-    void showEditDialog() { showEditDialog(repo::core::model::RepoProjectSettings()); }
+    void showEditDialog()
+    { showEditDialog(repo::core::model::RepoProjectSettings(), Action::ADD); }
 
-    void showEditDialog(const repo::core::model::RepoProjectSettings &);
+    void showEditDialog(
+            const repo::core::model::RepoProjectSettings &,
+            const RepoWidgetTreeEditable::Action action);
 
 public :
 

@@ -39,15 +39,20 @@ namespace widgets {
 
 class RepoWidgetTreeEditable : public QWidget, public repo::worker::RepoMultithreader
 {
-    Q_OBJECT
+    Q_OBJECT    
 
 public:
+
+    enum class Action { ADD, REMOVE, EDIT, COPY };
 
     explicit RepoWidgetTreeEditable(QWidget *parent = 0);
 
     ~RepoWidgetTreeEditable();
 
 public slots :
+
+    //! Adds new empty item.
+    virtual void addItem() = 0;
 
     //! Updates selected item.
     virtual void edit() = 0;
@@ -57,6 +62,9 @@ public slots :
 
     //! Refreshes the current list
     virtual void refresh() = 0;
+
+    //! Copies currectly selected item.
+    virtual void copyItem() = 0;
 
     //! Removes item and refreshes the DB if necessary.
     virtual void removeItem() = 0;

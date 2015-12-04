@@ -55,6 +55,10 @@ public slots :
 
     void refresh();
 
+    void updateUsersTabCount(int count);
+
+    void updateTabCount(int tab, const QString &title, int count);
+
 public :
 
     //! Always returns false in order to capture Tab keypress

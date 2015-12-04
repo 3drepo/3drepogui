@@ -46,6 +46,11 @@ public:
     //! Constructor to remove the UI elements and tree models.
     ~RepoWidgetTreeFilterable();
 
+signals :
+
+    //! Emitted whenever the total count of items in the model changes.
+    void totalCountChanged(int);
+
 public slots:
 
     //! Makes the visual layout compacted without borders.
@@ -182,6 +187,11 @@ public :
 
     //! Sets header columns and restores header settings based on a given label.
     void restoreHeaders(const QList<QString> &headers, const QString &label);
+
+protected :
+
+    //! Emits the signal of totalChanged if number of items in model changes.
+    void notifyOfTotalCountChange();
 
 protected:
 

@@ -33,6 +33,7 @@ RepoDialogRole::RepoDialogRole(
         const repo::core::model::RepoRoleSettings &settings,
         const QString &currentDatabase,
         const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+        const bool isCopy,
         QWidget *parent)
     : QDialog(parent)
     , role(role)
@@ -55,13 +56,20 @@ RepoDialogRole::RepoDialogRole(
 
     //--------------------------------------------------------------------------
     // Set name
-    ui->nameLineEdit->setText(QString::fromStdString(role.getName()));
+    if (!role.isEmpty())
+    {
+        QString roleName = QString::fromStdString(role.getName());
+        if (isCopy)
+            roleName += " " + tr("(Copy)");
+        ui->nameLineEdit->setText(roleName);
+        ui->roleNameGroupBox->setChecked(isCopy && !role.isEmpty());
 
-    // Set database
-    ui->databaseComboBox->setCurrentText(
-                role.getDatabase().empty()
-                ? currentDatabase
-                : QString::fromStdString(role.getDatabase()));
+        // Set database
+        ui->databaseComboBox->setCurrentText(
+                    role.getDatabase().empty()
+                    ? currentDatabase
+                    : QString::fromStdString(role.getDatabase()));
+    }
 
     //--------------------------------------------------------------------------
     // Settings

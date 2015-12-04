@@ -62,6 +62,7 @@ public:
             const repo::core::model::RepoRoleSettings &settings,
             const QString &currentDatabase,
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+            const bool isCopy,
             QWidget *parent = 0);
 
     ~RepoDialogRole();

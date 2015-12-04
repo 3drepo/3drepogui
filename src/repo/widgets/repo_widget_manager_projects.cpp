@@ -94,7 +94,7 @@ repo::core::model::RepoProjectSettings
 
 void RepoWidgetManagerProjects::refresh(
         const repo::core::model::RepoProjectSettings &settings,
-    bool isDelete)
+        bool isDelete)
 {
     if (isReady())
     {        
@@ -139,9 +139,13 @@ void RepoWidgetManagerProjects::removeItem()
 }
 
 void RepoWidgetManagerProjects::showEditDialog(
-    const repo::core::model::RepoProjectSettings &projectSettings)
+        const repo::core::model::RepoProjectSettings &projectSettings,
+        const Action action)
 {
-    RepoDialogProject projectDialog(projectSettings, this);
+    RepoDialogProject projectDialog(
+                projectSettings,
+                action == Action::COPY,
+                this);
     if (QDialog::Rejected == projectDialog.exec())
     {
         std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;

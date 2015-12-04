@@ -41,11 +41,12 @@
 //------------------------------------------------------------------------------
 
 repo::gui::RepoDialogUser::RepoDialogUser(
-		const repo::RepoToken			  *token,
-		repo::RepoController              *controller,
+        const repo::RepoToken *token,
+        repo::RepoController *controller,
         const repo::core::model::RepoUser &user,
         const std::map<std::string, std::list<std::string> > &databasesWithProjects,
         const std::list<std::string> &customRolesList,
+        const bool isCopy,
         QWidget *parent)
     : QDialog(parent)
     , controller(controller)
@@ -128,13 +129,21 @@ repo::gui::RepoDialogUser::RepoDialogUser(
     // Populate user data
     if (!user.isEmpty())
     {
-        ui->usernameLineEdit->setText(QString::fromStdString(user.getUserName()));      
-        ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
+        QString username = QString::fromStdString(user.getUserName());
+        if (isCopy)
+        {
+            username += " " + tr("(Copy)");
+        }
+        else
+            ui->passwordLineEdit->setText(QString::fromStdString(user.getPassword()));
+
+        ui->usernameLineEdit->setText(username);
+
         ui->firstNameLineEdit->setText(QString::fromStdString(user.getFirstName()));
         ui->lastNameLineEdit->setText(QString::fromStdString(user.getLastName()));
         ui->emailLineEdit->setText(QString::fromStdString(user.getEmail()));
 
-        ui->credentialsGroupBox->setChecked(false);
+        ui->credentialsGroupBox->setChecked(isCopy && !user.isEmpty());
 
         //----------------------------------------------------------------------
         // Acess Rights
@@ -451,11 +460,6 @@ repo::core::model::RepoUser repo::gui::RepoDialogUser::getUpdatedUser() const
                 std::list<std::pair<std::string, std::string> >(),
                 getAPIKeys(),
                 avatar);
-}
-
-bool repo::gui::RepoDialogUser::isNewUser() const
-{
-	return getUsername() != user.getUserName();
 }
 
 void repo::gui::RepoDialogUser::setAvatar(const std::vector<char> &image)

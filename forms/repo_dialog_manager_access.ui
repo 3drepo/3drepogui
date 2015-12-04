@@ -24,7 +24,7 @@
      </property>
      <widget class="QWidget" name="usersTab">
       <attribute name="title">
-       <string>Users</string>
+       <string>Users (0)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
@@ -46,7 +46,7 @@
      </widget>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
-       <string>Roles</string>
+       <string>Roles (0)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="leftMargin">
@@ -68,7 +68,7 @@
      </widget>
      <widget class="QWidget" name="projectsTab">
       <attribute name="title">
-       <string>Projects</string>
+       <string>Projects (0)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="leftMargin">

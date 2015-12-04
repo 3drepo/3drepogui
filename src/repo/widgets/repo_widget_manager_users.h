@@ -64,6 +64,9 @@ public slots:
     //! Adds a fresh list of custom roles.
     void addCustomRoles(const std::list<std::string> &);
 
+    void addItem()
+    { showEditDialog(); }
+
     //! Adds user to the list of users.
     void addUser(const repo::core::model::RepoUser &user);
 
@@ -87,14 +90,22 @@ public slots:
             const repo::core::model::RepoUser& user,
             const repo::worker::UsersWorker::Command& command);
 
+    void copyItem()
+    {
+        showEditDialog(getUser(), RepoWidgetTreeEditable::Action::COPY);
+    }
+
     //! Drops user from the database.
     void removeItem();
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog() { showEditDialog(repo::core::model::RepoUser()); }
+    void showEditDialog()
+    { showEditDialog(repo::core::model::RepoUser(), RepoWidgetTreeEditable::Action::ADD); }
 
     //! Shows the user dialog and saves edits to the database.
-    void showEditDialog(const repo::core::model::RepoUser &user);
+    void showEditDialog(
+            const repo::core::model::RepoUser &user,
+            RepoWidgetTreeEditable::Action action);
 
     void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 
@@ -102,8 +113,8 @@ public :
 
     void setDBConnection(
             repo::RepoController *controller,
-            const repo::RepoToken* token,
-            const std::string& database);
+            const repo::RepoToken *token,
+            const std::string &database);
 
 private:
 

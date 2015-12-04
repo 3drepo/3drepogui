@@ -45,7 +45,8 @@ class RepoDialogProject : public QDialog
 public:
 
     explicit RepoDialogProject(
-		repo::core::model::RepoProjectSettings projectSettings,
+            const repo::core::model::RepoProjectSettings &projectSettings,
+            const bool isCopy = false,
             QWidget *parent = 0);
 
     ~RepoDialogProject();
