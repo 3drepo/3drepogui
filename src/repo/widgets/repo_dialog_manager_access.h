@@ -39,6 +39,8 @@ class RepoDialogManagerAccess
 {
     Q_OBJECT
 
+    enum class Tab { USERS, ROLES, PROJECTS };
+
 public:
 
     explicit RepoDialogManagerAccess(
@@ -57,11 +59,11 @@ public slots :
 
     void updateUsersTabCount(int count);
 
-    void updateRolesTabCount(int count) {}
+    void updateRolesTabCount(int count);
 
-    void updateProjectsTabCount(int count) {}
+    void updateProjectsTabCount(int count);
 
-    void updateTabCount(int tab, const QString &title, int count);
+    void updateTabCount(Tab tab, const QString &title, int count);
 
 public :
 
