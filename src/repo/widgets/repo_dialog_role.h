@@ -74,20 +74,12 @@ public slots:
 
     QTreeWidgetItem *addModuleItem();
 
-    //! Adds an item based on given project and readWrite permission.
-    QTreeWidgetItem *addPermissionItem(
-            const std::string &project,
-            const repo::core::model::AccessRight &rw);
-
     QTreeWidgetItem *addPrivilegeItem(
             const std::string &database,
             const std::string &collection,
             const std::vector<std::string> &actions);
 
     QTreeWidgetItem *addModuleItem(const std::string &module);
-
-    //! Removes currently selected Access Rights item.
-    void removePermissionItem();
 
     void removeModuleItem();
 

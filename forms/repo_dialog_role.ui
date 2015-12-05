@@ -92,7 +92,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget_2">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="settingsTab">
       <attribute name="title">
@@ -208,7 +208,7 @@
      </widget>
      <widget class="QWidget" name="permissionsTab">
       <attribute name="title">
-       <string>Permissions</string>
+       <string>Permissions (0)</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
@@ -220,83 +220,6 @@
           <item>
            <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="permissionsUnfilterableTree" native="true"/>
           </item>
-          <item>
-           <widget class="QTreeWidget" name="accessRightsTreeWidget">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
-            </property>
-            <property name="lineWidth">
-             <number>1</number>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>true</bool>
-            </property>
-            <property name="indentation">
-             <number>6</number>
-            </property>
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string>Project</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Permission</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item>
-           <widget class="QWidget" name="widget" native="true">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QPushButton" name="addPermissionPushButton">
-               <property name="text">
-                <string>Add</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="removePermissionPushButton">
-               <property name="text">
-                <string>Remove</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -304,7 +227,7 @@
      </widget>
      <widget class="QWidget" name="privilegesTab">
       <attribute name="title">
-       <string>Privileges</string>
+       <string>Privileges (0)</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
@@ -396,7 +319,7 @@
      </widget>
      <widget class="QWidget" name="modulesTab">
       <attribute name="title">
-       <string>Modules</string>
+       <string>Modules (0)</string>
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
