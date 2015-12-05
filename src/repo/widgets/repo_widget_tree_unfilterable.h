@@ -55,7 +55,11 @@ signals :
 
     void rowCountChanged(int oldRowCount, int newRowCount);
 
+    void tabTextChanged(int tab, QString text);
+
 public slots :
+
+    void setButtonsEnabled(bool enabled);
 
     //! Sets the headers on this model.
     void setHeaders(const QStringList &headers);
@@ -70,15 +74,17 @@ public slots :
     virtual void removeRow();
 
     //! Adds items as a list. Makes sure the size of the list mataches columns count.
-    QTreeWidgetItem *addRow(const QStringList &list);
+    QTreeWidgetItem *addRow(const QStringList &list, bool enabled = true);
 
-    QTreeWidgetItem *addRow(const QString &a, QString &b);
+    QTreeWidgetItem *addRow(const QString &a, const QString &b);
 
-    QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair);
+    QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair, bool enabled = true);
 
     void addRows(const std::list<std::pair<std::string, std::string> > &list);
 
-    std::list<std::pair<std::string, std::string> > getItems() const;
+    std::list<std::pair<std::string, std::string> > getItemsAsListOfPairsOfStrings() const;
+
+    std::vector<std::string> getItemsAsVectorOfStrings() const;
 
     int getRowCount() const;
 
@@ -101,7 +107,11 @@ public slots :
     //! Sets the appropriate delegate if the database column on the project item has changed.
     void updateDelegate(QTreeWidgetItem *current, int column);
 
+    void notifyTabTextChange(int oldRowCount, int newRowCount);
+
 public :
+
+    void registerTabWidget(QTabWidget *tabWidget, int tab);
 
     //! Chops last chars of type " (oldCount)" and appends " (newCount)"
     static QString updateCountString(QString string, int oldCount, int newCount);
@@ -113,6 +123,10 @@ private:
 
     //! Lookup table for roles delegates by database name.
     QHash<QString, repo::gui::RepoComboBoxDelegate*> delegates;
+
+    QTabWidget *tabWidget;
+
+    int tab;
 
     //! Ui var.
     Ui::RepoWidgetTreeUnfilterable *ui;

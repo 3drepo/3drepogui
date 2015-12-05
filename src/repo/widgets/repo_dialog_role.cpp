@@ -40,12 +40,13 @@ RepoDialogRole::RepoDialogRole(
     , settings(settings)
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
-    , rwDelegate(nullptr)
 {
     ui->setupUi(this);
 
     //--------------------------------------------------------------------------
     // Permissions
+    ui->permissionsUnfilterableTree->setHeaders({tr("Project"), tr("Permission")});
+    ui->permissionsUnfilterableTree->registerTabWidget(ui->tabWidget, (int)Tab::PERMISSIONS);
     QHash<QString, repo::gui::RepoComboBoxDelegate *> permissionsDelegates;
     for (std::pair<std::string, std::list<std::string> > pair : databasesWithProjects)
     {
@@ -57,17 +58,15 @@ RepoDialogRole::RepoDialogRole(
                     new repo::gui::RepoComboBoxDelegate(rwSEList));
     }
     ui->permissionsUnfilterableTree->setDelegates(permissionsDelegates);
-    ui->permissionsUnfilterableTree->setHeaders({tr("Project"), tr("Permission")});
-    for (auto p : role.getProjectAccessRights())
+    for (repo::core::model::RepoPermission p : role.getProjectAccessRights())
     {
         ui->permissionsUnfilterableTree->addRow(
                     QString::fromStdString(p.project),
                     accessRightToString(p.permission));
     }
-
-
     QObject::connect(ui->databaseComboBox, &QComboBox::currentTextChanged,
                      this, &RepoDialogRole::setDelegate);
+
 
     //--------------------------------------------------------------------------
     // Set database combo box
@@ -106,42 +105,53 @@ RepoDialogRole::RepoDialogRole(
     ui->descriptionPlainTextEdit->setPlainText(QString::fromStdString(settings.getDescription()));
 
 
-
-
-
-
-
     //--------------------------------------------------------------------------
     // Privileges
+    ui->privilegesUnfilterableTree->setHeaders({
+                                                   tr("Database"),
+                                                   tr("Collection"),
+                                                   tr("Actions")});
+    ui->privilegesUnfilterableTree->registerTabWidget(ui->tabWidget, (int)Tab::PRIVILEGES);
+    ui->privilegesUnfilterableTree->setButtonsEnabled(false);
     for (repo::core::model::RepoPrivilege p : role.getPrivileges())
     {
-        addPrivilegeItem(
-            p.database,
-            p.collection,
-            repo::core::model::RepoRole::dbActionsToStrings(p.actions));
+        QString qactions;
+        for (std::string action : repo::core::model::RepoRole::dbActionsToStrings(p.actions))
+        {
+            qactions += QString::fromStdString(action) + ", ";
+        }
+        qactions.remove(qactions.size()-2, 2); // remove last comma
+
+        QStringList qlist = {
+            QString::fromStdString(p.database),
+            QString::fromStdString(p.collection),
+            qactions
+        };
+        ui->privilegesUnfilterableTree->addRow(qlist, false);
     }
 
+    //--------------------------------------------------------------------------
+    // Inherited Roles
+    ui->inheritedRolesUnfilterableTree->setHeaders({tr("Database"), tr("Role")});
+    ui->inheritedRolesUnfilterableTree->registerTabWidget(ui->tabWidget, (int)Tab::INHERITED_ROLES);
+    ui->inheritedRolesUnfilterableTree->setButtonsEnabled(false);
+    for (std::pair<std::string, std::string> pair : role.getInheritedRoles())
+    {
+        ui->inheritedRolesUnfilterableTree->addRow(pair, false);
+    }
 
     //--------------------------------------------------------------------------
     // Modules
-    for (auto m : settings.getModules())
+    ui->modulesUnfilterableTree->setHeaders({tr("Module")});
+    ui->modulesUnfilterableTree->registerTabWidget(ui->tabWidget, (int)Tab::MODULES);
+    ui->modulesUnfilterableTree->setNewRowText({tr("<module>")});
+    for (std::string module : settings.getModules())
     {
-        addModuleItem(m);
+        ui->modulesUnfilterableTree->addRow({QString::fromStdString(module)});
     }
-
-
 
     //--------------------------------------------------------------------------
     // Connect buttons
-    QObject::connect(
-                ui->addModulePushButton, SIGNAL(pressed()),
-                this, SLOT(addModuleItem()));
-
-
-    QObject::connect(
-                ui->removeModulePushButton, &QPushButton::pressed,
-                this, &RepoDialogRole::removeModuleItem);
-
     QObject::connect(
                 ui->colorPickerPushButton, &QPushButton::pressed,
                 this, &RepoDialogRole::showColorDialog);
@@ -154,85 +164,28 @@ RepoDialogRole::RepoDialogRole(
 RepoDialogRole::~RepoDialogRole()
 {
     delete ui;
-
-    if (rwDelegate)
-    {
-        delete rwDelegate;
-        rwDelegate = nullptr;
-    }
 }
 
 QTreeWidgetItem *RepoDialogRole::addPermissionItem()
 {
-//    std::string database = ui->databaseComboBox->currentText().toStdString();
-//    std::map<std::string, std::list<std::string> >::iterator it =
-//            databasesWithProjects.find(database);
+    //    std::string database = ui->databaseComboBox->currentText().toStdString();
+    //    std::map<std::string, std::list<std::string> >::iterator it =
+    //            databasesWithProjects.find(database);
 
-//    std::string project;
-//    if (it != databasesWithProjects.end())
-//    {
-//        std::list<std::string> projects = it->second;
-//        if (projects.size() > ui->accessRightsTreeWidget->model()->rowCount())
-//        {
-//            std::list<std::string>::iterator pit = projects.begin();
-//            std::advance(pit, ui->accessRightsTreeWidget->model()->rowCount());
-//            project = (*pit);
-//        }
-//    }
-//    return addPermissionItem(project, repo::core::model::AccessRight::READ);
+    //    std::string project;
+    //    if (it != databasesWithProjects.end())
+    //    {
+    //        std::list<std::string> projects = it->second;
+    //        if (projects.size() > ui->accessRightsTreeWidget->model()->rowCount())
+    //        {
+    //            std::list<std::string>::iterator pit = projects.begin();
+    //            std::advance(pit, ui->accessRightsTreeWidget->model()->rowCount());
+    //            project = (*pit);
+    //        }
+    //    }
+    //    return addPermissionItem(project, repo::core::model::AccessRight::READ);
     return 0;
 }
-
-QTreeWidgetItem *RepoDialogRole::addModuleItem()
-{
-    // TODO: add list of available modules to bouncer or something
-    std::string module = tr("module").toStdString();
-    return addModuleItem(module);
-}
-
-QTreeWidgetItem *RepoDialogRole::addPrivilegeItem(
-        const std::string &database,
-        const std::string &collection,
-        const std::vector<std::string> &actions)
-{
-    QString qactions;
-    for (std::string action : actions)
-    {
-        qactions += QString::fromStdString(action) + ", ";
-    }
-    qactions.remove(qactions.size()-2, 2);
-
-    QStringList qlist = {
-            QString::fromStdString(database),
-            QString::fromStdString(collection),
-            qactions
-    };
-    QTreeWidgetItem *item = new QTreeWidgetItem(ui->privilegeTreeWidget, qlist);
-    item->setDisabled(true);
-    ui->privilegeTreeWidget->addTopLevelItem(item);
-    return item;
-}
-
-QTreeWidgetItem *RepoDialogRole::addModuleItem(const std::string &module)
-{
-    QStringList qlist = { QString::fromStdString(module) };
-    QTreeWidgetItem *item = new QTreeWidgetItem(ui->modulesTreeWidget, qlist);
-    item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-    ui->modulesTreeWidget->addTopLevelItem(item);
-    return item;
-}
-
-void RepoDialogRole::removeModuleItem()
-{
-    QTreeWidgetItem *item = nullptr;
-    item = ui->modulesTreeWidget->currentItem();
-    if (item)
-    {
-        delete item;
-        item = nullptr;
-    }
-}
-
 
 std::string RepoDialogRole::getColor() const
 {
@@ -256,21 +209,13 @@ std::string RepoDialogRole::getDatabase() const
 
 std::vector<std::string> RepoDialogRole::getModules() const
 {
-    std::vector<std::string> modules;
-    for (int i = 0; i < ui->modulesTreeWidget->topLevelItemCount(); ++i)
-    {
-        QTreeWidgetItem *item = ui->modulesTreeWidget->topLevelItem(i);
-        if (item)
-        {
-            modules.push_back(item->data(0, Qt::EditRole).toString().toStdString());
-        }
-    }
-    return modules;
+    return ui->modulesUnfilterableTree->getItemsAsVectorOfStrings();
 }
 
 std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() const
 {
-    std::list<std::pair<std::string, std::string> > items = ui->permissionsUnfilterableTree->getItems();
+    std::list<std::pair<std::string, std::string> > items =
+            ui->permissionsUnfilterableTree->getItemsAsListOfPairsOfStrings();
     std::vector<repo::core::model::RepoPermission> permissions(items.size());
 
     int i = 0;
@@ -294,15 +239,11 @@ bool RepoDialogRole::isNewRole() const
 void RepoDialogRole::showColorDialog()
 {
     QColor oldColor(ui->colorLineEdit->text());
-    QColor color = QColor(
-                QColorDialog::getColor(
-                    oldColor, this));
-
+    QColor color = QColor(QColorDialog::getColor(oldColor, this));
     if (color.isValid())
     {
         setColor(color.name(QColor::HexRgb));
     }
-
 }
 
 void RepoDialogRole::setColor(const QString &hex)
@@ -337,8 +278,6 @@ repo::core::model::RepoRoleSettings RepoDialogRole::getUpdatedRoleSettings() con
                 getName(),getColor(), getDescription(), getModules());
     return settings;
 }
-
-
 
 QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight &rw)
 {

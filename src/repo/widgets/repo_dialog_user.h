@@ -82,11 +82,7 @@ public slots:
     //! Opens up file dialog to load an image.
     void openImageFileDialog();
 
-    void updateProjectsTabCount(int oldRowCount, int newRowCount);
-
-    void updateRolesTabCount(int oldRowCount, int newRowCount);
-
-    void updateApiKeysTabCount(int oldRowCount, int newRowCount);
+    void setNextAPIKey();
 
 public :
 

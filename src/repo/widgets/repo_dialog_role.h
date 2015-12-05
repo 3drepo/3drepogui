@@ -42,7 +42,7 @@
 #include <repo/core/model/bson/repo_bson_factory.h>
 
 namespace Ui {
-class RepoDialogRole;
+    class RepoDialogRole;
 }
 
 namespace repo {
@@ -54,6 +54,8 @@ class RepoDialogRole : public QDialog
 
     //! Read, Write and ReadWrite strings.
     static const repo::gui::RepoComboBoxEditor::SeparatedEntries rwSeparatedEntries;
+
+    enum class Tab {SETTINGS, PERMISSIONS, PRIVILEGES, INHERITED_ROLES, MODULES };
 
 public:
 
@@ -71,17 +73,6 @@ public slots:
 
     //! Adds an empty item.
     QTreeWidgetItem *addPermissionItem();
-
-    QTreeWidgetItem *addModuleItem();
-
-    QTreeWidgetItem *addPrivilegeItem(
-            const std::string &database,
-            const std::string &collection,
-            const std::vector<std::string> &actions);
-
-    QTreeWidgetItem *addModuleItem(const std::string &module);
-
-    void removeModuleItem();
 
     std::string getColor() const;
 
@@ -109,7 +100,6 @@ public slots:
     //! Sets current delegate based on given database.
     void setDelegate(const QString &database);
 
-
 public :
 
     //! Returns updated role.
@@ -135,9 +125,6 @@ private:
 
     //! Role settings to edit
     repo::core::model::RepoRoleSettings settings;
-
-    //! RW delegate
-    repo::gui::RepoComboBoxDelegate *rwDelegate;
 
     //! A map of databases to associated projects.
     std::map<std::string, std::list<std::string> > databasesWithProjects;

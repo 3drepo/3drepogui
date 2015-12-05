@@ -25,7 +25,8 @@ RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::RepoWidgetTreeUnfilterable)
     , newRowText({tr("<empty>"), tr("<emtpy>")})
-
+    , tabWidget(0)
+    , tab(0)
 {
     ui->setupUi(this);
 
@@ -42,6 +43,10 @@ RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
     QObject::connect(
                 ui->removePushButton, SIGNAL(pressed()),
                 this, SLOT(removeRow()));
+
+    QObject::connect(
+                this, &RepoWidgetTreeUnfilterable::rowCountChanged,
+                this, &RepoWidgetTreeUnfilterable::notifyTabTextChange);
 }
 
 RepoWidgetTreeUnfilterable::~RepoWidgetTreeUnfilterable()
@@ -56,6 +61,12 @@ RepoWidgetTreeUnfilterable::~RepoWidgetTreeUnfilterable()
         QString item = i.next();
         delete delegates.take(item);
     }
+}
+
+void RepoWidgetTreeUnfilterable::setButtonsEnabled(bool enabled)
+{
+    ui->addPushButton->setEnabled(enabled);
+    ui->removePushButton->setEnabled(enabled);
 }
 
 void RepoWidgetTreeUnfilterable::setHeaders(const QStringList &headers)
@@ -78,7 +89,7 @@ void RepoWidgetTreeUnfilterable::removeRow()
     }
 }
 
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list)
+QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list, bool enabled)
 {
     QTreeWidgetItem *item = 0;
     if (list.size() == ui->treeWidget->columnCount())
@@ -90,7 +101,11 @@ QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list)
         {
             item->setData(i++, Qt::DecorationRole, s);
         }
-        item->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
+        Qt::ItemFlags flags = Qt::ItemIsEditable;
+        if (enabled)
+            flags |= Qt::ItemIsEnabled;
+        item->setFlags(flags);
+
         ui->treeWidget->addTopLevelItem(item);
 
         setItemDelegateForRow(list[0]);
@@ -103,14 +118,19 @@ QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list)
     }
     return item;
 }
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QString &a, QString &b)
+
+QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QString &a, const QString &b)
 {
     return addRow({a, b});
 }
 
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const std::pair<std::string, std::string> &pair)
+QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(
+        const std::pair<std::string, std::string> &pair,
+        bool enabled)
 {
-    return addRow({QString::fromStdString(pair.first), QString::fromStdString(pair.second)});
+    return addRow(
+        {QString::fromStdString(pair.first), QString::fromStdString(pair.second)},
+        enabled);
 }
 
 void RepoWidgetTreeUnfilterable::addRows(const std::list<std::pair<std::string, std::string> > &list)
@@ -119,10 +139,10 @@ void RepoWidgetTreeUnfilterable::addRows(const std::list<std::pair<std::string, 
         addRow(pair);
 }
 
-std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getItems() const
+std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getItemsAsListOfPairsOfStrings() const
 {
     std::list<std::pair<std::string, std::string> > list;
-    if (ui->treeWidget->colorCount() >= 2)
+    if (ui->treeWidget->columnCount() >= 2)
     {
         for (int i = 0; i < ui->treeWidget->topLevelItemCount(); ++i)
         {
@@ -133,6 +153,20 @@ std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getI
         }
     }
     return list;
+}
+
+std::vector<std::string> RepoWidgetTreeUnfilterable::getItemsAsVectorOfStrings() const
+{
+    std::vector<std::string> vector(ui->treeWidget->topLevelItemCount());
+    if (ui->treeWidget->columnCount() > 0)
+    {
+        for (int i = 0; i < ui->treeWidget->topLevelItemCount(); ++i)
+        {
+            QTreeWidgetItem *item = ui->treeWidget->topLevelItem(i);
+            vector[i] = item->data(0, Qt::EditRole).toString().toStdString();
+        }
+    }
+    return vector;
 }
 
 int RepoWidgetTreeUnfilterable::getRowCount() const
@@ -176,6 +210,30 @@ void RepoWidgetTreeUnfilterable::updateDelegate(QTreeWidgetItem *current, int co
                                        ? 1
                                        : 0);
     }
+}
+
+void RepoWidgetTreeUnfilterable::notifyTabTextChange(int oldRowCount, int newRowCount)
+{
+    QString text;
+    if (tabWidget)
+    {
+        text = updateCountString(tabWidget->tabText(tab), oldRowCount, newRowCount);
+    }
+    emit tabTextChanged(tab, text);
+}
+
+void RepoWidgetTreeUnfilterable::registerTabWidget(QTabWidget *tabWidget, int tab)
+{
+    if (this->tabWidget)
+    {
+        QObject::disconnect(this, &RepoWidgetTreeUnfilterable::tabTextChanged,
+                            this->tabWidget, &QTabWidget::setTabText);
+    }
+
+    this->tabWidget = tabWidget;
+    this->tab = tab;
+    QObject::connect(this, &RepoWidgetTreeUnfilterable::tabTextChanged,
+                     tabWidget, &QTabWidget::setTabText);
 }
 
 QString RepoWidgetTreeUnfilterable::updateCountString(

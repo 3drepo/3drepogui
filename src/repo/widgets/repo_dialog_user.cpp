@@ -47,23 +47,9 @@ RepoDialogUser::RepoDialogUser(
         ui->avatarPushButton, &QPushButton::pressed,
         this, &RepoDialogUser::openImageFileDialog);
 
-    QObject::connect(
-                ui->projectsUnfilterableTreeWidget,
-                &RepoWidgetTreeUnfilterable::rowCountChanged,
-                this,
-                &RepoDialogUser::updateProjectsTabCount);
-
-    QObject::connect(
-                ui->rolesUnfilterableTreeWidget,
-                &RepoWidgetTreeUnfilterable::rowCountChanged,
-                this,
-                &RepoDialogUser::updateRolesTabCount);
-
-    QObject::connect(
-                ui->apiKeysUnfilterableTreeWidget,
-                &RepoWidgetTreeUnfilterable::rowCountChanged,
-                this,
-                &RepoDialogUser::updateApiKeysTabCount);
+    ui->projectsUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::PROJECTS);
+    ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::ROLES);
+    ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::API_KEYS);
 
     //--------------------------------------------------------------------------
     ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
@@ -74,8 +60,6 @@ RepoDialogUser::RepoDialogUser(
     {        
 		setAvatar(user.getAvatarAsRawData());
     }
-
-
 
     //--------------------------------------------------------------------------
     // Databases
@@ -142,8 +126,7 @@ RepoDialogUser::RepoDialogUser(
 
     // API Keys
     ui->apiKeysUnfilterableTreeWidget->setHeaders({tr("Label"), tr("API Key")});
-    ui->apiKeysUnfilterableTreeWidget->setNewRowText(
-        {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
+    setNextAPIKey();
 
     //--------------------------------------------------------------------------
     // Populate user data
@@ -173,7 +156,9 @@ RepoDialogUser::RepoDialogUser(
     }
 
 
-
+    QObject::connect(ui->apiKeysUnfilterableTreeWidget,
+                     &RepoWidgetTreeUnfilterable::rowCountChanged,
+                     this, &RepoDialogUser::setNextAPIKey);
 
     //--------------------------------------------------------------------------
     // Regular expression validator for email
@@ -207,7 +192,7 @@ std::string RepoDialogUser::getFirstName() const
 
 std::list<std::pair<std::string, std::string> > RepoDialogUser::getAPIKeys() const
 {
-    return ui->apiKeysUnfilterableTreeWidget->getItems();
+    return ui->apiKeysUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
 std::string RepoDialogUser::getLastName() const
@@ -223,12 +208,12 @@ std::string RepoDialogUser::getPassword() const
 
 std::list<std::pair<std::string, std::string> > RepoDialogUser::getProjects() const
 {
-    return ui->projectsUnfilterableTreeWidget->getItems();
+    return ui->projectsUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
 std::list<std::pair<std::string, std::string> > RepoDialogUser::getRoles() const
 {
-    return ui->rolesUnfilterableTreeWidget->getItems();
+    return ui->rolesUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
 std::string RepoDialogUser::getUsername() const
@@ -265,31 +250,8 @@ void RepoDialogUser::openImageFileDialog()
     }
 }
 
-void RepoDialogUser::updateProjectsTabCount(int oldRowCount, int newRowCount)
+void RepoDialogUser::setNextAPIKey()
 {
-    ui->tabWidget->setTabText((int)Tab::PROJECTS,
-                              RepoWidgetTreeUnfilterable::updateCountString(
-                                  ui->tabWidget->tabText((int)Tab::PROJECTS),
-                                  oldRowCount,
-                                  newRowCount));
-}
-
-void RepoDialogUser::updateRolesTabCount(int oldRowCount, int newRowCount)
-{
-    ui->tabWidget->setTabText((int)Tab::ROLES,
-                              RepoWidgetTreeUnfilterable::updateCountString(
-                                  ui->tabWidget->tabText((int)Tab::ROLES),
-                                  oldRowCount,
-                                  newRowCount));
-}
-
-void RepoDialogUser::updateApiKeysTabCount(int oldRowCount, int newRowCount)
-{
-    ui->tabWidget->setTabText((int)Tab::API_KEYS,
-                              RepoWidgetTreeUnfilterable::updateCountString(
-                                  ui->tabWidget->tabText((int)Tab::API_KEYS),
-                                  oldRowCount,
-                                  newRowCount));
     ui->apiKeysUnfilterableTreeWidget->setNewRowText(
         {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
 }
