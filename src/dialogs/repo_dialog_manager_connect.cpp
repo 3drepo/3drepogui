@@ -170,7 +170,7 @@ void repo::gui::RepoDialogManagerConnect::showEditDialog(
         const repo::RepoCredentials &credentials,
         const QModelIndex &index)
 {
-    RepoDialogConnect connectionSettingsDialog(controller, credentials, this);
+    repo::widgets::RepoDialogConnect connectionSettingsDialog(controller, credentials, this);
     if (QDialog::Rejected == connectionSettingsDialog.exec())
         repoLog("Connection Settings Dialog cancelled by user.\n");
     else // QDialog::Accepted

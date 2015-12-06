@@ -25,7 +25,7 @@
 #include "repogui.h"
 #include "ui_repogui.h"
 #include "dialogs/repo_dialogcommit.h"
-#include "dialogs/repo_dialogconnect.h"
+#include "repo/widgets/repo_dialog_connect.h"
 #include "dialogs/repo_dialoghistory.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"

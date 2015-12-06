@@ -15,12 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_dialogconnect.h"
+#include "repo_dialog_connect.h"
+
+using namespace repo::widgets;
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogConnect::RepoDialogConnect(
-        RepoController *controller,
-        const RepoCredentials &credentials,
+RepoDialogConnect::RepoDialogConnect(
+        repo::RepoController *controller,
+        const repo::RepoCredentials &credentials,
         QWidget *parent,
         Qt::WindowFlags flags)
     : QDialog(parent, flags)
@@ -28,7 +30,7 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     , controller(controller)
 {
     ui->setupUi(this);
-    setWindowIcon(RepoFontAwesome::getConnectIcon());
+    setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
 
     ui->aliasLineEdit->setText(QString::fromStdString(credentials.getAlias()));
     ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
@@ -53,8 +55,8 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
     // TODO: code in support for SSL and SSH
-    ui->tabWidget->setTabEnabled(2, false); // SSL tab disabled
-    ui->tabWidget->setTabEnabled(3, false); // SSH tab disabled
+    ui->tabWidget->setTabEnabled((int) Tab::SSL, false); // SSL tab disabled
+    ui->tabWidget->setTabEnabled((int) Tab::SSH, false); // SSH tab disabled
 
     ui->validateProgressBar->hide();
 
@@ -62,13 +64,13 @@ repo::gui::RepoDialogConnect::RepoDialogConnect(
 }
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogConnect::~RepoDialogConnect() 
+RepoDialogConnect::~RepoDialogConnect()
 {
     delete databasesCompleter;
     delete ui;
 }
 
-void repo::gui::RepoDialogConnect::validate()
+void RepoDialogConnect::validate()
 {
 //    ui->validateProgressBar->show();
 
@@ -80,7 +82,7 @@ void repo::gui::RepoDialogConnect::validate()
 //    ui->validateProgressBar->hide();
 }
 
-repo::RepoCredentials repo::gui::RepoDialogConnect::getConnectionSettings() const
+repo::RepoCredentials RepoDialogConnect::getConnectionSettings() const
 {
     repo::RepoCredentials credentials(
                 ui->aliasLineEdit->text().toStdString(),

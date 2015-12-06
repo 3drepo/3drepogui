@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repoabstractmanagerdialog.h"
-#include "repo_dialogconnect.h"
+#include "../repo/widgets/repo_dialog_connect.h"
 #include "../primitives/repoidbcache.h"
 #include "../repo/settings/repo_settings_credentials.h"
 
@@ -61,6 +61,7 @@ class RepoDialogManagerConnect : public RepoAbstractManagerDialog
     enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
 
     static const QString SETTINGS_CONNECTIONS_COLUMNS;
+
     static const QString SETTINGS_SELECTION;
 
 public:
