@@ -22,6 +22,9 @@
      <property name="title">
       <string>Connection:</string>
      </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
      <layout class="QFormLayout" name="formLayout_3">
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
@@ -32,6 +35,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="aliasLineEdit">
+        <property name="whatsThis">
+         <string>Human readable alias for current connection. Can be anything.</string>
+        </property>
         <property name="placeholderText">
          <string>Alias</string>
         </property>
@@ -78,6 +84,9 @@
        </item>
        <item row="2" column="1">
         <widget class="QLineEdit" name="hostLineEdit">
+         <property name="whatsThis">
+          <string>Server address for MongoDB. This can be either a domain name or an IP address.</string>
+         </property>
          <property name="placeholderText">
           <string>Host</string>
          </property>
@@ -108,6 +117,9 @@
        </item>
        <item row="4" column="1">
         <widget class="QLineEdit" name="portLineEdit">
+         <property name="whatsThis">
+          <string>Port number for MongoDB. Default is 27017.</string>
+         </property>
          <property name="placeholderText">
           <string>Port</string>
          </property>
@@ -145,6 +157,9 @@
        </item>
        <item row="3" column="1">
         <widget class="QLineEdit" name="usernameLineEdit">
+         <property name="whatsThis">
+          <string>Username.</string>
+         </property>
          <property name="placeholderText">
           <string>Username</string>
          </property>
@@ -162,6 +177,9 @@
        </item>
        <item row="4" column="1">
         <widget class="QLineEdit" name="passwordLineEdit">
+         <property name="whatsThis">
+          <string>Password.</string>
+         </property>
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
          </property>
@@ -182,6 +200,9 @@
        </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="authenticationDatabaseLineEdit">
+         <property name="whatsThis">
+          <string>Database to authenticate against. Admin database requires special privileges.</string>
+         </property>
          <property name="placeholderText">
           <string>Database</string>
          </property>
@@ -247,6 +268,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="validatePushButton">
+        <property name="whatsThis">
+         <string>Connection validation button.</string>
+        </property>
         <property name="text">
          <string>Validate</string>
         </property>

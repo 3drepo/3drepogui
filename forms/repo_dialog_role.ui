@@ -41,6 +41,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="nameLineEdit">
+        <property name="whatsThis">
+         <string>User defined role name. Has to be unique within a databse.</string>
+        </property>
         <property name="placeholderText">
          <string>Name</string>
         </property>
@@ -68,6 +71,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QComboBox" name="databaseComboBox">
+        <property name="whatsThis">
+         <string>Database this role applies to.</string>
+        </property>
         <property name="frame">
          <bool>true</bool>
         </property>
@@ -132,6 +138,9 @@
              </property>
              <item>
               <widget class="QLineEdit" name="colorLineEdit">
+               <property name="whatsThis">
+                <string>Color assigned to this role to distinguish it from other roles.</string>
+               </property>
                <property name="maxLength">
                 <number>7</number>
                </property>
@@ -142,6 +151,9 @@
              </item>
              <item>
               <widget class="QPushButton" name="colorPickerPushButton">
+               <property name="whatsThis">
+                <string>Color picker.</string>
+               </property>
                <property name="text">
                 <string>Choose...</string>
                </property>
@@ -182,6 +194,9 @@
               <width>16777215</width>
               <height>16777215</height>
              </size>
+            </property>
+            <property name="whatsThis">
+             <string>Role description.</string>
             </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustToContents</enum>

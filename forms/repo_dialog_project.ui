@@ -47,6 +47,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="nameLineEdit">
+        <property name="whatsThis">
+         <string>Exact name of the project as appears in the database.</string>
+        </property>
         <property name="placeholderText">
          <string>Name</string>
         </property>
@@ -83,6 +86,9 @@
        <widget class="QLabel" name="label_2">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="whatsThis">
+         <string>User who is responsible for the project for billing purposes.</string>
         </property>
         <property name="text">
          <string>User who is responsible for the project for billing purposes.</string>
@@ -122,6 +128,9 @@
            <widget class="QComboBox" name="typeComboBox">
             <property name="enabled">
              <bool>true</bool>
+            </property>
+            <property name="whatsThis">
+             <string>Project type.</string>
             </property>
             <property name="editable">
              <bool>true</bool>
@@ -181,6 +190,9 @@
               <verstretch>1</verstretch>
              </sizepolicy>
             </property>
+            <property name="whatsThis">
+             <string>Project description.</string>
+            </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustIgnored</enum>
             </property>
@@ -214,6 +226,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="pinSizeDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Size of the issue pins relative to model units.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
@@ -255,6 +270,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="avatarHeightDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Height of first person avatar relative to model units.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
@@ -300,6 +318,9 @@
           </item>
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="speedDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Speed of movement in 3D space relative to model units.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
@@ -368,6 +389,9 @@
           </item>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="zNearDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Near frustrum culling plane.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
@@ -409,6 +433,9 @@
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="zFarDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Far frustrum culling plane.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
@@ -451,6 +478,9 @@
           </item>
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="visibilityLimitDoubleSpinBox">
+            <property name="whatsThis">
+             <string>Limit of rendering distance. Should be less than or equal to z-Far.</string>
+            </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
