@@ -36,7 +36,7 @@ RepoDialogRole::RepoDialogRole(
         const bool isCopy,
         QWidget *parent)
     : QDialog(parent)
-    , role(role)
+    , oldRole(role)
     , settings(settings)
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
@@ -232,8 +232,8 @@ std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() 
 
 bool RepoDialogRole::isNewRole() const
 {
-    return getName() != role.getName() ||
-            getDatabase() != role.getDatabase();
+    return getName() != oldRole.getName() ||
+            getDatabase() != oldRole.getDatabase();
 }
 
 void RepoDialogRole::showColorDialog()
@@ -266,9 +266,14 @@ void RepoDialogRole::setDelegate(const QString &database)
 
 repo::core::model::RepoRole RepoDialogRole::getUpdatedRole() const
 {
-    repo::core::model::RepoRole role = repo::core::model::RepoBSONFactory::makeRepoRole(
-                getName(), getDatabase(), getPermissions());
-    return role;
+//    repo::core::model::RepoRole oldRole = role.cloneAndUpdatePermissions(getPermissions());
+//    repo::core::model::RepoRole newRole = repo::core::model::RepoBSONFactory::makeRepoRole(
+//                getName(), getDatabase(), oldRole.getProjectAccessRights(),
+//                oldRole.getInheritedRoles());
+//    return newRole;
+
+    return repo::core::model::RepoBSONFactory::makeRepoRole(
+                getName(), getDatabase(), getPermissions(), oldRole);
 }
 
 repo::core::model::RepoRoleSettings RepoDialogRole::getUpdatedRoleSettings() const

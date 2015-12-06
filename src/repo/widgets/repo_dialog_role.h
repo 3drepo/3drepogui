@@ -60,7 +60,7 @@ class RepoDialogRole : public QDialog
 public:
 
     explicit RepoDialogRole(
-            const repo::core::model::RepoRole &role,
+            const repo::core::model::RepoRole &oldRole,
             const repo::core::model::RepoRoleSettings &settings,
             const QString &currentDatabase,
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
@@ -121,7 +121,7 @@ private:
     Ui::RepoDialogRole *ui;
 
     //! Role to edit
-    repo::core::model::RepoRole role;
+    repo::core::model::RepoRole oldRole;
 
     //! Role settings to edit
     repo::core::model::RepoRoleSettings settings;

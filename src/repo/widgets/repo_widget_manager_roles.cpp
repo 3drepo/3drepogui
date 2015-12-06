@@ -226,9 +226,10 @@ void RepoWidgetManagerRoles::showEditDialog(
         // Create or update role
         refresh(roleDialog.getUpdatedRole(),
                 roleDialog.getUpdatedRoleSettings(),
-                action == RepoWidgetTreeEditable::Action::EDIT
-                ? repo::worker::RepoWorkerRoles::Command::UPDATE
-                : repo::worker::RepoWorkerRoles::Command::INSERT);
+                action == RepoWidgetTreeEditable::Action::ADD ||
+                roleDialog.isNewRole()
+                ? repo::worker::RepoWorkerRoles::Command::INSERT
+                : repo::worker::RepoWorkerRoles::Command::UPDATE);
     }
 }
 
