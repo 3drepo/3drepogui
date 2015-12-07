@@ -19,6 +19,8 @@
 #ifndef REPO_MAP_TILES_DIALOG_H
 #define REPO_MAP_TILES_DIALOG_H
 
+#include "../primitives/repo_fontawesome.h"
+
 // Qt
 #include <QDialog>
 

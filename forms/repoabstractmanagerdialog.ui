@@ -72,7 +72,7 @@
           <widget class="repo::gui::RepoLineEdit" name="filterLineEdit"/>
          </item>
          <item>
-          <widget class="repo::gui::RepoClickableTreeView" name="treeView">
+          <widget class="repo::widgets::RepoWidgetTreeClickable" name="treeView">
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
            </property>
@@ -258,9 +258,9 @@
    <header>../widgets/repo_lineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>repo::gui::RepoClickableTreeView</class>
+   <class>repo::widgets::RepoWidgetTreeClickable</class>
    <extends>QTreeView</extends>
-   <header>../widgets/repo_clickabletreeview.h</header>
+   <header>src/repo/widgets/repo_widget_tree_clickable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

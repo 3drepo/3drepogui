@@ -39,13 +39,18 @@ class RepoComboBoxDelegate : public QItemDelegate
 
 public :
 
+//    RepoComboBoxDelegate() {}
+
     //! A list of combo box entries per column.
     RepoComboBoxDelegate(
-        const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists);
+            const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists);
 
     ~RepoComboBoxDelegate();
 
-    QWidget *createEditor(QWidget * parent, const QStyleOptionViewItem &, const QModelIndex &index) const;
+    QWidget *createEditor(
+            QWidget * parent,
+            const QStyleOptionViewItem &,
+            const QModelIndex &index) const;
 
 private :
 

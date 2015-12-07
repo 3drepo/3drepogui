@@ -27,11 +27,9 @@
 #include "dialogs/repo_dialogcommit.h"
 #include "dialogs/repo_dialogconnect.h"
 #include "dialogs/repo_dialoghistory.h"
-#include "dialogs/repodialogusermanager.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
 #include "dialogs/repo_dialog_manager_connect.h"
-#include "dialogs/repoprojectmanagerdialog.h"
 #include "repo/logger/repo_logger.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
@@ -46,6 +44,9 @@
 #include "dialogs/repofederationdialog.h"
 #include "dialogs/repo_maptilesdialog.h"
 #include "renderers/repo_3ddiffrenderer.h"
+
+//------------------------------------------------------------------------------
+#include "repo/widgets/repo_dialog_manager_access.h"
 
 //------------------------------------------------------------------------------
 
@@ -148,18 +149,12 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
 
+    QObject::connect(ui->actionAccessManager, SIGNAL(triggered()),
+                     this, SLOT(openAccessManager()));
+
     // Add Map Tiles...
     QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
                      this, SLOT(addMapTiles()));
-
-    //--------------------------------------------------------------------------
-    // User Management...
-    QObject::connect(ui->actionUserManager, SIGNAL(triggered()), this, SLOT(openUserManager()));
-    ui->actionUserManager->setIcon(RepoFontAwesome::getUserManagerIcon());
-
-    // Project Manager...
-    QObject::connect(ui->actionProject_Manager, SIGNAL(triggered()), this,
-                     SLOT(openProjectManager()));
 
     //--------------------------------------------------------------------------
     // Drop
@@ -621,6 +616,15 @@ void repo::gui::RepoGUI::open3DDiff()
         std::cerr << "Exactly 2 windows have to be open." << std::endl;
 }
 
+void repo::gui::RepoGUI::openAccessManager()
+{
+    repo::widgets::RepoDialogManagerAccess accessManager(
+                ui->widgetRepository,
+                controller,
+                (QWidget*) this);
+    accessManager.exec();
+}
+
 void repo::gui::RepoGUI::openFile()
 {
     QStringList filePaths = QFileDialog::getOpenFileNames(
@@ -689,18 +693,6 @@ void repo::gui::RepoGUI::openSupportEmail() const
                 QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
                      "&body=" + RepoDialogAbout::getVersionInfo()));
-}
-
-void repo::gui::RepoGUI::openUserManager() const
-{
-    RepoDialogUserManager um(controller, ui->widgetRepository, (QWidget*) this);
-    um.exec();
-}
-
-void repo::gui::RepoGUI::openProjectManager() const
-{
-    RepoProjectManagerDialog pm(controller, ui->widgetRepository, (QWidget*) this);
-    pm.exec();
 }
 
 void repo::gui::RepoGUI::refresh()
