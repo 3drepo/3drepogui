@@ -22,12 +22,6 @@
 using namespace repo::widgets;
 using namespace repo::gui;
 
-const RepoComboBoxEditor::SeparatedEntries RepoDialogRole::rwSeparatedEntries =
-        RepoComboBoxEditor::getSeparatedEntries({
-                                                    tr("Read").toStdString(),
-                                                    tr("Write").toStdString(),
-                                                    tr("ReadWrite").toStdString()});
-
 RepoDialogRole::RepoDialogRole(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings,
@@ -40,8 +34,16 @@ RepoDialogRole::RepoDialogRole(
     , settings(settings)
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
+	, rwSeparatedEntries(repo::gui::RepoComboBoxEditor::getSeparatedEntries({
+	tr("Read").toStdString(),
+	tr("Write").toStdString(),
+	tr("ReadWrite").toStdString() }))
 {
+
+	
     ui->setupUi(this);
+
+
 
     //--------------------------------------------------------------------------
     // Permissions
