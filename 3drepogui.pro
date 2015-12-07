@@ -81,12 +81,12 @@ unix|macx:MOC_DIR = ./moc/ui
 
     #win32:CONFIG(release, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}
     #else:win32:CONFIG(debug, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}_d
-    #else:unix|macx:BOUNCERLIB = -l3drepobouncer
 
-    #The libraries should have the same postfixes regardless of platforms, change if it's not the case
+    #The libraries should have the same postfixes regardless of platforms, change if it\'s not the case
     CONFIG(release, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}
     else:CONFIG(debug, debug|release):BOUNCERLIB = -l3drepobouncer_$${BOUNCER_VERS}_d
 
+    macx:BOUNCERLIB = -l3drepobouncer
     LIBS += -L$${BOUNCER_LIB_DIR} $${BOUNCERLIB}
 
     INCLUDEPATH += $${BOUNCER_INC_DIR}
