@@ -677,7 +677,6 @@ void GLCRenderer::setCamera(const CameraSettings &camera, const bool &emitSignal
 
 void GLCRenderer::setCamera(const CameraView& view)
 {
-	std::cerr << "Setting camera view";
 	switch (view)
 	{
 	case CameraView::FRONT:
