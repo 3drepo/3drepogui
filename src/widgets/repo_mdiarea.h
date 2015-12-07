@@ -20,7 +20,7 @@
 
 //------------------------------------------------------------------------------
 #include "repo_mdisubwindow.h"
-#include "../renderers/repo_glcwidget.h"
+#include "../repo/widgets/repo_widget_rendering.h"
 //------------------------------------------------------------------------------
 #include <repo/repo_controller.h>
 //------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ public :
 public slots :
 
 	/*!
-	 * Chains all subwindows that are of RepoGLCWidget type.
+     * Chains all subwindows that are of widgets::RepoRenderingWidget type.
 	 */
 	void chainSubWindows(bool);
 		
@@ -74,13 +74,13 @@ public :
     RepoMdiSubWindow* addSubWidget(QWidget* widget);
 
 	/*!
-	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
+     * Adds a widgets::RepoRenderingWidget subWindow which is loaded via a separate thread
 	 * using Assimp library from the given full file path.
 	 */
 	RepoMdiSubWindow* addSubWindow(repo::RepoController * controller, const QString& path);
 
 	/*!
-	 * Adds a RepoGLCWidget subWindow which is loaded via a separate thread
+     * Adds a widgets::RepoRenderingWidget subWindow which is loaded via a separate thread
 	 * from the database given a database.
 	 */
     RepoMdiSubWindow* addSubWindow(
@@ -91,8 +91,8 @@ public :
         const QUuid& id = QUuid(),
         bool headRevision = true);
 
-	//! Adds a RepoGLCWidget subWindow.
-    RepoMdiSubWindow* addSubWindow(RepoGLCWidget *widget);
+    //! Adds a widgets::RepoRenderingWidget subWindow.
+    RepoMdiSubWindow* addSubWindow(widgets::RepoRenderingWidget *widget);
 
 	/*!
 	 * Adds widget as a new subwindow to the MDI area. If windowFlags are 

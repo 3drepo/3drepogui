@@ -31,12 +31,14 @@ HEADERS +=  \
 	src/primitives/repo_sortfilterproxymodel.h \
 	src/renderers/repo_3ddiffrenderer.h \
 	src/renderers/repo_fpscounter.h \
-	src/renderers/repo_glcwidget.h \
 	src/renderers/repo_webview.h \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/renderer/repo_renderer_abstract.h \
+	src/repo/renderer/repo_renderer_glc.h \
 	src/repo/settings/repo_settings_credentials.h \
+	src/repo/widgets/repo_widget_rendering.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -88,12 +90,14 @@ SOURCES +=  \
 	src/primitives/repo_sortfilterproxymodel.cpp \
 	src/renderers/repo_3ddiffrenderer.cpp \
 	src/renderers/repo_fpscounter.cpp \
-	src/renderers/repo_glcwidget.cpp \
 	src/renderers/repo_webview.cpp \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/renderer/repo_renderer_abstract.cpp \
+	src/repo/renderer/repo_renderer_glc.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
+	src/repo/widgets/repo_widget_rendering.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \

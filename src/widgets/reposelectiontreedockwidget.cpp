@@ -15,14 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//#include <RepoWrapperMongo>
 
 #include "reposelectiontreedockwidget.h"
 #include "ui_reposelectiontreedockwidget.h"
 #include "../primitives/repo_sortfilterproxymodel.h"
 
 repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
-        RepoGLCWidget *glcWidget,
+        widgets::RepoRenderingWidget *glcWidget,
         QWidget *parent)
     : QDockWidget(parent)
     , glcWidget(glcWidget)

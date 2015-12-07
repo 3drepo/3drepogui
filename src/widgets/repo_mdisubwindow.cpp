@@ -17,7 +17,7 @@
 
 #include "repo_mdisubwindow.h"
 #include "../widgets/repowidgetassimpflags.h"
-#include "../renderers/repo_glcwidget.h"
+#include "../repo/widgets//repo_widget_rendering.h"
 #include "../primitives/repo_fontawesome.h"
 
 #include "../repo/workers/repo_worker_glc_export.h"
@@ -33,6 +33,7 @@ RepoMdiSubWindow::RepoMdiSubWindow(
         QWidget *parent,
         Qt::WindowFlags flags)
         : QMdiSubWindow(parent, flags)
+        , awaitingClose(nullptr)
 {
     //--------------------------------------------------------------------------
 	// General settings
@@ -62,8 +63,6 @@ RepoMdiSubWindow::RepoMdiSubWindow(
 
 RepoMdiSubWindow::~RepoMdiSubWindow()
 {
-	emit aboutToDelete();
-
 	removeWidget();
 
 	if (progressBar)
@@ -75,9 +74,27 @@ RepoMdiSubWindow::~RepoMdiSubWindow()
 	boxLayout = NULL;
 }
 
+void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
+{
+	if (progressBar->isVisible())
+	{
+		//need to wait for worker to finish before closing or 
+		//this may cause seg faults.
+		repoLog("waiting on worker to recover before closing..");
+        emit aboutToDelete();
+		awaitingClose = true;
+		closeEvent->ignore();
+	}
+	else
+	{
+		QMdiSubWindow::closeEvent(closeEvent);
+	}
+
+}
+
 void RepoMdiSubWindow::setWidget(const QString& windowTitle)
 {
-	setWidget(new RepoGLCWidget(0, windowTitle));
+    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -85,7 +102,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath, repo::RepoController *controller)
 {
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new RepoGLCWidget(0, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -136,35 +153,24 @@ void RepoMdiSubWindow::finishedLoadingScene(
     repo::core::model::RepoScene *repoScene)
 {
 	repoLog("finished loading repo scene");
-	//We have a scene, fire up the GLC worker to get a GLC World representation
-	//--------------------------------------------------------------------------
-	// Establish and connect the new worker.
-	repo::worker::GLCExportWorker* worker =
-		new repo::worker::GLCExportWorker(repoScene);
-	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *, GLC_World &)),
-		this, SLOT(finishedLoadingGLC(repo::core::model::RepoScene *,GLC_World &)));
-	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 
-	QObject::connect(
-		this, &RepoMdiSubWindow::aboutToDelete,
-		worker, &repo::worker::GLCExportWorker::cancel, Qt::DirectConnection);
+	widgets::RepoRenderingWidget *widget = dynamic_cast<widgets::RepoRenderingWidget*>(this->widget());
 
-	//--------------------------------------------------------------------------
-	// Fire up the asynchronous calculation.
-	QThreadPool::globalInstance()->start(worker);
-
-}
-
-void RepoMdiSubWindow::finishedLoadingGLC(repo::core::model::RepoScene *repoScene, GLC_World &glcWorld)
-{
-	repoLog("finished Loading GLC");
-	RepoGLCWidget *widget = dynamic_cast<RepoGLCWidget*>(this->widget());
 	if (widget)
 	{
+		connect(
+			widget, &widgets::RepoRenderingWidget::modelLoadProgress,
+			this, &RepoMdiSubWindow::progress);
+
+		QObject::connect(
+		 this, &RepoMdiSubWindow::aboutToDelete,
+		 widget, &widgets::RepoRenderingWidget::cancelOperations, Qt::DirectConnection);
+
 		if (repoScene)
-	           widget->setRepoScene(repoScene);
-		widget->setGLCWorld(glcWorld);
+			widget->setRepoScene(repoScene);
+		
 	}
+
 }
 
 void RepoMdiSubWindow::progress(int value, int maximum)
@@ -174,8 +180,13 @@ void RepoMdiSubWindow::progress(int value, int maximum)
 	progressBar->setValue(value);
 
 	if (value > 0 && value == maximum)
-	{
+	{		
 		progressBar->hide();
+		if (awaitingClose)
+		{
+			close();
+		}
+		awaitingClose = false;
 		//this->widget()->setCursor(QCursor(Qt::ArrowCursor));
 		//boxLayout->update();
 	}

@@ -21,15 +21,15 @@
 repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::RepoController *controller,
 	const repo::RepoToken *token,
-        RepoGLCWidget *widgetA,
-        RepoGLCWidget *widgetB)
+        widgets::RepoRenderingWidget *widgetA,
+        widgets::RepoRenderingWidget *widgetB)
     : 
 	controller(controller),
 	token(token),
 	widgetA(widgetA),
     widgetB(widgetB)
 {
-
+/*
 	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
 	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
@@ -93,7 +93,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 
 
 	widgetA->repaintCurrent();
-	widgetB->repaintCurrent();
+    widgetB->repaintCurrent();*/
 }
 
 repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()
