@@ -21,6 +21,10 @@
 #include "repo_renderer_abstract.h"
 
 //------------------------------------------------------------------------------
+#ifdef __APPLE_CC__
+#include <OpenGL/OpenGL.h>
+#endif
+
 #include <QOpenGLFunctions>
 #include <GLC_Factory>
 #include <GLC_Light>

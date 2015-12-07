@@ -27,6 +27,7 @@ repo::gui::RepoMapTilesDialog::RepoMapTilesDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
+    this->setWindowIcon(RepoFontAwesome::getMapTilesIcon());
 }
 
 repo::gui::RepoMapTilesDialog::~RepoMapTilesDialog()

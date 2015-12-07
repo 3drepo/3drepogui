@@ -10,11 +10,7 @@ HEADERS +=  \
 	src/dialogs/repoabstractmanagerdialog.h \
 	src/dialogs/repodialogabout.h \
 	src/dialogs/repodialogsettings.h \
-	src/dialogs/repodialoguser.h \
-	src/dialogs/repodialogusermanager.h \
 	src/dialogs/repofederationdialog.h \
-	src/dialogs/repoprojectmanagerdialog.h \
-	src/dialogs/repoprojectsettingsdialog.h \
 	src/dialogs/repo_dialogcommit.h \
 	src/dialogs/repo_dialogconnect.h \
 	src/dialogs/repo_dialoghistory.h \
@@ -35,10 +31,24 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/primitives/repo_standard_item.h \
 	src/repo/renderer/repo_renderer_abstract.h \
 	src/repo/renderer/repo_renderer_glc.h \
 	src/repo/settings/repo_settings_credentials.h \
+	src/repo/widgets/repo_dialog_manager_access.h \
+	src/repo/widgets/repo_dialog_project.h \
+	src/repo/widgets/repo_dialog_role.h \
+	src/repo/widgets/repo_dialog_user.h \
+	src/repo/widgets/repo_widget_manager_projects.h \
+	src/repo/widgets/repo_widget_manager_roles.h \
+	src/repo/widgets/repo_widget_manager_users.h \
 	src/repo/widgets/repo_widget_rendering.h \
+	src/repo/widgets/repo_widget_tree_clickable.h \
+	src/repo/widgets/repo_widget_tree_editable.h \
+	src/repo/widgets/repo_widget_tree_filterable.h \
+	src/repo/widgets/repo_widget_tree_unfilterable.h \
+	src/repo/workers/repo_multithreader.h \
+	src/repo/workers/repo_mutex.h \
 	src/repo/workers/repo_worker_abstract.h \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
@@ -49,13 +59,13 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_history.h \
 	src/repo/workers/repo_worker_modified_nodes.h \
 	src/repo/workers/repo_worker_optimize.h \
+	src/repo/workers/repo_worker_projects.h \
 	src/repo/workers/repo_worker_project_settings.h \
+	src/repo/workers/repo_worker_roles.h \
 	src/repo/workers/repo_worker_scene_graph.h \
 	src/repo/workers/repo_worker_users.h \
-	src/widgets/repofilterabletreewidget.h \
 	src/widgets/reposelectiontreedockwidget.h \
 	src/widgets/repowidgetassimpflags.h \
-	src/widgets/repo_clickabletreeview.h \
 	src/widgets/repo_lineedit.h \
 	src/widgets/repo_mdiarea.h \
 	src/widgets/repo_mdisubwindow.h \
@@ -69,11 +79,7 @@ SOURCES +=  \
 	src/dialogs/repoabstractmanagerdialog.cpp \
 	src/dialogs/repodialogabout.cpp \
 	src/dialogs/repodialogsettings.cpp \
-	src/dialogs/repodialoguser.cpp \
-	src/dialogs/repodialogusermanager.cpp \
 	src/dialogs/repofederationdialog.cpp \
-	src/dialogs/repoprojectmanagerdialog.cpp \
-	src/dialogs/repoprojectsettingsdialog.cpp \
 	src/dialogs/repo_dialogcommit.cpp \
 	src/dialogs/repo_dialogconnect.cpp \
 	src/dialogs/repo_dialoghistory.cpp \
@@ -94,10 +100,24 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/primitives/repo_standard_item.cpp \
 	src/repo/renderer/repo_renderer_abstract.cpp \
 	src/repo/renderer/repo_renderer_glc.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
+	src/repo/widgets/repo_dialog_manager_access.cpp \
+	src/repo/widgets/repo_dialog_project.cpp \
+	src/repo/widgets/repo_dialog_role.cpp \
+	src/repo/widgets/repo_dialog_user.cpp \
+	src/repo/widgets/repo_widget_manager_projects.cpp \
+	src/repo/widgets/repo_widget_manager_roles.cpp \
+	src/repo/widgets/repo_widget_manager_users.cpp \
 	src/repo/widgets/repo_widget_rendering.cpp \
+	src/repo/widgets/repo_widget_tree_clickable.cpp \
+	src/repo/widgets/repo_widget_tree_editable.cpp \
+	src/repo/widgets/repo_widget_tree_filterable.cpp \
+	src/repo/widgets/repo_widget_tree_unfilterable.cpp \
+	src/repo/workers/repo_multithreader.cpp \
+	src/repo/workers/repo_mutex.cpp \
 	src/repo/workers/repo_worker_abstract.cpp \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
@@ -108,13 +128,13 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_history.cpp \
 	src/repo/workers/repo_worker_modified_nodes.cpp \
 	src/repo/workers/repo_worker_optimize.cpp \
+	src/repo/workers/repo_worker_projects.cpp \
 	src/repo/workers/repo_worker_project_settings.cpp \
+	src/repo/workers/repo_worker_roles.cpp \
 	src/repo/workers/repo_worker_scene_graph.cpp \
 	src/repo/workers/repo_worker_users.cpp \
-	src/widgets/repofilterabletreewidget.cpp \
 	src/widgets/reposelectiontreedockwidget.cpp \
 	src/widgets/repowidgetassimpflags.cpp \
-	src/widgets/repo_clickabletreeview.cpp \
 	src/widgets/repo_lineedit.cpp \
 	src/widgets/repo_mdiarea.cpp \
 	src/widgets/repo_mdisubwindow.cpp \
@@ -125,21 +145,25 @@ FORMS +=  \
 	forms/repoabstractmanagerdialog.ui \
 	forms/repodialogabout.ui \
 	forms/repodialogsettings.ui \
-	forms/repodialoguser.ui \
 	forms/repofederationdialog.ui \
-	forms/repofilterabletreewidget.ui \
 	forms/repogui.ui \
-	forms/repoprojectsettingsdialog.ui \
 	forms/reposelectiontreedockwidget.ui \
 	forms/repowidgetassimpflags.ui \
 	forms/repo_dialogcommit.ui \
 	forms/repo_dialogconnect.ui \
 	forms/repo_dialoghistory.ui \
+	forms/repo_dialog_manager_access.ui \
+	forms/repo_dialog_project.ui \
+	forms/repo_dialog_role.ui \
+	forms/repo_dialog_user.ui \
 	forms/repo_genericdialog.ui \
 	forms/repo_maptilesdialog.ui \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
-	forms/repo_widgetrepository.ui
+	forms/repo_widgetrepository.ui \
+	forms/repo_widget_tree_editable.ui \
+	forms/repo_widget_tree_filterable.ui \
+	forms/repo_widget_tree_unfilterable.ui
 
 RESOURCES +=  \
 	./resources.qrc \

@@ -18,7 +18,7 @@
 #include "repocomboboxdelegate.h"
 
 repo::gui::RepoComboBoxDelegate::RepoComboBoxDelegate(
-         const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists)
+         const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists)    
 {
     for (unsigned int i = 0; i < comboBoxLists.size(); ++i)
     {

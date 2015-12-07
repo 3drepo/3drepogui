@@ -112,6 +112,9 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this, SLOT(changeRevision(QModelIndex,QModelIndex)));
 
+    QObject::connect(ui->historyTreeView, &QTreeView::doubleClicked,
+                     this, &QDialog::accept);
+
 }
 
 //------------------------------------------------------------------------------

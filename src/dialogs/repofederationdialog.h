@@ -32,6 +32,7 @@
 #include "../primitives/repoidbcache.h"
 #include "repo_genericdialog.h"
 #include "../dialogs/repo_transformationdialog.h"
+#include "../repo/primitives/repo_standard_item.h"
 
 //------------------------------------------------------------------------------
 // Core
