@@ -57,6 +57,13 @@ namespace repo {
 				~GLCRenderer();
 				
 				/**
+				* Recursively extracts meshes from a given occurrence. 
+				* Call with a root node.
+				* @param startOccurance root occurance of the (sub)tree you wish to start from
+				*/
+				void extractMeshes(GLC_StructOccurrence* startOccurance);
+
+				/**
 				* Delete shaders
 				*/
 				virtual void deleteShaders(QOpenGLContext *context);
@@ -98,6 +105,16 @@ namespace repo {
 				* @param mode to render in.
 				*/
 				virtual void renderingMode(const RenderMode &mode);
+
+				/**
+				* Set the colour of the mesh given its name
+				* @param name name of mesh
+				* @param color color of change to
+				*/
+				virtual void setMeshColor(
+					const QString &name,
+					const qreal &opacity,
+					const QColor &color);
 
 				/**
 				* Start navigate around the model
@@ -155,7 +172,7 @@ namespace repo {
 				* Set camera settings of the current camera
 				* @param camera camera settings to convert to
 				*/
-				virtual void setCamera(const CameraSettings &camera);
+				virtual void setCamera(const CameraSettings &camera, const bool &emitSignal = true);
 
 				/**
 				*Sets a camera view from a pre-defined set of possibilities
@@ -233,6 +250,7 @@ namespace repo {
 				GLC_3DViewCollection glcViewCollection; //! The main collection of auxiliary objects (such as bboxes).				
 				GLC_3DViewCollection glcUICollection; //! The main collection of UI components (such as axes).
 				GLC_MoverController glcMoverController; //! The navigation controller of the scene (arc ball, fly etc).
+                                std::map<QString, GLC_Mesh*> meshMap;
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
 

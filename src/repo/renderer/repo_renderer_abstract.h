@@ -104,6 +104,16 @@ namespace repo {
 				virtual void selectComponent(const int &x, const int &y, bool multiSelection) = 0;
 
 				/**
+				* Set the colour of the mesh given its name
+				* @param name name of mesh
+				* @param color color of change to
+				*/
+				virtual void setMeshColor(
+					const QString &name,
+					const qreal &opacity,
+					const QColor &color) = 0;
+
+				/**
 				* Turn on navigation mode
 				* @param mode which navigation mode
 				* @param x position in x
@@ -151,7 +161,7 @@ namespace repo {
 				* Set camera settings of the current camera
 				* @param camera camera settings to convert to
 				*/
-				virtual void setCamera(const CameraSettings &camera) = 0;
+				virtual void setCamera(const CameraSettings &camera, const bool &emitSignal) = 0;
 
 				/**
 				*Sets a camera view from a pre-defined set of possibilities
@@ -202,7 +212,7 @@ namespace repo {
 				/**
 				* Signal that is emitted when a camera setting has changed
 				*/
-				void cameraChangedSignal(const CameraSettings &camera);
+				void cameraChangedSignal(const CameraSettings &camera, const bool &emitSignal);
 
 				void killWorker();
 
@@ -211,7 +221,7 @@ namespace repo {
 			public slots :				
 				void cancelOperations() { emit killWorker(); };
 				void updateRenderer() { emit repaintNeeded(); };
-				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera()); };
+				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera(), false); };
 				void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};
 
 			protected:

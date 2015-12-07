@@ -29,7 +29,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 	widgetA(widgetA),
     widgetB(widgetB)
 {
-/*
+
 	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
 	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
@@ -45,8 +45,9 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		//colour widgetB's graph to reflect the comparison
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
-				0.9, Qt::green);
+			/*		widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+						0.9, Qt::green);*/
+			widgetB->setMeshColor(QString::fromStdString(node->getName()), 0.9, Qt::green);
 
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
 			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
@@ -59,7 +60,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		//colour widgetB's graph to reflect the comparison
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+			widgetB->setMeshColor(QString::fromStdString(node->getName()),
 			0.9, Qt::cyan);
 
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
@@ -72,7 +73,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		//colour widgetB's graph to reflect the comparison
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH )
-			widgetA->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+			widgetA->setMeshColor(QString::fromStdString(node->getName()),
 				0.9, Qt::red);
 
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
@@ -85,7 +86,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		//colour widgetB's graph to reflect the comparison
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetA->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
+			widgetA->setMeshColor(QString::fromStdString(node->getName()),
 				0.9, Qt::cyan);	
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
 			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
@@ -93,11 +94,10 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 
 
 	widgetA->repaintCurrent();
-    widgetB->repaintCurrent();*/
+    widgetB->repaintCurrent();
 }
 
 repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()
 {
-    //delete diff;
 }
 
