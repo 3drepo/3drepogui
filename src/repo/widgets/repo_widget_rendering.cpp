@@ -250,7 +250,6 @@ void RepoRenderingWidget::broadcastCameraChange(const repo::gui::renderer::Camer
 
 void RepoRenderingWidget::setCamera(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
 {
-    repoLog("Camera setting requested, emit signa? " + std::to_string(emitSignal));
 	renderer->setCamera(camera, emitSignal);
     update();
 }
@@ -266,6 +265,7 @@ void RepoRenderingWidget::setMeshColor(
 	const QColor &color)
 {
 	renderer->setMeshColor(name, opacity, color);
+	update();
 }
 
 //void RepoRenderingWidget::setGLCMeshColors(

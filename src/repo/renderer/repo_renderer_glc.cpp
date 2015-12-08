@@ -288,6 +288,15 @@ void GLCRenderer::setMeshColor(
 		GLC_Mesh *mesh = meshIt->second;
         if (mesh->materialCount())
 		{
+			//has material, alter the emissive color 
+			auto matIds = mesh->materialIds();
+			GLC_Material *mat = mesh->material(matIds[0]);
+			mat->setEmissiveColor(color);
+			mat->setOpacity(opacity);
+		}
+		else
+		{
+
 			//no material
 			GLfloatVector glcColor;
 			glcColor.push_back(color.redF());
@@ -295,14 +304,6 @@ void GLCRenderer::setMeshColor(
 			glcColor.push_back(color.blueF());
 			glcColor.push_back(color.alphaF());
 			mesh->addColors(glcColor);
-		}
-		else
-		{
-			//has material, alter the emissive color 
-            auto matIds = mesh->materialIds();
-            GLC_Material *mat = mesh->material(matIds[0]);
-			mat->setEmissiveColor(color);
-			mat->setOpacity(opacity);
 		}
 	}
 	else

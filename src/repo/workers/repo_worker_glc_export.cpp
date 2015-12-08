@@ -747,8 +747,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
         glcMesh->finish();
     }
 
-
-
     GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
     glcMesh = NULL;
     pRep->clean();
