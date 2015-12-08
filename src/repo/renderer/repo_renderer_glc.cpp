@@ -74,7 +74,7 @@ GLCRenderer::GLCRenderer() :
 
 GLCRenderer::~GLCRenderer()
 {
-	
+	glcWorld.clear();
 
 }
 
@@ -108,6 +108,50 @@ void GLCRenderer::deleteShaders(QOpenGLContext *context)
 		delete shaders[i];
 	shaders.clear();
 }
+
+void GLCRenderer::extractMeshes(GLC_StructOccurrence * occurrence)
+{
+	if (occurrence)
+	{
+		// Store the occurrence in a hash map.
+		QString occurrenceName = occurrence->name();
+
+		if (occurrence->structInstance() &&
+			occurrence->structInstance()->structReference())
+		{
+			GLC_StructReference * glcReference = occurrence->structInstance()->structReference();
+			if (!glcReference->representationIsEmpty())
+			{
+				GLC_3DRep * pRep = dynamic_cast<GLC_3DRep*>
+					(glcReference->representationHandle());
+				if (pRep)
+				{
+					for (int i = 0; i < pRep->numberOfBody(); ++i)
+					{
+						GLC_Mesh * glcMesh = dynamic_cast<GLC_Mesh*>(pRep->geomAt(i));
+
+						if (glcMesh)
+						{
+							glcMesh->setColorPearVertex(true);
+							meshMap[glcMesh->name()] = glcMesh;
+						}
+					}
+				}
+			}
+		}
+
+		//----------------------------------------------------------------------
+		// Children
+        QList<GLC_StructOccurrence*> children = occurrence->children();
+        QList<GLC_StructOccurrence*>::iterator it;
+		for (it = children.begin(); it != children.end(); ++it)
+		{
+            GLC_StructOccurrence *child = *it;
+			extractMeshes(child);
+		}
+	}
+}
+
 
 
 CameraSettings GLCRenderer::getCurrentCamera()
@@ -232,6 +276,47 @@ void GLCRenderer::renderingMode(const RenderMode &mode)
 	}
 }
 
+void GLCRenderer::setMeshColor(
+	const QString &name,
+	const qreal &opacity,
+	const QColor &color)
+{
+	auto meshIt = meshMap.find(name);
+
+	if (meshIt != meshMap.end())
+	{
+		GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+		{
+			//has material, alter the emissive color 
+			auto matIds = mesh->materialIds();
+			GLC_Material *mat = mesh->material(matIds[0]);
+			mat->setEmissiveColor(color);
+			mat->setOpacity(opacity);
+			if (mat->hasTexture())
+			{
+				//take away the texture to make the material visible
+				mat->removeTexture();
+			}
+		}
+		else
+		{
+
+			//no material
+			GLfloatVector glcColor;
+			glcColor.push_back(color.redF());
+			glcColor.push_back(color.greenF());
+			glcColor.push_back(color.blueF());
+			glcColor.push_back(color.alphaF());
+			mesh->addColors(glcColor);
+		}
+	}
+	else
+	{
+		repoLogError("Failed to set color of mesh " + name.toStdString() + " : mesh not found!");
+	}
+}
+
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
 {
 
@@ -288,7 +373,7 @@ void GLCRenderer::setGLCWorld(GLC_World &world)
 
 	glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());
 	setCamera(CameraView::ISO);
-	//extractMeshes(this->glcWorld.rootOccurrence());
+	extractMeshes(this->glcWorld.rootOccurrence());
 }
 
 void GLCRenderer::paintInfo(QPainter *painter,
@@ -584,7 +669,7 @@ void GLCRenderer::setBackgroundColor(const QColor &color)
 	glcViewport.setBackgroundColor(color);
 }
 
-void GLCRenderer::setCamera(const CameraSettings &camera)
+void GLCRenderer::setCamera(const CameraSettings &camera, const bool &emitSignal)
 {
 	const GLC_Camera cam(GLC_Point3d(camera.eye.x, camera.eye.y, camera.eye.z),
 		GLC_Point3d(camera.target.x, camera.target.y, camera.target.z),
@@ -592,7 +677,8 @@ void GLCRenderer::setCamera(const CameraSettings &camera)
 
 	glcViewport.cameraHandle()->setCam(cam);
 
-	emit cameraChangedSignal(camera);
+	if (emitSignal)
+		emit cameraChangedSignal(camera, false);
 }
 
 void GLCRenderer::setCamera(const CameraView& view)
@@ -629,7 +715,7 @@ void GLCRenderer::setCamera(const CameraView& view)
 		repoLogError("GLC world is empty or bounding box is empty!");
 	}
 
-	emit cameraChangedSignal(getCurrentCamera());
+	emit cameraChangedSignal(getCurrentCamera(), false);
 }
 
 void GLCRenderer::toggleOctree()
@@ -676,5 +762,5 @@ void GLCRenderer::toggleWireframe()
 void GLCRenderer::zoom(const float &zoom)
 {
 	glcViewport.cameraHandle()->zoom(zoom);
-	emit cameraChangedSignal(getCurrentCamera());
+	emit cameraChangedSignal(getCurrentCamera(), false);
 }

@@ -104,10 +104,10 @@ namespace repo {
 				//! Repaints the opengl context of this widget.
 				void repaintCurrent();
 
-                void broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera);
+				void broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal);
 
 				//! Sets the camera of the view.
-                void setCamera(const repo::gui::renderer::CameraSettings&);
+				void setCamera(const repo::gui::renderer::CameraSettings& settings, const bool &emitSignal);
 
 				//! Sets a camera view from a pre-defined set of possibilities.
                 void setPredefinedCamera(const repo::gui::renderer::CameraView&);
@@ -116,17 +116,15 @@ namespace repo {
 
 				void cancelOperations() { emit cancelRenderingOps(); }
 
-				////! Sets the per-vertex colours on a mesh identified by its string name.
-				///*!
-				//* Sets the per-vertex colours each as [r,g,b,a] on a single mesh. Hence,
-				//* the size of the vector is 4 times the number of vertices in a mesh. If
-				//* duplicate vertices are present, setting the same colour on every
-				//* vertex belonging to a face colours the faces.
-				//*/
-				//void setGLCMeshColors(
-				//	const QString&,
-				//	const QVector<GLfloat>&,
-				//	const bool repaint = true);
+				/**
+				* Set the colour of the mesh given its name
+				* @param name name of mesh
+				* @param color color of change to
+				*/
+				void setMeshColor(
+					const QString &name,
+					const qreal &opacity,
+					const QColor &color);
 
 				//void setGLCMeshColors(
 				//	const float r,
@@ -163,7 +161,7 @@ namespace repo {
 
 			signals:
 
-				void cameraChangedSignal(const renderer::CameraSettings &camera);
+				void cameraChangedSignal(const renderer::CameraSettings &camera, const bool &emitSignal);
 
 				void cancelRenderingOps();
 
@@ -265,14 +263,6 @@ namespace repo {
 				//! Object selection processing
 				void select(int x, int y, bool multiSelection, QMouseEvent* pMouseEvent);
 
-				//--------------------------------------------------------------------------
-				//
-				// Scene management
-				//
-				//--------------------------------------------------------------------------
-
-				//! Recursively extracts meshes from a given occurrence. Call with a root node.
-				//void extractMeshes(GLC_StructOccurrence*);
 
 				//--------------------------------------------------------------------------
 				//

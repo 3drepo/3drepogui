@@ -243,15 +243,14 @@ void RepoRenderingWidget::resizeGL(int width, int height)
 //
 //------------------------------------------------------------------------------
 
-void RepoRenderingWidget::broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera)
+void RepoRenderingWidget::broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
 {
-	emit cameraChangedSignal(camera);
+	emit cameraChangedSignal(camera, emitSignal);
 }
 
-void RepoRenderingWidget::setCamera(const repo::gui::renderer::CameraSettings &camera)
+void RepoRenderingWidget::setCamera(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
 {
-
-	renderer->setCamera(camera);
+	renderer->setCamera(camera, emitSignal);
     update();
 }
 void RepoRenderingWidget::setPredefinedCamera(const repo::gui::renderer::CameraView& view)
@@ -259,23 +258,16 @@ void RepoRenderingWidget::setPredefinedCamera(const repo::gui::renderer::CameraV
 	renderer->setCamera(view);
     update();
 }
-//
-//void RepoRenderingWidget::setGLCMeshColors(
-//	const QString &name,
-//	const QVector<GLfloat> &colors,
-//    const bool isupdate)
-//{
-//	GLC_Mesh* glcMesh = getGLCMesh(name);
-//	if (glcMesh)
-//	{
-//		//	glcMesh->setColorPearVertex(true);
-//		// TODO: fix me, needs to set color per mesh
-//        if (isupdate)
-//            update();
-//		//QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-//	}
-//}
-//
+
+void RepoRenderingWidget::setMeshColor(
+	const QString &name,
+	const qreal &opacity,
+	const QColor &color)
+{
+	renderer->setMeshColor(name, opacity, color);
+	update();
+}
+
 //void RepoRenderingWidget::setGLCMeshColors(
 //	const float r,
 //	const float g,
@@ -679,7 +671,7 @@ void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 	{
 		//in Navigation mode
 		update();
-		emit cameraChangedSignal(renderer->getCurrentCamera());
+		emit cameraChangedSignal(renderer->getCurrentCamera(), true);
 	}
 
 	// Pass on the event to parent.
@@ -731,55 +723,3 @@ void RepoRenderingWidget::select(
         select(i.value(), multiSelection, unselectSelected, update);
 }
 */
-//------------------------------------------------------------------------------
-//
-// Scene Management
-//
-//------------------------------------------------------------------------------
-//
-//void RepoRenderingWidget::extractMeshes(GLC_StructOccurrence * occurrence)
-//{
-//	if (occurrence)
-//	{
-//		// Store the occurrence in a hash map.
-//		QString occurrenceName = occurrence->name();
-//		glcOccurrences.insert(occurrenceName, occurrence);
-//
-//		if (occurrence->structInstance() &&
-//			occurrence->structInstance()->structReference())
-//		{
-//			GLC_StructReference * glcReference = occurrence->structInstance()->structReference();
-//			if (!glcReference->representationIsEmpty())
-//			{
-//				GLC_3DRep * pRep = dynamic_cast<GLC_3DRep*>
-//					(glcReference->representationHandle());
-//				if (pRep)
-//				{
-//					for (int i = 0; i < pRep->numberOfBody(); ++i)
-//					{
-//						GLC_Mesh * glcMesh = dynamic_cast<GLC_Mesh*>(pRep->geomAt(i));
-//
-//						if (glcMesh)
-//						{
-//							glcMesh->setColorPearVertex(true);
-//							glcMeshes.insert(glcMesh->name(), glcMesh);
-//							glcMeshesIds.insert(glcMesh->name(), occurrence->id());
-//							glcMeshOccurences.insert(glcMesh->name(), occurrence);
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//		//----------------------------------------------------------------------
-//		// Children
-//        QList<GLC_StructOccurrence*> children = occurrence->children();
-//        QList<GLC_StructOccurrence*>::iterator it;
-//		for (it = children.begin(); it != children.end(); ++it)
-//		{
-//            GLC_StructOccurrence *child = *it;
-//			extractMeshes(child);
-//		}
-//	}
-//}
-//
