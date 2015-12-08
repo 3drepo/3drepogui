@@ -293,6 +293,11 @@ void GLCRenderer::setMeshColor(
 			GLC_Material *mat = mesh->material(matIds[0]);
 			mat->setEmissiveColor(color);
 			mat->setOpacity(opacity);
+			if (mat->hasTexture())
+			{
+				//take away the texture to make the material visible
+				mat->removeTexture();
+			}
 		}
 		else
 		{
