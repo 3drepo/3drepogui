@@ -53,7 +53,7 @@ class RepoDialogRole : public QDialog
     Q_OBJECT
 
     //! Read, Write and ReadWrite strings.
-    static const repo::gui::RepoComboBoxEditor::SeparatedEntries rwSeparatedEntries;
+    const repo::gui::RepoComboBoxEditor::SeparatedEntries rwSeparatedEntries;
 
     enum class Tab {SETTINGS, PERMISSIONS, PRIVILEGES, INHERITED_ROLES, MODULES };
 

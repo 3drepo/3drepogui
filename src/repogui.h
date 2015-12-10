@@ -26,7 +26,7 @@
 
 // GUI
 
-#include "renderers/repo_glcwidget.h"
+#include "repo/widgets/repo_widget_rendering.h"
 #include "widgets/repo_mdisubwindow.h"
 //------------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ public slots:
 
     //! Adds a selection tree for a given widget.
     void addSelectionTree(
-            RepoGLCWidget* widget,
+            widgets::RepoRenderingWidget* widget,
             Qt::DockWidgetArea area = Qt::RightDockWidgetArea);
 
 
@@ -107,7 +107,7 @@ public slots:
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
-    RepoGLCWidget *getActiveWidget();
+    widgets::RepoRenderingWidget *getActiveWidget();
 
     //! Returns the scene graph of the active 3D window if any.
     const repo::core::model::RepoScene*getActiveScene();

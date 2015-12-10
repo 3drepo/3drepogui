@@ -21,6 +21,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <cmath>
 
 namespace repo {
 namespace primitives {
