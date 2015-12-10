@@ -350,32 +350,32 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     //-------------------------------------------------------------------------
     // Allocate cameras
-    repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
+  //  repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
     std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
-    for (auto &camera : cameras)
-    {
-		if (camera && !cancelled)
-        {
-            //FIXME: cameras don't really work. Disabled from visualisation for now.
-            //GLC_3DRep* glcCamera = convertGLCCamera(
-            //	(repoModel::CameraNode*)camera);
-            //if (glcCamera)
-            //{
-            //	std::vector<repoUUID> parents = camera->getParentIDs();
-            //	for (auto &parent : parents)
-            //	{
-            //		//Map the material to all parent UUIDs
-            //		if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
-            //		{
-            //			parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
-            //		}
-            //		//Map the mesh to all parent UUIDs
-            //		parentToGLCCameras[parent].push_back(glcCamera);
-            //	}
-            //}
+  //  for (auto &camera : cameras)
+  //  {
+		//if (camera && !cancelled)
+  //      {
+  //          //FIXME: cameras don't really work. Disabled from visualisation for now.
+  //          //GLC_3DRep* glcCamera = convertGLCCamera(
+  //          //	(repoModel::CameraNode*)camera);
+  //          //if (glcCamera)
+  //          //{
+  //          //	std::vector<repoUUID> parents = camera->getParentIDs();
+  //          //	for (auto &parent : parents)
+  //          //	{
+  //          //		//Map the material to all parent UUIDs
+  //          //		if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
+  //          //		{
+  //          //			parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
+  //          //		}
+  //          //		//Map the mesh to all parent UUIDs
+  //          //		parentToGLCCameras[parent].push_back(glcCamera);
+  //          //	}
+  //          //}
 
-        }
-    }
+  //      }
+  //  }
 
     return createOccurrenceFromNode(scene, scene->getRoot(repoViewGraph), parentToGLCMeshes, parentToGLCCameras);
 }
@@ -678,11 +678,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		std::vector<repo_vector2d_t>* uvVectors = mesh->getUVChannels();
 		std::vector<repo_face_t> *faces = mesh->getFaces();
 		//repoLog("meshMapping size: " + std::to_string(meshMapping.size()));
+		size_t count = 0;
 		if (meshMapping.size())
 		{
 			//this is a stash mesh that contains multiple sub-meshes.
-
-
 			for (const repo_mesh_mapping_t mapping : meshMapping)
 			{
 				GLC_Mesh * glcMesh = new GLC_Mesh;
@@ -693,6 +692,13 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				QVector<GLfloat> glcVec = createGLCVector(vector3d, mapping.vertFrom, mapping.vertTo);
 				if (glcVec.size() > 0)
 					glcMesh->addVertice(glcVec);
+				int counter = 0;
+				for (int i = 0; i < (glcVec.size() > 10 ? 10 : glcVec.size()); i++)
+				{
+					repoLog("Vector: [" + std::to_string(i) + "] : " + std::to_string(glcVec[i]));
+				}
+				
+				counter = 0;
 				//Normals
 				QVector<GLfloat> glcNorm = createGLCVector(normal3d, mapping.vertFrom, mapping.vertTo);
 				if (glcNorm.size() > 0)
@@ -701,7 +707,14 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				//FIXME: colours on meshes can't really be supported unless 
 				//the colour arrays are padded/ we add a colours index on mapping
 								//faces
-				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, mapping.triFrom, mapping.triTo);
+				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, mapping.triFrom, mapping.triTo, mapping.vertFrom);
+
+				for (int i = 0; i < (glcFaces.size() > 10 ? 10 : glcFaces.size()); i++)
+				{
+
+					repoLog("["+ std::to_string(i) +"] : " + std::to_string(glcFaces[i]));
+				
+				}
 
 				if (glcFaces.size() > 0)
 				{
@@ -725,7 +738,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 						for (uint32_t j = 0; j < faces->at(i).numIndices; ++j)
 						{
 							//FIXME: this is assuming order in assimp's mVertice = vector3d's order
-							repo_vector_t vertex = vector3d->at(faces->at(i).indices[j]);
+							int index = faces->at(i).indices[j];
+							if (index < mapping.vertFrom || index >= mapping.vertTo)
+								repoLogError("Index is out of range!");
+							repo_vector_t vertex = vector3d->at(index);
 							faceVertices << vertex.x << vertex.y << vertex.z;
 						}
 
@@ -733,8 +749,13 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 						faceVertices.clear();
 					}
 				}
+				
+				QVector<GLfloat> glcUVVec = createGLCVector(uvVectors, mapping.vertFrom, mapping.vertTo);
 
-				//FIXME: UV?
+				if (glcUVVec.size() > 0)
+				{
+					glcMesh->addTexels(glcUVVec);
+				}
 
 				glcMesh->finish();
 
@@ -744,10 +765,14 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 					GLC_3DRep *pRep_tmp = new GLC_3DRep(glcMesh);
 					pRep_tmp->clean();
 					pRep->merge(pRep_tmp);
+					pRep->clean();
 				}				
 				else
-					pRep = new GLC_3DRep(glcMesh);
-
+				{
+					pRep = new GLC_3DRep(GLC_3DRep(glcMesh));
+					pRep->clean();
+				}
+					
 			}
 		}
 		else
@@ -821,6 +846,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 			glcMesh->finish();
 			pRep = new GLC_3DRep(glcMesh);
+			pRep->clean();
 		}
 		if (normal3d)
 			delete normal3d;
@@ -837,9 +863,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		if (faces)
 			delete faces;
 
-		pRep->clean();
-    }
 
+    }
+	repoLog("number of bodies: " + std::to_string(pRep->numberOfBody()));
+    repoLog("Face count: " + std::to_string(pRep->faceCount()) + " mesh's face count: " + std::to_string(mesh->getFaces()->size()));
     return pRep;	
 }
 
@@ -848,7 +875,8 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
     const std::vector<repo_face_t> *faces,
     const QVector<GLfloat>         &vertices,
 	const int32_t &start,
-	const int32_t &end)
+	const int32_t &end,
+	const int32_t &vecStart)
 {
     QList<GLuint> glcList;
     if (faces)
@@ -861,10 +889,15 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
             glcFaceIndices.reserve(faces->at(i).numIndices);
             //---------------------------------------------------------------------
             // Copy all assimp indices of a single face to a QList
-            std::copy(
-				faces->at(i).indices,
-				faces->at(i).indices + faces->at(i).numIndices,
-                std::back_inserter(glcFaceIndices));
+    //        std::copy(
+				//faces->at(i).indices,
+				//faces->at(i).indices + faces->at(i).numIndices,
+    //            std::back_inserter(glcFaceIndices));
+
+			for (int j = 0; j < faces->at(i).numIndices; ++j)
+			{
+				glcFaceIndices.push_back(faces->at(i).indices[j] - vecStart);
+			}
 
             //---------------------------------------------------------------------
             // GLC 2.5.0 can render only up to triangles,
@@ -950,19 +983,24 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector2d_t> *vec
+	const std::vector<repo_vector2d_t> *vec,
+	const int32_t &start,
+	const int32_t &end
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec)
     {
-        glcVector.resize(vec->size() * 2); //repo_vector_t always have 3 values
+		int32_t startInd = start == -1 ? 0 : start;
+		int32_t endInd = end == -1 ? vec->size() : end;
+
+        glcVector.resize((endInd - startInd) * 2); //repo_vector_t always have 3 values
         int ind = 0;
-        for (auto &mem : *vec)
+		for (int i = startInd; i < endInd; ++i)
         {
-            glcVector[ind++] = (GLfloat)mem.x;
-            glcVector[ind++] = (GLfloat)mem.y;
+			glcVector[ind++] = (GLfloat)vec->at(i).x;
+			glcVector[ind++] = (GLfloat)vec->at(i).y;
         }
     }
 
