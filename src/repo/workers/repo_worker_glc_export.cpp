@@ -296,16 +296,26 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                 (repoModel::MaterialNode*)material, parentToGLCTexture);
             if (glcMat)
             {
-                std::vector<repoUUID> parents = material->getParentIDs();
-                for (auto &parent : parents)
-                {
-                    if (parentToGLCMaterial.find(parent) == parentToGLCMaterial.end())
-                    {
-                        parentToGLCMaterial[parent] = std::vector<GLC_Material*>();
-                    }
-                    //Map the material to all parent UUIDs
-                    parentToGLCMaterial[parent].push_back(glcMat);
-                }
+				if (repoViewGraph == repo::core::model::RepoScene::GraphType::DEFAULT)
+				{
+					std::vector<repoUUID> parents = material->getParentIDs();
+					for (auto &parent : parents)
+					{
+						if (parentToGLCMaterial.find(parent) == parentToGLCMaterial.end())
+						{
+							parentToGLCMaterial[parent] = std::vector<GLC_Material*>();
+						}
+						//Map the material to all parent UUIDs
+						parentToGLCMaterial[parent].push_back(glcMat);
+					}
+				}
+				else
+				{
+					//if stash, use its own unique ID as mapping
+					parentToGLCMaterial[material->getUniqueID()] = std::vector<GLC_Material*>();
+					parentToGLCMaterial[material->getUniqueID()].push_back(glcMat);
+				}
+                
             }
 
         }
@@ -678,29 +688,20 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				GLC_Mesh * glcMesh = new GLC_Mesh;
 				std::string name = UUIDtoString(mapping.mesh_id);
 				glcMesh->setName(QString::fromStdString(name));
-				repoLog("name: " + name);
-
+				
 				//Vertices
 				QVector<GLfloat> glcVec = createGLCVector(vector3d, mapping.vertFrom, mapping.vertTo);
 				if (glcVec.size() > 0)
 					glcMesh->addVertice(glcVec);
-				repoLog("Vector size: " + std::to_string(glcVec.size()));
 				//Normals
 				QVector<GLfloat> glcNorm = createGLCVector(normal3d, mapping.vertFrom, mapping.vertTo);
 				if (glcNorm.size() > 0)
 					glcMesh->addNormals(glcNorm);
 
-				repoLog("Normal size: " + std::to_string(glcNorm.size()));
-
 				//FIXME: colours on meshes can't really be supported unless 
 				//the colour arrays are padded/ we add a colours index on mapping
-
-				repoLog("expected face size: " + std::to_string(glcNorm.size()));
-
-				//faces
+								//faces
 				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, mapping.triFrom, mapping.triTo);
-
-				repoLog("Face size: " + std::to_string(glcFaces.size()));
 
 				if (glcFaces.size() > 0)
 				{
@@ -741,12 +742,11 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				if (pRep)
 				{
 					GLC_3DRep *pRep_tmp = new GLC_3DRep(glcMesh);
+					pRep_tmp->clean();
 					pRep->merge(pRep_tmp);
 				}				
 				else
 					pRep = new GLC_3DRep(glcMesh);
-
-				break;
 
 			}
 		}
@@ -763,12 +763,11 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			QVector<GLfloat> glcVec = createGLCVector(vector3d);
 			if (glcVec.size() > 0)
 				glcMesh->addVertice(glcVec);
-			repoLog("Vector size: " + std::to_string(glcVec.size()));
+
 			//Normals
 			QVector<GLfloat> glcNorm = createGLCVector(normal3d);
 			if (glcNorm.size() > 0)
 				glcMesh->addNormals(glcNorm);
-			repoLog("Normal size: " + std::to_string(glcNorm.size()));
 
 			//Colors
 			QVector<GLfloat> glcCol = createGLCVector(colors);
@@ -780,8 +779,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 			//faces
 			QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec);
-
-			repoLog("Face size: " + std::to_string(glcFaces.size()));
 
 			if (glcFaces.size() > 0)
 			{
@@ -839,9 +836,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			delete vector3d;
 		if (faces)
 			delete faces;
-        
+
+		pRep->clean();
     }
-    pRep->clean();
+
     return pRep;	
 }
 
@@ -853,7 +851,6 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
 	const int32_t &end)
 {
     QList<GLuint> glcList;
-    repoLog("faces? : " + std::to_string((int)faces) + " start: " + std::to_string(start) + " , end: " + std::to_string(end));
     if (faces)
     {
 		int32_t startInd = start == -1 ? 0 : start;
