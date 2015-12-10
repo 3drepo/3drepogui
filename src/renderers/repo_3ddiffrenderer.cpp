@@ -35,7 +35,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 
 	repo::manipulator::diff::DiffResult aRes, bRes;
 	//FIXME : Probably should move this out, this class should purely be about rendering differences
-	controller->compareScenesByIDs(token, sceneA, sceneB, aRes, bRes);
+	controller->compareScenesByNames(token, sceneA, sceneB, aRes, bRes);
 	//TODO: If it is a modification of a transformation or a transformation has been added, it needs to 
 	// highlight the entire subtree as everything is moved.
 
