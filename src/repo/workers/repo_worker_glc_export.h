@@ -106,23 +106,18 @@ namespace repo {
 				const std::vector<repo_face_t> *faces,
 				const QVector<GLfloat>         &vertices,
 				const int32_t &start = -1,
-				const int32_t &end = -1,
-				const int32_t &vecStart = 0);
+				const int32_t &end = -1);
 
 			GLC_3DRep* createGLCMesh(
 				const repo::core::model::RepoScene *scene,
 				const repo::core::model::MeshNode   *node);
 
 			QVector<GLfloat> createGLCVector(
-				const std::vector<repo_vector_t> *vec,
-				const int32_t &start = -1,
-				const int32_t &end  = -1
+				const std::vector<repo_vector_t> *vec
 				);
 
 			QVector<GLfloat> createGLCVector(
-				const std::vector<repo_vector2d_t> *vec,
-				const int32_t &start = -1,
-				const int32_t &end = -1
+				const std::vector<repo_vector2d_t> *vec
 				);
 
 			QVector<GLfloat> createGLCVector(

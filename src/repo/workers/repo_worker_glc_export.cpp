@@ -713,7 +713,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			for (const repo_mesh_mapping_t &map : mapping)
 			{
 
-				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo, map.vertFrom);
+				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo);
 
 				GLC_Material* material = nullptr;
 				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
@@ -789,8 +789,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
     }
 	
 	GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
-	repoLog("number of bodies: " + std::to_string(pRep->numberOfBody()));
-	repoLog("Face count: " + std::to_string(pRep->faceCount()) + " mesh's face count: " + std::to_string(mesh->getFaces()->size()));
 	glcMesh = NULL;
 	pRep->clean();
 	return pRep;
@@ -801,8 +799,7 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
     const std::vector<repo_face_t> *faces,
     const QVector<GLfloat>         &vertices,
 	const int32_t &start,
-	const int32_t &end,
-	const int32_t &vecStart)
+	const int32_t &end)
 {
     QList<GLuint> glcList;
     if (faces)
@@ -877,26 +874,22 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 }
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector_t> *vec,
-	const int32_t &start,
-	const int32_t &end
+    const std::vector<repo_vector_t> *vec
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec)
     {
-		int32_t startInd = start == -1 ? 0 : start;
-		int32_t endInd = end == -1 ? vec->size() : end;
-
+		
 		//FIXME: since repo_vector_t is a struct, can't we just memcpy?
         glcVector.resize(vec->size() * 3); //repo_vector_t always have 3 values
         int ind = 0;
-		for (int i = startInd; i < endInd; ++i)
+		for (const auto &v : *vec)
         {
-            glcVector[ind++] = (GLfloat)vec->at(i).x;
-			glcVector[ind++] = (GLfloat)vec->at(i).y;
-			glcVector[ind++] = (GLfloat)vec->at(i).z;
+            glcVector[ind++] = (GLfloat)v.x;
+			glcVector[ind++] = (GLfloat)v.y;
+			glcVector[ind++] = (GLfloat)v.z;
         }
     }
 
@@ -905,24 +898,19 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-	const std::vector<repo_vector2d_t> *vec,
-	const int32_t &start,
-	const int32_t &end
+	const std::vector<repo_vector2d_t> *vec
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec)
     {
-		int32_t startInd = start == -1 ? 0 : start;
-		int32_t endInd = end == -1 ? vec->size() : end;
-
-        glcVector.resize((endInd - startInd) * 2); //repo_vector_t always have 3 values
+        glcVector.resize(vec->size() * 2); //repo_vector_t always have 3 values
         int ind = 0;
-		for (int i = startInd; i < endInd; ++i)
+		for (const auto &v : *vec)
         {
-			glcVector[ind++] = (GLfloat)vec->at(i).x;
-			glcVector[ind++] = (GLfloat)vec->at(i).y;
+			glcVector[ind++] = (GLfloat)v.x;
+			glcVector[ind++] = (GLfloat)v.y;
         }
     }
 
