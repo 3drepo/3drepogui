@@ -296,16 +296,26 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                 (repoModel::MaterialNode*)material, parentToGLCTexture);
             if (glcMat)
             {
-                std::vector<repoUUID> parents = material->getParentIDs();
-                for (auto &parent : parents)
-                {
-                    if (parentToGLCMaterial.find(parent) == parentToGLCMaterial.end())
-                    {
-                        parentToGLCMaterial[parent] = std::vector<GLC_Material*>();
-                    }
-                    //Map the material to all parent UUIDs
-                    parentToGLCMaterial[parent].push_back(glcMat);
-                }
+				if (repoViewGraph == repo::core::model::RepoScene::GraphType::DEFAULT)
+				{
+					std::vector<repoUUID> parents = material->getParentIDs();
+					for (auto &parent : parents)
+					{
+						if (parentToGLCMaterial.find(parent) == parentToGLCMaterial.end())
+						{
+							parentToGLCMaterial[parent] = std::vector<GLC_Material*>();
+						}
+						//Map the material to all parent UUIDs
+						parentToGLCMaterial[parent].push_back(glcMat);
+					}
+				}
+				else
+				{
+					//if stash, use its own unique ID as mapping
+					parentToGLCMaterial[material->getUniqueID()] = std::vector<GLC_Material*>();
+					parentToGLCMaterial[material->getUniqueID()].push_back(glcMat);
+				}
+                
             }
 
         }
@@ -340,32 +350,32 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     //-------------------------------------------------------------------------
     // Allocate cameras
-    repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
+  //  repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
     std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
-    for (auto &camera : cameras)
-    {
-		if (camera && !cancelled)
-        {
-            //FIXME: cameras don't really work. Disabled from visualisation for now.
-            //GLC_3DRep* glcCamera = convertGLCCamera(
-            //	(repoModel::CameraNode*)camera);
-            //if (glcCamera)
-            //{
-            //	std::vector<repoUUID> parents = camera->getParentIDs();
-            //	for (auto &parent : parents)
-            //	{
-            //		//Map the material to all parent UUIDs
-            //		if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
-            //		{
-            //			parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
-            //		}
-            //		//Map the mesh to all parent UUIDs
-            //		parentToGLCCameras[parent].push_back(glcCamera);
-            //	}
-            //}
+  //  for (auto &camera : cameras)
+  //  {
+		//if (camera && !cancelled)
+  //      {
+  //          //FIXME: cameras don't really work. Disabled from visualisation for now.
+  //          //GLC_3DRep* glcCamera = convertGLCCamera(
+  //          //	(repoModel::CameraNode*)camera);
+  //          //if (glcCamera)
+  //          //{
+  //          //	std::vector<repoUUID> parents = camera->getParentIDs();
+  //          //	for (auto &parent : parents)
+  //          //	{
+  //          //		//Map the material to all parent UUIDs
+  //          //		if (parentToGLCCameras.find(parent) == parentToGLCCameras.end())
+  //          //		{
+  //          //			parentToGLCCameras[parent] = std::vector<GLC_3DRep*>();
+  //          //		}
+  //          //		//Map the mesh to all parent UUIDs
+  //          //		parentToGLCCameras[parent].push_back(glcCamera);
+  //          //	}
+  //          //}
 
-        }
-    }
+  //      }
+  //  }
 
     return createOccurrenceFromNode(scene, scene->getRoot(repoViewGraph), parentToGLCMeshes, parentToGLCCameras);
 }
@@ -499,7 +509,9 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             repo::core::model::RepoScene *refScene = scene->getSceneFromReference(scene->getViewGraph(),
         		node->getSharedID());
             repoLog("loading reference scene : " + ((repo::core::model::ReferenceNode*)node)->getProjectName());
-            if (refScene && (refScene->getAllMeshes().size() > 0 || refScene->getAllReferences().size() > 0))
+            if (refScene &&( (refScene->getAllMeshes().size() > 0 || refScene->getAllReferences().size() > 0)
+				|| (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0 
+				|| refScene->getAllReferences(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0)))
         	{
                 //There is nothing to visualise if there are no meshes
         		occurrence = convertSceneToOccurance(refScene);
@@ -655,123 +667,159 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
     const repo::core::model::MeshNode        *mesh,
     std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials)
 {
-    GLC_Mesh * glcMesh = new GLC_Mesh;
+
+	GLC_Mesh * glcMesh = new GLC_Mesh;
     if (mesh)
     {
+		std::string name = mesh->getName();
+		glcMesh->setName(QString::fromStdString(name));
 
-        std::string name = mesh->getName();
-        glcMesh->setName(QString::fromStdString(name));
+		std::vector<repo_vector_t> *vector3d;
+		//Vertices
+		vector3d = mesh->getVertices();
+		QVector<GLfloat> glcVec = createGLCVector(vector3d);
+		if (glcVec.size() > 0)
+			glcMesh->addVertice(glcVec);
 
-        std::vector<repo_vector_t> *vector3d;
-        //Vertices
-        vector3d = mesh->getVertices();
-        QVector<GLfloat> glcVec = createGLCVector(vector3d);
-        if (glcVec.size() > 0)
-            glcMesh->addVertice(glcVec);
+		//Normals
+		std::vector<repo_vector_t> * normal3d = mesh->getNormals();
+		QVector<GLfloat> glcNorm = createGLCVector(normal3d);
+		if (glcNorm.size() > 0)
+			glcMesh->addNormals(glcNorm);
 
-        //Normals
-        std::vector<repo_vector_t> * normal3d = mesh->getNormals();
-        QVector<GLfloat> glcNorm = createGLCVector(normal3d);
-        if (glcNorm.size() > 0)
-            glcMesh->addNormals(glcNorm);
+		if (normal3d)
+			delete normal3d;
 
-        if (normal3d)
-            delete normal3d;
+		//Colors
+		std::vector<repo_color4d_t> *colors;
+		colors = mesh->getColors();
+		QVector<GLfloat> glcCol = createGLCVector(colors);
+		if (glcCol.size() > 0)
+		{
+			glcMesh->setColorPearVertex(true);
+			glcMesh->addColors(glcCol);
+		}
 
-        //Colors
-        std::vector<repo_color4d_t> *colors;
-        colors = mesh->getColors();
-        QVector<GLfloat> glcCol = createGLCVector(colors);
-        if (glcCol.size() > 0)
-        {
-            glcMesh->setColorPearVertex(true);
-            glcMesh->addColors(glcCol);
-        }
+		if (colors)
+			delete colors;
 
-        if (colors)
-            delete colors;
+		//faces
+		std::vector<repo_face_t> *faces;
+		faces = mesh->getFaces();
 
-        //faces
-        std::vector<repo_face_t> *faces;
-        faces = mesh->getFaces();
-        QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec);
+		auto mapping = mesh->getMeshMapping();
+		if (mapping.size() > 0)
+		{
+			for (const repo_mesh_mapping_t &map : mapping)
+			{
+
+				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo, map.vertFrom);
+
+				GLC_Material* material = nullptr;
+				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
+					mapMaterials.find(map.material_id);
+				if (mapIt != mapMaterials.end())
+				{
+					//FIXME: assume 1 material only
+					material = (GLC_Material*)mapIt->second.at(0);
+				}
+
+				glcMesh->addTriangles(material, glcFaces);
+			}
+		}
+		else
+		{
 
 
-        if (glcFaces.size() > 0)
-        {
-            GLC_Material* material = nullptr;
-            std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
-                mapMaterials.find(mesh->getSharedID());
-            if (mapIt != mapMaterials.end())
-            {
-                //FIXME: assume 1 material only
-                material = (GLC_Material*)mapIt->second.at(0);
-            }
-            glcMesh->addTriangles(material, glcFaces);
+			QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec);
 
-            //---------------------------------------------------------------------
-            // Wireframe
-            // Since GLC_Lib renders only triangles, the wireframe for polygon
-            // faces has to be created separately.
-            GLfloatVector faceVertices;
-            for (auto &face : *faces)
-            {
-                for (uint32_t j = 0; j < face.numIndices; ++j)
-                {
-                    //FIXME: this is assuming order in assimp's mVertice = vector3d's order
-                    repo_vector_t vertex = vector3d->at(face.indices[j]);
-                    faceVertices << vertex.x << vertex.y << vertex.z;
-                }
+			if (glcFaces.size() > 0)
+			{
+				GLC_Material* material = nullptr;
+				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
+					mapMaterials.find(mesh->getSharedID());
+				if (mapIt != mapMaterials.end())
+				{
+					//FIXME: assume 1 material only
+					material = (GLC_Material*)mapIt->second.at(0);
+				}
+				glcMesh->addTriangles(material, glcFaces);
+			}
+		}
 
-                glcMesh->addVerticeGroup(faceVertices);
-                faceVertices.clear();
-            }
-        }
 
-        std::vector<repo_vector2d_t>* uvVectors = mesh->getUVChannels();
-        QVector<GLfloat> glcUVVec = createGLCVector(uvVectors);
+		//---------------------------------------------------------------------
+		// Wireframe
+		// Since GLC_Lib renders only triangles, the wireframe for polygon
+		// faces has to be created separately.
+		GLfloatVector faceVertices;
+		for (auto &face : *faces)
+		{
+			for (uint32_t j = 0; j < face.numIndices; ++j)
+			{
+				//FIXME: this is assuming order in assimp's mVertice = vector3d's order
+				repo_vector_t vertex = vector3d->at(face.indices[j]);
+				faceVertices << vertex.x << vertex.y << vertex.z;
+			}
 
-        if (glcUVVec.size() > 0)
-        {
-            glcMesh->addTexels(glcUVVec);
-        }
+			glcMesh->addVerticeGroup(faceVertices);
+			faceVertices.clear();
+		}
+		
 
-        if (uvVectors)
-        delete uvVectors;
+		std::vector<repo_vector2d_t>* uvVectors = mesh->getUVChannels();
+		QVector<GLfloat> glcUVVec = createGLCVector(uvVectors);
 
-        if (vector3d)
-            delete vector3d;
-        if (faces)
-            delete faces;
+		if (glcUVVec.size() > 0)
+		{
+			glcMesh->addTexels(glcUVVec);
+		}
 
-        glcMesh->finish();
+		if (uvVectors)
+			delete uvVectors;
+
+		if (vector3d)
+			delete vector3d;
+		if (faces)
+			delete faces;
+
+		glcMesh->finish();
+
+
     }
-
-    GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
-    glcMesh = NULL;
-    pRep->clean();
-    return pRep;
+	
+	GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
+	repoLog("number of bodies: " + std::to_string(pRep->numberOfBody()));
+	repoLog("Face count: " + std::to_string(pRep->faceCount()) + " mesh's face count: " + std::to_string(mesh->getFaces()->size()));
+	glcMesh = NULL;
+	pRep->clean();
+	return pRep;
 }
 
 
 QList<GLuint> GLCExportWorker::createGLCFaceList(
     const std::vector<repo_face_t> *faces,
-    const QVector<GLfloat>         &vertices)
+    const QVector<GLfloat>         &vertices,
+	const int32_t &start,
+	const int32_t &end,
+	const int32_t &vecStart)
 {
     QList<GLuint> glcList;
-
     if (faces)
     {
-        for (auto &face : *faces)
+		int32_t startInd = start == -1 ? 0 : start;
+		int32_t endInd = end == -1 ? faces->size() : end;
+		for (int i = startInd; i < endInd; ++i)
         {
             QList<GLuint> glcFaceIndices;
-            glcFaceIndices.reserve(face.numIndices);
+            glcFaceIndices.reserve(faces->at(i).numIndices);
             //---------------------------------------------------------------------
             // Copy all assimp indices of a single face to a QList
             std::copy(
-                face.indices,
-                face.indices + face.numIndices,
+				faces->at(i).indices,
+				faces->at(i).indices + faces->at(i).numIndices,
                 std::back_inserter(glcFaceIndices));
+
 
             //---------------------------------------------------------------------
             // GLC 2.5.0 can render only up to triangles,
@@ -829,20 +877,26 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 }
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector_t> *vec
+    const std::vector<repo_vector_t> *vec,
+	const int32_t &start,
+	const int32_t &end
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec)
     {
+		int32_t startInd = start == -1 ? 0 : start;
+		int32_t endInd = end == -1 ? vec->size() : end;
+
+		//FIXME: since repo_vector_t is a struct, can't we just memcpy?
         glcVector.resize(vec->size() * 3); //repo_vector_t always have 3 values
         int ind = 0;
-        for (auto &mem : *vec)
+		for (int i = startInd; i < endInd; ++i)
         {
-            glcVector[ind++] = (GLfloat)mem.x;
-            glcVector[ind++] = (GLfloat)mem.y;
-            glcVector[ind++] = (GLfloat)mem.z;
+            glcVector[ind++] = (GLfloat)vec->at(i).x;
+			glcVector[ind++] = (GLfloat)vec->at(i).y;
+			glcVector[ind++] = (GLfloat)vec->at(i).z;
         }
     }
 
@@ -851,19 +905,24 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector2d_t> *vec
+	const std::vector<repo_vector2d_t> *vec,
+	const int32_t &start,
+	const int32_t &end
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec)
     {
-        glcVector.resize(vec->size() * 2); //repo_vector_t always have 3 values
+		int32_t startInd = start == -1 ? 0 : start;
+		int32_t endInd = end == -1 ? vec->size() : end;
+
+        glcVector.resize((endInd - startInd) * 2); //repo_vector_t always have 3 values
         int ind = 0;
-        for (auto &mem : *vec)
+		for (int i = startInd; i < endInd; ++i)
         {
-            glcVector[ind++] = (GLfloat)mem.x;
-            glcVector[ind++] = (GLfloat)mem.y;
+			glcVector[ind++] = (GLfloat)vec->at(i).x;
+			glcVector[ind++] = (GLfloat)vec->at(i).y;
         }
     }
 
