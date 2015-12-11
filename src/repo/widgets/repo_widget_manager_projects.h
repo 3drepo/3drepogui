@@ -48,9 +48,6 @@ public:
 
 public slots:
 
-    void addItem()
-    { showEditDialog(); }
-
     void copyItem()
     { showEditDialog(getProjectSettings(), Action::COPY); }
 

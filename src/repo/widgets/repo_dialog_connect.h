@@ -57,6 +57,7 @@ public :
 	//! Creates a connection dialog. To show, run exec().
     RepoDialogConnect(repo::RepoController *controller,
                       const repo::RepoCredentials &credentials,
+                      const bool isCopy = false,
                       QWidget *parent = 0,
                       Qt::WindowFlags flags = 0);
 

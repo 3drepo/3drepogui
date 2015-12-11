@@ -77,6 +77,12 @@ public slots:
     //! Selects a row based on a given item.
     void selectRow(const QStandardItem *item) const;
 
+    //! Removes currently selected row if any.
+    void removeRow() { removeRow(getCurrentIndex()); }
+
+    //! Removes row given by index if any.
+    void removeRow(const QModelIndex &index);
+
     //! Clears the tree view.
     void clear();
 

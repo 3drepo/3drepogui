@@ -36,9 +36,11 @@ HEADERS +=  \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_connect.h \
 	src/repo/widgets/repo_dialog_manager_access.h \
+	src/repo/widgets/repo_dialog_manager_connect2.h \
 	src/repo/widgets/repo_dialog_project.h \
 	src/repo/widgets/repo_dialog_role.h \
 	src/repo/widgets/repo_dialog_user.h \
+	src/repo/widgets/repo_widget_manager_connect.h \
 	src/repo/widgets/repo_widget_manager_projects.h \
 	src/repo/widgets/repo_widget_manager_roles.h \
 	src/repo/widgets/repo_widget_manager_users.h \
@@ -105,9 +107,11 @@ SOURCES +=  \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_connect.cpp \
 	src/repo/widgets/repo_dialog_manager_access.cpp \
+	src/repo/widgets/repo_dialog_manager_connect2.cpp \
 	src/repo/widgets/repo_dialog_project.cpp \
 	src/repo/widgets/repo_dialog_role.cpp \
 	src/repo/widgets/repo_dialog_user.cpp \
+	src/repo/widgets/repo_widget_manager_connect.cpp \
 	src/repo/widgets/repo_widget_manager_projects.cpp \
 	src/repo/widgets/repo_widget_manager_roles.cpp \
 	src/repo/widgets/repo_widget_manager_users.cpp \
@@ -153,6 +157,7 @@ FORMS +=  \
 	forms/repo_dialoghistory.ui \
 	forms/repo_dialog_connect.ui \
 	forms/repo_dialog_manager_access.ui \
+	forms/repo_dialog_manager_connect.ui \
 	forms/repo_dialog_project.ui \
 	forms/repo_dialog_role.ui \
 	forms/repo_dialog_user.ui \

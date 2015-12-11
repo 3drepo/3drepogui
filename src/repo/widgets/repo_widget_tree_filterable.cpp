@@ -114,6 +114,16 @@ void RepoWidgetTreeFilterable::selectRow(const QStandardItem *item) const
                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
 }
 
+void RepoWidgetTreeFilterable::removeRow(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        model->removeRow(proxy->mapToSource(index).row());
+        updateCountLabel();
+    }
+}
+
+
 void RepoWidgetTreeFilterable::notifyOfTotalCountChange()
 {
     emit totalCountChanged(model->rowCount());

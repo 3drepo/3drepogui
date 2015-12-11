@@ -40,7 +40,7 @@ public :
 
     //! Creates a standard non-editable item with tooltip and data set.
     RepoStandardItem(
-            const QString& label,
+            const QString& label = QString(),
             const QVariant& data = QVariant(),
             int role = Qt::UserRole + 1,
             Qt::Alignment alignment = Qt::AlignLeft,

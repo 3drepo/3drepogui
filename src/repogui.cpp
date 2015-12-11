@@ -47,7 +47,7 @@
 
 //------------------------------------------------------------------------------
 #include "repo/widgets/repo_dialog_manager_access.h"
-
+#include "repo/widgets/repo_dialog_manager_connect2.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
@@ -306,9 +306,7 @@ void repo::gui::RepoGUI::addMapTiles()
 		{
 			commit(scene);
 		}
-
     }
-
 }
 
 void repo::gui::RepoGUI::addSelectionTree(widgets::RepoRenderingWidget* widget, Qt::DockWidgetArea area)
@@ -394,7 +392,12 @@ void repo::gui::RepoGUI::connectDB()
     // TODO: remove when expanding to multiple connections
     ui->widgetRepository->disconnectDB();
 
-    RepoDialogManagerConnect connectManager(controller, this);
+    RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
+
+    repo::widgets::RepoDialogManagerConnect2 cM(controller, (QWidget*)this);
+    cM.exec();
+
+
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
     else

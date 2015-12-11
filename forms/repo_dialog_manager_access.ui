@@ -28,16 +28,16 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <item>
         <widget class="repo::widgets::RepoWidgetManagerUsers" name="usersManagerWidget" native="true"/>
@@ -50,16 +50,16 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="leftMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <item>
         <widget class="repo::widgets::RepoWidgetManagerRoles" name="rolesManagerWidget" native="true"/>
@@ -72,16 +72,16 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <property name="leftMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>9</number>
        </property>
        <item>
         <widget class="repo::widgets::RepoWidgetManagerProjects" name="projectsManagerWidget" native="true"/>

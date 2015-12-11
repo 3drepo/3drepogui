@@ -52,7 +52,7 @@ public:
 public slots :
 
     //! Adds new empty item.
-    virtual void addItem() = 0;
+    virtual void addItem() { showEditDialog(); }
 
     //! Updates selected item.
     virtual void edit() = 0;
@@ -81,7 +81,7 @@ public slots :
     virtual void select(const QItemSelection &, const QItemSelection &);
 
     //! Shows custom context menu for treeView.
-    virtual void showCustomContextMenu(const QPoint &);
+    virtual void showCustomContextMenu(const QPoint &);   
 
 public :
 

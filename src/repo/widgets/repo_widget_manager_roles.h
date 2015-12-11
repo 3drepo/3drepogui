@@ -57,9 +57,6 @@ public slots:
     void addRole(const repo::core::model::RepoRole &role,
                  const repo::core::model::RepoRoleSettings &settings);
 
-    void addItem()
-    { showEditDialog(); }
-
     void copyItem()
     {
         showEditDialog(

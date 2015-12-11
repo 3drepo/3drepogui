@@ -23,6 +23,7 @@ using namespace repo::widgets;
 RepoDialogConnect::RepoDialogConnect(
         repo::RepoController *controller,
         const repo::RepoCredentials &credentials,
+        const bool isCopy,
         QWidget *parent,
         Qt::WindowFlags flags)
     : QDialog(parent, flags)
@@ -32,7 +33,14 @@ RepoDialogConnect::RepoDialogConnect(
     ui->setupUi(this);
     setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
 
-    ui->aliasLineEdit->setText(QString::fromStdString(credentials.getAlias()));
+    // Alias
+    QString alias = QString::fromStdString(credentials.getAlias());
+    if (isCopy)
+    {
+        alias += " " + tr("(Copy)");
+    }
+    ui->aliasLineEdit->setText(alias);
+
     ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
     ui->portLineEdit->setText(QString::number(credentials.getPort()));
     ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
