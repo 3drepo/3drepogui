@@ -18,6 +18,7 @@
 #include "repo_mdiarea.h"
 #include "../repo/workers/repo_worker_scene_graph.h"
 #include "../repo/widgets/repo_widget_rendering.h"
+#include "../repo/widgets/repo_widget_rendering_2d.h"
 #include "../renderers/repo_webview.h"
 
 
@@ -203,14 +204,14 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
 
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	repo::RepoController *controller,
-	const repo::RepoToken      * token,
+    const repo::RepoToken *token,
 	const QString& database,
     const QString& project,
 	const QUuid& id,
 	bool headRevision)
 {
-	RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow();
-	repoSubWindow->setWidget(database + " " + id.toString());
+    RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
+    repoSubWindow->setWidget3D(database + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
@@ -243,7 +244,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
     widgets::RepoRenderingWidget* widget)
 {
-	RepoMdiSubWindow * repoSubWindow = new RepoMdiSubWindow();
+    RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow(this);
 	repoSubWindow->setWidget(widget);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
@@ -261,6 +262,18 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
 {
     return addSubWidget(new RepoWebView());
+}
+
+repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSceneGraphSubWindow(
+        const repo::core::model::RepoScene *scene,
+        const QString &windowTitle)
+{
+
+    RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
+    repoSubWindow->setWidget2D(scene, windowTitle);
+    QMdiArea::addSubWindow(repoSubWindow);
+    repoSubWindow->show();
+    return repoSubWindow;
 }
 
 QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(

@@ -103,8 +103,13 @@ public :
     QMdiSubWindow *addSubWindow(QWidget *widget, Qt::WindowFlags windowFlags = 0)
 	{ return QMdiArea::addSubWindow(widget, windowFlags); }
 
-    //! Adds a web view subwindow
+    //! Adds a web view subwindow.
     RepoMdiSubWindow* addWebViewSubWindow();
+
+    //! Adds a scene graph subwindow.
+    RepoMdiSubWindow* addSceneGraphSubWindow(
+            const core::model::RepoScene *scene = 0,
+            const QString &windowTitle = QString());
 
 	/*!
 	 * Returns a list of all subwindows in the MDI area. If order is 

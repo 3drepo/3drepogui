@@ -17,7 +17,8 @@
 
 #include "repo_mdisubwindow.h"
 #include "../widgets/repowidgetassimpflags.h"
-#include "../repo/widgets//repo_widget_rendering.h"
+#include "../repo/widgets/repo_widget_rendering.h"
+#include "../repo/widgets/repo_widget_rendering_2d.h"
 #include "../primitives/repo_fontawesome.h"
 
 #include "../repo/workers/repo_worker_glc_export.h"
@@ -92,9 +93,17 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 
 }
 
-void RepoMdiSubWindow::setWidget(const QString& windowTitle)
+void RepoMdiSubWindow::setWidget3D(const QString& windowTitle)
 {
     setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, windowTitle));
+    setWindowIcon(this->widget()->windowIcon());
+}
+
+void RepoMdiSubWindow::setWidget2D(
+        const repo::core::model::RepoScene *scene,
+        const QString &windowTitle)
+{
+    setWidget(new repo::widgets::RepoWidgetRendering2D(scene, windowTitle, this));
     setWindowIcon(this->widget()->windowIcon());
 }
 

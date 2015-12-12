@@ -88,7 +88,7 @@
     <addaction name="separator"/>
     <addaction name="actionWeb_View"/>
     <addaction name="separator"/>
-    <addaction name="actionScene_Graph"/>
+    <addaction name="actionSceneGraph"/>
     <addaction name="actionHighlights"/>
     <addaction name="actionTextures"/>
     <addaction name="separator"/>
@@ -400,9 +400,9 @@
     <string>Ctrl+T</string>
    </property>
   </action>
-  <action name="actionScene_Graph">
+  <action name="actionSceneGraph">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Scene Graph</string>
