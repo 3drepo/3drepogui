@@ -33,17 +33,14 @@ RepoDialogManagerConnect2::RepoDialogManagerConnect2(
 
     ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
 
-
     //--------------------------------------------------------------------------
     // Connect double click to accept action for convenient UI
-    QTreeView *treeView = ui->editableTreeWidget->getFilterableTree()->getTreeView();
+    QTreeView *treeView = ui->connectionManagerWidget->getFilterableTree()->getTreeView();
     QObject::disconnect(treeView, SIGNAL(doubleClicked(const QModelIndex &)),
-                      ui->editableTreeWidget, SLOT(edit(const QModelIndex &)));
+                      ui->connectionManagerWidget, SLOT(edit(const QModelIndex &)));
 
     QObject::connect(treeView, &QTreeView::doubleClicked,
                      this, &QDialog::accept);
-
-
 }
 
 RepoDialogManagerConnect2::~RepoDialogManagerConnect2()
@@ -59,5 +56,10 @@ int RepoDialogManagerConnect2::exec()
 
 void RepoDialogManagerConnect2::refresh()
 {
-    ui->editableTreeWidget->refresh();
+    ui->connectionManagerWidget->refresh();
+}
+
+repo::RepoCredentials RepoDialogManagerConnect2::getConnection()
+{
+    return ui->connectionManagerWidget->getConnection();
 }

@@ -20,6 +20,8 @@
 
 using namespace repo::widgets;
 
+const QString RepoWidgetManagerConnect::COLUMNS_SETTINGS = "RepoWidgetManagerConnectHeaders";
+
 RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
     , controller(nullptr)
@@ -32,10 +34,17 @@ RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
         tr("SSH")};
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
-    filterableTree->restoreHeaders(headers, "COLUMNS_SETTINGS");
+    filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
+    //--------------------------------------------------------------------------
+
     clear();
+}
+
+RepoWidgetManagerConnect::~RepoWidgetManagerConnect()
+{
+    getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
 void RepoWidgetManagerConnect::addItem(const repo::RepoCredentials &credentials)

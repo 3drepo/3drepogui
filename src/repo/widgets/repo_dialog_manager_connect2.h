@@ -53,6 +53,8 @@ public slots :
 
     void refresh();
 
+    repo::RepoCredentials getConnection();
+
 private:
     Ui::RepoDialogManagerConnect2 *ui;
 

@@ -171,7 +171,7 @@ void RepoWidgetTreeFilterable::setHeaders(const QList<QString>& headers)
         model->setHeaderData(i, Qt::Horizontal, headers[i]);
 }
 
-QTreeView * RepoWidgetTreeFilterable::getTreeView() const
+QTreeView *RepoWidgetTreeFilterable::getTreeView() const
 {
     return ui->treeView;
 }

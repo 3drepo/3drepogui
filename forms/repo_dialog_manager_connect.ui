@@ -21,7 +21,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="repo::widgets::RepoWidgetManagerConnect" name="editableTreeWidget" native="true"/>
+    <widget class="repo::widgets::RepoWidgetManagerConnect" name="connectionManagerWidget" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

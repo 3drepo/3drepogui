@@ -392,11 +392,9 @@ void repo::gui::RepoGUI::connectDB()
     // TODO: remove when expanding to multiple connections
     ui->widgetRepository->disconnectDB();
 
-    RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
+//    RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
 
-    repo::widgets::RepoDialogManagerConnect2 cM(controller, (QWidget*)this);
-    cM.exec();
-
+    repo::widgets::RepoDialogManagerConnect2 connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;

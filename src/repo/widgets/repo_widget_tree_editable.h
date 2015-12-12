@@ -24,12 +24,12 @@
 
 //------------------------------------------------------------------------------
 // Qt
+#include <QMenu>
 #include <QMutex>
 #include <QWidget>
 #include <QThreadPool>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-
 //------------------------------------------------------------------------------
 
 namespace Ui { class RepoWidgetTreeEditable; }

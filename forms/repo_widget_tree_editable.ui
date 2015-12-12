@@ -52,6 +52,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="addPushButton">
+        <property name="whatsThis">
+         <string>Add item.</string>
+        </property>
         <property name="text">
          <string>Add...</string>
         </property>
@@ -61,6 +64,9 @@
        <widget class="QPushButton" name="removePushButton">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="whatsThis">
+         <string>Remove item.</string>
         </property>
         <property name="text">
          <string>Remove</string>
@@ -72,6 +78,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="whatsThis">
+         <string>Edit item.</string>
+        </property>
         <property name="text">
          <string>Edit...</string>
         </property>
@@ -81,6 +90,9 @@
        <widget class="QPushButton" name="copyPushButton">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="whatsThis">
+         <string>Copy item.</string>
         </property>
         <property name="text">
          <string>Copy...</string>

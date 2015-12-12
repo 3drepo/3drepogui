@@ -46,7 +46,7 @@ class RepoWidgetManagerConnect: public RepoWidgetTreeEditable
 {
     Q_OBJECT
 
-//    static const QString COLUMNS_SETTINGS;
+    static const QString COLUMNS_SETTINGS;
 
     //! Tree view columns
     enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
@@ -54,6 +54,8 @@ class RepoWidgetManagerConnect: public RepoWidgetTreeEditable
 public:
 
     RepoWidgetManagerConnect(QWidget *parent);
+
+    ~RepoWidgetManagerConnect();
 
 public slots :
 
