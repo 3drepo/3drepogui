@@ -19,6 +19,7 @@
 
 #include <QGraphicsView>
 #include <QWidget>
+#include <QOpenGLWidget>
 
 #include "../../primitives/repo_fontawesome.h"
 #include "../renderer/repo_renderer_graph.h"

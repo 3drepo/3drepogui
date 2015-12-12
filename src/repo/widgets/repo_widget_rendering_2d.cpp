@@ -26,6 +26,11 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
         QWidget *parent)
     : QGraphicsView(new renderer::RepoRendererGraph(scene), parent)
 {
+    //--------------------------------------------------------------------------
+    // Rendering optimisation
+    this->setViewport(new QOpenGLWidget());
+    this->setCacheMode(QGraphicsView::CacheBackground);
+    //--------------------------------------------------------------------------
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(repo::gui::RepoFontAwesome::getSceneGraphIcon());
 }

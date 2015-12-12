@@ -19,6 +19,7 @@
 
 // Qt
 #include <QGraphicsScene>
+#include <QGraphicsRectItem>
 
 // Core
 #include <repo/core/model/collection/repo_scene.h>

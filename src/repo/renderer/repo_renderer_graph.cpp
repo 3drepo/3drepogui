@@ -22,7 +22,21 @@ using namespace repo::renderer;
 
 RepoRendererGraph::RepoRendererGraph(const repo::core::model::RepoScene *scene)
 {
+    if (scene)
+    {
 
+         addEllipse(QRectF(0, 0, 10, 10));
+
+
+    int i = 0;
+    repo::core::model::RepoNode *node = scene->getRoot();
+//    scene->getChildrenAsNodes(node->getSharedID());
+
+//    for(const auto &child : scene->getChildrenAsNodes(node->getSharedID()))
+//    {
+//             addEllipse(QRectF(0, 0, 10, 10));
+//    }
+    }
 }
 
 RepoRendererGraph::~RepoRendererGraph()
