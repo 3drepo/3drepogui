@@ -230,7 +230,11 @@ void RepoWidgetTreeFilterable::storeSelection(const QString &label)
 {
     QSettings settings(this);
     // See  https://bugreports.qt.io/browse/QTBUG-42438
-    settings.setValue(label, getSelectionModel()->currentIndex());
+    // settings.setValue(label, proxy->mapToSource(getSelectionModel()->currentIndex()));
+
+    // Temp solution
+    int row = proxy->mapToSource(getSelectionModel()->currentIndex()).row();
+    settings.setValue(label, row);
 }
 
 void RepoWidgetTreeFilterable::restoreHeaders(
@@ -247,7 +251,15 @@ void RepoWidgetTreeFilterable::restoreSelection(const QString &label)
     // See https://bugreports.qt.io/browse/QTBUG-42438
     // This should magically work from Qt 5.4.0 RC onwards
     QSettings settings(this);
-    getSelectionModel()->setCurrentIndex(
-                settings.value(label).toModelIndex(),
-                QItemSelectionModel::SelectCurrent);
+//    getSelectionModel()->setCurrentIndex(
+//                proxy->mapFromSource(settings.value(label).toModelIndex()),
+//                QItemSelectionModel::ClearAndSelect|
+//    QItemSelectionModel::Rows);
+
+    // Temp solution
+    int row = settings.value(label).toInt();
+    QModelIndex index = model->indexFromItem(model->invisibleRootItem()->child(row, 0));
+    getSelectionModel()->setCurrentIndex(proxy->mapFromSource(index),
+                                         QItemSelectionModel::ClearAndSelect|
+                                         QItemSelectionModel::Rows);
 }

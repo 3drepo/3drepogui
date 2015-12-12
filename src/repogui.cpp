@@ -391,8 +391,6 @@ void repo::gui::RepoGUI::connectDB()
     // TODO: remove when expanding to multiple connections
     ui->widgetRepository->disconnectDB();
 
-//    RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
-
     repo::widgets::RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"

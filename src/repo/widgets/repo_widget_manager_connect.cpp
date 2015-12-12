@@ -36,7 +36,6 @@ RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
-    filterableTree->storeSelection(SELECTION_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
@@ -101,6 +100,8 @@ void RepoWidgetManagerConnect::refresh()
     {
         addItem(credentials);
     }
+
+    getFilterableTree()->restoreSelection(SELECTION_SETTINGS);
 
     //----------------------------------------------------------------------
     //    ui->progressBar->hide(); // TODO: show
