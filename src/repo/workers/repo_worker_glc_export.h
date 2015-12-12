@@ -104,7 +104,9 @@ namespace repo {
 
 			QList<GLuint> createGLCFaceList(
 				const std::vector<repo_face_t> *faces,
-				const QVector<GLfloat>         &vertices);
+				const QVector<GLfloat>         &vertices,
+				const int32_t &start = -1,
+				const int32_t &end = -1);
 
 			GLC_3DRep* createGLCMesh(
 				const repo::core::model::RepoScene *scene,
