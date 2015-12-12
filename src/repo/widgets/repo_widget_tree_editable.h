@@ -37,17 +37,26 @@ namespace Ui { class RepoWidgetTreeEditable; }
 namespace repo {
 namespace widgets {
 
-class RepoWidgetTreeEditable : public QWidget, public repo::worker::RepoMultithreader
+class RepoWidgetTreeEditable
+        : public QWidget
+        , public repo::worker::RepoMultithreader
 {
     Q_OBJECT    
 
 public:
 
+    //! Editing actions.
     enum class Action { ADD, REMOVE, EDIT, COPY };
 
+    //! Explicit constructor.
     explicit RepoWidgetTreeEditable(QWidget *parent = 0);
 
     ~RepoWidgetTreeEditable();
+
+signals :
+
+    //! Emitted as soon as edit buttons are either enabled or disabled.
+    void editButtonsEnabledChanged(bool on);
 
 public slots :
 
@@ -85,10 +94,12 @@ public slots :
 
 public :
 
+    //! Returns filterable tree widget.
     virtual RepoWidgetTreeFilterable* getFilterableTree() const;
 
 protected :
 
+    //! Ui var.
     Ui::RepoWidgetTreeEditable *ui;
 };
 

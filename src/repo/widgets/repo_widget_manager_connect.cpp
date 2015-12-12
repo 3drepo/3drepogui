@@ -21,6 +21,7 @@
 using namespace repo::widgets;
 
 const QString RepoWidgetManagerConnect::COLUMNS_SETTINGS = "RepoWidgetManagerConnectHeaders";
+const QString RepoWidgetManagerConnect::SELECTION_SETTINGS = "RepoWidgetManagerSelectionSettings";
 
 RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
     : RepoWidgetTreeEditable(parent)
@@ -35,9 +36,8 @@ RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
 
     RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
+    filterableTree->storeSelection(SELECTION_SETTINGS);
     filterableTree->setRootIsDecorated(false);
-
-    //--------------------------------------------------------------------------
 
     clear();
 }
@@ -45,6 +45,7 @@ RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
 RepoWidgetManagerConnect::~RepoWidgetManagerConnect()
 {
     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
+    getFilterableTree()->storeSelection(SELECTION_SETTINGS);
 }
 
 void RepoWidgetManagerConnect::addItem(const repo::RepoCredentials &credentials)
@@ -117,7 +118,7 @@ void RepoWidgetManagerConnect::removeItem()
     {
     case 0: // yes
         getFilterableTree()->removeRow();
-        sync();
+        serialize();
         break;
     case 1: // no
         std::cout << "Remove connection warning box cancelled by user." << std::endl;
@@ -156,17 +157,15 @@ void RepoWidgetManagerConnect::showEditDialog(
             model->setItem(row, (int) Columns::SSL, makeSSLItem(credentials));
             model->setItem(row, (int) Columns::SSH, makeSSHItem(credentials));
         }
-        sync();
+        serialize();
     }
 }
 
-void RepoWidgetManagerConnect::sync()
+void RepoWidgetManagerConnect::serialize()
 {
     // TODO: put into async worker
     QList<repo::RepoCredentials> list;
-
     QStandardItemModel *model = getFilterableTree()->getModel();
-
     for (int i = 0; i < model->invisibleRootItem()->rowCount(); ++i)
     {
         QModelIndex index = model->indexFromItem(

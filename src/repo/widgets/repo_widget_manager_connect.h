@@ -48,17 +48,20 @@ class RepoWidgetManagerConnect: public RepoWidgetTreeEditable
 
     static const QString COLUMNS_SETTINGS;
 
+    static const QString SELECTION_SETTINGS;
+
     //! Tree view columns
     enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
 
 public:
 
-    RepoWidgetManagerConnect(QWidget *parent);
+    explicit RepoWidgetManagerConnect(QWidget *parent);
 
     ~RepoWidgetManagerConnect();
 
 public slots :
 
+    //! Adds credentials as an item into the table.
     void addItem(const repo::RepoCredentials &credentials);
 
     //! Updates selected item.
@@ -67,8 +70,10 @@ public slots :
     //! Updates item based on model index.
     virtual void edit(const QModelIndex &index);
 
+    //! Returns currectly selected connection.
     repo::RepoCredentials getConnection();
 
+    //! Returns connection for given model index.
     repo::RepoCredentials getConnection(const QModelIndex &index);
 
     //! Refreshes the current list
@@ -87,6 +92,7 @@ public slots :
         showEditDialog(repo::RepoCredentials(), QModelIndex(), Action::ADD);
     }
 
+    //! Shows edit dialog populated with given credentials.
     void showEditDialog(
             const repo::RepoCredentials &credentials,
             const QModelIndex &index,
@@ -94,7 +100,8 @@ public slots :
 
 private :
 
-    void sync();
+    //! Serializes table contents onto the HDD.
+    void serialize();
 
     //! Returns alias tree item from given credentials
     static QStandardItem *makeAliasItem(const repo::RepoCredentials &credentials);
@@ -113,6 +120,7 @@ private :
 
 private :
 
+    //! DB controller.
     repo::RepoController *controller;
 };
 

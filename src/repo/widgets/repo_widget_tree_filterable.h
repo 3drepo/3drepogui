@@ -191,8 +191,12 @@ public :
     //! Stores header settings to given label
     void storeHeaders(const QString &label);
 
+    void storeSelection(const QString &label);
+
     //! Sets header columns and restores header settings based on a given label.
     void restoreHeaders(const QList<QString> &headers, const QString &label);
+
+    void restoreSelection(const QString &label);
 
 protected :
 

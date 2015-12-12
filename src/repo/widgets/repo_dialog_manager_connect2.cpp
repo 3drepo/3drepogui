@@ -31,7 +31,10 @@ RepoDialogManagerConnect2::RepoDialogManagerConnect2(
     ui->setupUi(this);
     setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
 
-    ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
+//    ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
+
+    QPushButton *connectPushButton = ui->buttonBox->button(QDialogButtonBox::Open);
+    connectPushButton->setText(tr("Connect"));
 
     //--------------------------------------------------------------------------
     // Connect double click to accept action for convenient UI
@@ -39,8 +42,15 @@ RepoDialogManagerConnect2::RepoDialogManagerConnect2(
     QObject::disconnect(treeView, SIGNAL(doubleClicked(const QModelIndex &)),
                       ui->connectionManagerWidget, SLOT(edit(const QModelIndex &)));
 
-    QObject::connect(treeView, &QTreeView::doubleClicked,
-                     this, &QDialog::accept);
+    QObject::connect(treeView,
+                     &QTreeView::doubleClicked,
+                     this,
+                     &QDialog::accept);
+
+    QObject::connect(ui->connectionManagerWidget,
+                     &RepoWidgetTreeEditable::editButtonsEnabledChanged,
+                     connectPushButton,
+                     &QPushButton::setEnabled);
 }
 
 RepoDialogManagerConnect2::~RepoDialogManagerConnect2()

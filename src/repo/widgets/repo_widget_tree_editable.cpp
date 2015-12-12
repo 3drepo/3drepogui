@@ -68,6 +68,8 @@ void RepoWidgetTreeEditable::clear()
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);
     ui->copyPushButton->setEnabled(false);
+
+    emit editButtonsEnabledChanged(false);
 }
 
 void RepoWidgetTreeEditable::select(
@@ -77,6 +79,8 @@ void RepoWidgetTreeEditable::select(
     ui->removePushButton->setEnabled(true);
     ui->editPushButton->setEnabled(true);
     ui->copyPushButton->setEnabled(true);
+
+    emit editButtonsEnabledChanged(true);
 }
 
 void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
