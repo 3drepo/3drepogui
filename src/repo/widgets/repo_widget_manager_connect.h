@@ -98,6 +98,12 @@ public slots :
             const QModelIndex &index,
             const Action action);
 
+public :
+
+    //! Sets DB controller for connectin validation to work.
+    void setController(repo::RepoController *controller)
+    {   this->controller = controller; }
+
 private :
 
     //! Serializes table contents onto the HDD.

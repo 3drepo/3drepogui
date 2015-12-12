@@ -16,17 +16,17 @@
  */
 
 
-#include "repo_dialog_manager_connect2.h"
+#include "repo_dialog_manager_connect.h"
 #include "ui_repo_dialog_manager_connect.h"
 
 using namespace repo::widgets;
 
-RepoDialogManagerConnect2::RepoDialogManagerConnect2(
+RepoDialogManagerConnect::RepoDialogManagerConnect(
         repo::RepoController *controller,
         QWidget *parent)
     : QDialog(parent)
     , controller(controller)
-    , ui(new Ui::RepoDialogManagerConnect2)
+    , ui(new Ui::RepoDialogManagerConnect)
 {
     ui->setupUi(this);
     setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
@@ -51,25 +51,27 @@ RepoDialogManagerConnect2::RepoDialogManagerConnect2(
                      &RepoWidgetTreeEditable::editButtonsEnabledChanged,
                      connectPushButton,
                      &QPushButton::setEnabled);
+
+    ui->connectionManagerWidget->setController(controller);
 }
 
-RepoDialogManagerConnect2::~RepoDialogManagerConnect2()
+RepoDialogManagerConnect::~RepoDialogManagerConnect()
 {
     delete ui;
 }
 
-int RepoDialogManagerConnect2::exec()
+int RepoDialogManagerConnect::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void RepoDialogManagerConnect2::refresh()
+void RepoDialogManagerConnect::refresh()
 {
     ui->connectionManagerWidget->refresh();
 }
 
-repo::RepoCredentials RepoDialogManagerConnect2::getConnection()
+repo::RepoCredentials RepoDialogManagerConnect::getConnection()
 {
     return ui->connectionManagerWidget->getConnection();
 }

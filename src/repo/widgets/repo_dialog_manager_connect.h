@@ -32,20 +32,20 @@
 #include "../../primitives/repo_fontawesome.h"
 
 namespace Ui {
-class RepoDialogManagerConnect2;
+class RepoDialogManagerConnect;
 }
 
 namespace repo {
 namespace widgets {
 
 
-class RepoDialogManagerConnect2 : public QDialog
+class RepoDialogManagerConnect : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RepoDialogManagerConnect2(repo::RepoController *controller, QWidget *parent = 0);
-    ~RepoDialogManagerConnect2();
+    explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
+    ~RepoDialogManagerConnect();
 
 public slots :
 
@@ -56,7 +56,7 @@ public slots :
     repo::RepoCredentials getConnection();
 
 private:
-    Ui::RepoDialogManagerConnect2 *ui;
+    Ui::RepoDialogManagerConnect *ui;
 
     repo::RepoController *controller;
 };

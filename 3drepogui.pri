@@ -13,7 +13,6 @@ HEADERS +=  \
 	src/dialogs/repofederationdialog.h \
 	src/dialogs/repo_dialogcommit.h \
 	src/dialogs/repo_dialoghistory.h \
-	src/dialogs/repo_dialog_manager_connect.h \
 	src/dialogs/repo_genericdialog.h \
 	src/dialogs/repo_maptilesdialog.h \
 	src/dialogs/repo_transformationdialog.h \
@@ -36,7 +35,7 @@ HEADERS +=  \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_connect.h \
 	src/repo/widgets/repo_dialog_manager_access.h \
-	src/repo/widgets/repo_dialog_manager_connect2.h \
+	src/repo/widgets/repo_dialog_manager_connect.h \
 	src/repo/widgets/repo_dialog_project.h \
 	src/repo/widgets/repo_dialog_role.h \
 	src/repo/widgets/repo_dialog_user.h \
@@ -84,7 +83,6 @@ SOURCES +=  \
 	src/dialogs/repofederationdialog.cpp \
 	src/dialogs/repo_dialogcommit.cpp \
 	src/dialogs/repo_dialoghistory.cpp \
-	src/dialogs/repo_dialog_manager_connect.cpp \
 	src/dialogs/repo_genericdialog.cpp \
 	src/dialogs/repo_maptilesdialog.cpp \
 	src/dialogs/repo_transformationdialog.cpp \
@@ -107,7 +105,7 @@ SOURCES +=  \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_connect.cpp \
 	src/repo/widgets/repo_dialog_manager_access.cpp \
-	src/repo/widgets/repo_dialog_manager_connect2.cpp \
+	src/repo/widgets/repo_dialog_manager_connect.cpp \
 	src/repo/widgets/repo_dialog_project.cpp \
 	src/repo/widgets/repo_dialog_role.cpp \
 	src/repo/widgets/repo_dialog_user.cpp \

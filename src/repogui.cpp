@@ -29,7 +29,6 @@
 #include "dialogs/repo_dialoghistory.h"
 #include "dialogs/repodialogsettings.h"
 #include "dialogs/repodialogabout.h"
-#include "dialogs/repo_dialog_manager_connect.h"
 #include "repo/logger/repo_logger.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
@@ -47,7 +46,7 @@
 
 //------------------------------------------------------------------------------
 #include "repo/widgets/repo_dialog_manager_access.h"
-#include "repo/widgets/repo_dialog_manager_connect2.h"
+#include "repo/widgets/repo_dialog_manager_connect.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
@@ -394,7 +393,7 @@ void repo::gui::RepoGUI::connectDB()
 
 //    RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
 
-    repo::widgets::RepoDialogManagerConnect2 connectManager(controller, (QWidget*)this);
+    repo::widgets::RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
