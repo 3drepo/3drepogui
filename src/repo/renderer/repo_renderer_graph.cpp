@@ -23,64 +23,78 @@ using namespace repo::core::model;
 using namespace repo::gui;
 
 RepoRendererGraph::RepoRendererGraph(const repo::core::model::RepoScene *scene)
+    : scene(scene)
+    , nodeDiameter(20.0f)
+    , penWidth(3.0f)
 {
     qRegisterMetaType<repo::core::model::RepoNode *>("repo::core::model::RepoNode *");
-    addSceneRecursively(scene);
+    initialize();
 }
 
 RepoRendererGraph::~RepoRendererGraph() {}
 
-void RepoRendererGraph::addSceneRecursively(const repo::core::model::RepoScene *scene)
+void RepoRendererGraph::initialize()
 {
-    if (scene)
+    if (!scene)
+    {
+        std::cerr << tr("Attempting to render graph from nullptr scene!").toStdString() << std::endl;
+    }
+    else
     {
         RepoNode *root = scene->getRoot();
         std::cout << "Rendering graph for " << root->getName() << std::endl;
 
         std::set<RepoNode*> nodes;
         nodes.insert(root);
-        addNodesRecursively(scene, nodes, 0);
+        addNodesRecursively(nodes, 0);
     }
-    else
-        std::cerr << tr("Attempting to render graph from nullptr scene!").toStdString() << std::endl;
 }
 
 void RepoRendererGraph::addNodesRecursively(
-        const RepoScene *scene,
         const std::set<RepoNode*> nodes,
         const int row)
 {
     if (nodes.size()) // base case
     {
+        //----------------------------------------------------------------------
         std::cout << tr("Creating").toStdString() << " ";
         std::cout << nodes.size();
         std::cout << " " << tr("nodes at level").toStdString() << " " << row;
         std::cout << std::endl;
+        //----------------------------------------------------------------------
 
         // X position as half from minus to half plus number of all nodes
         float i = nodes.size() / 2.0f * (-1.0f);
 
-        std::set<RepoNode*> children;
+        std::set<RepoNode*> unpainted;
         for(RepoNode *node : nodes)
         {
-            addNode(node, row, i++);
-
-
-            // Collect children from all nodes into one set
+            // Collect children from all nodes into one set (so they are unique)
             std::vector<RepoNode*> ch = scene->getChildrenAsNodes(node->getSharedID());
-            std::copy(ch.begin(), ch.end(), std::inserter(children, children.begin()));
+            std::copy(ch.begin(), ch.end(), std::inserter(unpainted, unpainted.begin()));
+
+            // Only paint a node if all of its parent are already painted
+            if (areAllParentsPainted(node))
+            {
+                QGraphicsEllipseItem *item = addNode(node, row, i++);
+                addLines(node, item);
+                painted.insert(uuidToQString(node->getSharedID()), item);
+            }
+            else
+            {
+                unpainted.insert(node);
+            }
         }
-        addNodesRecursively(scene, children, row + 1);
+        addNodesRecursively(unpainted, row + 1);
     }
 }
 
-void RepoRendererGraph::addNode(repo::core::model::RepoNode *node, float row, float column)
+QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *node, float row, float column)
 {
-    float diameter = 20.0f;
-    float spacing = diameter / 4.0f;
+    float spacing = nodeDiameter / 4.0f;
 
     QPen pen;
-    pen.setWidthF(3.0f);
+    pen.setWidthF(penWidth);
     QBrush brush(Qt::SolidPattern);
 
     QColor dark;
@@ -129,25 +143,74 @@ void RepoRendererGraph::addNode(repo::core::model::RepoNode *node, float row, fl
         dark = Qt::darkGray;
         light = Qt::gray;
     }
-
     pen.setColor(dark);
     brush.setColor(light);
 
-    QGraphicsEllipseItem *ellipse = addEllipse(column * (diameter + spacing),
-               row * (diameter + spacing) * 4,
-               diameter,
-               diameter,
-               pen,
-               brush);
+    qreal x = column * (nodeDiameter + spacing);
+    qreal y = row * (nodeDiameter + spacing) * 4;
+    QGraphicsEllipseItem *ellipse = addEllipse(
+                0, 0, nodeDiameter, nodeDiameter, pen, brush);
+    ellipse->setPos(x, y);
+    ellipse->setZValue(1.0f);
 
-    QString name = QString::fromStdString(node->getType()) + ": " +
-            (!(node->getName()).empty()
-            ? QString::fromStdString(node->getName())
-            : QString::fromStdString(UUIDtoString(node->getUniqueID())));
-    ellipse->setToolTip(name);
-
+    //--------------------------------------------------------------------------
+    QString toolTip;
+    toolTip += tr("_id") + "\t: '" + uuidToQString(node->getUniqueID()) + "',\n";
+    toolTip += tr("sid") + "\t: '" + uuidToQString(node->getSharedID()) + "',\n";
+    if (!node->getName().empty())
+        toolTip += tr("name") + "\t: '" + QString::fromStdString(node->getName()) + "',\n";
+    toolTip += tr("type") + "\t: '" + QString::fromStdString(node->getType()) + "'";
+    ellipse->setToolTip(toolTip);
+    //--------------------------------------------------------------------------
     QVariant var;
     var.setValue(node);
     ellipse->setData(0, var);
+    //--------------------------------------------------------------------------
+    return ellipse;
+}
+
+std::vector<QGraphicsLineItem*> RepoRendererGraph::addLines(
+        const repo::core::model::RepoNode *node,
+        const QGraphicsItem *nodeItem)
+{
+    std::vector<QGraphicsLineItem*> lines(node->getParentIDs().size());
+    if (node)
+    {
+        QPen pen(Qt::lightGray);
+        pen.setWidthF(penWidth);
+
+        qreal halfDiameter = nodeDiameter/2;
+        qreal halfPen = penWidth/2;
+
+        int i = 0;
+        for (repoUUID parentID : node->getParentIDs())
+        {
+            QGraphicsItem *parentItem = painted[uuidToQString(parentID)];
+            QGraphicsLineItem *line = addLine(
+                        parentItem->scenePos().x() + halfDiameter,
+                        parentItem->scenePos().y() + halfDiameter + halfPen,
+                        nodeItem->scenePos().x() + halfDiameter,
+                        nodeItem->scenePos().y() + halfDiameter + halfPen,
+                        pen);
+            line->setZValue(0.0f);
+            lines[i++] = line;
+        }
+    }
+    return lines;
+}
+
+bool RepoRendererGraph::areAllParentsPainted(const repo::core::model::RepoNode *node)
+{
+    bool allPainted = true;
+    for (repoUUID parentID : node->getParentIDs())
+    {
+        allPainted = allPainted && (painted.contains(uuidToQString(parentID)));
+    }
+    return allPainted;
+}
+
+QString RepoRendererGraph::uuidToQString(const repoUUID &uuid)
+{
+    return QString::fromStdString(UUIDtoString(uuid));
 }
 

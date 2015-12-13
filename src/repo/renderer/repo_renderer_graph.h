@@ -20,6 +20,7 @@
 // Qt
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
+#include <QGraphicsItem>
 
 // GUI
 #include "../../primitives/repo_color.h"
@@ -44,18 +45,40 @@ public:
 
 public :
 
-    void addSceneRecursively(const repo::core::model::RepoScene *scene);
+    void initialize();
 
 private :
 
     //! Breadth first search in recursive fashion
     void addNodesRecursively(
-            const repo::core::model::RepoScene *scene,
             const std::set<repo::core::model::RepoNode *> nodes,
             const int row);
 
     //! Adds node
-    void addNode(repo::core::model::RepoNode *node, float row, float column);
+    QGraphicsEllipseItem *addNode(
+            repo::core::model::RepoNode *node, float row, float column);
+
+    //! Adds directed link from node to all its parents assuming they are all already painted.
+    std::vector<QGraphicsLineItem*> addLines(
+            const repo::core::model::RepoNode *node,
+            const QGraphicsItem *item);
+
+    bool areAllParentsPainted(const repo::core::model::RepoNode *node);
+
+public :
+
+    static QString uuidToQString(const repoUUID &uuid);
+
+private :
+
+    const repo::core::model::RepoScene *scene;
+
+    //! Diameter of each node in the graph.
+    qreal nodeDiameter;
+
+    qreal penWidth;
+
+    QHash<QString, QGraphicsItem *> painted;
 
 
 }; // end class

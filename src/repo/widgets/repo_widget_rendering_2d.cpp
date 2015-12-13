@@ -28,8 +28,8 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
 {
     //--------------------------------------------------------------------------
     // Rendering optimisation
-    this->setViewport(new QOpenGLWidget());
-    this->setCacheMode(QGraphicsView::CacheBackground);
+//    this->setViewport(new QOpenGLWidget());
+//    this->setCacheMode(QGraphicsView::CacheBackground);
     this->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
     //--------------------------------------------------------------------------
     this->setWindowTitle(windowTitle);
