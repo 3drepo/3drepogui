@@ -407,6 +407,9 @@
    <property name="text">
     <string>Scene Graph</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+G</string>
+   </property>
   </action>
   <action name="actionHighlights">
    <property name="enabled">

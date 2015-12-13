@@ -21,8 +21,14 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 
+// GUI
+#include "../../primitives/repo_color.h"
+
 // Core
 #include <repo/core/model/collection/repo_scene.h>
+#include <repo/core/model/repo_node_utils.h>
+
+Q_DECLARE_METATYPE(repo::core::model::RepoNode *)
 
 namespace repo {
 namespace renderer {
@@ -37,6 +43,19 @@ public:
     ~RepoRendererGraph();
 
 public :
+
+    void addSceneRecursively(const repo::core::model::RepoScene *scene);
+
+private :
+
+    //! Breadth first search in recursive fashion
+    void addNodesRecursively(
+            const repo::core::model::RepoScene *scene,
+            const std::set<repo::core::model::RepoNode *> nodes,
+            const int row);
+
+    //! Adds node
+    void addNode(repo::core::model::RepoNode *node, float row, float column);
 
 
 }; // end class

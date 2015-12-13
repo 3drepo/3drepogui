@@ -20,6 +20,9 @@
 #include <QGraphicsView>
 #include <QWidget>
 #include <QOpenGLWidget>
+#include <QWheelEvent>
+#include <QResizeEvent>
+#include <QScrollBar>
 
 #include "../../primitives/repo_fontawesome.h"
 #include "../renderer/repo_renderer_graph.h"
@@ -42,7 +45,41 @@ public:
 
     ~RepoWidgetRendering2D();
 
+public slots :
+
+
+
+public :
+
+    //! Zoom in one step if true, zoom out one step otherwise.
+    void zoom(bool in);
+
+    //! Resets the zooming to default level.
+    void zoomReset();
+
+protected :
+
+    //! Updates the height of the timeline scene.
+    virtual void resizeEvent(QResizeEvent *);
+
+    //! Zoom in/out CTRL + wheel.
+    virtual void wheelEvent(QWheelEvent*);
+
+    //! Enables panning on mid button press.
+    virtual void mousePressEvent(QMouseEvent*);
+
+    //! Release of mid button changes cursor back to normal.
+    virtual void mouseReleaseEvent(QMouseEvent*);
+
+    //! Pans the view on mid button move.
+    virtual void mouseMoveEvent(QMouseEvent*);
+
+    virtual void keyPressEvent(QKeyEvent *);
+
 private :
+
+    //! Position of the mouse cursor when last pressed.
+    QPoint lastMousePosition;
 
 };
 

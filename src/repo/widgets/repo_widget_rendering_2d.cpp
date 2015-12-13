@@ -30,6 +30,7 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
     // Rendering optimisation
     this->setViewport(new QOpenGLWidget());
     this->setCacheMode(QGraphicsView::CacheBackground);
+    this->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
     //--------------------------------------------------------------------------
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(repo::gui::RepoFontAwesome::getSceneGraphIcon());
@@ -38,4 +39,96 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
 RepoWidgetRendering2D::~RepoWidgetRendering2D()
 {
 
+}
+
+void RepoWidgetRendering2D::zoom(bool in)
+{
+    double scaleFactor = 1.15;
+    if(in) // zoom in
+        scale(scaleFactor, scaleFactor);
+    else // zoom out
+    {
+        double out = 1.0 / scaleFactor;
+        scale(out, out);
+    }
+}
+
+void RepoWidgetRendering2D::zoomReset()
+{
+    this->setTransform(QTransform());
+}
+
+void RepoWidgetRendering2D::resizeEvent(QResizeEvent * event)
+{
+    QGraphicsView::resizeEvent(event);
+    //-------------------------------------------------------------------------
+    // Size of the scene rectangle only grows, it never shrinks.
+    // See: http://qt-project.org/doc/qt-5.0/qtwidgets/qgraphicsscene.html#sceneRect-prop
+    int sceneHeight = std::max(
+        (int) scene()->sceneRect().height(),
+        event ? event->size().height() : 0);
+    scene()->setSceneRect(
+        QRect(
+            scene()->sceneRect().x(), scene()->sceneRect().y(),
+            scene()->sceneRect().width(), sceneHeight));
+}
+
+void RepoWidgetRendering2D::wheelEvent(QWheelEvent* event)
+{
+    // Zoom if CTRL pressed and wheel rotated.
+    if (Qt::Modifier::CTRL == event->modifiers())
+    {
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        zoom(event->delta() > 0);
+    }
+    else
+        QGraphicsView::wheelEvent(event);
+}
+
+void RepoWidgetRendering2D::mousePressEvent(QMouseEvent *e)
+{
+    lastMousePosition = e->pos();
+    QGraphicsView::mousePressEvent(e);
+}
+
+
+void RepoWidgetRendering2D::mouseReleaseEvent(QMouseEvent *e)
+{
+    this->setCursor(Qt::ArrowCursor);
+    QGraphicsView::mousePressEvent(e);
+}
+
+
+void RepoWidgetRendering2D::mouseMoveEvent(QMouseEvent *e)
+{
+    if (e->buttons().testFlag(Qt::MidButton))
+    {
+        this->setCursor(Qt::ClosedHandCursor);
+        // Custom dragging instead of setDragMode(ScrollHandDrag);
+        QScrollBar * horizontalBar = horizontalScrollBar();
+        QScrollBar * verticalBar = verticalScrollBar();
+        QPoint delta = e->pos() - lastMousePosition;
+        lastMousePosition = e->pos();
+        horizontalBar->setValue(horizontalBar->value() + (isRightToLeft() ? delta.x() : -delta.x()));
+        verticalBar->setValue(verticalBar->value() - delta.y());
+    }
+    QGraphicsView::mousePressEvent(e);
+}
+
+void RepoWidgetRendering2D::keyPressEvent(QKeyEvent *e)
+{
+    switch (e->key())
+    {
+    case Qt::Key_Plus :
+    case Qt::Key_Equal :
+        zoom(true); // zoom in
+        break;
+    case Qt::Key_Minus :
+    case Qt::Key_Underscore :
+        zoom(false); // zoom out
+        break;
+    case Qt::Key_0 :
+        zoomReset();
+        break;
+    }
 }
