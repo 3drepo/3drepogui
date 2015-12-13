@@ -44,47 +44,71 @@ void RepoRendererGraph::initialize()
         RepoNode *root = scene->getRoot();
         std::cout << "Rendering graph for " << root->getName() << std::endl;
 
-        std::set<RepoNode*> nodes;
-        nodes.insert(root);
+        std::vector<RepoNode*> nodes(1);
+        nodes[0] = root;
         addNodesRecursively(nodes, 0);
     }
 }
 
 void RepoRendererGraph::addNodesRecursively(
-        const std::set<RepoNode*> nodes,
+        const std::vector<RepoNode*> nodes,
         const int row)
 {
     if (nodes.size()) // base case
     {
-        //----------------------------------------------------------------------
-        std::cout << tr("Creating").toStdString() << " ";
-        std::cout << nodes.size();
-        std::cout << " " << tr("nodes at level").toStdString() << " " << row;
-        std::cout << std::endl;
-        //----------------------------------------------------------------------
+        int counter = 0;
 
+        //----------------------------------------------------------------------
         // X position as half from minus to half plus number of all nodes
         float i = nodes.size() / 2.0f * (-1.0f);
 
-        std::set<RepoNode*> unpainted;
+        QHash<QString, QGraphicsItem *> freshlyPainted;
+        std::vector<RepoNode*> unpainted;
         for(RepoNode *node : nodes)
         {
             // Collect children from all nodes into one set (so they are unique)
             std::vector<RepoNode*> ch = scene->getChildrenAsNodes(node->getSharedID());
-            std::copy(ch.begin(), ch.end(), std::inserter(unpainted, unpainted.begin()));
+            std::copy(ch.begin(), ch.end(), std::back_inserter(unpainted));
 
             // Only paint a node if all of its parent are already painted
             if (areAllParentsPainted(node))
             {
                 QGraphicsEllipseItem *item = addNode(node, row, i++);
                 addLines(node, item);
-                painted.insert(uuidToQString(node->getSharedID()), item);
+                freshlyPainted.insert(uuidToQString(node->getSharedID()), item);
+                counter++;
             }
             else
             {
-                unpainted.insert(node);
+                unpainted.push_back(node);
             }
         }
+
+        //----------------------------------------------------------------------
+        // Make sure there are no duplicated in unpainted set.
+//        auto it = std::unique(unpainted.begin(), unpainted.end());
+//        unpainted.resize(std::distance(unpainted.begin(),it));
+
+        std::sort(unpainted.begin(), unpainted.end());
+        unpainted.erase(std::unique(unpainted.begin(),unpainted.end()), unpainted.end());
+
+        //----------------------------------------------------------------------
+        // Copy over to global painted hashmap
+        // these must be included at the very end to make sure that parent-child
+        // nodes don't end up on the same graph level in case parent is
+        // randomly painted before child in this iteration.
+        for (QString uuid : freshlyPainted.keys())
+        {
+            painted.insert(uuid, freshlyPainted[uuid]);
+        }
+
+        //----------------------------------------------------------------------
+        std::cout << tr("Created").toStdString() << " ";
+        std::cout << counter;
+        std::cout << " " << tr("nodes at level").toStdString() << " " << row;
+        std::cout << std::endl;
+        //----------------------------------------------------------------------
+
         addNodesRecursively(unpainted, row + 1);
     }
 }

@@ -51,7 +51,7 @@ private :
 
     //! Breadth first search in recursive fashion
     void addNodesRecursively(
-            const std::set<repo::core::model::RepoNode *> nodes,
+            const std::vector<core::model::RepoNode *> nodes,
             const int row);
 
     //! Adds node
