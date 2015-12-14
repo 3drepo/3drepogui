@@ -134,6 +134,15 @@ void GLCRenderer::extractMeshes(GLC_StructOccurrence * occurrence)
 						{
 							glcMesh->setColorPearVertex(true);
 							meshMap[glcMesh->name()] = glcMesh;
+							QList<GLuint> materialIds = glcMesh->materialIds();
+							for (const GLuint id : materialIds)
+							{
+								GLC_Material *mat = glcMesh->material(id);
+								if (mat)
+								{
+									matMap[mat->name()] = mat;
+								}
+							}
 						}
 					}
 				}
@@ -278,30 +287,26 @@ void GLCRenderer::renderingMode(const RenderMode &mode)
 
 void GLCRenderer::setMeshColor(
 	const QString &name,
+	const repoUUID &uniqueID,
 	const qreal &opacity,
 	const QColor &color)
 {
-	auto meshIt = meshMap.find(name);
-
+	QString uuidString = QString::fromStdString(UUIDtoString(uniqueID));
+	auto meshIt = meshMap.find(uuidString);
+	auto matIt = matMap.find(uuidString);
+	GLC_Material *mat = nullptr;
 	if (meshIt != meshMap.end())
 	{
 		GLC_Mesh *mesh = meshIt->second;
-        if (mesh->materialCount())
+		if (mesh->materialCount())
 		{
 			//has material, alter the emissive color 
 			auto matIds = mesh->materialIds();
-			GLC_Material *mat = mesh->material(matIds[0]);
-			mat->setEmissiveColor(color);
-			mat->setOpacity(opacity);
-			if (mat->hasTexture())
-			{
-				//take away the texture to make the material visible
-				mat->removeTexture();
-			}
+			mat = mesh->material(matIds[0]);
+
 		}
 		else
 		{
-
 			//no material
 			GLfloatVector glcColor;
 			glcColor.push_back(color.redF());
@@ -311,10 +316,27 @@ void GLCRenderer::setMeshColor(
 			mesh->addColors(glcColor);
 		}
 	}
+	else if (matIt != matMap.end())
+	{
+		mat = matIt->second;
+
+	}
 	else
 	{
 		repoLogError("Failed to set color of mesh " + name.toStdString() + " : mesh not found!");
 	}
+
+	if (mat)
+	{
+		mat->setEmissiveColor(color);
+		mat->setOpacity(opacity);
+		if (mat->hasTexture())
+		{
+			//take away the texture to make the material visible
+			mat->removeTexture();
+		}
+	}
+
 }
 
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)

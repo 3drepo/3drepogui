@@ -45,12 +45,8 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		//colour widgetB's graph to reflect the comparison
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			/*		widgetB->setGLCOccurrenceOpacity(QString::fromStdString(node->getName()),
-						0.9, Qt::green);*/
-			widgetB->setMeshColor(QString::fromStdString(node->getName()), 0.9, Qt::green);
+			widgetB->setMeshColor(QString::fromStdString(node->getName()), node->getUniqueID(), 0.9, Qt::green);
 
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
-			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
 	}
 
 
@@ -61,10 +57,8 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
 			widgetB->setMeshColor(QString::fromStdString(node->getName()),
-			0.9, Qt::cyan);
+			node->getUniqueID(), 0.9, Qt::cyan);
 
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
-			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
 	}
 
 	for (const repoUUID id : aRes.added)
@@ -74,10 +68,8 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH )
 			widgetA->setMeshColor(QString::fromStdString(node->getName()),
-				0.9, Qt::red);
+			node->getUniqueID(), 0.9, Qt::red);
 
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
-			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
 	}
 
 	for (const repoUUID id : aRes.modified)
@@ -87,9 +79,7 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
 			widgetA->setMeshColor(QString::fromStdString(node->getName()),
-				0.9, Qt::cyan);	
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::TRANSFORMATION)
-			repoLogError("Transformation difference isn't yet supported by the renderer yet.");
+			node->getUniqueID(), 0.9, Qt::cyan);
 	}
 
 

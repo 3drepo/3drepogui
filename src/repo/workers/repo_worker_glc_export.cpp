@@ -672,7 +672,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
     if (mesh)
     {
 		std::string name = mesh->getName();
-		glcMesh->setName(QString::fromStdString(name));
+		glcMesh->setName(QString::fromStdString(UUIDtoString(mesh->getUniqueID())));
 
 		std::vector<repo_vector_t> *vector3d;
 		//Vertices
@@ -720,8 +720,9 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 					mapMaterials.find(map.material_id);
 				if (mapIt != mapMaterials.end())
 				{
-					//FIXME: assume 1 material only
-					material = (GLC_Material*)mapIt->second.at(0);
+					//material = (GLC_Material*)mapIt->second.at(0);
+					material = new GLC_Material(*mapIt->second.at(0));
+					material->setName(QString::fromStdString(UUIDtoString(map.mesh_id)));
 				}
 
 				glcMesh->addTriangles(material, glcFaces);
@@ -784,7 +785,6 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			delete faces;
 
 		glcMesh->finish();
-
 
     }
 	
