@@ -123,6 +123,7 @@ namespace repo {
 				*/
 				void setMeshColor(
 					const QString &name,
+					const repoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color);
 

@@ -113,6 +113,7 @@ namespace repo {
 				*/
 				virtual void setMeshColor(
 					const QString &name,
+					const repoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color);
 
@@ -250,7 +251,8 @@ namespace repo {
 				GLC_3DViewCollection glcViewCollection; //! The main collection of auxiliary objects (such as bboxes).				
 				GLC_3DViewCollection glcUICollection; //! The main collection of UI components (such as axes).
 				GLC_MoverController glcMoverController; //! The navigation controller of the scene (arc ball, fly etc).
-                                std::map<QString, GLC_Mesh*> meshMap;
+				std::map<QString, GLC_Mesh*> meshMap;
+				std::map<QString, GLC_Material*> matMap;
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
 
