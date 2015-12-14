@@ -25,12 +25,16 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
         const QString &windowTitle,
         QWidget *parent)
     : QGraphicsView(new renderer::RepoRendererGraph(scene), parent)
+    , openGLWidget(new QOpenGLWidget())
 {
     //--------------------------------------------------------------------------
     // Rendering optimisation
-//    this->setViewport(new QOpenGLWidget());
-//    this->setCacheMode(QGraphicsView::CacheBackground);
-    this->setRenderHints(QPainter::HighQualityAntialiasing | QPainter::SmoothPixmapTransform);
+    QSurfaceFormat format;
+    format.setSamples(2);
+    openGLWidget->setFormat(format);
+    this->setViewport(openGLWidget);
+    this->setCacheMode(QGraphicsView::CacheBackground);
+    this->setRenderHints(QPainter::Antialiasing);// | QPainter::SmoothPixmapTransform);
     //--------------------------------------------------------------------------
     this->setWindowTitle(windowTitle);
     this->setWindowIcon(repo::gui::RepoFontAwesome::getSceneGraphIcon());
@@ -38,7 +42,7 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
 
 RepoWidgetRendering2D::~RepoWidgetRendering2D()
 {
-
+    delete openGLWidget;
 }
 
 void RepoWidgetRendering2D::zoom(bool in)

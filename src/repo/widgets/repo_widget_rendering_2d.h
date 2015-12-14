@@ -23,6 +23,7 @@
 #include <QWheelEvent>
 #include <QResizeEvent>
 #include <QScrollBar>
+#include <QSurfaceFormat>
 
 #include "../../primitives/repo_fontawesome.h"
 #include "../renderer/repo_renderer_graph.h"
@@ -80,6 +81,8 @@ private :
 
     //! Position of the mouse cursor when last pressed.
     QPoint lastMousePosition;
+
+    QOpenGLWidget *openGLWidget;
 
 };
 

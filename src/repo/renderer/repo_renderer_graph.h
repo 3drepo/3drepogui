@@ -39,7 +39,9 @@ class RepoRendererGraph : public QGraphicsScene
 
 public:
 
-    RepoRendererGraph(const repo::core::model::RepoScene *scene);
+    RepoRendererGraph(const repo::core::model::RepoScene *scene,
+                      repo::core::model::RepoScene::GraphType graphType =
+            repo::core::model::RepoScene::GraphType::DEFAULT);
 
     ~RepoRendererGraph();
 
@@ -52,7 +54,7 @@ private :
     //! Breadth first search in recursive fashion
     void addNodesRecursively(
             const std::vector<core::model::RepoNode *> nodes,
-            const int row);
+            int row);
 
     //! Adds node
     QGraphicsEllipseItem *addNode(
@@ -72,6 +74,8 @@ public :
 private :
 
     const repo::core::model::RepoScene *scene;
+
+    repo::core::model::RepoScene::GraphType graphType;
 
     //! Diameter of each node in the graph.
     qreal nodeDiameter;

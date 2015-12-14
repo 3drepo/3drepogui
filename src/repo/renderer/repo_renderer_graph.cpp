@@ -22,8 +22,11 @@ using namespace repo::renderer;
 using namespace repo::core::model;
 using namespace repo::gui;
 
-RepoRendererGraph::RepoRendererGraph(const repo::core::model::RepoScene *scene)
+RepoRendererGraph::RepoRendererGraph(
+        const repo::core::model::RepoScene *scene,
+        RepoScene::GraphType graphType)
     : scene(scene)
+    , graphType(graphType)
     , nodeDiameter(20.0f)
     , penWidth(3.0f)
 {
@@ -41,18 +44,24 @@ void RepoRendererGraph::initialize()
     }
     else
     {
-        RepoNode *root = scene->getRoot();
-        std::cout << "Rendering graph for " << root->getName() << std::endl;
-
-        std::vector<RepoNode*> nodes(1);
-        nodes[0] = root;
-        addNodesRecursively(nodes, 0);
+        RepoNode *root = scene->getRoot(graphType);
+        if (!root)
+        {
+            std::cerr << tr("Rendering graph root node returned nullptr.").toStdString() << std::endl;
+        }
+        else
+        {
+            std::cout << tr("Rendering graph for ").toStdString() << root->getName() << std::endl;
+            std::vector<RepoNode*> nodes(1);
+            nodes[0] = root;
+            addNodesRecursively(nodes, 0);
+        }
     }
 }
 
 void RepoRendererGraph::addNodesRecursively(
         const std::vector<RepoNode*> nodes,
-        const int row)
+        int row)
 {
     if (nodes.size()) // base case
     {
@@ -67,7 +76,7 @@ void RepoRendererGraph::addNodesRecursively(
         for(RepoNode *node : nodes)
         {
             // Collect children from all nodes into one set (so they are unique)
-            std::vector<RepoNode*> ch = scene->getChildrenAsNodes(node->getSharedID());
+            std::vector<RepoNode*> ch = scene->getChildrenAsNodes(graphType, node->getSharedID());
             std::copy(ch.begin(), ch.end(), std::back_inserter(unpainted));
 
             // Only paint a node if all of its parent are already painted
@@ -86,8 +95,8 @@ void RepoRendererGraph::addNodesRecursively(
 
         //----------------------------------------------------------------------
         // Make sure there are no duplicated in unpainted set.
-//        auto it = std::unique(unpainted.begin(), unpainted.end());
-//        unpainted.resize(std::distance(unpainted.begin(),it));
+        //        auto it = std::unique(unpainted.begin(), unpainted.end());
+        //        unpainted.resize(std::distance(unpainted.begin(),it));
 
         std::sort(unpainted.begin(), unpainted.end());
         unpainted.erase(std::unique(unpainted.begin(),unpainted.end()), unpainted.end());
