@@ -18,7 +18,9 @@
 
 #include "repo_3ddiffrenderer.h"
 
-repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
+using namespace repo::gui;
+
+Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::RepoController *controller,
 	const repo::RepoToken *token,
         widgets::RepoRenderingWidget *widgetA,
@@ -33,61 +35,57 @@ repo::gui::Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
 	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
-	repo::manipulator::diff::DiffResult aRes, bRes;
-	//FIXME : Probably should move this out, this class should purely be about rendering differences
-	controller->compareScenesByNames(token, sceneA, sceneB, aRes, bRes);
-	//TODO: If it is a modification of a transformation or a transformation has been added, it needs to 
-	// highlight the entire subtree as everything is moved.
 
-	for (const repoUUID id : bRes.added)
-	{
-		
-		//colour widgetB's graph to reflect the comparison
-		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetB->setMeshColor(QString::fromStdString(node->getName()), node->getUniqueID(), 0.9, Qt::green);
+	repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
+		controller,
+		token,
+		sceneA,
+		sceneB);
 
-	}
+	
+	QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnA,
+		this, &Repo3DDiffRenderer::resultingDifferenceA);
+	QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnB, 
+		this, &Repo3DDiffRenderer::resultingDifferenceB);
 
+	//----------------------------------------------------------------------
+	// Fire up the asynchronous calculation.
+	QThreadPool::globalInstance()->start(worker);
 
-	for (const repoUUID id : bRes.modified)
-	{
-
-		//colour widgetB's graph to reflect the comparison
-		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetB->setMeshColor(QString::fromStdString(node->getName()),
-			node->getUniqueID(), 0.9, Qt::cyan);
-
-	}
-
-	for (const repoUUID id : aRes.added)
-	{
-
-		//colour widgetB's graph to reflect the comparison
-		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH )
-			widgetA->setMeshColor(QString::fromStdString(node->getName()),
-			node->getUniqueID(), 0.9, Qt::red);
-
-	}
-
-	for (const repoUUID id : aRes.modified)
-	{
-
-		//colour widgetB's graph to reflect the comparison
-		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widgetA->setMeshColor(QString::fromStdString(node->getName()),
-			node->getUniqueID(), 0.9, Qt::cyan);
-	}
-
-
-	widgetA->repaintCurrent();
-    widgetB->repaintCurrent();
 }
 
-repo::gui::Repo3DDiffRenderer::~Repo3DDiffRenderer()
+Repo3DDiffRenderer::~Repo3DDiffRenderer()
 {
 }
+
+void Repo3DDiffRenderer::resultingDifference(const repo::manipulator::diff::DiffResult &res,
+							widgets::RepoRenderingWidget *widget,
+							const QColor &modColor,
+							const QColor &addColor)
+{
+	auto scene = widget->getRepoScene();
+	repoLog("@resultingDifference");
+
+	//TODO: other types of nodes
+	for (const repoUUID id : res.added)
+	{
+		repo::core::model::RepoNode* node = scene->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widget->setMeshColor(QString::fromStdString(node->getName()),
+			node->getUniqueID(), 0.9, addColor);
+
+	}
+
+	for (const repoUUID id : res.modified)
+	{
+		repo::core::model::RepoNode* node = scene->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			widget->setMeshColor(QString::fromStdString(node->getName()),
+			node->getUniqueID(), 0.9, modColor);
+	}
+
+	widget->repaintCurrent();
+}
+
+
 
