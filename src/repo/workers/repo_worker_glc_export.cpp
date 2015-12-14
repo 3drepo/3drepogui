@@ -712,7 +712,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		{
 			for (const repo_mesh_mapping_t &map : mapping)
 			{
-
+				
 				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo);
 
 				GLC_Material* material = nullptr;
@@ -722,6 +722,12 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				{
 					//material = (GLC_Material*)mapIt->second.at(0);
 					material = new GLC_Material(*mapIt->second.at(0));
+					material->setName(QString::fromStdString(UUIDtoString(map.mesh_id)));
+					material->setId(glc::GLC_GenID());
+				}
+				else
+				{
+					material = new GLC_Material();
 					material->setName(QString::fromStdString(UUIDtoString(map.mesh_id)));
 				}
 
