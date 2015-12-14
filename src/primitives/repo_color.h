@@ -23,6 +23,7 @@
 
 //-----------------------------------------------------------------------------
 #include <QColor>
+#include <QHash>
 
 namespace repo {
 namespace gui {

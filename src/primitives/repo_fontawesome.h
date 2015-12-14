@@ -126,6 +126,9 @@ public:
     static QIcon getMapTilesIcon()
     { return getIconStatic(fa_map_o); }
 
+    static QIcon getSceneGraphIcon()
+    { return getIconStatic(fa_sitemap); }
+
     //! Returns a pre-defined authentication icon (key).
     static QIcon getAuthenticationIcon()
     { return getIconStatic(fa_key); }
