@@ -114,6 +114,16 @@ void RepoWidgetTreeFilterable::selectRow(const QStandardItem *item) const
                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
 }
 
+void RepoWidgetTreeFilterable::removeRow(const QModelIndex &index)
+{
+    if (index.isValid())
+    {
+        model->removeRow(proxy->mapToSource(index).row());
+        updateCountLabel();
+    }
+}
+
+
 void RepoWidgetTreeFilterable::notifyOfTotalCountChange()
 {
     emit totalCountChanged(model->rowCount());
@@ -161,7 +171,7 @@ void RepoWidgetTreeFilterable::setHeaders(const QList<QString>& headers)
         model->setHeaderData(i, Qt::Horizontal, headers[i]);
 }
 
-QTreeView * RepoWidgetTreeFilterable::getTreeView() const
+QTreeView *RepoWidgetTreeFilterable::getTreeView() const
 {
     return ui->treeView;
 }
@@ -216,6 +226,17 @@ void RepoWidgetTreeFilterable::storeHeaders(const QString &label)
     settings.setValue(label, ui->treeView->header()->saveState());
 }
 
+void RepoWidgetTreeFilterable::storeSelection(const QString &label)
+{
+    QSettings settings(this);
+    // See  https://bugreports.qt.io/browse/QTBUG-42438
+    // settings.setValue(label, proxy->mapToSource(getSelectionModel()->currentIndex()));
+
+    // Temp solution
+    int row = proxy->mapToSource(getSelectionModel()->currentIndex()).row();
+    settings.setValue(label, row);
+}
+
 void RepoWidgetTreeFilterable::restoreHeaders(
         const QList<QString> &headers,
         const QString &label)
@@ -223,4 +244,22 @@ void RepoWidgetTreeFilterable::restoreHeaders(
     setHeaders(headers);
     QSettings settings(this);
     ui->treeView->header()->restoreState(settings.value(label).toByteArray());
+}
+
+void RepoWidgetTreeFilterable::restoreSelection(const QString &label)
+{
+    // See https://bugreports.qt.io/browse/QTBUG-42438
+    // This should magically work from Qt 5.4.0 RC onwards
+    QSettings settings(this);
+//    getSelectionModel()->setCurrentIndex(
+//                proxy->mapFromSource(settings.value(label).toModelIndex()),
+//                QItemSelectionModel::ClearAndSelect|
+//    QItemSelectionModel::Rows);
+
+    // Temp solution
+    int row = settings.value(label).toInt();
+    QModelIndex index = model->indexFromItem(model->invisibleRootItem()->child(row, 0));
+    getSelectionModel()->setCurrentIndex(proxy->mapFromSource(index),
+                                         QItemSelectionModel::ClearAndSelect|
+                                         QItemSelectionModel::Rows);
 }

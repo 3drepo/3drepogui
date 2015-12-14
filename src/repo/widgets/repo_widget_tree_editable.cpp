@@ -15,7 +15,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "repo_widget_tree_editable.h"
 #include "ui_repo_widget_tree_editable.h"
 
@@ -29,12 +28,10 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
     ui->filterableTreeWidget->setMargins(0);
 
     QObject::connect(
-        ui->filterableTreeWidget->getSelectionModel(), &QItemSelectionModel::selectionChanged,
-        this, &RepoWidgetTreeEditable::select);
-
-//    QObject::connect(
-//        ui->addPushButton, SIGNAL(pressed()),
-//                this, SLOT(showEditDialog()));
+        ui->filterableTreeWidget->getSelectionModel(),
+        &QItemSelectionModel::selectionChanged,
+        this,
+        &RepoWidgetTreeEditable::select);
 
     QObject::connect(
         ui->addPushButton, SIGNAL(pressed()),
@@ -55,9 +52,9 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
                      SIGNAL(doubleClicked(const QModelIndex &)),
                      this, SLOT(edit(const QModelIndex &)));
 
-
-//    QObject::connect(ui->treeView, SIGNAL(customContextMenuRequested(const QPoint &)),
-//                     this, SLOT(showCustomContextMenu(const QPoint&)));
+    QObject::connect(ui->filterableTreeWidget->getTreeView(),
+                     SIGNAL(customContextMenuRequested(const QPoint &)),
+                     this, SLOT(showCustomContextMenu(const QPoint&)));
 }
 
 RepoWidgetTreeEditable::~RepoWidgetTreeEditable()
@@ -71,6 +68,8 @@ void RepoWidgetTreeEditable::clear()
     ui->removePushButton->setEnabled(false);
     ui->editPushButton->setEnabled(false);
     ui->copyPushButton->setEnabled(false);
+
+    emit editButtonsEnabledChanged(false);
 }
 
 void RepoWidgetTreeEditable::select(
@@ -80,32 +79,39 @@ void RepoWidgetTreeEditable::select(
     ui->removePushButton->setEnabled(true);
     ui->editPushButton->setEnabled(true);
     ui->copyPushButton->setEnabled(true);
+
+    emit editButtonsEnabledChanged(true);
 }
 
 void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
 {
-//    QMenu menu(ui->treeView);
+    QTreeView *treeView = ui->filterableTreeWidget->getTreeView();
+    QMenu menu(treeView);
 
-//    QAction *addAction = menu.addAction(
-//                ui->addPushButton->text(),
-//                this,
-//                SLOT(showEditDialog()));
-//    addAction->setEnabled(ui->addPushButton->isEnabled());
+    QAction *addAction = menu.addAction(
+                ui->addPushButton->text(),
+                this,
+                SLOT(showEditDialog()));
+    addAction->setEnabled(ui->addPushButton->isEnabled());
 
-//    QAction *removeAction = menu.addAction(
-//                ui->removePushButton->text(),
-//                this,
-//                SLOT(removeItem()));
-//    removeAction->setEnabled(ui->removePushButton->isEnabled());
+    QAction *removeAction = menu.addAction(
+                ui->removePushButton->text(),
+                this,
+                SLOT(removeItem()));
+    removeAction->setEnabled(ui->removePushButton->isEnabled());
 
-//    QAction *editAction = menu.addAction(
-//                ui->editPushButton->text(),
-//                this,
-//                SLOT(edit()));
-//    editAction->setEnabled(ui->editPushButton->isEnabled());
+    QAction *editAction = menu.addAction(
+                ui->editPushButton->text(),
+                this,
+                SLOT(edit()));
+    editAction->setEnabled(ui->editPushButton->isEnabled());
 
-//    menu.exec(ui->treeView->mapToGlobal(point));
-
+    QAction *copyAction = menu.addAction(
+                ui->copyPushButton->text(),
+                this,
+                SLOT(copyItem()));
+    copyAction->setEnabled(ui->copyPushButton->isEnabled());
+    menu.exec(treeView->mapToGlobal(point));
 }
 
 RepoWidgetTreeFilterable* RepoWidgetTreeEditable::getFilterableTree() const

@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_DIALOG_CONNECT_H
-#define REPO_DIALOG_CONNECT_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -33,15 +32,15 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "ui_repo_dialogconnect.h"
-#include "../primitives/repo_fontawesome.h"
+#include "ui_repo_dialog_connect.h"
+#include "../../primitives/repo_fontawesome.h"
 
 namespace Ui {
 class RepoDialogConnect;
 }
 
 namespace repo {
-namespace gui {
+namespace widgets {
 
 /*!
  * Connection dialog that saves alias, host, port, authentication database,
@@ -51,11 +50,14 @@ class RepoDialogConnect : public QDialog
 {
     Q_OBJECT
 
+    enum class Tab { ADDRESS, AUTHENTICATION, SSL, SSH};
+
 public :
 
 	//! Creates a connection dialog. To show, run exec().
     RepoDialogConnect(repo::RepoController *controller,
                       const repo::RepoCredentials &credentials,
+                      const bool isCopy = false,
                       QWidget *parent = 0,
                       Qt::WindowFlags flags = 0);
 
@@ -83,7 +85,5 @@ private :
 
 };
 
-} // end namespace gui
+} // end namespace widgets
 } // end namespace repo
-
-#endif // REPO_DIALOG_CONNECT_H

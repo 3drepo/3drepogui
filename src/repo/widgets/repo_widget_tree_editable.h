@@ -24,12 +24,12 @@
 
 //------------------------------------------------------------------------------
 // Qt
+#include <QMenu>
 #include <QMutex>
 #include <QWidget>
 #include <QThreadPool>
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-
 //------------------------------------------------------------------------------
 
 namespace Ui { class RepoWidgetTreeEditable; }
@@ -37,22 +37,31 @@ namespace Ui { class RepoWidgetTreeEditable; }
 namespace repo {
 namespace widgets {
 
-class RepoWidgetTreeEditable : public QWidget, public repo::worker::RepoMultithreader
+class RepoWidgetTreeEditable
+        : public QWidget
+        , public repo::worker::RepoMultithreader
 {
     Q_OBJECT    
 
 public:
 
+    //! Editing actions.
     enum class Action { ADD, REMOVE, EDIT, COPY };
 
+    //! Explicit constructor.
     explicit RepoWidgetTreeEditable(QWidget *parent = 0);
 
     ~RepoWidgetTreeEditable();
 
+signals :
+
+    //! Emitted as soon as edit buttons are either enabled or disabled.
+    void editButtonsEnabledChanged(bool on);
+
 public slots :
 
     //! Adds new empty item.
-    virtual void addItem() = 0;
+    virtual void addItem() { showEditDialog(); }
 
     //! Updates selected item.
     virtual void edit() = 0;
@@ -81,14 +90,16 @@ public slots :
     virtual void select(const QItemSelection &, const QItemSelection &);
 
     //! Shows custom context menu for treeView.
-    virtual void showCustomContextMenu(const QPoint &);
+    virtual void showCustomContextMenu(const QPoint &);   
 
 public :
 
+    //! Returns filterable tree widget.
     virtual RepoWidgetTreeFilterable* getFilterableTree() const;
 
 protected :
 
+    //! Ui var.
     Ui::RepoWidgetTreeEditable *ui;
 };
 
