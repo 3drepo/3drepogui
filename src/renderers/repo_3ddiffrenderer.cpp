@@ -40,7 +40,7 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 		controller,
 		token,
 		sceneA,
-		sceneB);
+		sceneB, true);
 
 	
 	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
