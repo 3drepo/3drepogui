@@ -666,12 +666,12 @@ void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 }
 void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 {
-
+	
 	if (mousePressed && renderer->move(e->x(), e->y()))
 	{
 		//in Navigation mode
 		update();
-		emit cameraChangedSignal(renderer->getCurrentCamera(), true);
+		emit cameraChangedSignal(renderer->getCurrentCamera(), false);
 	}
 
 	// Pass on the event to parent.
