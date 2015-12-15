@@ -19,6 +19,7 @@
 #include "repo_worker_diff.h"
 
 #include "../logger/repo_logger.h"
+#include "../../primitives/repo_color.h"
 
 
 using namespace repo::worker;
@@ -28,11 +29,13 @@ DiffWorker::DiffWorker(
 	repo::RepoController                    *controller,
 	const repo::RepoToken                   *token,
 	      repo::core::model::RepoScene      *sceneA,    
-		  repo::core::model::RepoScene      *sceneB)
+          repo::core::model::RepoScene      *sceneB,
+    const bool                              &colourCorres)
 	: controller(controller)
 	, token(token)
 	, sceneA(sceneA)
 	, sceneB(sceneB) 
+	, colourCorres(colourCorres)
 {
 	qRegisterMetaType<repoUUID>("repoUUID");
 }
@@ -52,7 +55,10 @@ void DiffWorker::run()
 		//FIXME: pick diff mode
 		controller->compareScenesByNames(token, sceneA, sceneB, aRes, bRes);
 
-        processResults(aRes, bRes);
+		if (colourCorres)
+			processResultsByCorrespondence(aRes, bRes);
+		else
+			processResultsByDiff(aRes, bRes);
 	}
 	else
 	{
@@ -63,7 +69,25 @@ void DiffWorker::run()
 	emit RepoAbstractWorker::finished();
 }
 
-void DiffWorker::processResults(
+void DiffWorker::processResultsByCorrespondence(
+	const repo::manipulator::diff::DiffResult &aRes,
+	const repo::manipulator::diff::DiffResult &bRes)
+{
+	for (const auto pair : aRes.correspondence)
+	{
+		QColor color = repo::gui::RepoColor::getNext();
+		repo::core::model::RepoNode* nodeA = sceneA->getNodeBySharedID(pair.first);
+		if (nodeA && nodeA->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			emit colorChangeOnA(nodeA->getUniqueID(), 1.0, color);
+
+		repo::core::model::RepoNode* nodeB = sceneB->getNodeBySharedID(pair.second);
+		if (nodeB && nodeB->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			emit colorChangeOnB(nodeB->getUniqueID(), 1.0, color);
+	}
+
+}
+
+void DiffWorker::processResultsByDiff(
 	const repo::manipulator::diff::DiffResult &aRes,
 	const repo::manipulator::diff::DiffResult &bRes)
 {
