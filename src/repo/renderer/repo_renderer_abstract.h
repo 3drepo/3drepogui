@@ -105,11 +105,9 @@ namespace repo {
 
 				/**
 				* Set the colour of the mesh given its name
-				* @param name name of mesh
 				* @param color color of change to
 				*/
 				virtual void setMeshColor(
-					const QString &name,
 					const repoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color) = 0;

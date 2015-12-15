@@ -43,15 +43,11 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 		sceneB);
 
 	
-	/*QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnA,
-		this, &Repo3DDiffRenderer::resultingDifferenceA);
-	QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnB, 
-		this, &Repo3DDiffRenderer::resultingDifferenceB);*/
+	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
+		widgetA, &widgets::RepoRenderingWidget::setMeshColor);
+	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
+		widgetB, &widgets::RepoRenderingWidget::setMeshColor);
 
-	QObject::connect(worker, SIGNAL(diffResultOnA(const repo::manipulator::diff::DiffResult &)),
-		this, SLOT(resultingDifferenceA(const repo::manipulator::diff::DiffResult &)));
-	QObject::connect(worker, SIGNAL(diffResultOnB(const repo::manipulator::diff::DiffResult &)),
-		this, SLOT(resultingDifferenceB(const repo::manipulator::diff::DiffResult &)));
 	//----------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
 	QThreadPool::globalInstance()->start(worker);
@@ -61,35 +57,3 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 Repo3DDiffRenderer::~Repo3DDiffRenderer()
 {
 }
-
-void Repo3DDiffRenderer::resultingDifference(const repo::manipulator::diff::DiffResult &res,
-							widgets::RepoRenderingWidget *widget,
-							const QColor &modColor,
-							const QColor &addColor)
-{
-	auto scene = widget->getRepoScene();
-	repoLog("@resultingDifference");
-
-	//TODO: other types of nodes
-	for (const repoUUID id : res.added)
-	{
-		repo::core::model::RepoNode* node = scene->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widget->setMeshColor(QString::fromStdString(node->getName()),
-			node->getUniqueID(), 0.9, addColor);
-
-	}
-
-	for (const repoUUID id : res.modified)
-	{
-		repo::core::model::RepoNode* node = scene->getNodeBySharedID(id);
-		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			widget->setMeshColor(QString::fromStdString(node->getName()),
-			node->getUniqueID(), 0.9, modColor);
-	}
-
-	widget->repaintCurrent();
-}
-
-
-

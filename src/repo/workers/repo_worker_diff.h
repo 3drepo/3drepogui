@@ -50,10 +50,14 @@ namespace repo {
 			//! Default empty destructor.
 			~DiffWorker();
 
+            void processResults(
+                const repo::manipulator::diff::DiffResult &aRes,
+                const repo::manipulator::diff::DiffResult &bRes);
+
 		signals:
 
-			void diffResultOnA(const repo::manipulator::diff::DiffResult &a);
-			void diffResultOnB(const repo::manipulator::diff::DiffResult &b);
+			void colorChangeOnA(const repoUUID &id, const qreal &opacity, const QColor &color);
+			void colorChangeOnB(const repoUUID &id, const qreal &opacity, const QColor &color);
 
 			public slots :
 

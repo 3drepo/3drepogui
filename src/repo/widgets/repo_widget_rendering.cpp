@@ -260,12 +260,11 @@ void RepoRenderingWidget::setPredefinedCamera(const repo::gui::renderer::CameraV
 }
 
 void RepoRenderingWidget::setMeshColor(
-	const QString &name,
 	const repoUUID &uniqueID,
 	const qreal &opacity,
 	const QColor &color)
 {
-	renderer->setMeshColor(name, uniqueID, opacity, color);
+	renderer->setMeshColor(uniqueID, opacity, color);
 	update();
 }
 

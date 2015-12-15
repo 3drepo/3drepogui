@@ -23,7 +23,7 @@
 #include "../repo/workers/repo_worker_diff.h"
 #include <repo/repo_controller.h>
 
-Q_DECLARE_METATYPE(repo::manipulator::diff::DiffResult)
+Q_DECLARE_METATYPE(repoUUID)
 namespace repo {
 namespace gui {
 
@@ -43,20 +43,6 @@ public:
 		widgets::RepoRenderingWidget *widget,
 		const QColor &modColor,
 		const QColor &addColor);
-
-	public slots:
-
-	void resultingDifferenceA(const repo::manipulator::diff::DiffResult &res)
-	{
-		repoLog("Slot called A");
-		resultingDifference(res, widgetA, Qt::cyan, Qt::red);
-	}
-	void resultingDifferenceB(const repo::manipulator::diff::DiffResult &res)
-	{
-		repoLog("Slot called B");
-		resultingDifference(res, widgetB, Qt::cyan, Qt::green);
-	}
-
 	
 protected :
 
