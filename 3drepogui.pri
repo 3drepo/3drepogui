@@ -32,6 +32,7 @@ HEADERS +=  \
 	src/repo/primitives/repo_standard_item.h \
 	src/repo/renderer/repo_renderer_abstract.h \
 	src/repo/renderer/repo_renderer_glc.h \
+	src/repo/renderer/repo_renderer_graph.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/widgets/repo_dialog_connect.h \
 	src/repo/widgets/repo_dialog_manager_access.h \
@@ -45,6 +46,7 @@ HEADERS +=  \
 	src/repo/widgets/repo_widget_manager_roles.h \
 	src/repo/widgets/repo_widget_manager_users.h \
 	src/repo/widgets/repo_widget_rendering.h \
+	src/repo/widgets/repo_widget_rendering_2d.h \
 	src/repo/widgets/repo_widget_tree_clickable.h \
 	src/repo/widgets/repo_widget_tree_editable.h \
 	src/repo/widgets/repo_widget_tree_filterable.h \
@@ -104,6 +106,7 @@ SOURCES +=  \
 	src/repo/primitives/repo_standard_item.cpp \
 	src/repo/renderer/repo_renderer_abstract.cpp \
 	src/repo/renderer/repo_renderer_glc.cpp \
+	src/repo/renderer/repo_renderer_graph.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/widgets/repo_dialog_connect.cpp \
 	src/repo/widgets/repo_dialog_manager_access.cpp \
@@ -117,6 +120,7 @@ SOURCES +=  \
 	src/repo/widgets/repo_widget_manager_roles.cpp \
 	src/repo/widgets/repo_widget_manager_users.cpp \
 	src/repo/widgets/repo_widget_rendering.cpp \
+	src/repo/widgets/repo_widget_rendering_2d.cpp \
 	src/repo/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/widgets/repo_widget_tree_editable.cpp \
 	src/repo/widgets/repo_widget_tree_filterable.cpp \
