@@ -70,7 +70,9 @@ public :
 	//
     //--------------------------------------------------------------------------
 
-    void setWidget(const QString& windowTitle);
+    void setWidget3D(const QString& windowTitle);
+
+    void setWidget2D(const core::model::RepoScene *scene, const QString &windowTitle);
 	
 	//! Asynchronously loads 3D file into a RepoGCLWidget.
 	/*!

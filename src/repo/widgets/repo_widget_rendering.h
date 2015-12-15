@@ -122,7 +122,6 @@ namespace repo {
 				* @param color color of change to
 				*/
 				void setMeshColor(
-					const QString &name,
 					const repoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color);

@@ -16,20 +16,20 @@
  */
 
 
-#ifndef REPO_3D_DIFF_RENDERER_H
-#define REPO_3D_DIFF_RENDERER_H
+#pragma once
 
 #include "../repo/widgets/repo_widget_rendering.h"
 #include "../primitives/repo_color.h"
+#include "../repo/workers/repo_worker_diff.h"
 #include <repo/repo_controller.h>
 
+Q_DECLARE_METATYPE(repoUUID)
 namespace repo {
 namespace gui {
 
-
-class Repo3DDiffRenderer
+class Repo3DDiffRenderer : public QObject
 {
-
+	Q_OBJECT
 public:
     Repo3DDiffRenderer(
 		repo::RepoController *controller,
@@ -39,6 +39,11 @@ public:
 
     ~Repo3DDiffRenderer();
 
+	void resultingDifference(const repo::manipulator::diff::DiffResult &res,
+		widgets::RepoRenderingWidget *widget,
+		const QColor &modColor,
+		const QColor &addColor);
+	
 protected :
 
     widgets::RepoRenderingWidget *widgetA;
@@ -47,12 +52,9 @@ protected :
 
 	repo::RepoController *controller;
 	const repo::RepoToken *token;
-/*
-    core::Repo3DDiff *diff;*/
 
 }; // end class
 
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_3D_DIFF_RENDERER_H
