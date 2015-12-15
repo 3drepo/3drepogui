@@ -472,6 +472,9 @@
    <property name="text">
     <string>3D Diff</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+D</string>
+   </property>
   </action>
   <action name="actionUserManager">
    <property name="text">

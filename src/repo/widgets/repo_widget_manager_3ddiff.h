@@ -26,6 +26,7 @@
 // GUI
 #include "../../widgets/repo_mdiarea.h"
 #include "../../renderers/repo_3ddiffrenderer.h"
+#include "../workers/repo_multithreader.h"
 
 namespace Ui {
 class RepoWidgetManager3DDiff;
@@ -35,13 +36,13 @@ namespace repo {
 namespace widgets {
 
 
-class RepoWidgetManager3DDiff : public QWidget
+class RepoWidgetManager3DDiff : public QWidget, public repo::worker::RepoMultithreader
 {
     Q_OBJECT
 
     enum class Visualization { DIFF, CORRESPONDENCE };
 
-    enum class DiffAlgorithm { BASIC, VISUAL, STATISTICAL };
+    enum class Algorithm { BASIC, VISUAL, STATISTICAL };
 
 public:
 
@@ -64,9 +65,9 @@ public slots :
 private :
 
     void runBouncerDiff(gui::widgets::RepoRenderingWidget *widgetA,
-            gui::widgets::RepoRenderingWidget *widgetB,
-            manipulator::diff::Mode diffMode,
-            bool colourCorrespondence);
+                        gui::widgets::RepoRenderingWidget *widgetB,
+                        manipulator::diff::Mode diffMode,
+                        bool colourCorrespondence);
 
 public :
 
@@ -76,18 +77,19 @@ public :
     Visualization getVisualization() const;
 
     //! Returns currectly selected diffing algorithm.
-    DiffAlgorithm getDiffAlgorithm() const;
+    Algorithm getDiffAlgorithm() const;
 
-    repo::gui::widgets::RepoRenderingWidget*
-    getSelectedModelAWidget() const;
+    repo::gui::widgets::RepoRenderingWidget* getModelWidget(int index) const;
+
+    repo::gui::widgets::RepoRenderingWidget* getSelectedModelAWidget() const
+    {    return getModelWidget(getSelectedModelAIndex()); }
 
     QString getSelectedModelAString() const;
 
     int getSelectedModelAIndex() const;
 
-
-    repo::gui::widgets::RepoRenderingWidget*
-    getSelectedModelBWidget() const;
+    repo::gui::widgets::RepoRenderingWidget* getSelectedModelBWidget() const
+    {    return getModelWidget(getSelectedModelBIndex()); }
 
     QString getSelectedModelBString() const;
 

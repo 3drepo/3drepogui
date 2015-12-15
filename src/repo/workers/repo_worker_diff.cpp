@@ -75,17 +75,17 @@ void DiffWorker::processResultsByCorrespondence(
 	const repo::manipulator::diff::DiffResult &aRes,
 	const repo::manipulator::diff::DiffResult &bRes)
 {
-	for (const auto pair : aRes.correspondence)
-	{
-		QColor color = repo::gui::RepoColor::getNext();
-		repo::core::model::RepoNode* nodeA = sceneA->getNodeBySharedID(pair.first);
-		if (nodeA && nodeA->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			emit colorChangeOnA(nodeA->getUniqueID(), 1.0, color);
+    for (const auto pair : aRes.correspondence)
+    {
+        QColor color = repo::gui::RepoColor::getNext();
+        repo::core::model::RepoNode* nodeA = sceneA->getNodeBySharedID(pair.first);
+        if (nodeA && nodeA->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnA(nodeA->getUniqueID(), 1.0, color);
 
-		repo::core::model::RepoNode* nodeB = sceneB->getNodeBySharedID(pair.second);
-		if (nodeB && nodeB->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-			emit colorChangeOnB(nodeB->getUniqueID(), 1.0, color);
-	}
+        repo::core::model::RepoNode* nodeB = sceneB->getNodeBySharedID(pair.second);
+        if (nodeB && nodeB->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnB(nodeB->getUniqueID(), 1.0, color);
+    }
 
 }
 

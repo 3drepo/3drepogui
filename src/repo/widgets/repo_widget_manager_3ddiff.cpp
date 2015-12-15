@@ -52,8 +52,11 @@ RepoWidgetManager3DDiff::~RepoWidgetManager3DDiff()
 
 void RepoWidgetManager3DDiff::populateModelComboBoxes()
 {
-    QString selectedA = getSelectedModelAString();
-    QString selectedB = getSelectedModelBString();
+//    QString selectedA = getSelectedModelAString();
+//    QString selectedB = getSelectedModelBString();
+
+    int indexA = getSelectedModelAIndex();
+    int indexB = getSelectedModelBIndex();
 
     //--------------------------------------------------------------------------
     // Clear old entries
@@ -72,36 +75,44 @@ void RepoWidgetManager3DDiff::populateModelComboBoxes()
 
     //--------------------------------------------------------------------------
     // Reset selection
-    ui->modelAComboBox->setCurrentText(selectedA);
-    ui->modelBComboBox->setCurrentText(selectedB);
+    ui->modelAComboBox->setCurrentIndex(indexA);
+    ui->modelBComboBox->setCurrentIndex(indexB);
+
+    if (getSelectedModelAIndex() == -1)
+        ui->modelAComboBox->setCurrentIndex(0);
+
+    if (getSelectedModelBIndex() == -1)
+        ui->modelBComboBox->setCurrentIndex(subWindows.size() > 1 ? 1 : 0);
+
 }
 
 
-void RepoWidgetManager3DDiff::diff()
+void RepoWidgetManager3DDiff::runDiff()
 {
     repo::gui::widgets::RepoRenderingWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widgets::RepoRenderingWidget* widgetB = getSelectedModelBWidget();
 
     if (!widgetA)
-        std::cerr << tr("Widget A is nullptr.").toStdString() << std::endl;
+        std::cerr << tr("Widget A is null.").toStdString() << std::endl;
     else if(!widgetB)
-        std::cerr << tr("Widget B is nullptr.").toStdString() << std::endl;
+        std::cerr << tr("Widget B is null.").toStdString() << std::endl;
     else
     {
         std::cout << tr("Starting 3D Diff calculation").toStdString();
-
-
-        // TODO: decide which algorithm to use based on getDiffAlgorithm()
-        // TODO: decide visualisation based on getVisualization()
-
-        bool colorCorrespondence = getVisualization() == Visualization::CORRESPONDENCE;
+        bool colorCorrespondence = (getVisualization() == Visualization::CORRESPONDENCE);
         switch (getDiffAlgorithm())
         {
         case Algorithm::BASIC :
-            runBouncerDiff(widgetA, widgetB, DIFF_BY_NAME, colorCorrespondence);
+            runBouncerDiff(widgetA,
+                           widgetB,
+                           repo::manipulator::diff::Mode::DIFF_BY_NAME,
+                           colorCorrespondence);
             break;
         case Algorithm::STATISTICAL :
-            runBouncerDiff(widgetA, widgetB, DIFF_BY_ID, colorCorrespondence);
+            runBouncerDiff(widgetA,
+                           widgetB,
+                           repo::manipulator::diff::Mode::DIFF_BY_ID,
+                           colorCorrespondence);
             break;
         case Algorithm::VISUAL :
             // TODO: Jozef to add hooks.
@@ -116,38 +127,38 @@ void RepoWidgetManager3DDiff::runBouncerDiff(
         repo::manipulator::diff::Mode diffMode,
         bool colourCorrespondence)
 {
-    repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
-    repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
+    if (isReady())
+    {
+        repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
+        repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
+        repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
+                    controller,
+                    token,
+                    sceneA,
+                    sceneB,
+                    diffMode,
+                    colourCorrespondence);
 
-    repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
-                controller,
-                token,
-                sceneA,
-                sceneB,
-                diffMode,
-                colourCorrespondence);
+        QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
+                         widgetA, &repo::gui::widgets::RepoRenderingWidget::setMeshColor);
+        QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
+                         widgetB, &repo::gui::widgets::RepoRenderingWidget::setMeshColor);
 
-    QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
-                     widgetA, &widgets::RepoRenderingWidget::setMeshColor);
-    QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
-                     widgetB, &widgets::RepoRenderingWidget::setMeshColor);
-
-    //----------------------------------------------------------------------
-    // Fire up the asynchronous calculation.
-    QThreadPool::globalInstance()->start(worker);
+        //----------------------------------------------------------------------
+        // Fire up the asynchronous calculation.
+        connectAndStartWorker(worker);
+    }
 }
 
-repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getSelectedModelAWidget() const
+repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getModelWidget(int index) const
 {
-    return dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
-                getSubWindows().at(getSelectedModelAIndex())->widget());
-}
-
-repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getSelectedModelBWidget() const
-{
-    return dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
-                getSubWindows().at(getSelectedModelBIndex())->widget());
+    repo::gui::widgets::RepoRenderingWidget* widget = nullptr;
+    auto subWindows = getSubWindows();
+    if (index >= 0 && subWindows.size() > index)
+        widget = dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
+                    subWindows.at(index)->widget());
+    return widget;
 }
 
 QString RepoWidgetManager3DDiff::getSelectedModelAString() const
@@ -185,8 +196,8 @@ RepoWidgetManager3DDiff::Visualization RepoWidgetManager3DDiff::getVisualization
     return viz;
 }
 
-RepoWidgetManager3DDiff::DiffAlgorithm RepoWidgetManager3DDiff::getDiffAlgorithm() const
+RepoWidgetManager3DDiff::Algorithm RepoWidgetManager3DDiff::getDiffAlgorithm() const
 {
-    return (DiffAlgorithm) ui->diffAlgorithmComboBox->currentIndex();
+    return (Algorithm) ui->diffAlgorithmComboBox->currentIndex();
 }
 

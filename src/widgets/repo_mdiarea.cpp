@@ -211,7 +211,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	bool headRevision)
 {
     RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
-    repoSubWindow->setWidget3D(database + "." +project + " " + id.toString());
+    repoSubWindow->setWidget3D(database + "." +project);// + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
