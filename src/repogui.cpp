@@ -43,6 +43,7 @@
 #include "dialogs/repofederationdialog.h"
 #include "dialogs/repo_maptilesdialog.h"
 #include "renderers/repo_3ddiffrenderer.h"
+#include "repo/widgets/repo_widget_manager_3ddiff.h"
 
 //------------------------------------------------------------------------------
 #include "repo/widgets/repo_dialog_manager_access.h"
@@ -591,6 +592,21 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
 
 void repo::gui::RepoGUI::open3DDiff()
 {
+    repo::widgets::RepoWidgetManager3DDiff *diffWidget =
+            new repo::widgets::RepoWidgetManager3DDiff(ui->mdiArea);
+    QDockWidget *dockWidget = new QDockWidget(tr("3D Diff"), this);
+    dockWidget->setWidget(diffWidget);
+    this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
+
+
+
+
+
+
+
+
+
+
     ui->mdiArea->closeHiddenSubWindows();
     if (ui->mdiArea->subWindowList().count() == 2)
     {
