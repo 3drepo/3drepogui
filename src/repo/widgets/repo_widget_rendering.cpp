@@ -260,12 +260,11 @@ void RepoRenderingWidget::setPredefinedCamera(const repo::gui::renderer::CameraV
 }
 
 void RepoRenderingWidget::setMeshColor(
-	const QString &name,
 	const repoUUID &uniqueID,
 	const qreal &opacity,
 	const QColor &color)
 {
-	renderer->setMeshColor(name, uniqueID, opacity, color);
+	renderer->setMeshColor(uniqueID, opacity, color);
 	update();
 }
 
@@ -667,12 +666,12 @@ void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 }
 void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 {
-
+	
 	if (mousePressed && renderer->move(e->x(), e->y()))
 	{
 		//in Navigation mode
 		update();
-		emit cameraChangedSignal(renderer->getCurrentCamera(), true);
+		emit cameraChangedSignal(renderer->getCurrentCamera(), false);
 	}
 
 	// Pass on the event to parent.

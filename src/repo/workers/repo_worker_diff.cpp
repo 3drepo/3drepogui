@@ -19,6 +19,7 @@
 #include "repo_worker_diff.h"
 
 #include "../logger/repo_logger.h"
+#include "../../primitives/repo_color.h"
 
 
 using namespace repo::worker;
@@ -28,13 +29,15 @@ DiffWorker::DiffWorker(
 	repo::RepoController                    *controller,
 	const repo::RepoToken                   *token,
 	      repo::core::model::RepoScene      *sceneA,    
-		  repo::core::model::RepoScene      *sceneB)
+          repo::core::model::RepoScene      *sceneB,
+    const bool                              &colourCorres)
 	: controller(controller)
 	, token(token)
 	, sceneA(sceneA)
 	, sceneB(sceneB) 
+	, colourCorres(colourCorres)
 {
-	qRegisterMetaType<repo::manipulator::diff::DiffResult>("repo::manipulator::diff::DiffResult");
+	qRegisterMetaType<repoUUID>("repoUUID");
 }
 
 DiffWorker::~DiffWorker() {}
@@ -52,9 +55,10 @@ void DiffWorker::run()
 		//FIXME: pick diff mode
 		controller->compareScenesByNames(token, sceneA, sceneB, aRes, bRes);
 
-		repoLog("Sending Signals...");
-		emit diffResultOnA(aRes);
-		emit diffResultOnB(bRes);
+		if (colourCorres)
+			processResultsByCorrespondence(aRes, bRes);
+		else
+			processResultsByDiff(aRes, bRes);
 	}
 	else
 	{
@@ -65,3 +69,54 @@ void DiffWorker::run()
 	emit RepoAbstractWorker::finished();
 }
 
+void DiffWorker::processResultsByCorrespondence(
+	const repo::manipulator::diff::DiffResult &aRes,
+	const repo::manipulator::diff::DiffResult &bRes)
+{
+	for (const auto pair : aRes.correspondence)
+	{
+		QColor color = repo::gui::RepoColor::getNext();
+		repo::core::model::RepoNode* nodeA = sceneA->getNodeBySharedID(pair.first);
+		if (nodeA && nodeA->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			emit colorChangeOnA(nodeA->getUniqueID(), 1.0, color);
+
+		repo::core::model::RepoNode* nodeB = sceneB->getNodeBySharedID(pair.second);
+		if (nodeB && nodeB->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+			emit colorChangeOnB(nodeB->getUniqueID(), 1.0, color);
+	}
+
+}
+
+void DiffWorker::processResultsByDiff(
+	const repo::manipulator::diff::DiffResult &aRes,
+	const repo::manipulator::diff::DiffResult &bRes)
+{
+	for (const repoUUID id : aRes.added)
+	{
+		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnA(node->getUniqueID(), 0.9, Qt::red);
+	}
+
+	for (const repoUUID id : aRes.modified)
+	{
+		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnA(node->getUniqueID(), 0.9, Qt::cyan);
+	}
+
+	for (const repoUUID id : bRes.added)
+	{
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnB(node->getUniqueID(), 0.9, Qt::green);
+	}
+
+	for (const repoUUID id : aRes.modified)
+	{
+		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
+		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
+            emit colorChangeOnB(node->getUniqueID(), 0.9, Qt::cyan);
+	}
+
+}

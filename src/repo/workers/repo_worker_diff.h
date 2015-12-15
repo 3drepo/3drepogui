@@ -40,31 +40,72 @@ namespace repo {
 
 			/*!
 			* Default worker constructor.
+			* @param controller repo controller to bouncer library
+			* @param token authentication token to bouncer library
+			* @param sceneA base scene to compare from
+			* @param sceneB scene to compare against
+			* @param colourCorres true: colour correspondence false: colour differences
 			*/
 			DiffWorker(
 				repo::RepoController                    *controller, 
 				const repo::RepoToken                   *token,
 				repo::core::model::RepoScene            *sceneA,
-				repo::core::model::RepoScene            *sceneB);
+				repo::core::model::RepoScene            *sceneB,
+				const bool                              &colourCorres = false);
 
 			//! Default empty destructor.
 			~DiffWorker();
 
 		signals:
+			/**
+			* Signals a change on colour of the mesh is needed given the unique ID of the
+			* mesh within scene A
+			* @param id unique id of the mesh
+			* @param opacity the opacity of the colouring
+			* @param color the colour to change to
+			*/
+			void colorChangeOnA(const repoUUID &id, const qreal &opacity, const QColor &color);
 
-			void diffResultOnA(const repo::manipulator::diff::DiffResult &a);
-			void diffResultOnB(const repo::manipulator::diff::DiffResult &b);
+			/**
+			* Signals a change on colour of the mesh is needed given the unique ID of the
+			* mesh within scene A
+			* @param id unique id of the mesh
+			* @param opacity the opacity of the colouring
+			* @param color the colour to change to
+			*/
+			void colorChangeOnB(const repoUUID &id, const qreal &opacity, const QColor &color);
 
 			public slots :
 
 			void run();
 
 		private:
-			repo::RepoController              *controller;
-			const repo::RepoToken             *token;
-			repo::core::model::RepoScene      *sceneA;
-			repo::core::model::RepoScene      *sceneB;
-			
+			repo::RepoController              *controller; //Repo Controller
+			const repo::RepoToken             *token; //Repo Token to access the database
+			repo::core::model::RepoScene      *sceneA; //Base scene to compare from
+			repo::core::model::RepoScene      *sceneB; //Scene to compare against
+			const bool                         colourCorres; //colour correspondence
+
+			/**
+			* Process the results by diff, sending off color change signals
+			* base on differences
+			* @param aRes results on A
+			* @param bRes results on B
+			*/
+			void processResultsByDiff(
+				const repo::manipulator::diff::DiffResult &aRes,
+				const repo::manipulator::diff::DiffResult &bRes);
+
+			/**
+			* Process the results by correspondence, sending off color change signals
+			* base on correspondence
+			* @param aRes results on A
+			* @param bRes results on B
+			*/
+			void processResultsByCorrespondence(
+				const repo::manipulator::diff::DiffResult &aRes,
+				const repo::manipulator::diff::DiffResult &bRes);
+
 
 		}; // end class
 
