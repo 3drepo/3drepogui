@@ -43,11 +43,15 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 		sceneB);
 
 	
-	QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnA,
+	/*QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnA,
 		this, &Repo3DDiffRenderer::resultingDifferenceA);
 	QObject::connect(worker, &repo::worker::DiffWorker::diffResultOnB, 
-		this, &Repo3DDiffRenderer::resultingDifferenceB);
+		this, &Repo3DDiffRenderer::resultingDifferenceB);*/
 
+	QObject::connect(worker, SIGNAL(diffResultOnA(const repo::manipulator::diff::DiffResult &)),
+		this, SLOT(resultingDifferenceA(const repo::manipulator::diff::DiffResult &)));
+	QObject::connect(worker, SIGNAL(diffResultOnB(const repo::manipulator::diff::DiffResult &)),
+		this, SLOT(resultingDifferenceB(const repo::manipulator::diff::DiffResult &)));
 	//----------------------------------------------------------------------
 	// Fire up the asynchronous calculation.
 	QThreadPool::globalInstance()->start(worker);

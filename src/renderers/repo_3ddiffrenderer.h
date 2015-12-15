@@ -23,6 +23,7 @@
 #include "../repo/workers/repo_worker_diff.h"
 #include <repo/repo_controller.h>
 
+Q_DECLARE_METATYPE(repo::manipulator::diff::DiffResult)
 namespace repo {
 namespace gui {
 

@@ -29,9 +29,9 @@
 #include "repo_worker_abstract.h"
 #include "../widgets/repo_widget_rendering.h"
 
+
 namespace repo {
 	namespace worker {
-		Q_DECLARE_METATYPE(repo::manipulator::diff::DiffResult)
 		class DiffWorker : public RepoAbstractWorker {
 
 			Q_OBJECT

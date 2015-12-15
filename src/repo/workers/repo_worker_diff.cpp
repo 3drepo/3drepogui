@@ -32,7 +32,10 @@ DiffWorker::DiffWorker(
 	: controller(controller)
 	, token(token)
 	, sceneA(sceneA)
-	, sceneB(sceneB) {}
+	, sceneB(sceneB) 
+{
+	qRegisterMetaType<repo::manipulator::diff::DiffResult&>("repo::manipulator::diff::DiffResult");
+}
 
 DiffWorker::~DiffWorker() {}
 
@@ -49,6 +52,7 @@ void DiffWorker::run()
 		//FIXME: pick diff mode
 		controller->compareScenesByNames(token, sceneA, sceneB, aRes, bRes);
 
+		repoLog("Sending Signals...");
 		emit diffResultOnA(aRes);
 		emit diffResultOnB(bRes);
 	}
