@@ -54,6 +54,7 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
 	src/repo/workers/repo_worker_database.h \
+	src/repo/workers/repo_worker_diff.h \
 	src/repo/workers/repo_worker_file_export.h \
 	src/repo/workers/repo_worker_file_import.h \
 	src/repo/workers/repo_worker_glc_export.h \
@@ -124,6 +125,7 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
 	src/repo/workers/repo_worker_database.cpp \
+	src/repo/workers/repo_worker_diff.cpp \
 	src/repo/workers/repo_worker_file_export.cpp \
 	src/repo/workers/repo_worker_file_import.cpp \
 	src/repo/workers/repo_worker_glc_export.cpp \

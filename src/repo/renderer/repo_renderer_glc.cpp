@@ -286,7 +286,6 @@ void GLCRenderer::renderingMode(const RenderMode &mode)
 }
 
 void GLCRenderer::setMeshColor(
-	const QString &name,
 	const repoUUID &uniqueID,
 	const qreal &opacity,
 	const QColor &color)
@@ -323,7 +322,7 @@ void GLCRenderer::setMeshColor(
 	}
 	else
 	{
-		repoLogError("Failed to set color of mesh " + name.toStdString() + " : mesh not found!");
+        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
 	}
 
 	if (mat)
