@@ -175,6 +175,10 @@ repo::gui::RepoGUI::RepoGUI(
                     RepoFontAwesome::fa_link,
                     RepoFontAwesome::fa_chain_broken));
 
+    // Scene Graph
+    QObject::connect(ui->actionSceneGraph, &QAction::triggered,
+                     this, &RepoGUI::openSceneGraph);
+    ui->actionSceneGraph->setIcon(RepoFontAwesome::getSceneGraphIcon());
 
     // Web View
     QObject::connect(ui->actionWeb_View, &QAction::triggered,
@@ -517,15 +521,16 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-repo::gui::widgets::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget()
+repo::gui::widgets::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget() const
 {
-    widgets::RepoRenderingWidget *widget = ui->mdiArea->activeSubWidget<repo::gui::widgets::RepoRenderingWidget *>();
+    widgets::RepoRenderingWidget *widget =
+            ui->mdiArea->activeSubWidget<repo::gui::widgets::RepoRenderingWidget *>();
     if (!widget)
         std::cerr << tr("A 3D window has to be open.").toStdString() << std::endl;
     return widget;
 }
 
-const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene()
+const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene() const
 {
 	const repo::core::model::RepoScene *scene = 0;
     if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
@@ -681,6 +686,14 @@ void repo::gui::RepoGUI::openSettings() const
 {
     RepoDialogSettings settingsDialog((QWidget*) this);
     settingsDialog.exec();
+}
+
+void repo::gui::RepoGUI::openSceneGraph() const
+{
+    if (const repo::core::model::RepoScene *scene = getActiveScene())
+    {
+        ui->mdiArea->addSceneGraphSubWindow(scene, getActiveWidget()->windowTitle());
+    }
 }
 
 void repo::gui::RepoGUI::openSupportEmail() const

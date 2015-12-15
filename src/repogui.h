@@ -107,10 +107,10 @@ public slots:
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
-    widgets::RepoRenderingWidget *getActiveWidget();
+    widgets::RepoRenderingWidget *getActiveWidget() const;
 
     //! Returns the scene graph of the active 3D window if any.
-    const repo::core::model::RepoScene*getActiveScene();
+    const repo::core::model::RepoScene *getActiveScene() const;
 
     //! Shows a history dialog for selected repository.
     void history();
@@ -138,6 +138,9 @@ public slots:
 
     //! Opens settings dialog.
     void openSettings() const;
+
+    //! Opens scene graph view.
+    void openSceneGraph() const;
 
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
