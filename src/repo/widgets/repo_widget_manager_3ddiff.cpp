@@ -91,30 +91,51 @@ void RepoWidgetManager3DDiff::diff()
         std::cout << tr("Starting 3D Diff calculation").toStdString();
 
 
-        repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
-        repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
-
-
         // TODO: decide which algorithm to use based on getDiffAlgorithm()
         // TODO: decide visualisation based on getVisualization()
-        Repo3DDiffRenderer(
-                    controller,
-                    token,
-                    widgetA,
-                    widgetB);
 
-
-
-
-
-
+        bool colorCorrespondence = getVisualization() == Visualization::CORRESPONDENCE;
+        switch (getDiffAlgorithm())
+        {
+        case Algorithm::BASIC :
+            runBouncerDiff(widgetA, widgetB, DIFF_BY_NAME, colorCorrespondence);
+            break;
+        case Algorithm::STATISTICAL :
+            runBouncerDiff(widgetA, widgetB, DIFF_BY_ID, colorCorrespondence);
+            break;
+        case Algorithm::VISUAL :
+            // TODO: Jozef to add hooks.
+            break;
+        }
     }
 }
 
-void RepoWidgetManager3DDiff::runBasicDiff(repo::core::model::RepoScene *sceneA,
-                                           repo::core::model::RepoScene *sceneB)
+void RepoWidgetManager3DDiff::runBouncerDiff(
+        repo::gui::widgets::RepoRenderingWidget* widgetA,
+        repo::gui::widgets::RepoRenderingWidget* widgetB,
+        repo::manipulator::diff::Mode diffMode,
+        bool colourCorrespondence)
 {
+    repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
+    repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
+
+    repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
+                controller,
+                token,
+                sceneA,
+                sceneB,
+                diffMode,
+                colourCorrespondence);
+
+    QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
+                     widgetA, &widgets::RepoRenderingWidget::setMeshColor);
+    QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
+                     widgetB, &widgets::RepoRenderingWidget::setMeshColor);
+
+    //----------------------------------------------------------------------
+    // Fire up the asynchronous calculation.
+    QThreadPool::globalInstance()->start(worker);
 }
 
 repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getSelectedModelAWidget() const

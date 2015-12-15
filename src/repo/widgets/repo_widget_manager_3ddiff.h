@@ -61,9 +61,12 @@ public slots :
     //! Run the selected diff algorithm.
     void runDiff();
 
-    void runBasicDiff(
-            core::model::RepoScene *sceneA,
-            core::model::RepoScene *sceneB);
+private :
+
+    void runBouncerDiff(gui::widgets::RepoRenderingWidget *widgetA,
+            gui::widgets::RepoRenderingWidget *widgetB,
+            manipulator::diff::Mode diffMode,
+            bool colourCorrespondence);
 
 public :
 
@@ -76,7 +79,7 @@ public :
     DiffAlgorithm getDiffAlgorithm() const;
 
     repo::gui::widgets::RepoRenderingWidget*
-        getSelectedModelAWidget() const;
+    getSelectedModelAWidget() const;
 
     QString getSelectedModelAString() const;
 
@@ -84,7 +87,7 @@ public :
 
 
     repo::gui::widgets::RepoRenderingWidget*
-        getSelectedModelBWidget() const;
+    getSelectedModelBWidget() const;
 
     QString getSelectedModelBString() const;
 
