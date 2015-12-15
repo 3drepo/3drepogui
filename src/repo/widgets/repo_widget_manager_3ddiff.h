@@ -25,11 +25,11 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../../widgets/repo_mdiarea.h"
+#include "../../renderers/repo_3ddiffrenderer.h"
 
 namespace Ui {
 class RepoWidgetManager3DDiff;
 }
-
 
 namespace repo {
 namespace widgets {
@@ -39,12 +39,56 @@ class RepoWidgetManager3DDiff : public QWidget
 {
     Q_OBJECT
 
+    enum class Visualization { DIFF, CORRESPONDENCE };
+
+    enum class DiffAlgorithm { BASIC, VISUAL, STATISTICAL };
+
 public:
+
     explicit RepoWidgetManager3DDiff(
             repo::gui::RepoMdiArea *mdiArea,
+            repo::RepoController *controller,
+            const repo::RepoToken *token,
             QWidget *parent = 0);
 
     ~RepoWidgetManager3DDiff();
+
+public slots :
+
+    //! Populates selection combo boxes with available models.
+    void populateModelComboBoxes();
+
+    //! Run the selected diff algorithm.
+    void runDiff();
+
+    void runBasicDiff(
+            core::model::RepoScene *sceneA,
+            core::model::RepoScene *sceneB);
+
+public :
+
+    QList<repo::gui::RepoMdiSubWindow*> getSubWindows() const;
+
+    //! Returns currectly selected visualization.
+    Visualization getVisualization() const;
+
+    //! Returns currectly selected diffing algorithm.
+    DiffAlgorithm getDiffAlgorithm() const;
+
+    repo::gui::widgets::RepoRenderingWidget*
+        getSelectedModelAWidget() const;
+
+    QString getSelectedModelAString() const;
+
+    int getSelectedModelAIndex() const;
+
+
+    repo::gui::widgets::RepoRenderingWidget*
+        getSelectedModelBWidget() const;
+
+    QString getSelectedModelBString() const;
+
+    int getSelectedModelBIndex() const;
 
 private:
 
@@ -52,7 +96,9 @@ private:
 
     repo::gui::RepoMdiArea *mdiArea;
 
-    QHash<QString, repo::gui::RepoMdiSubWindow*> subWindows;
+    RepoController *controller;
+
+    const RepoToken *token;
 
 };
 

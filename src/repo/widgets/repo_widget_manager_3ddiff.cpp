@@ -20,28 +20,152 @@
 #include "ui_repo_widget_manager_3ddiff.h"
 
 using namespace repo::widgets;
+using namespace repo::gui;
 
 RepoWidgetManager3DDiff::RepoWidgetManager3DDiff(
         repo::gui::RepoMdiArea *mdiArea,
+        repo::RepoController *controller,
+        const repo::RepoToken *token,
         QWidget *parent)
     : QWidget(parent)
     , mdiArea(mdiArea)
+    , controller(controller)
+    , token(token)
     , ui(new Ui::RepoWidgetManager3DDiff)
 {
     ui->setupUi(this);
+    populateModelComboBoxes();
 
+    // Connecting mdiArea signal which is emmitted whenever a new window is created
+    // or an existing window is removed
+    QObject::connect(mdiArea, &repo::gui::RepoMdiArea::subWindowActivated,
+                     this, &RepoWidgetManager3DDiff::populateModelComboBoxes);
 
-
-    for (repo::gui::RepoMdiSubWindow* subWindow : mdiArea->subWindowList(true))
-    {
-        subWindows.insert(subWindow->windowTitle(), subWindow);
-    }
-
-    ui->modelAComboBox->addItems(subWindows.keys());
-    ui->modelBComboBox->addItems(subWindows.keys());
+    QObject::connect(ui->diffPushButton, &QPushButton::pressed,
+                     this, &RepoWidgetManager3DDiff::runDiff);
 }
 
 RepoWidgetManager3DDiff::~RepoWidgetManager3DDiff()
 {
     delete ui;
 }
+
+void RepoWidgetManager3DDiff::populateModelComboBoxes()
+{
+    QString selectedA = getSelectedModelAString();
+    QString selectedB = getSelectedModelBString();
+
+    //--------------------------------------------------------------------------
+    // Clear old entries
+    ui->modelAComboBox->clear();
+    ui->modelBComboBox->clear();
+
+    //--------------------------------------------------------------------------
+    // Populate
+    QStringList subWindows;
+    for (repo::gui::RepoMdiSubWindow* subWindow : getSubWindows())
+    {
+        subWindows.append(subWindow->windowTitle());
+    }
+    ui->modelAComboBox->addItems(subWindows);
+    ui->modelBComboBox->addItems(subWindows);
+
+    //--------------------------------------------------------------------------
+    // Reset selection
+    ui->modelAComboBox->setCurrentText(selectedA);
+    ui->modelBComboBox->setCurrentText(selectedB);
+}
+
+
+void RepoWidgetManager3DDiff::diff()
+{
+    repo::gui::widgets::RepoRenderingWidget* widgetA = getSelectedModelAWidget();
+    repo::gui::widgets::RepoRenderingWidget* widgetB = getSelectedModelBWidget();
+
+    if (!widgetA)
+        std::cerr << tr("Widget A is nullptr.").toStdString() << std::endl;
+    else if(!widgetB)
+        std::cerr << tr("Widget B is nullptr.").toStdString() << std::endl;
+    else
+    {
+        std::cout << tr("Starting 3D Diff calculation").toStdString();
+
+
+        repo::core::model::RepoScene *sceneA = widgetA->getRepoScene();
+        repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
+
+
+        // TODO: decide which algorithm to use based on getDiffAlgorithm()
+        // TODO: decide visualisation based on getVisualization()
+        Repo3DDiffRenderer(
+                    controller,
+                    token,
+                    widgetA,
+                    widgetB);
+
+
+
+
+
+
+    }
+}
+
+void RepoWidgetManager3DDiff::runBasicDiff(repo::core::model::RepoScene *sceneA,
+                                           repo::core::model::RepoScene *sceneB)
+{
+
+}
+
+repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getSelectedModelAWidget() const
+{
+    return dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
+                getSubWindows().at(getSelectedModelAIndex())->widget());
+}
+
+repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getSelectedModelBWidget() const
+{
+    return dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
+                getSubWindows().at(getSelectedModelBIndex())->widget());
+}
+
+QString RepoWidgetManager3DDiff::getSelectedModelAString() const
+{
+    return ui->modelAComboBox->currentText();
+}
+
+int RepoWidgetManager3DDiff::getSelectedModelAIndex() const
+{
+    return ui->modelAComboBox->currentIndex();
+}
+
+QString RepoWidgetManager3DDiff::getSelectedModelBString() const
+{
+    return ui->modelBComboBox->currentText();
+}
+
+int RepoWidgetManager3DDiff::getSelectedModelBIndex() const
+{
+    return ui->modelBComboBox->currentIndex();
+}
+
+QList<repo::gui::RepoMdiSubWindow*> RepoWidgetManager3DDiff::getSubWindows() const
+{
+    return mdiArea->subWindowList(true, repo::gui::RepoMdiArea::WindowOrder::CreationOrder);
+}
+
+RepoWidgetManager3DDiff::Visualization RepoWidgetManager3DDiff::getVisualization() const
+{
+    Visualization viz;
+    if (ui->showCorrespondenceRadioButton->isChecked())
+        viz = Visualization::CORRESPONDENCE;
+    else if (ui->showDifferenceRadioButton->isChecked())
+        viz = Visualization::DIFF;
+    return viz;
+}
+
+RepoWidgetManager3DDiff::DiffAlgorithm RepoWidgetManager3DDiff::getDiffAlgorithm() const
+{
+    return (DiffAlgorithm) ui->diffAlgorithmComboBox->currentIndex();
+}
+
