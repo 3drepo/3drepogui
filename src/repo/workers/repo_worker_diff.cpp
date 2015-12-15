@@ -34,7 +34,7 @@ DiffWorker::DiffWorker(
 	, sceneA(sceneA)
 	, sceneB(sceneB) 
 {
-	qRegisterMetaType<repo::manipulator::diff::DiffResult&>("repo::manipulator::diff::DiffResult");
+	qRegisterMetaType<repo::manipulator::diff::DiffResult>("repo::manipulator::diff::DiffResult");
 }
 
 DiffWorker::~DiffWorker() {}
