@@ -140,6 +140,11 @@ namespace repo {
 					const int &screenWidth = 100);
 
 				/**
+				* Reset mesh colours to its original
+				*/
+				virtual void resetColors();
+
+				/**
 				* Resize the viewing window
 				* @param width new width
 				* @param height new height
@@ -252,6 +257,7 @@ namespace repo {
 				GLC_MoverController glcMoverController; //! The navigation controller of the scene (arc ball, fly etc).
 				std::map<QString, GLC_Mesh*> meshMap;
 				std::map<QString, GLC_Material*> matMap;
+				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
 

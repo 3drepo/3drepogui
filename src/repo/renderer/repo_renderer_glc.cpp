@@ -306,13 +306,8 @@ void GLCRenderer::setMeshColor(
 		}
 		else
 		{
-			//no material
-			GLfloatVector glcColor;
-			glcColor.push_back(color.redF());
-			glcColor.push_back(color.greenF());
-			glcColor.push_back(color.blueF());
-			glcColor.push_back(color.alphaF());
-			mesh->addColors(glcColor);
+			//The mesh should have at least the default material due to how GLC_Mesh is constructed
+			repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
 		}
 	}
 	else if (matIt != matMap.end())
@@ -327,6 +322,12 @@ void GLCRenderer::setMeshColor(
 
 	if (mat)
 	{
+		if (changedMats.find(mat) == changedMats.end())
+		{
+			//preserve original material
+			changedMats[mat] = GLC_Material(*mat);
+		}
+
 		mat->setEmissiveColor(color);
 		mat->setOpacity(opacity);
 		if (mat->hasTexture())
@@ -604,6 +605,15 @@ void GLCRenderer::render(QPainter *painter,
 	{
 		repoLogError(e.what());
 	}
+}
+
+void GLCRenderer::resetColors()
+{
+	for (const auto &pair : changedMats)
+	{
+		*pair.first = pair.second;
+	}
+	changedMats.clear();
 }
 
 void GLCRenderer::resizeWindow(const int &width, const int &height)

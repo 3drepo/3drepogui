@@ -59,6 +59,9 @@ public slots :
     //! Populates selection combo boxes with available models.
     void populateModelComboBoxes();
 
+    //! Reset the models within the widgets to its original states
+    void resetModels();
+
     //! Run the selected diff algorithm.
     void runDiff();
 

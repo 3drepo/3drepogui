@@ -95,6 +95,13 @@ namespace repo {
 				*/
 				virtual void renderingMode(const RenderMode &mode) = 0;
 				
+
+				/**
+				* Reset mesh colours to its original
+				*/
+				virtual void resetColors() = 0;
+
+
 				/**
 				* Select a component given the position
 				* @param x position in x
