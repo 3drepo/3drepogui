@@ -35,7 +35,7 @@ namespace widgets {
 
 class RepoDialogManagerAccess
         : public QDialog
-        , repo::worker::RepoMultithreader
+        , public repo::worker::RepoMultithreader
 {
     Q_OBJECT
 

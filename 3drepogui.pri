@@ -40,6 +40,7 @@ HEADERS +=  \
 	src/repo/widgets/repo_dialog_project.h \
 	src/repo/widgets/repo_dialog_role.h \
 	src/repo/widgets/repo_dialog_user.h \
+	src/repo/widgets/repo_widget_manager_3ddiff.h \
 	src/repo/widgets/repo_widget_manager_connect.h \
 	src/repo/widgets/repo_widget_manager_projects.h \
 	src/repo/widgets/repo_widget_manager_roles.h \
@@ -113,6 +114,7 @@ SOURCES +=  \
 	src/repo/widgets/repo_dialog_project.cpp \
 	src/repo/widgets/repo_dialog_role.cpp \
 	src/repo/widgets/repo_dialog_user.cpp \
+	src/repo/widgets/repo_widget_manager_3ddiff.cpp \
 	src/repo/widgets/repo_widget_manager_connect.cpp \
 	src/repo/widgets/repo_widget_manager_projects.cpp \
 	src/repo/widgets/repo_widget_manager_roles.cpp \
@@ -170,6 +172,7 @@ FORMS +=  \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
 	forms/repo_widgetrepository.ui \
+	forms/repo_widget_manager_3ddiff.ui \
 	forms/repo_widget_tree_editable.ui \
 	forms/repo_widget_tree_filterable.ui \
 	forms/repo_widget_tree_unfilterable.ui

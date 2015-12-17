@@ -46,12 +46,13 @@ namespace repo {
 			* @param sceneB scene to compare against
 			* @param colourCorres true: colour correspondence false: colour differences
 			*/
-			DiffWorker(
-				repo::RepoController                    *controller, 
-				const repo::RepoToken                   *token,
-				repo::core::model::RepoScene            *sceneA,
-				repo::core::model::RepoScene            *sceneB,
-				const bool                              &colourCorres = false);
+            DiffWorker(repo::RepoController                    *controller,
+                const repo::RepoToken                   *token,
+                repo::core::model::RepoScene            *sceneA,
+                repo::core::model::RepoScene            *sceneB,
+                const manipulator::diff::Mode diffMode,
+                const bool colourCorres = false
+                );
 
 			//! Default empty destructor.
 			~DiffWorker();
@@ -85,6 +86,7 @@ namespace repo {
 			repo::core::model::RepoScene      *sceneA; //Base scene to compare from
 			repo::core::model::RepoScene      *sceneB; //Scene to compare against
 			const bool                         colourCorres; //colour correspondence
+            repo::manipulator::diff::Mode       diffMode;
 
 			/**
 			* Process the results by diff, sending off color change signals

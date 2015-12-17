@@ -67,7 +67,7 @@ public :
 	bool operator<(const RepoColor &color) const;
 
 	//! Returns the next color from a pre-defined set of 138 colours.
-	static RepoColor getNext();
+    static RepoColor getNext();
 
 	//! Generates a random colour.
 	static RepoColor getNextRandom();
@@ -86,7 +86,7 @@ public :
 
 private :
 
-	static unsigned int colorCounter;
+    static unsigned int colorCounter;
 
 	static const int numberOfColors = 137;
 

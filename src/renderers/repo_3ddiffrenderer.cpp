@@ -36,21 +36,21 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::core::model::RepoScene *sceneB = widgetB->getRepoScene();
 
 
-	repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
-		controller,
-		token,
-		sceneA,
-		sceneB, true);
+//	repo::worker::DiffWorker *worker = new repo::worker::DiffWorker(
+//		controller,
+//		token,
+//		sceneA,
+//		sceneB, true);
 
 	
-	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
-		widgetA, &widgets::RepoRenderingWidget::setMeshColor);
-	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
-		widgetB, &widgets::RepoRenderingWidget::setMeshColor);
+//	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
+//		widgetA, &widgets::RepoRenderingWidget::setMeshColor);
+//	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
+//		widgetB, &widgets::RepoRenderingWidget::setMeshColor);
 
-	//----------------------------------------------------------------------
-	// Fire up the asynchronous calculation.
-	QThreadPool::globalInstance()->start(worker);
+//	//----------------------------------------------------------------------
+//	// Fire up the asynchronous calculation.
+//	QThreadPool::globalInstance()->start(worker);
 
 }
 

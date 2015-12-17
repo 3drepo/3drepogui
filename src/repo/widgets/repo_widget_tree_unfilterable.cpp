@@ -24,7 +24,7 @@ using namespace repo::widgets;
 RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::RepoWidgetTreeUnfilterable)
-    , newRowText({tr("<empty>"), tr("<emtpy>")})
+    , newRowText({tr("<empty>"), tr("<empty>")})
     , tabWidget(0)
     , tab(0)
 {

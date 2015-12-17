@@ -116,6 +116,13 @@ namespace repo {
 
 				void cancelOperations() { emit cancelRenderingOps(); }
 
+
+				/**
+				* Reset mesh colours to its original
+				*/
+				void resetColors() { renderer->resetColors(); update(); };
+
+
 				/**
 				* Set the colour of the mesh given its name
 				* @param name name of mesh
@@ -124,34 +131,7 @@ namespace repo {
 				void setMeshColor(
 					const repoUUID &uniqueID,
 					const qreal &opacity,
-					const QColor &color);
-
-				//void setGLCMeshColors(
-				//	const float r,
-				//	const float g,
-				//	const float b,
-				//	const float a = 1.0f);
-
-				////! Sets the opacity of a glc mesh identified by its unique name.
-				//void setGLCMeshOpacity(const QString &, qreal opacity);
-
-				///*! Sets the render properties on a glc occurrence identified by its name.
-				//* This is can be used to force transparency by setting
-				//* properties.setRenderingMode(glc::OverwriteTransparency);
-				//* properties.setOverwriteTransparency(alpha);
-				//*/
-				//void setGLCOccurrenceRenderProperties(
-				//	const QString &occurrenceName,
-				//	const GLC_RenderProperties &);
-
-				////! Sets the opacity of a glc occurrence identified by its name.
-				//void setGLCOccurrenceOpacity(
-				//	const QString &,
-				//	qreal opacity = 1.0,
-				//	const QColor &color = Qt::gray);
-
-				////! Sets the visibility of given occurence name
-				//void setGLCOccurenceVisibility(const QString &, bool visible);
+					const QColor &color);				
 
 				//! Sets the visibility of the XYZ axes
 				void setInfoVisibility(const bool visible);
