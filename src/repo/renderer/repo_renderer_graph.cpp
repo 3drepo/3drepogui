@@ -36,7 +36,6 @@ RepoRendererGraph::RepoRendererGraph(
 
 RepoRendererGraph::~RepoRendererGraph() 
 {
-	clear();
 }
 
 void RepoRendererGraph::initialize()
