@@ -23,7 +23,7 @@
 #include <repo/repo_controller.h>
 #include <repo/lib/repo_listener_abstract.h>
 
-#include "repogui.h"
+#include "repo/gui/repo_gui.h"
 #include "repo/logger/repo_logger.h"
 
 
