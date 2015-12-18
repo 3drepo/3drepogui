@@ -34,7 +34,10 @@ RepoRendererGraph::RepoRendererGraph(
     initialize();
 }
 
-RepoRendererGraph::~RepoRendererGraph() {}
+RepoRendererGraph::~RepoRendererGraph() 
+{
+	clear();
+}
 
 void RepoRendererGraph::initialize()
 {
@@ -77,7 +80,7 @@ void RepoRendererGraph::addNodesRecursively(
         {
             // Collect children from all nodes into one set (so they are unique)
             std::vector<RepoNode*> ch = scene->getChildrenAsNodes(graphType, node->getSharedID());
-            std::copy(ch.begin(), ch.end(), std::back_inserter(unpainted));
+			unpainted.insert(unpainted.end(), ch.begin(), ch.end()); 
 
             // Only paint a node if all of its parent are already painted
             if (areAllParentsPainted(node))
@@ -85,7 +88,7 @@ void RepoRendererGraph::addNodesRecursively(
                 QGraphicsEllipseItem *item = addNode(node, row, i++);
                 addLines(node, item);
                 freshlyPainted.insert(uuidToQString(node->getSharedID()), item);
-                counter++;
+                ++counter;
             }
             else
             {
