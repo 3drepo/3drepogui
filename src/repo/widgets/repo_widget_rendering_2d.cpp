@@ -42,6 +42,7 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
 
 RepoWidgetRendering2D::~RepoWidgetRendering2D()
 {
+	delete scene();
     delete openGLWidget;
 }
 
