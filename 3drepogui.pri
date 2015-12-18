@@ -5,7 +5,6 @@
 
 
 HEADERS +=  \
-	src/repogui.h \
 	src/reposettings.h \
 	src/dialogs/repoabstractmanagerdialog.h \
 	src/dialogs/repodialogabout.h \
@@ -26,6 +25,7 @@ HEADERS +=  \
 	src/renderers/repo_3ddiffrenderer.h \
 	src/renderers/repo_fpscounter.h \
 	src/renderers/repo_webview.h \
+	src/repo/gui/repo_gui.h \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
@@ -79,7 +79,6 @@ HEADERS +=  \
 
 SOURCES +=  \
 	src/main.cpp \
-	src/repogui.cpp \
 	src/reposettings.cpp \
 	src/dialogs/repoabstractmanagerdialog.cpp \
 	src/dialogs/repodialogabout.cpp \
@@ -100,6 +99,7 @@ SOURCES +=  \
 	src/renderers/repo_3ddiffrenderer.cpp \
 	src/renderers/repo_fpscounter.cpp \
 	src/renderers/repo_webview.cpp \
+	src/repo/gui/repo_gui.cpp \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
@@ -156,7 +156,6 @@ FORMS +=  \
 	forms/repodialogabout.ui \
 	forms/repodialogsettings.ui \
 	forms/repofederationdialog.ui \
-	forms/repogui.ui \
 	forms/reposelectiontreedockwidget.ui \
 	forms/repowidgetassimpflags.ui \
 	forms/repo_dialogcommit.ui \
@@ -168,6 +167,7 @@ FORMS +=  \
 	forms/repo_dialog_role.ui \
 	forms/repo_dialog_user.ui \
 	forms/repo_genericdialog.ui \
+	forms/repo_gui.ui \
 	forms/repo_maptilesdialog.ui \
 	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
