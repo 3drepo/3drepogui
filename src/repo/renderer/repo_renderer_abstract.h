@@ -49,7 +49,7 @@ namespace repo {
 			public:
 				AbstractRenderer();
 
-				~AbstractRenderer();
+				virtual ~AbstractRenderer();
 
 				/**
 				* Delete shaders
