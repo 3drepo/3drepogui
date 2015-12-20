@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "../repo/widgets/repo_widget_rendering.h"
+#include "../repo/gui/widgets/repo_widget_rendering.h"
 #include "../primitives/repo_color.h"
 #include "../repo/workers/repo_worker_diff.h"
 #include <repo/repo_controller.h>

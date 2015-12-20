@@ -255,12 +255,12 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>../widgets/repo_lineedit.h</header>
+   <header>src/repo/gui/widgets/repo_lineedit.h</header>
   </customwidget>
   <customwidget>
    <class>repo::widgets::RepoWidgetTreeClickable</class>
    <extends>QTreeView</extends>
-   <header>src/repo/widgets/repo_widget_tree_clickable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_clickable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -39,7 +39,7 @@
   <customwidget>
    <class>repo::widgets::RepoWidgetManagerConnect</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_connect.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_connect.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

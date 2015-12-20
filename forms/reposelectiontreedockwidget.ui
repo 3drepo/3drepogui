@@ -37,7 +37,7 @@
   <customwidget>
    <class>repo::widgets::RepoWidgetTreeFilterable</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_tree_filterable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_filterable.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

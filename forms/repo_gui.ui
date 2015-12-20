@@ -556,19 +556,19 @@
     <customwidget>
       <class>repo::gui::RepoWidgetRepository</class>
       <extends>QWidget</extends>
-      <header>../../widgets/repo_widgetrepository.h</header>
+      <header>src/repo/gui/widgets/repo_widgetrepository.h</header>
       <container>1</container>
     </customwidget>
     <customwidget>
       <class>repo::gui::RepoMdiArea</class>
       <extends>QWidget</extends>
-      <header>../../widgets/repo_mdiarea.h</header>
+      <header>src/repo/gui/widgets/repo_mdiarea.h</header>
       <container>1</container>
     </customwidget>
     <customwidget>
       <class>repo::gui::RepoTextBrowser</class>
       <extends>QTextBrowser</extends>
-      <header>../../widgets/repo_textbrowser.h</header>
+      <header>src/repo/gui/widgets/repo_textbrowser.h</header>
     </customwidget>
   </customwidgets>
   <resources/>

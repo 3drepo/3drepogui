@@ -26,8 +26,8 @@
 
 // GUI
 
-#include "../../repo/widgets/repo_widget_rendering.h"
-#include "../../widgets/repo_mdisubwindow.h"
+#include "widgets/repo_widget_rendering.h"
+#include "widgets/repo_mdisubwindow.h"
 //------------------------------------------------------------------------------
 
 

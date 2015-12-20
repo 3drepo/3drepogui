@@ -234,12 +234,12 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>../widgets/repo_lineedit.h</header>
+   <header>src/repo/gui/widgets/repo_lineedit.h</header>
   </customwidget>
   <customwidget>
    <class>repo::gui::RepoWidgetAssimpFlags</class>
    <extends>QWidget</extends>
-   <header>../widgets/repowidgetassimpflags.h</header>
+    <header>src/repo/gui/widgets/repowidgetassimpflags.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

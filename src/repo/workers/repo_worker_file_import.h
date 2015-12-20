@@ -26,7 +26,7 @@
 
 //-----------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
-#include "../../widgets/repowidgetassimpflags.h"
+#include "../gui/widgets/repowidgetassimpflags.h"
 #include "../../reposettings.h"
 //-----------------------------------------------------------------------------
 

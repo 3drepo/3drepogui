@@ -315,7 +315,7 @@
   <customwidget>
    <class>repo::widgets::RepoWidgetTreeUnfilterable</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_tree_unfilterable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_unfilterable.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

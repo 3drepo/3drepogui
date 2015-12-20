@@ -137,19 +137,19 @@
   <customwidget>
    <class>repo::widgets::RepoWidgetManagerUsers</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_users.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_users.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>repo::widgets::RepoWidgetManagerRoles</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_roles.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_roles.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>repo::widgets::RepoWidgetManagerProjects</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_projects.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_projects.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
