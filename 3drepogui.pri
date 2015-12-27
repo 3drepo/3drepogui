@@ -23,7 +23,6 @@ HEADERS +=  \
 	src/primitives/repo_fontawesome.h \
 	src/primitives/repo_glccamera.h \
 	src/primitives/repo_sortfilterproxymodel.h \
-	src/renderers/repo_3ddiffrenderer.h \
 	src/renderers/repo_fpscounter.h \
 	src/renderers/repo_webview.h \
 	src/repo/logger/repo_logger.h \
@@ -97,7 +96,6 @@ SOURCES +=  \
 	src/primitives/repo_fontawesome.cpp \
 	src/primitives/repo_glccamera.cpp \
 	src/primitives/repo_sortfilterproxymodel.cpp \
-	src/renderers/repo_3ddiffrenderer.cpp \
 	src/renderers/repo_fpscounter.cpp \
 	src/renderers/repo_webview.cpp \
 	src/repo/logger/repo_logger.cpp \
