@@ -24,10 +24,10 @@
 // GUI
 #include "repo_gui.h"
 #include "ui_repo_gui.h"
-#include "../../dialogs/repo_dialogcommit.h"
-#include "../../dialogs/repo_dialoghistory.h"
-#include "../../dialogs/repodialogsettings.h"
-#include "../../dialogs/repodialogabout.h"
+#include "dialogs/repo_dialogcommit.h"
+#include "dialogs/repo_dialoghistory.h"
+#include "dialogs/repodialogsettings.h"
+#include "dialogs/repodialogabout.h"
 #include "../logger/repo_logger.h"
 #include "widgets/repo_dialog_connect.h"
 #include "widgets/repo_widgetrepository.h"
@@ -40,9 +40,9 @@
 #include "../workers/repo_worker_optimize.h"
 #include "../../primitives/repo_fontawesome.h"
 #include "../../primitives/repo_color.h"
-#include "../../dialogs/repoabstractmanagerdialog.h"
-#include "../../dialogs/repofederationdialog.h"
-#include "../../dialogs/repo_maptilesdialog.h"
+#include "dialogs/repoabstractmanagerdialog.h"
+#include "dialogs/repofederationdialog.h"
+#include "dialogs/repo_maptilesdialog.h"
 
 
 //------------------------------------------------------------------------------

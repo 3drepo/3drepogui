@@ -17,8 +17,8 @@
 
 #include "repo_dialoghistory.h"
 //------------------------------------------------------------------------------
-#include "../primitives/repo_fontawesome.h"
-#include "../repo/workers/repo_worker_history.h"
+#include "../../../primitives/repo_fontawesome.h"
+#include "../../workers/repo_worker_history.h"
 
 //------------------------------------------------------------------------------
 

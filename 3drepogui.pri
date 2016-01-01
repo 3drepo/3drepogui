@@ -6,15 +6,6 @@
 
 HEADERS +=  \
 	src/reposettings.h \
-	src/dialogs/repoabstractmanagerdialog.h \
-	src/dialogs/repodialogabout.h \
-	src/dialogs/repodialogsettings.h \
-	src/dialogs/repofederationdialog.h \
-	src/dialogs/repo_dialogcommit.h \
-	src/dialogs/repo_dialoghistory.h \
-	src/dialogs/repo_genericdialog.h \
-	src/dialogs/repo_maptilesdialog.h \
-	src/dialogs/repo_transformationdialog.h \
 	src/primitives/repocomboboxdelegate.h \
 	src/primitives/repocomboboxeditor.h \
 	src/primitives/repoidbcache.h \
@@ -26,6 +17,15 @@ HEADERS +=  \
 	src/renderers/repo_fpscounter.h \
 	src/renderers/repo_webview.h \
 	src/repo/gui/repo_gui.h \
+	src/repo/gui/dialogs/repoabstractmanagerdialog.h \
+	src/repo/gui/dialogs/repodialogabout.h \
+	src/repo/gui/dialogs/repodialogsettings.h \
+	src/repo/gui/dialogs/repofederationdialog.h \
+	src/repo/gui/dialogs/repo_dialogcommit.h \
+	src/repo/gui/dialogs/repo_dialoghistory.h \
+	src/repo/gui/dialogs/repo_genericdialog.h \
+	src/repo/gui/dialogs/repo_maptilesdialog.h \
+	src/repo/gui/dialogs/repo_transformationdialog.h \
 	src/repo/gui/widgets/reposelectiontreedockwidget.h \
 	src/repo/gui/widgets/repowidgetassimpflags.h \
 	src/repo/gui/widgets/repo_dialog_connect.h \
@@ -80,15 +80,6 @@ HEADERS +=  \
 SOURCES +=  \
 	src/main.cpp \
 	src/reposettings.cpp \
-	src/dialogs/repoabstractmanagerdialog.cpp \
-	src/dialogs/repodialogabout.cpp \
-	src/dialogs/repodialogsettings.cpp \
-	src/dialogs/repofederationdialog.cpp \
-	src/dialogs/repo_dialogcommit.cpp \
-	src/dialogs/repo_dialoghistory.cpp \
-	src/dialogs/repo_genericdialog.cpp \
-	src/dialogs/repo_maptilesdialog.cpp \
-	src/dialogs/repo_transformationdialog.cpp \
 	src/primitives/repocomboboxdelegate.cpp \
 	src/primitives/repocomboboxeditor.cpp \
 	src/primitives/repoidbcache.cpp \
@@ -100,6 +91,15 @@ SOURCES +=  \
 	src/renderers/repo_fpscounter.cpp \
 	src/renderers/repo_webview.cpp \
 	src/repo/gui/repo_gui.cpp \
+	src/repo/gui/dialogs/repoabstractmanagerdialog.cpp \
+	src/repo/gui/dialogs/repodialogabout.cpp \
+	src/repo/gui/dialogs/repodialogsettings.cpp \
+	src/repo/gui/dialogs/repofederationdialog.cpp \
+	src/repo/gui/dialogs/repo_dialogcommit.cpp \
+	src/repo/gui/dialogs/repo_dialoghistory.cpp \
+	src/repo/gui/dialogs/repo_genericdialog.cpp \
+	src/repo/gui/dialogs/repo_maptilesdialog.cpp \
+	src/repo/gui/dialogs/repo_transformationdialog.cpp \
 	src/repo/gui/widgets/reposelectiontreedockwidget.cpp \
 	src/repo/gui/widgets/repowidgetassimpflags.cpp \
 	src/repo/gui/widgets/repo_dialog_connect.cpp \
