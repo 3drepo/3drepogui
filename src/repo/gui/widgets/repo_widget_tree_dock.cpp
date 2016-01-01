@@ -16,16 +16,16 @@
  */
 
 
-#include "reposelectiontreedockwidget.h"
-#include "ui_reposelectiontreedockwidget.h"
+#include "repo_widget_tree_dock.h"
+#include "ui_repo_widget_tree_dock.h"
 #include "../primitives/repo_sort_filter_proxy_model.h"
 
-repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
+repo::gui::repo_widget_tree_dock::repo_widget_tree_dock(
         widgets::RepoRenderingWidget *glcWidget,
         QWidget *parent)
     : QDockWidget(parent)
     , glcWidget(glcWidget)
-    , ui(new Ui::RepoSelectionTreeDockWidget)
+    , ui(new Ui::repo_widget_tree_dock)
 {
     ui->setupUi(this);
 
@@ -78,13 +78,13 @@ repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
                 this, SLOT(showContextMenu(QPoint)));*/
 }
 
-repo::gui::RepoSelectionTreeDockWidget::~RepoSelectionTreeDockWidget()
+repo::gui::repo_widget_tree_dock::~repo_widget_tree_dock()
 {
     delete ui;
 }
 
 
-//void repo::gui::RepoSelectionTreeDockWidget::addNode(
+//void repo::gui::repo_widget_tree_dock::addNode(
 //        QStandardItem* parentItem,
 //        const core::RepoNodeAbstract* node)
 //{
@@ -142,7 +142,7 @@ repo::gui::RepoSelectionTreeDockWidget::~RepoSelectionTreeDockWidget()
 //        addNode(nameItem, *it);
 //}
 
-void repo::gui::RepoSelectionTreeDockWidget::attachPDF()
+void repo::gui::repo_widget_tree_dock::attachPDF()
 {
     //QModelIndexList currentSelection = ui->filterableTreeWidget->getCurrentSelection();
 
@@ -177,7 +177,7 @@ void repo::gui::RepoSelectionTreeDockWidget::attachPDF()
 //    }
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::changeItem(QStandardItem* item)
+void repo::gui::repo_widget_tree_dock::changeItem(QStandardItem* item)
 {
   /*  QObject::disconnect(ui->filterableTreeWidget->getModel(),
                      SIGNAL(itemChanged(QStandardItem*)),
@@ -201,7 +201,7 @@ void repo::gui::RepoSelectionTreeDockWidget::changeItem(QStandardItem* item)
     //                 this, SLOT(changeItem(QStandardItem*)));
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
+void repo::gui::repo_widget_tree_dock::changeSelection(
         const QItemSelection& selection,
         bool unselectSelected)
 {
@@ -218,7 +218,7 @@ void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
     }
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
+void repo::gui::repo_widget_tree_dock::changeSelection(
         const QItemSelection& selected, const QItemSelection& deselected)
 {
     changeSelection(deselected, true);
@@ -227,19 +227,19 @@ void repo::gui::RepoSelectionTreeDockWidget::changeSelection(
         glcWidget->repaint();
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::editItem(const QModelIndex &) const
+void repo::gui::repo_widget_tree_dock::editItem(const QModelIndex &) const
 {
    editSelectedItems();
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::editSelectedItems() const
+void repo::gui::repo_widget_tree_dock::editSelectedItems() const
 {
    /* std::string type = getType(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));*/
     /*if (REPO_NODE_TYPE_TRANSFORMATION == type)
         editSelectedTransformations();*/
 }
 
-void repo::gui::RepoSelectionTreeDockWidget::editSelectedTransformations() const
+void repo::gui::repo_widget_tree_dock::editSelectedTransformations() const
 {
    /* core::RepoNodeTransformation *t = getTransformation(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));
     TransformationDialog transformationDialog(t ? *t : core::RepoNodeTransformation(),
@@ -263,7 +263,7 @@ void repo::gui::RepoSelectionTreeDockWidget::editSelectedTransformations() const
 }
 
 
-//void repo::gui::RepoSelectionTreeDockWidget::select(
+//void repo::gui::repo_widget_tree_dock::select(
 //        const core::RepoNodeAbstract* node,
 //        bool unselectSelected)
 //{
@@ -280,7 +280,7 @@ void repo::gui::RepoSelectionTreeDockWidget::editSelectedTransformations() const
 //    }
 //}
 
-void repo::gui::RepoSelectionTreeDockWidget::showContextMenu(const QPoint &point)
+void repo::gui::repo_widget_tree_dock::showContextMenu(const QPoint &point)
 {
  //   bool on = ui->filterableTreeWidget->getModel()->invisibleRootItem()->rowCount() > 0;
 	//bool isTransformationSelected = false;
@@ -304,19 +304,19 @@ void repo::gui::RepoSelectionTreeDockWidget::showContextMenu(const QPoint &point
 }
 
 
-//repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformationFromSource(
+//repo::core::RepoNodeTransformation *repo::gui::repo_widget_tree_dock::getTransformationFromSource(
 //        const QModelIndex &sourceIndex) const
 //{
 //    return getTransformation(ui->filterableTreeWidget->getItemFromSource(sourceIndex, Columns::NAME));
 //}
 //
-//repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformationFromProxy(
+//repo::core::RepoNodeTransformation *repo::gui::repo_widget_tree_dock::getTransformationFromProxy(
 //        const QModelIndex &proxyIndex) const
 //{
 //    return getTransformation(ui->filterableTreeWidget->getItemFromProxy(proxyIndex, Columns::NAME));
 //}
 //
-//repo::core::RepoNodeAbstract *repo::gui::RepoSelectionTreeDockWidget::getNode(const QStandardItem * item) const
+//repo::core::RepoNodeAbstract *repo::gui::repo_widget_tree_dock::getNode(const QStandardItem * item) const
 //{
 //    core::RepoNodeAbstract *node = 0;
 //    if (item)
@@ -324,7 +324,7 @@ void repo::gui::RepoSelectionTreeDockWidget::showContextMenu(const QPoint &point
 //    return node;
 //}
 //
-//repo::core::RepoNodeTransformation *repo::gui::RepoSelectionTreeDockWidget::getTransformation(
+//repo::core::RepoNodeTransformation *repo::gui::repo_widget_tree_dock::getTransformation(
 //        const QStandardItem *item) const
 //{
 //    core::RepoNodeTransformation *transformation = 0;
@@ -334,7 +334,7 @@ void repo::gui::RepoSelectionTreeDockWidget::showContextMenu(const QPoint &point
 //    return transformation;
 //}
 //
-//std::string repo::gui::RepoSelectionTreeDockWidget::getType(const QStandardItem * item) const
+//std::string repo::gui::repo_widget_tree_dock::getType(const QStandardItem * item) const
 //{
 //    std::string type;
 //    core::RepoNodeAbstract* node = getNode(item);

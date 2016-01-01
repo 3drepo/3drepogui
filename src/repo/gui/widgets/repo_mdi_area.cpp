@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_mdiarea.h"
+#include "repo_mdi_area.h"
 #include "../../workers/repo_worker_scene_graph.h"
 #include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"

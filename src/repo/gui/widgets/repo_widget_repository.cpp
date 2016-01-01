@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_widgetrepository.h"
+#include "repo_widget_repository.h"
 
 #include "../../workers/repo_worker_database.h"
 #include "../../workers/repo_worker_collection.h"

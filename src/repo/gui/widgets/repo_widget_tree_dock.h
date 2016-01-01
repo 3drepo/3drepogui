@@ -33,13 +33,13 @@
 #include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
-    class RepoSelectionTreeDockWidget;
+    class repo_widget_tree_dock;
 }
 
 namespace repo {
 namespace gui {
 
-class RepoSelectionTreeDockWidget : public QDockWidget
+class repo_widget_tree_dock : public QDockWidget
 {
     Q_OBJECT    
 
@@ -47,11 +47,11 @@ class RepoSelectionTreeDockWidget : public QDockWidget
 
 public:
 
-    explicit RepoSelectionTreeDockWidget(
+    explicit repo_widget_tree_dock(
             widgets::RepoRenderingWidget *glcWidget,
             QWidget *parent = 0);
 
-    ~RepoSelectionTreeDockWidget();
+    ~repo_widget_tree_dock();
 
 public slots :
 
@@ -93,7 +93,7 @@ protected :
 
 private:
 
-    Ui::RepoSelectionTreeDockWidget *ui;
+    Ui::repo_widget_tree_dock *ui;
 
     widgets::RepoRenderingWidget* glcWidget;
 

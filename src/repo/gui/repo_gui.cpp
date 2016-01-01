@@ -30,10 +30,10 @@
 #include "dialogs/repo_dialog_about.h"
 #include "../logger/repo_logger.h"
 #include "dialogs/repo_dialog_connect.h"
-#include "widgets/repo_widgetrepository.h"
-#include "widgets/repo_textbrowser.h"
-#include "widgets/repowidgetassimpflags.h"
-#include "widgets/reposelectiontreedockwidget.h"
+#include "widgets/repo_widget_repository.h"
+#include "widgets/repo_text_browser.h"
+#include "widgets/repo_widget_flags.h"
+#include "widgets/repo_widget_tree_dock.h"
 #include "widgets/repo_widget_manager_3ddiff.h"
 #include "../workers/repo_worker_commit.h"
 #include "../workers/repo_worker_file_export.h"
@@ -315,7 +315,7 @@ void repo::gui::RepoGUI::addMapTiles()
 
 void repo::gui::RepoGUI::addSelectionTree(widgets::RepoRenderingWidget* widget, Qt::DockWidgetArea area)
 {
-    RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
+    repo_widget_tree_dock* dock = new repo_widget_tree_dock(widget, this);
     this->addDockWidget(area, dock);
     if (panelsMenu)
         delete panelsMenu;

@@ -29,14 +29,14 @@
 #include "../../settings/repo_settings.h"
 
 namespace Ui {
-class RepoWidgetAssimpFlags;
+class repo_widget_flags;
 }
 
 namespace repo {
 namespace gui {
 
 //! See http://assimp.sourceforge.net/lib_html/postprocess_8h.html
-class RepoWidgetAssimpFlags : public QWidget
+class repo_widget_flags : public QWidget
 {
     Q_OBJECT
 
@@ -45,11 +45,11 @@ class RepoWidgetAssimpFlags : public QWidget
 
 public:
 
-    explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
+    explicit repo_widget_flags(QWidget *parent = 0);
 
     repo::settings::RepoSettings* getSettings() const { return settings; }
 
-    ~RepoWidgetAssimpFlags();
+    ~repo_widget_flags();
 
 public slots :
 
@@ -78,7 +78,7 @@ public slots :
 private :
 
     //! UI var.
-    Ui::RepoWidgetAssimpFlags *ui;
+    Ui::repo_widget_flags *ui;
 
     //! Persistent application settings.
     repo::settings::RepoSettings *settings;

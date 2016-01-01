@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_lineedit.h"
+#include "repo_line_edit.h"
 
 repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent) 
 	: QLineEdit(parent)

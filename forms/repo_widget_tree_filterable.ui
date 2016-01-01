@@ -90,7 +90,7 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>src/repo/gui/widgets/repo_lineedit.h</header>
+   <header>src/repo/gui/widgets/repo_line_edit.h</header>
   </customwidget>
   <customwidget>
    <class>repo::widgets::RepoWidgetTreeClickable</class>

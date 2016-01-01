@@ -26,7 +26,7 @@
 
 //-----------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
-#include "../gui/widgets/repowidgetassimpflags.h"
+#include "../gui/widgets/repo_widget_flags.h"
 #include "../settings/repo_settings.h"
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ namespace repo {
 			*/
 			FileImportWorker(const std::string& fullPath,
 				repo::RepoController *controller,
-				const repo::gui::RepoWidgetAssimpFlags *assimpFlagsWidget);
+				const repo::gui::repo_widget_flags *assimpFlagsWidget);
 
 			//! Default empty destructor.
 			~FileImportWorker();

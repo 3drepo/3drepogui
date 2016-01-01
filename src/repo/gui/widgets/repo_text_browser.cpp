@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_textbrowser.h"
+#include "repo_text_browser.h"
 
 //------------------------------------------------------------------------------
 #include <QTextBlock>

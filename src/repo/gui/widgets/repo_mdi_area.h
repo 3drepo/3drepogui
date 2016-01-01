@@ -19,7 +19,7 @@
 #define REPO_MDI_AREA_H
 
 //------------------------------------------------------------------------------
-#include "repo_mdisubwindow.h"
+#include "repo_mdi_subwindow.h"
 #include "repo_widget_rendering.h"
 //------------------------------------------------------------------------------
 #include <repo/repo_controller.h>

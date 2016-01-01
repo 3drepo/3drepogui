@@ -177,7 +177,7 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="repo::gui::RepoWidgetAssimpFlags" name="assimpFlagsWidget" native="true"/>
+               <widget class="repo::gui::repo_widget_flags" name="assimpFlagsWidget" native="true"/>
               </item>
              </layout>
             </widget>
@@ -234,12 +234,12 @@
   <customwidget>
    <class>repo::gui::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>src/repo/gui/widgets/repo_lineedit.h</header>
+   <header>src/repo/gui/widgets/repo_line_edit.h</header>
   </customwidget>
   <customwidget>
-   <class>repo::gui::RepoWidgetAssimpFlags</class>
+   <class>repo::gui::repo_widget_flags</class>
    <extends>QWidget</extends>
-    <header>src/repo/gui/widgets/repowidgetassimpflags.h</header>
+    <header>src/repo/gui/widgets/repo_widget_flags.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

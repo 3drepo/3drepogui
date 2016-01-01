@@ -33,11 +33,11 @@
 
 //------------------------------------------------------------------------------
 // Repo GUI
-#include "ui_repo_widgetrepository.h"
+#include "ui_repo_widget_repository.h"
 #include "../primitives/repo_fontawesome.h"
 #include "../primitives/repo_idbcache.h"
 #include "../primitives/repo_sort_filter_proxy_model.h"
-#include "repo_lineedit.h"
+#include "repo_line_edit.h"
 
 namespace Ui {
     class RepoWidgetRepository;

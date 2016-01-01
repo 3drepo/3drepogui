@@ -24,7 +24,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "repo_mdiarea.h"
+#include "repo_mdi_area.h"
 #include "../renderers/repo_renderer_3ddiff.h"
 #include "../../workers/repo_multithreader.h"
 

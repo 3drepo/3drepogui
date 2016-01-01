@@ -34,13 +34,11 @@ HEADERS +=  \
 	src/repo/gui/renderers/repo_renderer_glc.h \
 	src/repo/gui/renderers/repo_renderer_graph.h \
 	src/repo/gui/renderers/repo_webview.h \
-	src/repo/gui/widgets/reposelectiontreedockwidget.h \
-	src/repo/gui/widgets/repowidgetassimpflags.h \
-	src/repo/gui/widgets/repo_lineedit.h \
-	src/repo/gui/widgets/repo_mdiarea.h \
-	src/repo/gui/widgets/repo_mdisubwindow.h \
-	src/repo/gui/widgets/repo_textbrowser.h \
-	src/repo/gui/widgets/repo_widgetrepository.h \
+	src/repo/gui/widgets/repo_line_edit.h \
+	src/repo/gui/widgets/repo_mdi_area.h \
+	src/repo/gui/widgets/repo_mdi_subwindow.h \
+	src/repo/gui/widgets/repo_text_browser.h \
+	src/repo/gui/widgets/repo_widget_flags.h \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.h \
 	src/repo/gui/widgets/repo_widget_manager_connect.h \
 	src/repo/gui/widgets/repo_widget_manager_projects.h \
@@ -48,7 +46,9 @@ HEADERS +=  \
 	src/repo/gui/widgets/repo_widget_manager_users.h \
 	src/repo/gui/widgets/repo_widget_rendering.h \
 	src/repo/gui/widgets/repo_widget_rendering_2d.h \
+	src/repo/gui/widgets/repo_widget_repository.h \
 	src/repo/gui/widgets/repo_widget_tree_clickable.h \
+	src/repo/gui/widgets/repo_widget_tree_dock.h \
 	src/repo/gui/widgets/repo_widget_tree_editable.h \
 	src/repo/gui/widgets/repo_widget_tree_filterable.h \
 	src/repo/gui/widgets/repo_widget_tree_unfilterable.h \
@@ -107,13 +107,11 @@ SOURCES +=  \
 	src/repo/gui/renderers/repo_renderer_glc.cpp \
 	src/repo/gui/renderers/repo_renderer_graph.cpp \
 	src/repo/gui/renderers/repo_webview.cpp \
-	src/repo/gui/widgets/reposelectiontreedockwidget.cpp \
-	src/repo/gui/widgets/repowidgetassimpflags.cpp \
-	src/repo/gui/widgets/repo_lineedit.cpp \
-	src/repo/gui/widgets/repo_mdiarea.cpp \
-	src/repo/gui/widgets/repo_mdisubwindow.cpp \
-	src/repo/gui/widgets/repo_textbrowser.cpp \
-	src/repo/gui/widgets/repo_widgetrepository.cpp \
+	src/repo/gui/widgets/repo_line_edit.cpp \
+	src/repo/gui/widgets/repo_mdi_area.cpp \
+	src/repo/gui/widgets/repo_mdi_subwindow.cpp \
+	src/repo/gui/widgets/repo_text_browser.cpp \
+	src/repo/gui/widgets/repo_widget_flags.cpp \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.cpp \
 	src/repo/gui/widgets/repo_widget_manager_connect.cpp \
 	src/repo/gui/widgets/repo_widget_manager_projects.cpp \
@@ -121,7 +119,9 @@ SOURCES +=  \
 	src/repo/gui/widgets/repo_widget_manager_users.cpp \
 	src/repo/gui/widgets/repo_widget_rendering.cpp \
 	src/repo/gui/widgets/repo_widget_rendering_2d.cpp \
+	src/repo/gui/widgets/repo_widget_repository.cpp \
 	src/repo/gui/widgets/repo_widget_tree_clickable.cpp \
+	src/repo/gui/widgets/repo_widget_tree_dock.cpp \
 	src/repo/gui/widgets/repo_widget_tree_editable.cpp \
 	src/repo/gui/widgets/repo_widget_tree_filterable.cpp \
 	src/repo/gui/widgets/repo_widget_tree_unfilterable.cpp \
@@ -149,8 +149,6 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_users.cpp
 
 FORMS +=  \
-	forms/reposelectiontreedockwidget.ui \
-	forms/repowidgetassimpflags.ui \
 	forms/repo_dialog_about.ui \
 	forms/repo_dialog_commit.ui \
 	forms/repo_dialog_connect.ui \
@@ -168,8 +166,10 @@ FORMS +=  \
 	forms/repo_dialog_user.ui \
 	forms/repo_gui.ui \
 	forms/repo_webview.ui \
-	forms/repo_widgetrepository.ui \
+	forms/repo_widget_flags.ui \
 	forms/repo_widget_manager_3ddiff.ui \
+	forms/repo_widget_repository.ui \
+	forms/repo_widget_tree_dock.ui \
 	forms/repo_widget_tree_editable.ui \
 	forms/repo_widget_tree_filterable.ui \
 	forms/repo_widget_tree_unfilterable.ui

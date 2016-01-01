@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_mdisubwindow.h"
-#include "repowidgetassimpflags.h"
+#include "repo_mdi_subwindow.h"
+#include "repo_widget_flags.h"
 #include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"
 #include "../primitives/repo_fontawesome.h"
@@ -116,7 +116,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new RepoWidgetAssimpFlags());
+	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new repo_widget_flags());
 	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
 		this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
