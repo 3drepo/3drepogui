@@ -36,7 +36,7 @@
 #include "ui_repo_dialog_commit.h"
 #include "repo_dialog_transformation.h"
 #include "../widgets/repo_lineedit.h"
-#include "../primitives/repoidbcache.h"
+#include "../primitives/repo_idbcache.h"
 #include "../../workers/repo_worker_modified_nodes.h"
 
 //------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ namespace gui {
 			CommitDialog(
 				QWidget* parent = nullptr,
 				Qt::WindowFlags flags = nullptr,
-				RepoIDBCache *dbCache = nullptr,
+                repo::gui::primitive::RepoIDBCache *dbCache = nullptr,
 				repo::core::model::RepoScene * scene = nullptr);
 
 			//! Destructs the tree model.
@@ -159,7 +159,7 @@ namespace gui {
 			QSortFilterProxyModel *proxyModel;
 
 			//! Database cache.
-			RepoIDBCache *dbCache;
+            repo::gui::primitive::RepoIDBCache *dbCache;
 
 			//! Selected project name.
 			QString projectName;

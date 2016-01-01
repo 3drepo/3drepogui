@@ -24,59 +24,61 @@
 #include <cmath>
 
 namespace repo {
-namespace primitives {
+namespace gui{
+namespace primitive {
 
-/**
- * @brief The RepoStandardItem class
- * Convenienece class for creation of custom QStandardItem objects with
- * preset settings. For instance it enables easy creation of number and filesize
- * entries that are correctly sortable as numbers eg 1, 2, 3, 20, 30, rather
- * that as strings "1", "2", "20", "3", 30".
- */
-class RepoStandardItem : public QStandardItem
-{
+	/**
+		* @brief The RepoStandardItem class
+		* Convenienece class for creation of custom QStandardItem objects with
+		* preset settings. For instance it enables easy creation of number and filesize
+		* entries that are correctly sortable as numbers eg 1, 2, 3, 20, 30, rather
+		* that as strings "1", "2", "20", "3", 30".
+		*/
+	class RepoStandardItem : public QStandardItem
+	{
 
-public :
+	public:
 
-    //! Creates a standard non-editable item with tooltip and data set.
-    RepoStandardItem(
-            const QString& label = QString(),
-            const QVariant& data = QVariant(),
-            int role = Qt::UserRole + 1,
-            Qt::Alignment alignment = Qt::AlignLeft,
-            bool enabled = true);
+		//! Creates a standard non-editable item with tooltip and data set.
+		RepoStandardItem(
+			const QString& label = QString(),
+			const QVariant& data = QVariant(),
+			int role = Qt::UserRole + 1,
+			Qt::Alignment alignment = Qt::AlignLeft,
+			bool enabled = true);
 
-    //! Creates default non-editable item from std::string.
-    RepoStandardItem(const std::string &label)
-        : RepoStandardItem(QString::fromStdString(label)) {}
+		//! Creates default non-editable item from std::string.
+		RepoStandardItem(const std::string &label)
+			: RepoStandardItem(QString::fromStdString(label)) {}
 
-    /**
-     * Creates a sortable non-editable item from given number. If the filesie is
-     * true, returns a sortable filesize string item.
-     */
-    RepoStandardItem(uint64_t number, bool filesize = false)
-        : RepoStandardItem(
-              filesize
-              ? toFileSize((qlonglong)number)
-              : toLocaleString((qulonglong)number),
-              (qulonglong)number,
-              Qt::DisplayRole, // this makes numbers sortable as numbers and not strings
-              Qt::AlignRight)
-    {}
+		/**
+			* Creates a sortable non-editable item from given number. If the filesie is
+			* true, returns a sortable filesize string item.
+			*/
+		RepoStandardItem(uint64_t number, bool filesize = false)
+			: RepoStandardItem(
+			filesize
+			? toFileSize((qlonglong)number)
+			: toLocaleString((qulonglong)number),
+			(qulonglong)number,
+			Qt::DisplayRole, // this makes numbers sortable as numbers and not strings
+			Qt::AlignRight)
+		{}
 
-public :
+	public:
 
-    //! Returns a human readable string of kilobytes, megabytes etc.
-    static QString toFileSize(uint64_t bytes);
+		//! Returns a human readable string of kilobytes, megabytes etc.
+		static QString toFileSize(uint64_t bytes);
 
-    //! Returns the current locale string representation.
-    template <class T>
-    static QString toLocaleString(const T & value)
-    {
-        QLocale locale;
-        return locale.toString(value);
-    }
-};
+		//! Returns the current locale string representation.
+		template <class T>
+		static QString toLocaleString(const T & value)
+		{
+			QLocale locale;
+			return locale.toString(value);
+		}
+	};
 
 } // primitives
+}
 } // repo

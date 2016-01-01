@@ -77,7 +77,7 @@ void DiffWorker::processResultsByCorrespondence(
 {
     for (const auto pair : aRes.correspondence)
     {
-        QColor color = repo::gui::RepoColor::getNext();
+        QColor color = repo::gui::primitive::RepoColor::getNext();
         repo::core::model::RepoNode* nodeA = sceneA->getNodeBySharedID(pair.first);
         if (nodeA && nodeA->getTypeAsEnum() == repo::core::model::NodeType::MESH)
             emit colorChangeOnA(nodeA->getUniqueID(), 1.0, color);

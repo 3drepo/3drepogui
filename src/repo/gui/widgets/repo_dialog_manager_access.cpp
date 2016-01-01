@@ -22,7 +22,7 @@
 using namespace repo::widgets;
 
 RepoDialogManagerAccess::RepoDialogManagerAccess(
-        const repo::gui::RepoIDBCache *dbCache,
+        const repo::gui::primitive::RepoIDBCache *dbCache,
         repo::RepoController *controller,
         QWidget *parent)
     : QDialog(parent)
@@ -31,7 +31,7 @@ RepoDialogManagerAccess::RepoDialogManagerAccess(
     , controller(controller)
 {
     ui->setupUi(this);
-    setWindowIcon(repo::gui::RepoFontAwesome::getAccessManagerIcon());
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getAccessManagerIcon());
 
     if (dbCache)
     {

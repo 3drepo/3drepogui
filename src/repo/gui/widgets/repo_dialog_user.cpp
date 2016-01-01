@@ -52,8 +52,8 @@ RepoDialogUser::RepoDialogUser(
     ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::API_KEYS);
 
     //--------------------------------------------------------------------------
-    ui->avatarPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(
-                                       RepoFontAwesome::fa_user,
+    ui->avatarPushButton->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                                       repo::gui::primitive::RepoFontAwesome::fa_user,
                                        QColor(Qt::gray)));
 
     if (!user.isEmpty() && user.isValid())
@@ -69,27 +69,27 @@ RepoDialogUser::RepoDialogUser(
 
     //--------------------------------------------------------------------------
     // DB Roles
-    RepoComboBoxEditor::SeparatedEntries dbEntries;
+    repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries dbEntries;
     dbEntries << databases;
-    RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
+    repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries dbRoleEntries;
     dbRoleEntries << customRolesList << controller->getStandardDatabaseRoles(token);
 
     //------------------------------------------------------------------------
     // Any DB Roles
-    QList<RepoComboBoxEditor::SeparatedEntries> anyDBRolesLists;
+    QList<repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries> anyDBRolesLists;
     anyDBRolesLists << dbEntries << dbRoleEntries;
 
     //--------------------------------------------------------------------------
     // Admin DB Roles (any roles + admin only roles)
 	dbRoleEntries << controller->getAdminDatabaseRoles(token);
-    QList<RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
+    QList<repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries> adminDBRolesLists;
     adminDBRolesLists << dbEntries << dbRoleEntries;
 
     //--------------------------------------------------------------------------
     // Populate Delegates
 
-    QHash<QString, repo::gui::RepoComboBoxDelegate *> rolesDelegates;
-    QHash<QString, repo::gui::RepoComboBoxDelegate *> projectsDelegates;
+    QHash<QString, repo::gui::primitive::RepoComboBoxDelegate *> rolesDelegates;
+    QHash<QString, repo::gui::primitive::RepoComboBoxDelegate *> projectsDelegates;
 
     for (auto database : databases)
     {
@@ -98,18 +98,18 @@ RepoDialogUser::RepoDialogUser(
         //----------------------------------------------------------------------
         // Projects delegate
         std::list<std::string> projects = databasesWithProjects.find(database)->second;
-        RepoComboBoxEditor::SeparatedEntries projectsEntries;
+        repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries projectsEntries;
         projectsEntries << projects;
-        QList<RepoComboBoxEditor::SeparatedEntries> projectsLists;
+        QList<repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries> projectsLists;
         projectsLists << dbEntries << projectsEntries;
-        projectsDelegates.insert(qDatabase, new RepoComboBoxDelegate(projectsLists));
+        projectsDelegates.insert(qDatabase, new repo::gui::primitive::RepoComboBoxDelegate(projectsLists));
 
         //----------------------------------------------------------------------
         // Roles delegate
-        RepoComboBoxDelegate *rolesDelegate =
+        repo::gui::primitive::RepoComboBoxDelegate *rolesDelegate =
             (controller->getNameOfAdminDatabase(token) == database)
-                ? new RepoComboBoxDelegate(adminDBRolesLists)
-                : new RepoComboBoxDelegate(anyDBRolesLists);
+                ? new repo::gui::primitive::RepoComboBoxDelegate(adminDBRolesLists)
+                : new repo::gui::primitive::RepoComboBoxDelegate(anyDBRolesLists);
         rolesDelegates.insert(qDatabase, rolesDelegate);
     }
 
@@ -177,7 +177,7 @@ RepoDialogUser::~RepoDialogUser()
 
 QIcon RepoDialogUser::getIcon()
 {
-   return RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_user);
+   return repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_user);
 }
 
 std::string RepoDialogUser::getEmail() const

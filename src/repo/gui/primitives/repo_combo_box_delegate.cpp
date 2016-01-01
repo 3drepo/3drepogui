@@ -15,9 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repocomboboxdelegate.h"
+#include "repo_combo_box_delegate.h"
 
-repo::gui::RepoComboBoxDelegate::RepoComboBoxDelegate(
+using namespace repo::gui::primitive;
+
+RepoComboBoxDelegate::RepoComboBoxDelegate(
          const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists)    
 {
     for (unsigned int i = 0; i < comboBoxLists.size(); ++i)
@@ -28,7 +30,7 @@ repo::gui::RepoComboBoxDelegate::RepoComboBoxDelegate(
     }
 }
 
-repo::gui::RepoComboBoxDelegate::~RepoComboBoxDelegate()
+RepoComboBoxDelegate::~RepoComboBoxDelegate()
 {
     for (unsigned int i = 0; i < factories.size(); ++i)
     {
@@ -40,7 +42,7 @@ repo::gui::RepoComboBoxDelegate::~RepoComboBoxDelegate()
     }
 }
 
-QWidget * repo::gui::RepoComboBoxDelegate::createEditor(
+QWidget * RepoComboBoxDelegate::createEditor(
         QWidget *parent,
         const QStyleOptionViewItem &,
         const QModelIndex &index) const

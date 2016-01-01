@@ -183,17 +183,17 @@ QStandardItem *RepoWidgetManagerConnect::makeAliasItem(
 {
     QVariant var;
     var.setValue(credentials);
-    QStandardItem *item = new repo::primitives::RepoStandardItem(credentials.getAlias());
+    QStandardItem *item = new repo::gui::primitive::RepoStandardItem(credentials.getAlias());
     item->setData(var);
     item->setEnabled(true);
-    item->setIcon(repo::gui::RepoFontAwesome::getHostIcon());
+    item->setIcon(repo::gui::primitive::RepoFontAwesome::getHostIcon());
     return item;
 }
 
 QStandardItem *RepoWidgetManagerConnect::makeAddressItem(
         const repo::RepoCredentials &credentials)
 {
-    return new repo::primitives::RepoStandardItem(credentials.getHostAndPort());
+    return new repo::gui::primitive::RepoStandardItem(credentials.getHostAndPort());
 }
 
 QStandardItem *RepoWidgetManagerConnect::makeAuthenticationItem(
@@ -208,31 +208,31 @@ QStandardItem *RepoWidgetManagerConnect::makeAuthenticationItem(
                     credentials.getAuthenticationDatabase() +
                     " / " +
                     credentials.getUsername());
-        item = new repo::primitives::RepoStandardItem(label);
-        item->setIcon(repo::gui::RepoFontAwesome::getDatabaseIcon());
+        item = new repo::gui::primitive::RepoStandardItem(label);
+        item->setIcon(repo::gui::primitive::RepoFontAwesome::getDatabaseIcon());
     }
     else
-        item = new repo::primitives::RepoStandardItem(label);
+        item = new repo::gui::primitive::RepoStandardItem(label);
     return item;
 }
 
 QStandardItem *RepoWidgetManagerConnect::makeSSLItem(
         const repo::RepoCredentials &)
 {
-    QStandardItem *item = new repo::primitives::RepoStandardItem();
+    QStandardItem *item = new repo::gui::primitive::RepoStandardItem();
     item->setEnabled(true);
-    item->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(
-                      repo::gui::RepoFontAwesome::fa_unlock_alt));
+    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                      repo::gui::primitive::RepoFontAwesome::fa_unlock_alt));
     return item;
 }
 
 QStandardItem *RepoWidgetManagerConnect::makeSSHItem(
         const repo::RepoCredentials &)
 {
-    QStandardItem *item = new repo::primitives::RepoStandardItem();
+    QStandardItem *item = new repo::gui::primitive::RepoStandardItem();
     item->setEnabled(true);
-    item->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(
-                      repo::gui::RepoFontAwesome::fa_unlock_alt));
+    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                      repo::gui::primitive::RepoFontAwesome::fa_unlock_alt));
     return item;
 }
 

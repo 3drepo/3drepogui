@@ -31,7 +31,7 @@ RepoDialogConnect::RepoDialogConnect(
     , controller(controller)
 {
     ui->setupUi(this);
-    setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
     // Alias
     QString alias = QString::fromStdString(credentials.getAlias());

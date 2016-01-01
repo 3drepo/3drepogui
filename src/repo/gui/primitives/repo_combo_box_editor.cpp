@@ -15,12 +15,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repocomboboxeditor.h"
+#include "repo_combo_box_editor.h"
 #include <iostream>
 
 #include <QStylePainter>
 
-repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entries,
+using namespace repo::gui::primitive;
+
+RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entries,
         QWidget *parent)
     : QComboBox(parent)
     , entries(entries)
@@ -46,37 +48,37 @@ repo::gui::RepoComboBoxEditor::RepoComboBoxEditor(const SeparatedEntries &entrie
     }
 }
 
-repo::gui::RepoComboBoxEditor::~RepoComboBoxEditor() {}
+RepoComboBoxEditor::~RepoComboBoxEditor() {}
 
-QString repo::gui::RepoComboBoxEditor::value() const
+QString RepoComboBoxEditor::value() const
 {
    return qvariant_cast<QString>(itemData(currentIndex(), Qt::DecorationRole));
 }
 
-void repo::gui::RepoComboBoxEditor::setValue(QString value)
+void RepoComboBoxEditor::setValue(QString value)
 {
    setCurrentIndex(findData(value, int(Qt::DecorationRole)));
 }
 
-QWidget * repo::gui::RepoComboBoxEditor::createWidget(QWidget * parent) const
+QWidget * RepoComboBoxEditor::createWidget(QWidget * parent) const
 {
     return new RepoComboBoxEditor(entries, parent);
 }
 
-QByteArray repo::gui::RepoComboBoxEditor::valuePropertyName() const
+QByteArray RepoComboBoxEditor::valuePropertyName() const
 {
     return QByteArray();
 }
 
-repo::gui::RepoComboBoxEditor::SeparatedEntries repo::gui::RepoComboBoxEditor::getSeparatedEntries(
+RepoComboBoxEditor::SeparatedEntries RepoComboBoxEditor::getSeparatedEntries(
         const std::list<std::string> &list)
 {
-    repo::gui::RepoComboBoxEditor::SeparatedEntries se;
+    RepoComboBoxEditor::SeparatedEntries se;
     se << list;
     return se;
 }
 
-repo::gui::RepoComboBoxEditor::SeparatedEntries repo::gui::RepoComboBoxEditor::getSeparatedEntries(
+RepoComboBoxEditor::SeparatedEntries RepoComboBoxEditor::getSeparatedEntries(
         const QStringList &stringList)
 {
     std::list<std::string > list;

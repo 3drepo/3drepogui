@@ -40,7 +40,8 @@ RepoMdiSubWindow::RepoMdiSubWindow(
 	// General settings
 	setAttribute(Qt::WA_DeleteOnClose);
 	setStyleSheet("background-color:white;");
-    setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_file));
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                      repo::gui::primitive::RepoFontAwesome::fa_file));
 	resize(400, 400);
 
     //--------------------------------------------------------------------------

@@ -37,7 +37,7 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
     this->setRenderHints(QPainter::Antialiasing);// | QPainter::SmoothPixmapTransform);
     //--------------------------------------------------------------------------
     this->setWindowTitle(windowTitle);
-    this->setWindowIcon(repo::gui::RepoFontAwesome::getSceneGraphIcon());
+    this->setWindowIcon(repo::gui::primitive::RepoFontAwesome::getSceneGraphIcon());
 }
 
 RepoWidgetRendering2D::~RepoWidgetRendering2D()

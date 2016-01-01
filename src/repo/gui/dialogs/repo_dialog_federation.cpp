@@ -20,13 +20,13 @@
 #include "ui_repo_dialog_federation.h"
 
 #include "../primitives/repo_fontawesome.h"
-#include "../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_combo_box_delegate.h"
 #include "../../logger/repo_logger.h"
 
 using namespace repo::gui::dialog;
 
 FederationDialog::FederationDialog(
-        repo::gui::RepoIDBCache *dbCache,
+        repo::gui::primitive::RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
 	, ui(new Ui::FederationDialog)
@@ -56,8 +56,8 @@ FederationDialog::FederationDialog(
 
     //--------------------------------------------------------------------------
 
-    ui->addPushButton->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_arrow_right));
-    ui->removePushButton->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_arrow_left));
+    ui->addPushButton->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_arrow_right));
+    ui->removePushButton->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_arrow_left));
 
 
     QStandardItemModel *availableModel = ui->availableWidget->getModel();
@@ -137,13 +137,13 @@ void FederationDialog::addProjectsToFederation()
             //------------------------------------------------------------------
 
             QList<QStandardItem*> row;            
-            row << new repo::primitives::RepoStandardItem(project);
+            row << new repo::gui::primitive::RepoStandardItem(project);
             row[0]->setData(var);
 
-            row << new repo::primitives::RepoStandardItem(QString("master"));
+            row << new repo::gui::primitive::RepoStandardItem(QString("master"));
             row[1]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
 
-            row << new repo::primitives::RepoStandardItem(QString("head"));
+            row << new repo::gui::primitive::RepoStandardItem(QString("head"));
 			row[2]->setEditable(false); //TODO: this is set to false because it does nothing even edited.
             item->appendRow(row);
         }

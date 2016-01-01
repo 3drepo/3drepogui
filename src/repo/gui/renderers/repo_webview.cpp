@@ -57,20 +57,20 @@ repo::gui::RepoWebView::RepoWebView(
     QObject::connect(ui->reloadPushButton, &QPushButton::pressed,
                       ui->webView, &QWebView::reload);
     ui->reloadPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_repeat));
+                repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                    repo::gui::primitive::RepoFontAwesome::fa_repeat));
 
     QObject::connect(ui->backwardPushButton, &QPushButton::pressed,
                       ui->webView, &QWebView::back);
     ui->backwardPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_arrow_left));
+                repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                    repo::gui::primitive::RepoFontAwesome::fa_arrow_left));
 
     QObject::connect(ui->forwardPushButton, &QPushButton::pressed,
                       ui->webView, &QWebView::forward);
     ui->forwardPushButton->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_arrow_right));
+                repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                    repo::gui::primitive::RepoFontAwesome::fa_arrow_right));
 
 
 

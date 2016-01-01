@@ -15,13 +15,12 @@ HEADERS +=  \
 	src/repo/gui/dialogs/repo_dialog_map.h \
 	src/repo/gui/dialogs/repo_dialog_settings.h \
 	src/repo/gui/dialogs/repo_dialog_transformation.h \
-	src/repo/gui/primitives/repocomboboxdelegate.h \
-	src/repo/gui/primitives/repocomboboxeditor.h \
-	src/repo/gui/primitives/repoidbcache.h \
 	src/repo/gui/primitives/repo_color.h \
+	src/repo/gui/primitives/repo_combo_box_delegate.h \
+	src/repo/gui/primitives/repo_combo_box_editor.h \
 	src/repo/gui/primitives/repo_fontawesome.h \
-	src/repo/gui/primitives/repo_glccamera.h \
-	src/repo/gui/primitives/repo_sortfilterproxymodel.h \
+	src/repo/gui/primitives/repo_idbcache.h \
+	src/repo/gui/primitives/repo_sort_filter_proxy_model.h \
 	src/repo/gui/primitives/repo_standard_item.h \
 	src/repo/gui/renderers/repo_3ddiffrenderer.h \
 	src/repo/gui/renderers/repo_fpscounter.h \
@@ -89,13 +88,12 @@ SOURCES +=  \
 	src/repo/gui/dialogs/repo_dialog_map.cpp \
 	src/repo/gui/dialogs/repo_dialog_settings.cpp \
 	src/repo/gui/dialogs/repo_dialog_transformation.cpp \
-	src/repo/gui/primitives/repocomboboxdelegate.cpp \
-	src/repo/gui/primitives/repocomboboxeditor.cpp \
-	src/repo/gui/primitives/repoidbcache.cpp \
 	src/repo/gui/primitives/repo_color.cpp \
+	src/repo/gui/primitives/repo_combo_box_delegate.cpp \
+	src/repo/gui/primitives/repo_combo_box_editor.cpp \
 	src/repo/gui/primitives/repo_fontawesome.cpp \
-	src/repo/gui/primitives/repo_glccamera.cpp \
-	src/repo/gui/primitives/repo_sortfilterproxymodel.cpp \
+	src/repo/gui/primitives/repo_idbcache.cpp \
+	src/repo/gui/primitives/repo_sort_filter_proxy_model.cpp \
 	src/repo/gui/primitives/repo_standard_item.cpp \
 	src/repo/gui/renderers/repo_3ddiffrenderer.cpp \
 	src/repo/gui/renderers/repo_fpscounter.cpp \

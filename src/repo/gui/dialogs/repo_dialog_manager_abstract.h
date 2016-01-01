@@ -31,7 +31,7 @@
 
 
 // GUI
-#include "../primitives/repoidbcache.h"
+#include "../primitives/repo_idbcache.h"
 
 namespace Ui {
 class AbstractManagerDialog;
@@ -51,7 +51,7 @@ public:
 
     //! Explicit constructor.
     explicit AbstractManagerDialog(
-            const repo::gui::RepoIDBCache *dbCache = 0,
+            const repo::gui::primitive::RepoIDBCache *dbCache = 0,
             QWidget *parent = 0);
 
     //! Destructor to clean up model and proxy.
@@ -122,7 +122,7 @@ protected :
     //! Ui var.
     Ui::AbstractManagerDialog *ui;
 
-    const repo::gui::RepoIDBCache* dbCache;
+    const repo::gui::primitive::RepoIDBCache* dbCache;
 
 }; // end class
 

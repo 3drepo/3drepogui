@@ -29,7 +29,7 @@ RepoDialogManagerConnect::RepoDialogManagerConnect(
     , ui(new Ui::RepoDialogManagerConnect)
 {
     ui->setupUi(this);
-    setWindowIcon(repo::gui::RepoFontAwesome::getConnectIcon());
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
 //    ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
 

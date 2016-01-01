@@ -29,7 +29,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../primitives/repoidbcache.h"
+#include "../primitives/repo_idbcache.h"
 #include "repo_dialog_generic.h"
 #include "repo_dialog_transformation.h"
 #include "../primitives/repo_standard_item.h"
@@ -60,7 +60,7 @@ namespace dialog{
 	public:
 
 		explicit FederationDialog(
-			RepoIDBCache *dbCache,
+            repo::gui::primitive::RepoIDBCache *dbCache,
 			QWidget *parent = 0);
 
 		~FederationDialog();
@@ -105,7 +105,7 @@ namespace dialog{
 
         Ui::FederationDialog *ui;
 
-		RepoIDBCache *dbCache;
+        repo::gui::primitive::RepoIDBCache *dbCache;
 	};
 }
 } // end namespace gui

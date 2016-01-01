@@ -142,8 +142,8 @@ QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *no
         light = Qt::magenta;
         break;
     case NodeType::MAP :
-        dark = RepoColor::fromHex("#cd5b45"); // Coral3
-        light = RepoColor::fromHex("#ff7f50"); // Coral
+        dark = repo::gui::primitive::RepoColor::fromHex("#cd5b45"); // Coral3
+        light = repo::gui::primitive::RepoColor::fromHex("#ff7f50"); // Coral
         break;
     case NodeType::MATERIAL :
         dark = Qt::darkRed;
@@ -158,12 +158,12 @@ QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *no
         light = Qt::cyan;
         break;
     case NodeType::REFERENCE :
-        dark = RepoColor::fromHex("#6e8b3d"); // DarkOliveGreen4
-        light = RepoColor::fromHex("#caff70"); // DarkOliveGreen1
+        dark = repo::gui::primitive::RepoColor::fromHex("#6e8b3d"); // DarkOliveGreen4
+        light = repo::gui::primitive::RepoColor::fromHex("#caff70"); // DarkOliveGreen1
         break;
     case NodeType::REVISION :
-        dark = RepoColor::fromHex("#68228b"); // DarkOrchid4
-        light = RepoColor::fromHex("#bf3eff"); // DarkOrchid1
+        dark = repo::gui::primitive::RepoColor::fromHex("#68228b"); // DarkOrchid4
+        light = repo::gui::primitive::RepoColor::fromHex("#bf3eff"); // DarkOrchid1
         break;
     case NodeType::TEXTURE :
         dark = Qt::darkYellow;

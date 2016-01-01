@@ -52,8 +52,8 @@ void RepoWidgetManagerProjects::addProjectSettings(
     // Project object itself
     QVariant var;
     var.setValue(projectSettings);
-    repo::primitives::RepoStandardItem *item =
-            new repo::primitives::RepoStandardItem(projectSettings.getProjectName());
+    repo::gui::primitive::RepoStandardItem *item =
+            new repo::gui::primitive::RepoStandardItem(projectSettings.getProjectName());
     item->setData(var);
 //    item->setCheckable(true);
 //    item->setCheckState(Qt::Checked);
@@ -61,13 +61,13 @@ void RepoWidgetManagerProjects::addProjectSettings(
     row.append(item);
 
     // Owner
-    row.append(new primitives::RepoStandardItem(projectSettings.getOwner()));
+    row.append(new repo::gui::primitive::RepoStandardItem(projectSettings.getOwner()));
 
     // Type
-    row.append(new primitives::RepoStandardItem(projectSettings.getType()));
+    row.append(new repo::gui::primitive::RepoStandardItem(projectSettings.getType()));
 
     // Description
-    row.append(new primitives::RepoStandardItem(projectSettings.getDescription()));
+    row.append(new repo::gui::primitive::RepoStandardItem(projectSettings.getDescription()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

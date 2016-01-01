@@ -84,7 +84,8 @@ RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, Renderer rType, const 
 	// Default settings
     this->setWindowTitle(windowTitle);
 	this->setToolTip(windowTitle);
-	this->setWindowIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_cube));
+    this->setWindowIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                            repo::gui::primitive::RepoFontAwesome::fa_cube));
 	this->setAttribute(Qt::WA_DeleteOnClose);
 	this->setFocusPolicy(Qt::StrongFocus);
 

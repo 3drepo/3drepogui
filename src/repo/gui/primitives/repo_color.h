@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_COLOR_H
-#define REPO_COLOR_H
+#pragma once
 
 #include <tuple>
 #include <string>
@@ -27,77 +26,76 @@
 
 namespace repo {
 namespace gui {
+namespace primitive {
+	// See http://colorschemedesigner.com/
+	class RepoColor : public QColor
+	{
 
-// See http://colorschemedesigner.com/
-class RepoColor : public QColor
-{
+	public:
 
-public :
+		//-------------------------------------------------------------------------
+		//
+		// Constructors
+		//
+		//-------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------
-	//
-	// Constructors
-	//
-	//-------------------------------------------------------------------------
+		//! Default empty constructor with rgb 0,0,0 and invalid alpha channel.
+		RepoColor();
 
-	//! Default empty constructor with rgb 0,0,0 and invalid alpha channel.
-	RepoColor();
+		RepoColor(const QColor &);
 
-	RepoColor(const QColor &);
+		RepoColor(float r, float g, float b, float a = 1.0);
 
-	RepoColor(float r, float g, float b, float a = 1.0);
+		RepoColor(const std::tuple<float, float, float> &rgb);
 
-	RepoColor(const std::tuple<float, float, float> &rgb);
+		~RepoColor();
 
-	~RepoColor();
+		//! Returns red, green and blue 0.0 to 1.0 components as a tuple of floats.
+		std::tuple<float, float, float> tupleF() const;
 
-	//! Returns red, green and blue 0.0 to 1.0 components as a tuple of floats.
-	std::tuple<float, float, float> tupleF() const;
+		//-------------------------------------------------------------------------
+		//
+		// Operators
+		//
+		//-------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------
-	//
-	// Operators
-	//
-	//-------------------------------------------------------------------------
+		/*!
+			* Compares the colors based on the rgba components, one at the time in
+			* a decreasing order of red, green, blue and alpha.
+			*/
+		bool operator<(const RepoColor &color) const;
 
-	/*!
-	 * Compares the colors based on the rgba components, one at the time in
-	 * a decreasing order of red, green, blue and alpha.
-	 */
-	bool operator<(const RepoColor &color) const;
+		//! Returns the next color from a pre-defined set of 138 colours.
+		static RepoColor getNext();
 
-	//! Returns the next color from a pre-defined set of 138 colours.
-    static RepoColor getNext();
+		//! Generates a random colour.
+		static RepoColor getNextRandom();
 
-	//! Generates a random colour.
-	static RepoColor getNextRandom();
+		//! Returns color from "#RRGGBB" style strings
+		static RepoColor fromHex(const std::string &hexString);
 
-    //! Returns color from "#RRGGBB" style strings
-    static RepoColor fromHex(const std::string &hexString);
+		//! Returns a colour opposite on the colour wheel (HSL style).
+		RepoColor getComplement() const;
 
-	//! Returns a colour opposite on the colour wheel (HSL style).
-	RepoColor getComplement() const;
+		//! Returns a string of [R, G, B, A].
+		std::string toString() const;
 
-	//! Returns a string of [R, G, B, A].
-	std::string toString() const;
+		//! Returns a hex representation of the color.
+		//    QString toHexString(bool alphaChannel) const;
 
-    //! Returns a hex representation of the color.
-//    QString toHexString(bool alphaChannel) const;
+	private:
 
-private :
+		static unsigned int colorCounter;
 
-    static unsigned int colorCounter;
+		static const int numberOfColors = 137;
 
-	static const int numberOfColors = 137;
+		//! 138 predefined HTML named colours (without black and shades of gray) randomly ordered.
+		// See http://www.w3schools.com/html/html_colornames.asp
+		// and http://www.color-hex.com/color-names.html
+		static const std::string COLORS[];
 
-	//! 138 predefined HTML named colours (without black and shades of gray) randomly ordered.
-	// See http://www.w3schools.com/html/html_colornames.asp
-	// and http://www.color-hex.com/color-names.html
-	static const std::string COLORS[];
-
-};
-
+	};
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_COLOR_H

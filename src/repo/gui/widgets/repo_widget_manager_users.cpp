@@ -62,8 +62,8 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     QVariant var;
     var.setValue(user);
 
-    repo::primitives::RepoStandardItem *item =
-            new repo::primitives::RepoStandardItem(user.getUserName());
+    repo::gui::primitive::RepoStandardItem *item =
+            new repo::gui::primitive::RepoStandardItem(user.getUserName());
 
     item->setData(var);
 //    item->setCheckable(true);
@@ -86,19 +86,19 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     row.append(item);
 
     // First Name
-    row.append(new primitives::RepoStandardItem(user.getFirstName()));
+    row.append(new repo::gui::primitive::RepoStandardItem(user.getFirstName()));
 
     // Last Name
-    row.append(new primitives::RepoStandardItem(user.getLastName()));
+    row.append(new repo::gui::primitive::RepoStandardItem(user.getLastName()));
 
     // Email
-    row.append(new primitives::RepoStandardItem(user.getEmail()));
+    row.append(new repo::gui::primitive::RepoStandardItem(user.getEmail()));
 
     // Roles count
-    row.append(new primitives::RepoStandardItem(user.getRolesList().size()));
+    row.append(new repo::gui::primitive::RepoStandardItem(user.getRolesList().size()));
 
     // API Keys count
-    row.append(new primitives::RepoStandardItem(user.getAPIKeysList().size()));
+    row.append(new repo::gui::primitive::RepoStandardItem(user.getAPIKeysList().size()));
 
     //--------------------------------------------------------------------------
     getFilterableTree()->addTopLevelRow(row);

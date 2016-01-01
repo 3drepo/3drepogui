@@ -39,8 +39,8 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../primitives/repocomboboxeditor.h"
-#include "../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_combo_box_editor.h"
+#include "../primitives/repo_combo_box_delegate.h"
 #include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------

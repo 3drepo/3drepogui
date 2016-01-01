@@ -40,7 +40,7 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 	databasesModel->setHeaderData(RepoDatabasesColumns::SIZE, Qt::Horizontal, QObject::tr("Size"));
     databasesModel->setHeaderData(RepoDatabasesColumns::ALLOCATED, Qt::Horizontal, QObject::tr("Allocated"));
 
-    databasesProxyModel = new RepoSortFilterProxyModel((QWidget*)this, false);
+    databasesProxyModel = new repo::gui::primitive::RepoSortFilterProxyModel((QWidget*)this, false);
 	enableFiltering(
         ui->databasesTreeView,
 		databasesModel,
@@ -56,7 +56,7 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 	collectionModel->setHeaderData(RepoCollectionColumns::VALUE, Qt::Horizontal, QObject::tr("Value"));
 	collectionModel->setHeaderData(RepoCollectionColumns::TYPE, Qt::Horizontal, QObject::tr("Type"));
 
-    collectionProxyModel = new RepoSortFilterProxyModel((QWidget*)this, true);
+    collectionProxyModel = new repo::gui::primitive::RepoSortFilterProxyModel((QWidget*)this, true);
 	enableFiltering(
         ui->collectionTreeView,
 		collectionModel,
@@ -328,7 +328,7 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
 	// Expand top most host by default
     ui->databasesTreeView->expand(
 		databasesProxyModel->mapFromSource(databasesModel->indexFromItem(hostItem)));
-    hostItem->setIcon(RepoFontAwesome::getHostIcon());
+    hostItem->setIcon(repo::gui::primitive::RepoFontAwesome::getHostIcon());
 
     // TODO: be careful when adding multiple mongo connections. This counter
     // won't work with more than one async addCollection call.
@@ -345,7 +345,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 	row.append(createItem(QString(), 0, Qt::AlignRight));
 	row.append(createItem(QString(), 0, Qt::AlignRight));	
     row.append(createItem(QString(), 0, Qt::AlignRight));
-    row[0]->setIcon(RepoFontAwesome::getDatabaseIcon());
+    row[0]->setIcon(repo::gui::primitive::RepoFontAwesome::getDatabaseIcon());
 
     //--------------------------------------------------------------------------
 	// Append to the bottom most child (host)
@@ -654,23 +654,23 @@ QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
 		
 	// see http://docs.mongodb.org/manual/reference/system-collections/
 	if (collection.contains("scene") || collection.contains("nodes") || collection.contains("repo.scene"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_sitemap, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_sitemap, color);
 	else if (collection.contains("history") || collection.contains("revisions") || collection.contains("repo.history"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_code_fork, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_code_fork, color);
 	else if (collection.contains("system.indexes"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_bolt, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_bolt, color);
 	else if (collection.contains("system.users"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_user, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_user, color);
 	else if (collection.contains("system.profile"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_tachometer, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_tachometer, color);
 	else if (collection.contains("system.namespaces"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_bookmark_o, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_bookmark_o, color);
 	else if (collection.contains("system.js"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_wrench, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_wrench, color);
 	else if (collection.contains("comments"))
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_comment_o, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_comment_o, color);
 	else
-		icon = RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_bars, color);
+        icon = repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_bars, color);
 
 	return icon;
 }

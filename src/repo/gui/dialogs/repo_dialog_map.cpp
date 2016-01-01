@@ -29,7 +29,7 @@ MapDialog::MapDialog(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->setWindowIcon(RepoFontAwesome::getMapTilesIcon());
+    this->setWindowIcon(repo::gui::primitive::RepoFontAwesome::getMapTilesIcon());
 }
 
 MapDialog::~MapDialog()

@@ -17,7 +17,7 @@
 
 #include "repo_standard_item.h"
 
-using namespace repo::primitives;
+using namespace repo::gui::primitive;
 
 //------------------------------------------------------------------------------
 

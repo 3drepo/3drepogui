@@ -26,14 +26,14 @@ using namespace repo::gui::dialog;
 const QString AbstractManagerDialog::COLUMNS_SETTINGS = "repo_dialog_manager_abstractColumnsSettings";
 
 AbstractManagerDialog::AbstractManagerDialog(
-        const repo::gui::RepoIDBCache *dbCache,
+        const repo::gui::primitive::RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AbstractManagerDialog)
     , dbCache(dbCache)
 {
     ui->setupUi(this);
-    setWindowIcon(RepoFontAwesome::getManagerIcon());
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getManagerIcon());
 
     if (dbCache)
     {

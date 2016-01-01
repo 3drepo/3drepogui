@@ -22,7 +22,7 @@
 #include <QThreadPool>
 
 #include "../primitives/repo_fontawesome.h"
-#include "../primitives/repoidbcache.h"
+#include "../primitives/repo_idbcache.h"
 #include "../../workers/repo_worker_projects.h"
 #include "../../workers/repo_multithreader.h"
 
@@ -44,7 +44,7 @@ class RepoDialogManagerAccess
 public:
 
     explicit RepoDialogManagerAccess(
-            const repo::gui::RepoIDBCache *dbCache,
+            const repo::gui::primitive::RepoIDBCache *dbCache,
             repo::RepoController *controller,
             QWidget *parent = 0);
 
@@ -81,7 +81,7 @@ private:
 
     Ui::RepoDialogManagerAccess *ui;
 
-    const repo::gui::RepoIDBCache *dbCache;
+    const repo::gui::primitive::RepoIDBCache *dbCache;
 
     repo::RepoController *controller;
 

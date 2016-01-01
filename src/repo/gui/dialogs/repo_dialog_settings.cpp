@@ -56,14 +56,16 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
     // Importer
     QStandardItem* item = new QStandardItem(tr("Importer"));
     item->setEditable(false);
-    item->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_upload, QColor(Qt::darkGreen)));
+    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                      repo::gui::primitive::RepoFontAwesome::fa_upload, QColor(Qt::darkGreen)));
     options.append(item);
 
     //--------------------------------------------------------------------------
     // Oculus VR
     item = new QStandardItem(tr("Oculus VR"));
     item->setEditable(false);
-    item->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_eye, QColor(Qt::black)));
+    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+                      repo::gui::primitive::RepoFontAwesome::fa_eye, QColor(Qt::black)));
     options.append(item);
 
     optionsModel->appendColumn(options);

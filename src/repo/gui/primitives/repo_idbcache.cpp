@@ -15,9 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repoidbcache.h"
+#include "repo_idbcache.h"
 
-void repo::gui::RepoIDBCache::setHostsComboBox(QComboBox *comboBox) const
+using namespace repo::gui::primitive;
+
+void RepoIDBCache::setHostsComboBox(QComboBox *comboBox) const
 {
     setComboBox(comboBox,
                 RepoFontAwesome::getHostIcon(),
@@ -25,7 +27,7 @@ void repo::gui::RepoIDBCache::setHostsComboBox(QComboBox *comboBox) const
                 getSelectedHost());
 }
 
-void repo::gui::RepoIDBCache::setDatabasesComboBox(QComboBox *comboBox) const
+void RepoIDBCache::setDatabasesComboBox(QComboBox *comboBox) const
 {
     setComboBox(comboBox,
                 RepoFontAwesome::getDatabaseIcon(),
@@ -33,7 +35,7 @@ void repo::gui::RepoIDBCache::setDatabasesComboBox(QComboBox *comboBox) const
                 getSelectedDatabase());
 }
 
-void repo::gui::RepoIDBCache::setProjectsComboBox(QComboBox *comboBox) const
+void RepoIDBCache::setProjectsComboBox(QComboBox *comboBox) const
 {
     setComboBox(comboBox,
                 RepoFontAwesome::getProjectIcon(),
@@ -41,7 +43,7 @@ void repo::gui::RepoIDBCache::setProjectsComboBox(QComboBox *comboBox) const
                 getSelectedProject());
 }
 
-void repo::gui::RepoIDBCache::setComboBox(
+void RepoIDBCache::setComboBox(
         QComboBox *comboBox,
         const QIcon &icon,
         const QList<QString> &list,

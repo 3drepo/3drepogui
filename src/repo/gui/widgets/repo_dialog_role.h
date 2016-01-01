@@ -32,7 +32,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_combo_box_delegate.h"
 #include "../../workers/repo_worker_projects.h"
 #include "../primitives/repo_color.h"
 
@@ -53,7 +53,7 @@ class RepoDialogRole : public QDialog
     Q_OBJECT
 
     //! Read, Write and ReadWrite strings.
-    const repo::gui::RepoComboBoxEditor::SeparatedEntries rwSeparatedEntries;
+    const repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries rwSeparatedEntries;
 
     enum class Tab {SETTINGS, PERMISSIONS, PRIVILEGES, INHERITED_ROLES, MODULES };
 

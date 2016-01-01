@@ -51,18 +51,18 @@ void RepoWidgetManagerRoles::addRole(
 {
     QList<QStandardItem *> row;
 
-    repo::primitives::RepoStandardItem *item = nullptr;
+    repo::gui::primitive::RepoStandardItem *item = nullptr;
 
     //--------------------------------------------------------------------------
     // Role with color
     QVariant var;
     var.setValue(role);
-    item = new repo::primitives::RepoStandardItem(role.getName());
+    item = new repo::gui::primitive::RepoStandardItem(role.getName());
     item->setData(var);    
     QPixmap px(32,32);
     if (!settings.getColor().empty())
     {
-        px.fill(repo::gui::RepoColor::fromHex(settings.getColor()));
+        px.fill(repo::gui::primitive::RepoColor::fromHex(settings.getColor()));
     }
     else
     {
@@ -73,21 +73,21 @@ void RepoWidgetManagerRoles::addRole(
 
 
     // Database
-    row.append(new primitives::RepoStandardItem(role.getDatabase()));
+    row.append(new repo::gui::primitive::RepoStandardItem(role.getDatabase()));
 
     // Project access rights
-    row.append(new primitives::RepoStandardItem(role.getProjectAccessRights().size()));
+    row.append(new repo::gui::primitive::RepoStandardItem(role.getProjectAccessRights().size()));
 
     // Privileges
-    row.append(new primitives::RepoStandardItem(role.getPrivileges().size()));
+    row.append(new repo::gui::primitive::RepoStandardItem(role.getPrivileges().size()));
 
     // Inherited roles
-    row.append(new primitives::RepoStandardItem(role.getInheritedRoles().size()));
+    row.append(new repo::gui::primitive::RepoStandardItem(role.getInheritedRoles().size()));
 
     // Modules
     QVariant qsetting;
     qsetting.setValue(settings);
-    item = new primitives::RepoStandardItem(settings.getModules().size());
+    item = new repo::gui::primitive::RepoStandardItem(settings.getModules().size());
     item->setData(qsetting);
     row.append(item);
 

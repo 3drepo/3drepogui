@@ -15,16 +15,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_sortfilterproxymodel.h"
+#include "repo_sort_filter_proxy_model.h"
 
-repo::gui::RepoSortFilterProxyModel::RepoSortFilterProxyModel(
+using namespace repo::gui::primitive;
+
+RepoSortFilterProxyModel::RepoSortFilterProxyModel(
 	QObject *parent,
 	bool filterTopMostItems)
 	: QSortFilterProxyModel(parent)
 	, filterTopMostItems(filterTopMostItems)
 {}
 
-bool repo::gui::RepoSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
+bool RepoSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {
 	// During sorting make sure the children of the top most (invisible root) parent are visible OR
 	// the given index fulfils the filtering expression OR
@@ -36,7 +38,7 @@ bool repo::gui::RepoSortFilterProxyModel::filterAcceptsRow(int sourceRow, const 
 		filterAcceptsChildren(sourceRow, sourceParent);
 }
 
-bool repo::gui::RepoSortFilterProxyModel::filterAcceptsParents(int sourceRow, const QModelIndex &sourceParent) const
+bool RepoSortFilterProxyModel::filterAcceptsParents(int sourceRow, const QModelIndex &sourceParent) const
 {
 	bool accept = false;
 	QModelIndex parent = sourceParent;
@@ -49,7 +51,7 @@ bool repo::gui::RepoSortFilterProxyModel::filterAcceptsParents(int sourceRow, co
 	return accept;
 }
 
-bool repo::gui::RepoSortFilterProxyModel::filterAcceptsChildren(int sourceRow, const QModelIndex &sourceParent) const
+bool RepoSortFilterProxyModel::filterAcceptsChildren(int sourceRow, const QModelIndex &sourceParent) const
 {
 	bool accept = false;
 	QModelIndex item = sourceModel()->index(sourceRow, 0, sourceParent);

@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_COMBO_BOX_DELEGATE_H
-#define REPO_COMBO_BOX_DELEGATE_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -25,40 +23,40 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "repocomboboxeditor.h"
+#include "repo_combo_box_editor.h"
 
 namespace repo {
 namespace gui {
+namespace primitive{
 
-/*!
- * Enables drop down selectors for editing delegate.
- * See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
- */
-class RepoComboBoxDelegate : public QItemDelegate
-{
+	/*!
+		* Enables drop down selectors for editing delegate.
+		* See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
+		*/
+	class RepoComboBoxDelegate : public QItemDelegate
+	{
 
-public :
+	public:
 
-//    RepoComboBoxDelegate() {}
+		//    repo_combo_box_delegate() {}
 
-    //! A list of combo box entries per column.
-    RepoComboBoxDelegate(
+		//! A list of combo box entries per column.
+        RepoComboBoxDelegate(
             const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists);
 
-    ~RepoComboBoxDelegate();
+        ~RepoComboBoxDelegate();
 
-    QWidget *createEditor(
-            QWidget * parent,
-            const QStyleOptionViewItem &,
-            const QModelIndex &index) const;
+		QWidget *createEditor(
+			QWidget * parent,
+			const QStyleOptionViewItem &,
+			const QModelIndex &index) const;
 
-private :
+	private:
 
-    //! Standard item factories list per column
-    QList<QItemEditorFactory *> factories;
-};
+		//! Standard item factories list per column
+		QList<QItemEditorFactory *> factories;
+	};
 
+}
 } // end namespace gui
 } // end namespace repo
-
-#endif // REPO_COMBO_BOX_DELEGATE_H

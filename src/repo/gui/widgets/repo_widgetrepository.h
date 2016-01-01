@@ -35,8 +35,8 @@
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
 #include "../primitives/repo_fontawesome.h"
-#include "../primitives/repoidbcache.h"
-#include "../primitives/repo_sortfilterproxymodel.h"
+#include "../primitives/repo_idbcache.h"
+#include "../primitives/repo_sort_filter_proxy_model.h"
 #include "repo_lineedit.h"
 
 namespace Ui {
@@ -46,7 +46,7 @@ namespace Ui {
 namespace repo {
 namespace gui {
 
-class RepoWidgetRepository : public QWidget, public RepoIDBCache
+class RepoWidgetRepository : public QWidget, public repo::gui::primitive::RepoIDBCache
 {
 	Q_OBJECT
 		

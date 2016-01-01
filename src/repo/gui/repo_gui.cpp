@@ -89,12 +89,12 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Open
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
-    ui->actionOpen->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_folder_open));
+    ui->actionOpen->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_folder_open));
 
     // Save As
     QObject::connect(ui->actionSave_As, SIGNAL(triggered()), this,
                      SLOT(saveAs()));
-    ui->actionSave_As->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_floppy_o));
+    ui->actionSave_As->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_floppy_o));
 
     // Save Screenshot
     QObject::connect(ui->actionSave_Screenshot, SIGNAL(triggered()), this,
@@ -106,8 +106,8 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionExit, SIGNAL(triggered()),
                      QApplication::instance(), SLOT(quit()));
     ui->actionExit->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_times, QColor(Qt::darkRed)));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_times, QColor(Qt::darkRed)));
 
 
     //--------------------------------------------------------------------------
@@ -117,33 +117,33 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connectDB()));
-    ui->actionConnect->setIcon(RepoFontAwesome::getConnectIcon());
+    ui->actionConnect->setIcon(primitive::RepoFontAwesome::getConnectIcon());
 
     // Disconnect
     QObject::connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnectDB()));
-    ui->actionDisconnect->setIcon(RepoFontAwesome::getDisconnectIcon());
+    ui->actionDisconnect->setIcon(primitive::RepoFontAwesome::getDisconnectIcon());
 
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
     ui->actionRefresh->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_refresh,
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_refresh,
                     QColor(Qt::darkGreen)));
 
     // Head
     QObject::connect(ui->actionHead, SIGNAL(triggered()), this, SLOT(fetchHead()));
     ui->actionHead->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_download));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_download));
 
     // History
     QObject::connect(ui->actionHistory, SIGNAL(triggered()), this, SLOT(history()));
-    ui->actionHistory->setIcon(RepoFontAwesome::getHistoryIcon());
+    ui->actionHistory->setIcon(primitive::RepoFontAwesome::getHistoryIcon());
 
 
     // Commit
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
-    ui->actionCommit->setIcon(RepoFontAwesome::getCommitIcon());
+    ui->actionCommit->setIcon(primitive::RepoFontAwesome::getCommitIcon());
 
     // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
@@ -159,7 +159,7 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
-    ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
+    ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
 
 
 
@@ -172,21 +172,21 @@ repo::gui::RepoGUI::RepoGUI(
     // Link
     QObject::connect(ui->actionLink, SIGNAL(triggered(bool)), ui->mdiArea, SLOT(chainSubWindows(bool)));
     ui->actionLink->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_link,
-                    RepoFontAwesome::fa_chain_broken));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_link,
+                    primitive::RepoFontAwesome::fa_chain_broken));
 
     // Scene Graph
     QObject::connect(ui->actionSceneGraph, &QAction::triggered,
                      this, &RepoGUI::openSceneGraph);
-    ui->actionSceneGraph->setIcon(RepoFontAwesome::getSceneGraphIcon());
+    ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
     // Web View
     QObject::connect(ui->actionWeb_View, &QAction::triggered,
                      ui->mdiArea, &RepoMdiArea::addWebViewSubWindow);
     ui->actionWeb_View->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_globe));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_globe));
 
 
     //--------------------------------------------------------------------------
@@ -204,8 +204,8 @@ repo::gui::RepoGUI::RepoGUI(
 
     // 3D Diff...
     QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
-    ui->action3D_Diff->setIcon(RepoFontAwesome::getInstance().getIcon(
-                                   RepoFontAwesome::fa_wrench));
+    ui->action3D_Diff->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(
+                                   primitive::RepoFontAwesome::fa_wrench));
 
     // Options
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -223,15 +223,15 @@ repo::gui::RepoGUI::RepoGUI(
                      SIGNAL(triggered()),
                      this, SLOT(toggleFullScreen()));
     ui->actionFull_Screen->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_arrows_alt));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_arrows_alt));
 
     // Maximize (Tile)
     QObject::connect(ui->actionMaximize, SIGNAL(triggered()),
                      ui->mdiArea, SLOT(maximizeSubWindows()));
     ui->actionMaximize->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_th));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_th));
 
 
     // Selection Tree (Scene Graph)
@@ -254,8 +254,8 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionEmail_Technical_Support, SIGNAL(triggered()),
                      this, SLOT(openSupportEmail()));
     ui->actionEmail_Technical_Support->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_envelope_o));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_envelope_o));
 
     //--------------------------------------------------------------------------
     // Report Issue
@@ -440,7 +440,7 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
 {
     QMenu* panelsMenu = QMainWindow::createPopupMenu();
     panelsMenu->setTitle(tr("Dock Widgets"));
-    panelsMenu->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
+    panelsMenu->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_columns));
     return panelsMenu;
 }
 

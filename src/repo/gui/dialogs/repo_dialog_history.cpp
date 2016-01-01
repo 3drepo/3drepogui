@@ -39,7 +39,7 @@ HistoryDialog::HistoryDialog(
     , ui(new Ui::HistoryDialog)
 {
     ui->setupUi(this);
-    setWindowIcon(RepoFontAwesome::getHistoryIcon());
+    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getHistoryIcon());
 
     //--------------------------------------------------------------------------
 	historyModel = new QStandardItemModel(this);

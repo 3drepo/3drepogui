@@ -31,7 +31,7 @@ using namespace repo::gui::dialog;
 
 CommitDialog::CommitDialog(QWidget *parent,
                                               Qt::WindowFlags flags,
-                                              repo::gui::RepoIDBCache *dbCache,
+                                              repo::gui::primitive::RepoIDBCache *dbCache,
                                               repo::core::model::RepoScene * scene)
     : QDialog(parent, flags)
     , dbCache(dbCache)
@@ -42,7 +42,7 @@ CommitDialog::CommitDialog(QWidget *parent,
 {
     //FIXME: this should pop up the project and database names as default selection according to what's inside the scene graph
     ui->setupUi(this);
-    this->setWindowIcon(RepoFontAwesome::getCommitIcon());
+    this->setWindowIcon(repo::gui::primitive::RepoFontAwesome::getCommitIcon());
     //this->splitter->setStretchFactor(1, );
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(0, 5, this); // 0 rows, 5 cols
@@ -82,7 +82,7 @@ CommitDialog::CommitDialog(QWidget *parent,
 
     if (scene)
         ui->branchComboBox->addItem(
-                    RepoFontAwesome::getBranchIcon(),
+                    repo::gui::primitive::RepoFontAwesome::getBranchIcon(),
                     QString::fromStdString(scene->getBranchName()));
 
     //--------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void CommitDialog::addNode(repo::core::model::RepoNode *node, const QString &sta
         row.append(item);
 		const repo::core::model::NodeType type = node->getTypeAsEnum();
         if (repo::core::model::NodeType::METADATA == type)
-            item->setIcon(RepoFontAwesome::getMetadataIcon());
+            item->setIcon(repo::gui::primitive::RepoFontAwesome::getMetadataIcon());
 
         //----------------------------------------------------------------------
         // Type
@@ -204,7 +204,7 @@ void CommitDialog::editItem(const QModelIndex &proxyIndex)
             repo::core::model::TransformationNode *transformation = dynamic_cast<repo::core::model::TransformationNode*>(node);
             if (transformation)
             {
-                RepoTransformationDialog transformationDialog(*transformation, this);
+                TransformationDialog transformationDialog(*transformation, this);
                 if (transformationDialog.exec())
                 {
                     repo::core::model::TransformationNode *t =
@@ -267,7 +267,7 @@ void CommitDialog::updateDatabases()
     {
         ui->databaseComboBox->clear();
         dbCache->setComboBox(ui->databaseComboBox,
-                             RepoFontAwesome::getDatabaseIcon(),
+                             repo::gui::primitive::RepoFontAwesome::getDatabaseIcon(),
                              dbCache->getDatabases(ui->serverComboBox->currentText()));
         updateProjects();
     }
@@ -279,7 +279,7 @@ void CommitDialog::updateProjects()
     {
         ui->projectComboBox->clear();
         dbCache->setComboBox(ui->projectComboBox,
-                             RepoFontAwesome::getProjectIcon(),
+                             repo::gui::primitive::RepoFontAwesome::getProjectIcon(),
                              dbCache->getProjects(ui->serverComboBox->currentText(),
                                                   ui->databaseComboBox->currentText()));
         updateBranches();

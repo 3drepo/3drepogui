@@ -34,7 +34,7 @@ RepoDialogRole::RepoDialogRole(
     , settings(settings)
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RepoDialogRole)
-	, rwSeparatedEntries(repo::gui::RepoComboBoxEditor::getSeparatedEntries({
+    , rwSeparatedEntries(repo::gui::primitive::RepoComboBoxEditor::getSeparatedEntries({
 	tr("Read").toStdString(),
 	tr("Write").toStdString(),
 	tr("ReadWrite").toStdString() }))
@@ -49,15 +49,15 @@ RepoDialogRole::RepoDialogRole(
     // Permissions
     ui->permissionsUnfilterableTree->setHeaders({tr("Project"), tr("Permission")});
     ui->permissionsUnfilterableTree->registerTabWidget(ui->tabWidget, (int)Tab::PERMISSIONS);
-    QHash<QString, repo::gui::RepoComboBoxDelegate *> permissionsDelegates;
+    QHash<QString, repo::gui::primitive::RepoComboBoxDelegate *> permissionsDelegates;
     for (std::pair<std::string, std::list<std::string> > pair : databasesWithProjects)
     {
-        QList<repo::gui::RepoComboBoxEditor::SeparatedEntries> rwSEList =
-        { repo::gui::RepoComboBoxEditor::getSeparatedEntries(pair.second),
+        QList<repo::gui::primitive::RepoComboBoxEditor::SeparatedEntries> rwSEList =
+        { repo::gui::primitive::RepoComboBoxEditor::getSeparatedEntries(pair.second),
           rwSeparatedEntries};
         permissionsDelegates.insert(
                     QString::fromStdString(pair.first),
-                    new repo::gui::RepoComboBoxDelegate(rwSEList));
+                    new repo::gui::primitive::RepoComboBoxDelegate(rwSEList));
     }
     ui->permissionsUnfilterableTree->setDelegates(permissionsDelegates);
     for (repo::core::model::RepoPermission p : role.getProjectAccessRights())
@@ -254,7 +254,7 @@ void RepoDialogRole::setColor(const QString &hex)
     {
         ui->colorLineEdit->setText(hex);
         QPixmap px(16,16);
-        px.fill(repo::gui::RepoColor::fromHex(hex.toStdString()));
+        px.fill(repo::gui::primitive::RepoColor::fromHex(hex.toStdString()));
         if (ui->colorLineEdit->actions().size() > 0)
             ui->colorLineEdit->actions()[0]->setIcon(QIcon(px));
     }

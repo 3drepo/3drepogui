@@ -22,7 +22,7 @@
 #include <QHash>
 #include <QLocale>
 
-#include "../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_combo_box_delegate.h"
 
 namespace Ui {
 class RepoWidgetTreeUnfilterable;
@@ -94,7 +94,7 @@ public slots :
 
     void setItemDelegateForColumn(const QString &item, int column);
 
-    void setDelegates(const QHash<QString, repo::gui::RepoComboBoxDelegate* > &delegates)
+    void setDelegates(const QHash<QString, repo::gui::primitive::RepoComboBoxDelegate* > &delegates)
     {
         this->delegates = delegates;
     }
@@ -122,7 +122,7 @@ private:
     QStringList newRowText;
 
     //! Lookup table for roles delegates by database name.
-    QHash<QString, repo::gui::RepoComboBoxDelegate*> delegates;
+    QHash<QString, repo::gui::primitive::RepoComboBoxDelegate*> delegates;
 
     QTabWidget *tabWidget;
 
