@@ -22,8 +22,8 @@ HEADERS +=  \
 	src/repo/gui/primitives/repo_idbcache.h \
 	src/repo/gui/primitives/repo_sort_filter_proxy_model.h \
 	src/repo/gui/primitives/repo_standard_item.h \
-	src/repo/gui/renderers/repo_3ddiffrenderer.h \
 	src/repo/gui/renderers/repo_fpscounter.h \
+	src/repo/gui/renderers/repo_renderer_3ddiff.h \
 	src/repo/gui/renderers/repo_renderer_abstract.h \
 	src/repo/gui/renderers/repo_renderer_glc.h \
 	src/repo/gui/renderers/repo_renderer_graph.h \
@@ -95,8 +95,8 @@ SOURCES +=  \
 	src/repo/gui/primitives/repo_idbcache.cpp \
 	src/repo/gui/primitives/repo_sort_filter_proxy_model.cpp \
 	src/repo/gui/primitives/repo_standard_item.cpp \
-	src/repo/gui/renderers/repo_3ddiffrenderer.cpp \
 	src/repo/gui/renderers/repo_fpscounter.cpp \
+	src/repo/gui/renderers/repo_renderer_3ddiff.cpp \
 	src/repo/gui/renderers/repo_renderer_abstract.cpp \
 	src/repo/gui/renderers/repo_renderer_glc.cpp \
 	src/repo/gui/renderers/repo_renderer_graph.cpp \

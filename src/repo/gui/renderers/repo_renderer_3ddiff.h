@@ -26,35 +26,35 @@
 Q_DECLARE_METATYPE(repoUUID)
 namespace repo {
 namespace gui {
+namespace renderer {
+	class Repo3DDiffRenderer : public QObject
+	{
+		Q_OBJECT
+	public:
+		Repo3DDiffRenderer(
+			repo::RepoController *controller,
+			const repo::RepoToken *token,
+			widgets::RepoRenderingWidget *widgetA,
+			widgets::RepoRenderingWidget *widgetB);
 
-class Repo3DDiffRenderer : public QObject
-{
-	Q_OBJECT
-public:
-    Repo3DDiffRenderer(
-		repo::RepoController *controller,
-		const repo::RepoToken *token, 
-        widgets::RepoRenderingWidget *widgetA,
-        widgets::RepoRenderingWidget *widgetB);
+		~Repo3DDiffRenderer();
 
-    ~Repo3DDiffRenderer();
+		void resultingDifference(const repo::manipulator::diff::DiffResult &res,
+			widgets::RepoRenderingWidget *widget,
+			const QColor &modColor,
+			const QColor &addColor);
 
-	void resultingDifference(const repo::manipulator::diff::DiffResult &res,
-		widgets::RepoRenderingWidget *widget,
-		const QColor &modColor,
-		const QColor &addColor);
-	
-protected :
+	protected:
 
-    widgets::RepoRenderingWidget *widgetA;
+		widgets::RepoRenderingWidget *widgetA;
 
-    widgets::RepoRenderingWidget *widgetB;
+		widgets::RepoRenderingWidget *widgetB;
 
-	repo::RepoController *controller;
-	const repo::RepoToken *token;
+		repo::RepoController *controller;
+		const repo::RepoToken *token;
 
-}; // end class
-
+	}; // end class
+}
 } // end namespace gui
 } // end namespace repo
 

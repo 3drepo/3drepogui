@@ -21,6 +21,7 @@
 #include "repo_widget_rendering_2d.h"
 #include "../renderers/repo_webview.h"
 
+using namespace repo::gui;
 
 repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
@@ -261,7 +262,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
 {
-    return addSubWidget(new RepoWebView());
+    return addSubWidget(new renderer::RepoWebView());
 }
 
 repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSceneGraphSubWindow(

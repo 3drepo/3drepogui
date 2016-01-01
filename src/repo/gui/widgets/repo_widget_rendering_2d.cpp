@@ -19,12 +19,13 @@
 #include "repo_widget_rendering_2d.h"
 
 using namespace repo::widgets;
+using namespace repo::gui;
 
 RepoWidgetRendering2D::RepoWidgetRendering2D(
         const repo::core::model::RepoScene *scene,
         const QString &windowTitle,
         QWidget *parent)
-    : QGraphicsView(new renderer::RepoRendererGraph(scene), parent)
+    : QGraphicsView(new renderer::GraphRenderer(scene), parent)
     , openGLWidget(new QOpenGLWidget())
 {
     //--------------------------------------------------------------------------

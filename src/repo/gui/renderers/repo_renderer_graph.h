@@ -32,60 +32,62 @@
 Q_DECLARE_METATYPE(repo::core::model::RepoNode *)
 
 namespace repo {
+namespace gui{
 namespace renderer {
 
-class RepoRendererGraph : public QGraphicsScene
-{
+	class GraphRenderer : public QGraphicsScene
+	{
 
-public:
+	public:
 
-    RepoRendererGraph(const repo::core::model::RepoScene *scene,
-                      repo::core::model::RepoScene::GraphType graphType =
-            repo::core::model::RepoScene::GraphType::DEFAULT);
+		GraphRenderer(const repo::core::model::RepoScene *scene,
+			repo::core::model::RepoScene::GraphType graphType =
+			repo::core::model::RepoScene::GraphType::DEFAULT);
 
-    ~RepoRendererGraph();
+		~GraphRenderer();
 
-public :
+	public:
 
-    void initialize();
+		void initialize();
 
-private :
+	private:
 
-    //! Breadth first search in recursive fashion
-    void addNodesRecursively(
-            const std::vector<core::model::RepoNode *> nodes,
-            int row);
+		//! Breadth first search in recursive fashion
+		void addNodesRecursively(
+			const std::vector<core::model::RepoNode *> nodes,
+			int row);
 
-    //! Adds node
-    QGraphicsEllipseItem *addNode(
-            repo::core::model::RepoNode *node, float row, float column);
+		//! Adds node
+		QGraphicsEllipseItem *addNode(
+			repo::core::model::RepoNode *node, float row, float column);
 
-    //! Adds directed link from node to all its parents assuming they are all already painted.
-    std::vector<QGraphicsLineItem*> addLines(
-            const repo::core::model::RepoNode *node,
-            const QGraphicsItem *item);
+		//! Adds directed link from node to all its parents assuming they are all already painted.
+		std::vector<QGraphicsLineItem*> addLines(
+			const repo::core::model::RepoNode *node,
+			const QGraphicsItem *item);
 
-    bool areAllParentsPainted(const repo::core::model::RepoNode *node);
+		bool areAllParentsPainted(const repo::core::model::RepoNode *node);
 
-public :
+	public:
 
-    static QString uuidToQString(const repoUUID &uuid);
+		static QString uuidToQString(const repoUUID &uuid);
 
-private :
+	private:
 
-    const repo::core::model::RepoScene *scene;
+		const repo::core::model::RepoScene *scene;
 
-    repo::core::model::RepoScene::GraphType graphType;
+		repo::core::model::RepoScene::GraphType graphType;
 
-    //! Diameter of each node in the graph.
-    qreal nodeDiameter;
+		//! Diameter of each node in the graph.
+		qreal nodeDiameter;
 
-    qreal penWidth;
+		qreal penWidth;
 
-    QHash<QString, QGraphicsItem *> painted;
+		QHash<QString, QGraphicsItem *> painted;
 
 
-}; // end class
+	}; // end class
 
 } //end namespace renderer
+}
 } // end namespace repo

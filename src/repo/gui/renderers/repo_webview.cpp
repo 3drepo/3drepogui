@@ -20,8 +20,9 @@
 #include "ui_repo_webview.h"
 #include "../primitives/repo_fontawesome.h"
 
+using namespace repo::gui::renderer;
 
-repo::gui::RepoWebView::RepoWebView(
+RepoWebView::RepoWebView(
         const QUrl &url,
         QWidget *parent) :
     QWidget(parent),
@@ -86,12 +87,12 @@ repo::gui::RepoWebView::RepoWebView(
 
 }
 
-repo::gui::RepoWebView::~RepoWebView()
+RepoWebView::~RepoWebView()
 {
     delete ui;
 }
 
-void repo::gui::RepoWebView::loadFromAddressBar()
+void RepoWebView::loadFromAddressBar()
 {
     QString address = ui->addressBar->text();
     QUrl url(address);
@@ -101,12 +102,12 @@ void repo::gui::RepoWebView::loadFromAddressBar()
     ui->webView->setUrl(url);
 }
 
-void repo::gui::RepoWebView::setAddressBar(const QUrl& url)
+void RepoWebView::setAddressBar(const QUrl& url)
 {
     setAddressBar(url.toString());
 }
 
-void repo::gui::RepoWebView::setAddressBar(const QString& url)
+void RepoWebView::setAddressBar(const QString& url)
 {
     ui->addressBar->setText(url);
 }

@@ -18,13 +18,12 @@
 
 #include "repo_renderer_graph.h"
 
-using namespace repo::renderer;
-using namespace repo::core::model;
+using namespace repo::gui::renderer;
 using namespace repo::gui;
 
-RepoRendererGraph::RepoRendererGraph(
+GraphRenderer::GraphRenderer(
         const repo::core::model::RepoScene *scene,
-        RepoScene::GraphType graphType)
+        repo::core::model::RepoScene::GraphType graphType)
     : scene(scene)
     , graphType(graphType)
     , nodeDiameter(20.0f)
@@ -34,11 +33,11 @@ RepoRendererGraph::RepoRendererGraph(
     initialize();
 }
 
-RepoRendererGraph::~RepoRendererGraph() 
+GraphRenderer::~GraphRenderer() 
 {
 }
 
-void RepoRendererGraph::initialize()
+void GraphRenderer::initialize()
 {
     if (!scene)
     {
@@ -46,7 +45,7 @@ void RepoRendererGraph::initialize()
     }
     else
     {
-        RepoNode *root = scene->getRoot(graphType);
+        repo::core::model::RepoNode *root = scene->getRoot(graphType);
         if (!root)
         {
             std::cerr << tr("Rendering graph root node returned nullptr.").toStdString() << std::endl;
@@ -54,15 +53,15 @@ void RepoRendererGraph::initialize()
         else
         {
             std::cout << tr("Rendering graph for ").toStdString() << root->getName() << std::endl;
-            std::vector<RepoNode*> nodes(1);
+            std::vector<repo::core::model::RepoNode*> nodes(1);
             nodes[0] = root;
             addNodesRecursively(nodes, 0);
         }
     }
 }
 
-void RepoRendererGraph::addNodesRecursively(
-        const std::vector<RepoNode*> nodes,
+void GraphRenderer::addNodesRecursively(
+        const std::vector<repo::core::model::RepoNode*> nodes,
         int row)
 {
     if (nodes.size()) // base case
@@ -74,11 +73,11 @@ void RepoRendererGraph::addNodesRecursively(
         float i = nodes.size() / 2.0f * (-1.0f);
 
         QHash<QString, QGraphicsItem *> freshlyPainted;
-        std::vector<RepoNode*> unpainted;
-        for(RepoNode *node : nodes)
+        std::vector<repo::core::model::RepoNode*> unpainted;
+        for(repo::core::model::RepoNode *node : nodes)
         {
             // Collect children from all nodes into one set (so they are unique)
-            std::vector<RepoNode*> ch = scene->getChildrenAsNodes(graphType, node->getSharedID());
+            std::vector<repo::core::model::RepoNode*> ch = scene->getChildrenAsNodes(graphType, node->getSharedID());
 			unpainted.insert(unpainted.end(), ch.begin(), ch.end()); 
 
             // Only paint a node if all of its parent are already painted
@@ -124,7 +123,7 @@ void RepoRendererGraph::addNodesRecursively(
     }
 }
 
-QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *node, float row, float column)
+QGraphicsEllipseItem *GraphRenderer::addNode(repo::core::model::RepoNode *node, float row, float column)
 {
     float spacing = nodeDiameter / 4.0f;
 
@@ -137,43 +136,43 @@ QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *no
 
     switch (node->getTypeAsEnum())
     {
-    case NodeType::CAMERA :
+    case repo::core::model::NodeType::CAMERA :
         dark = Qt::darkMagenta;
         light = Qt::magenta;
         break;
-    case NodeType::MAP :
+    case repo::core::model::NodeType::MAP :
         dark = repo::gui::primitive::RepoColor::fromHex("#cd5b45"); // Coral3
         light = repo::gui::primitive::RepoColor::fromHex("#ff7f50"); // Coral
         break;
-    case NodeType::MATERIAL :
+    case repo::core::model::NodeType::MATERIAL :
         dark = Qt::darkRed;
         light = Qt::red;
         break;
-    case NodeType::MESH :
+    case repo::core::model::NodeType::MESH :
         dark = Qt::darkBlue;
         light = Qt::blue;
         break;
-    case NodeType::METADATA :
+    case repo::core::model::NodeType::METADATA :
         dark = Qt::darkCyan;
         light = Qt::cyan;
         break;
-    case NodeType::REFERENCE :
+    case repo::core::model::NodeType::REFERENCE :
         dark = repo::gui::primitive::RepoColor::fromHex("#6e8b3d"); // DarkOliveGreen4
         light = repo::gui::primitive::RepoColor::fromHex("#caff70"); // DarkOliveGreen1
         break;
-    case NodeType::REVISION :
+    case repo::core::model::NodeType::REVISION :
         dark = repo::gui::primitive::RepoColor::fromHex("#68228b"); // DarkOrchid4
         light = repo::gui::primitive::RepoColor::fromHex("#bf3eff"); // DarkOrchid1
         break;
-    case NodeType::TEXTURE :
+    case repo::core::model::NodeType::TEXTURE :
         dark = Qt::darkYellow;
         light = Qt::yellow;
         break;
-    case NodeType::TRANSFORMATION :
+    case repo::core::model::NodeType::TRANSFORMATION :
         dark = Qt::darkGreen;
         light = Qt::green;
         break;
-    case NodeType::UNKNOWN :
+    case repo::core::model::NodeType::UNKNOWN :
     default :
         dark = Qt::darkGray;
         light = Qt::gray;
@@ -204,7 +203,7 @@ QGraphicsEllipseItem *RepoRendererGraph::addNode(repo::core::model::RepoNode *no
     return ellipse;
 }
 
-std::vector<QGraphicsLineItem*> RepoRendererGraph::addLines(
+std::vector<QGraphicsLineItem*> GraphRenderer::addLines(
         const repo::core::model::RepoNode *node,
         const QGraphicsItem *nodeItem)
 {
@@ -234,7 +233,7 @@ std::vector<QGraphicsLineItem*> RepoRendererGraph::addLines(
     return lines;
 }
 
-bool RepoRendererGraph::areAllParentsPainted(const repo::core::model::RepoNode *node)
+bool GraphRenderer::areAllParentsPainted(const repo::core::model::RepoNode *node)
 {
     bool allPainted = true;
     for (repoUUID parentID : node->getParentIDs())
@@ -244,7 +243,7 @@ bool RepoRendererGraph::areAllParentsPainted(const repo::core::model::RepoNode *
     return allPainted;
 }
 
-QString RepoRendererGraph::uuidToQString(const repoUUID &uuid)
+QString GraphRenderer::uuidToQString(const repoUUID &uuid)
 {
     return QString::fromStdString(UUIDtoString(uuid));
 }

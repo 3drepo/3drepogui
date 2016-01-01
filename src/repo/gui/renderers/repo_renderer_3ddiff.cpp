@@ -16,9 +16,10 @@
  */
 
 
-#include "repo_3ddiffrenderer.h"
+#include "repo_renderer_3ddiff.h"
 
 using namespace repo::gui;
+using namespace repo::gui::renderer;
 
 Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::RepoController *controller,

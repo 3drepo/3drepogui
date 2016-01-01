@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_WEBVIEW_H
-#define REPO_WEBVIEW_H
+#pragma once
 
 #include <QWidget>
 #include <QUrl>
@@ -32,30 +30,31 @@ class RepoWebView;
 
 namespace repo {
 namespace gui {
+namespace renderer {
 
-class RepoWebView : public QWidget
-{
-    Q_OBJECT
+	class RepoWebView : public QWidget
+	{
+		Q_OBJECT
 
-public:
-    explicit RepoWebView(const QUrl& url = QUrl("https://3drepo.io"),
-                         QWidget *parent = 0);
-    ~RepoWebView();
+	public:
+		explicit RepoWebView(const QUrl& url = QUrl("https://3drepo.io"),
+			QWidget *parent = 0);
+		~RepoWebView();
 
 
-public slots:
+		public slots:
 
-    void loadFromAddressBar();
+		void loadFromAddressBar();
 
-    void setAddressBar(const QUrl& url);
-    void setAddressBar(const QString& url);
+		void setAddressBar(const QUrl& url);
+		void setAddressBar(const QString& url);
 
-private:
-    Ui::RepoWebView *ui;
+	private:
+		Ui::RepoWebView *ui;
 
-}; // end class
+	}; // end class
 
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_WEBVIEW_H

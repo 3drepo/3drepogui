@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_FPS_COUNTER_H
-#define REPO_FPS_COUNTER_H
+#pragma once
 
 #include <ctime>
 #include <chrono>
@@ -27,47 +25,50 @@
 
 namespace repo {
 namespace gui {
+namespace renderer {
 
-/*!
- * Low pass filtered FPS counter.
- */
-class RepoFPSCounter
-{
+	/*!
+		* Low pass filtered FPS counter.
+		*/
+	class RepoFPSCounter
+	{
 
-public:
+	public:
 
-    RepoFPSCounter(float alpha = 0.05f);
+		RepoFPSCounter(float alpha = 0.05f);
 
-    ~RepoFPSCounter();
+		~RepoFPSCounter();
 
-    void initialize();
+		void initialize();
 
-    //! Increments frame counter
-    void increment();
+		//! Increments frame counter
+		void increment();
 
-    float getFPS() const
-    { return fps; }
+		float getFPS() const
+		{
+			return fps;
+		}
 
-    QString getFPSString(int decimals = 0) const;
+		QString getFPSString(int decimals = 0) const;
 
-protected :
+	protected:
 
-    //! Counter of rendered frames.
-    unsigned int frameCounter;
+		//! Counter of rendered frames.
+		unsigned int frameCounter;
 
-    //! Previously recorded time for fps calculation.
-    std::chrono::steady_clock::time_point timeZero;
+		//! Previously recorded time for fps calculation.
+		std::chrono::steady_clock::time_point timeZero;
 
-    //! Number of frames rendered per second.
-    float fps;
+		//! Number of frames rendered per second.
+		float fps;
 
-    //! Time constant RC
-    float alpha;
+		//! Time constant RC
+		float alpha;
 
-}; // end class
+	}; // end class
 
+}
 } // end namespace gui
 } // end namespace repo
 
 
-#endif // REPO_FPS_COUNTER_H

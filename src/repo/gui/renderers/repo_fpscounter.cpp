@@ -18,21 +18,23 @@
 
 #include "repo_fpscounter.h"
 
-repo::gui::RepoFPSCounter::RepoFPSCounter(float alpha)
+using namespace repo::gui::renderer;
+
+RepoFPSCounter::RepoFPSCounter(float alpha)
     : alpha(alpha)
     , frameCounter(0)
     , fps(0)
 {}
 
-repo::gui::RepoFPSCounter::~RepoFPSCounter() {}
+RepoFPSCounter::~RepoFPSCounter() {}
 
-void repo::gui::RepoFPSCounter::initialize()
+void RepoFPSCounter::initialize()
 {
     // FPS time (t0) in milliseconds
     timeZero = std::chrono::steady_clock::now();
 }
 
-void repo::gui::RepoFPSCounter::increment()
+void RepoFPSCounter::increment()
 {
     frameCounter++;
 
@@ -50,7 +52,7 @@ void repo::gui::RepoFPSCounter::increment()
     fps = fps + alpha * (newFPS - fps);
 }
 
-QString repo::gui::RepoFPSCounter::getFPSString(int decimals) const
+QString RepoFPSCounter::getFPSString(int decimals) const
 {
     return QString("FPS: ") + QString::number(fps, 'f', decimals);
 }
