@@ -17,12 +17,12 @@
 
 #include <QGLFormat>
 
-#include "repodialogabout.h"
-#include "ui_repodialogabout.h"
+#include "repo_dialog_about.h"
+#include "ui_repo_dialog_about.h"
 
-repo::gui::RepoDialogAbout::RepoDialogAbout(QWidget *parent) :
+repo::gui::repo_dialog_about::repo_dialog_about(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RepoDialogAbout)
+    ui(new Ui::repo_dialog_about)
 {
     ui->setupUi(this);
 
@@ -33,12 +33,12 @@ repo::gui::RepoDialogAbout::RepoDialogAbout(QWidget *parent) :
     ui->versionLabel->setText(getVersionInfo(" | "));
 }
 
-repo::gui::RepoDialogAbout::~RepoDialogAbout()
+repo::gui::repo_dialog_about::~repo_dialog_about()
 {
     delete ui;
 }
 
-QString repo::gui::RepoDialogAbout::getVersionInfo(const QString &separator)
+QString repo::gui::repo_dialog_about::getVersionInfo(const QString &separator)
 {
     QString info;
     info += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();

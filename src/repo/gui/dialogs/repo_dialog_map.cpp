@@ -16,8 +16,8 @@
  */
 
 
-#include "repo_maptilesdialog.h"
-#include "ui_repo_maptilesdialog.h"
+#include "repo_dialog_map.h"
+#include "ui_repo_dialog_map.h"
 
 #include <repo/core/model/bson/repo_bson_factory.h>
 

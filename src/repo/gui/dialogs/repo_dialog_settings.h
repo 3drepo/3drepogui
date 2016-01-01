@@ -16,8 +16,8 @@
  */
 
 
-#ifndef REPODIALOGSETTINGS_H
-#define REPODIALOGSETTINGS_H
+#ifndef repo_dialog_settings_H
+#define repo_dialog_settings_H
 
 #include <QDialog>
 #include <QModelIndex>
@@ -25,23 +25,23 @@
 #include <QSortFilterProxyModel>
 
 namespace Ui {
-    class RepoDialogSettings;
+    class repo_dialog_settings;
 }
 
 namespace repo {
 namespace gui {
 
-class RepoDialogSettings : public QDialog
+class repo_dialog_settings : public QDialog
 {
     Q_OBJECT
 
 public:
 
     //! Default constructor.
-    explicit RepoDialogSettings(QWidget *parent = 0);
+    explicit repo_dialog_settings(QWidget *parent = 0);
 
     //! Destructor to clean up list view and model proxies.
-    ~RepoDialogSettings();
+    ~repo_dialog_settings();
 
 public slots :
 
@@ -52,7 +52,7 @@ public slots :
 
 private:
 
-    Ui::RepoDialogSettings *ui;
+    Ui::repo_dialog_settings *ui;
 
     QStandardItemModel *optionsModel;
 
@@ -63,4 +63,4 @@ private:
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPODIALOGSETTINGS_H
+#endif // repo_dialog_settings_H

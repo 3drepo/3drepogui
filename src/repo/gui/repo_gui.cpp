@@ -24,10 +24,10 @@
 // GUI
 #include "repo_gui.h"
 #include "ui_repo_gui.h"
-#include "dialogs/repo_dialogcommit.h"
-#include "dialogs/repo_dialoghistory.h"
-#include "dialogs/repodialogsettings.h"
-#include "dialogs/repodialogabout.h"
+#include "dialogs/repo_dialog_commit.h"
+#include "dialogs/repo_dialog_history.h"
+#include "dialogs/repo_dialog_settings.h"
+#include "dialogs/repo_dialog_about.h"
 #include "../logger/repo_logger.h"
 #include "widgets/repo_dialog_connect.h"
 #include "widgets/repo_widgetrepository.h"
@@ -40,9 +40,9 @@
 #include "../workers/repo_worker_optimize.h"
 #include "primitives/repo_fontawesome.h"
 #include "primitives/repo_color.h"
-#include "dialogs/repoabstractmanagerdialog.h"
-#include "dialogs/repofederationdialog.h"
-#include "dialogs/repo_maptilesdialog.h"
+#include "dialogs/repo_dialog_manager_abstract.h"
+#include "dialogs/repo_dialog_federation.h"
+#include "dialogs/repo_dialog_map.h"
 
 
 //------------------------------------------------------------------------------
@@ -296,7 +296,7 @@ repo::gui::RepoGUI::~RepoGUI()
 
 void repo::gui::RepoGUI::about()
 {
-    RepoDialogAbout aboutDialog(this);
+    repo_dialog_about aboutDialog(this);
     aboutDialog.exec();
 }
 
@@ -495,7 +495,7 @@ void repo::gui::RepoGUI::drop()
 
 void repo::gui::RepoGUI::federate()
 {
-    RepoFederationDialog fed(ui->widgetRepository, this);
+    repo_dialog_federation fed(ui->widgetRepository, this);
     if (fed.exec())
     {
         repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
@@ -698,7 +698,7 @@ void repo::gui::RepoGUI::optimizeGraph()
 
 void repo::gui::RepoGUI::openSettings() const
 {
-    RepoDialogSettings settingsDialog((QWidget*) this);
+    repo_dialog_settings settingsDialog((QWidget*) this);
     settingsDialog.exec();
 }
 
@@ -717,7 +717,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
     QDesktopServices::openUrl(
                 QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
-                     "&body=" + RepoDialogAbout::getVersionInfo()));
+                     "&body=" + repo_dialog_about::getVersionInfo()));
 }
 
 void repo::gui::RepoGUI::refresh()

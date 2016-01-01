@@ -31,7 +31,7 @@
 #include <QModelIndex>
 
 //------------------------------------------------------------------------------
-#include "ui_repo_dialoghistory.h"
+#include "ui_repo_dialog_history.h"
 //------------------------------------------------------------------------------
 #include <repo/repo_controller.h>
 

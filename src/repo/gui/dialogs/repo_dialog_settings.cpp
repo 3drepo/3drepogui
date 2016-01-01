@@ -16,13 +16,13 @@
  */
 
 
-#include "repodialogsettings.h"
-#include "ui_repodialogsettings.h"
+#include "repo_dialog_settings.h"
+#include "ui_repo_dialog_settings.h"
 #include "../primitives/repo_fontawesome.h"
 
-repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
+repo::gui::repo_dialog_settings::repo_dialog_settings(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RepoDialogSettings)
+    ui(new Ui::repo_dialog_settings)
 {
     ui->setupUi(this);
 
@@ -73,19 +73,19 @@ repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
                      this, SLOT(changeOptionsPane(QModelIndex)));
 }
 
-repo::gui::RepoDialogSettings::~RepoDialogSettings()
+repo::gui::repo_dialog_settings::~repo_dialog_settings()
 {
     delete ui;
     delete optionsModel;
     delete optionsProxy;
 }
 
-void repo::gui::RepoDialogSettings::apply()
+void repo::gui::repo_dialog_settings::apply()
 {
     ui->assimpFlagsWidget->apply();
 }
 
-void repo::gui::RepoDialogSettings::changeOptionsPane(const QModelIndex &index)
+void repo::gui::repo_dialog_settings::changeOptionsPane(const QModelIndex &index)
 {
     if (index.isValid())
     {

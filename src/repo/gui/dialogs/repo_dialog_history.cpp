@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "repo_dialoghistory.h"
+#include "repo_dialog_history.h"
 //------------------------------------------------------------------------------
 #include "../primitives/repo_fontawesome.h"
 #include "../../workers/repo_worker_history.h"

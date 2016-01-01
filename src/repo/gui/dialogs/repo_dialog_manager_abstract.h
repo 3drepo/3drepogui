@@ -36,13 +36,13 @@
 #include "../primitives/repoidbcache.h"
 
 namespace Ui {
-class RepoAbstractManagerDialog;
+class repo_dialog_manager_abstract;
 }
 
 namespace repo {
 namespace gui {
 
-class RepoAbstractManagerDialog : public QDialog
+class repo_dialog_manager_abstract : public QDialog
 {
     Q_OBJECT
 
@@ -51,12 +51,12 @@ class RepoAbstractManagerDialog : public QDialog
 public:
 
     //! Explicit constructor.
-    explicit RepoAbstractManagerDialog(
+    explicit repo_dialog_manager_abstract(
             const RepoIDBCache *dbCache = 0,
             QWidget *parent = 0);
 
     //! Destructor to clean up model and proxy.
-    ~RepoAbstractManagerDialog();
+    ~repo_dialog_manager_abstract();
 
 signals :
 
@@ -121,7 +121,7 @@ protected :
     QThreadPool threadPool;
 
     //! Ui var.
-    Ui::RepoAbstractManagerDialog *ui;
+    Ui::repo_dialog_manager_abstract *ui;
 
     const RepoIDBCache* dbCache;
 

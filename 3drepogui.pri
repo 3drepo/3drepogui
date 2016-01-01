@@ -6,15 +6,15 @@
 
 HEADERS +=  \
 	src/repo/gui/repo_gui.h \
-	src/repo/gui/dialogs/repoabstractmanagerdialog.h \
-	src/repo/gui/dialogs/repodialogabout.h \
-	src/repo/gui/dialogs/repodialogsettings.h \
-	src/repo/gui/dialogs/repofederationdialog.h \
-	src/repo/gui/dialogs/repo_dialogcommit.h \
-	src/repo/gui/dialogs/repo_dialoghistory.h \
-	src/repo/gui/dialogs/repo_genericdialog.h \
-	src/repo/gui/dialogs/repo_maptilesdialog.h \
-	src/repo/gui/dialogs/repo_transformationdialog.h \
+	src/repo/gui/dialogs/repo_dialog_about.h \
+	src/repo/gui/dialogs/repo_dialog_commit.h \
+	src/repo/gui/dialogs/repo_dialog_federation.h \
+	src/repo/gui/dialogs/repo_dialog_generic.h \
+	src/repo/gui/dialogs/repo_dialog_history.h \
+	src/repo/gui/dialogs/repo_dialog_manager_abstract.h \
+	src/repo/gui/dialogs/repo_dialog_map.h \
+	src/repo/gui/dialogs/repo_dialog_settings.h \
+	src/repo/gui/dialogs/repo_dialog_transformation.h \
 	src/repo/gui/primitives/repocomboboxdelegate.h \
 	src/repo/gui/primitives/repocomboboxeditor.h \
 	src/repo/gui/primitives/repoidbcache.h \
@@ -80,15 +80,15 @@ HEADERS +=  \
 SOURCES +=  \
 	src/main.cpp \
 	src/repo/gui/repo_gui.cpp \
-	src/repo/gui/dialogs/repoabstractmanagerdialog.cpp \
-	src/repo/gui/dialogs/repodialogabout.cpp \
-	src/repo/gui/dialogs/repodialogsettings.cpp \
-	src/repo/gui/dialogs/repofederationdialog.cpp \
-	src/repo/gui/dialogs/repo_dialogcommit.cpp \
-	src/repo/gui/dialogs/repo_dialoghistory.cpp \
-	src/repo/gui/dialogs/repo_genericdialog.cpp \
-	src/repo/gui/dialogs/repo_maptilesdialog.cpp \
-	src/repo/gui/dialogs/repo_transformationdialog.cpp \
+	src/repo/gui/dialogs/repo_dialog_about.cpp \
+	src/repo/gui/dialogs/repo_dialog_commit.cpp \
+	src/repo/gui/dialogs/repo_dialog_federation.cpp \
+	src/repo/gui/dialogs/repo_dialog_generic.cpp \
+	src/repo/gui/dialogs/repo_dialog_history.cpp \
+	src/repo/gui/dialogs/repo_dialog_manager_abstract.cpp \
+	src/repo/gui/dialogs/repo_dialog_map.cpp \
+	src/repo/gui/dialogs/repo_dialog_settings.cpp \
+	src/repo/gui/dialogs/repo_dialog_transformation.cpp \
 	src/repo/gui/primitives/repocomboboxdelegate.cpp \
 	src/repo/gui/primitives/repocomboboxeditor.cpp \
 	src/repo/gui/primitives/repoidbcache.cpp \
@@ -151,24 +151,24 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_users.cpp
 
 FORMS +=  \
-	forms/repoabstractmanagerdialog.ui \
-	forms/repodialogabout.ui \
-	forms/repodialogsettings.ui \
-	forms/repofederationdialog.ui \
 	forms/reposelectiontreedockwidget.ui \
 	forms/repowidgetassimpflags.ui \
-	forms/repo_dialogcommit.ui \
-	forms/repo_dialoghistory.ui \
+	forms/repo_dialog_about.ui \
+	forms/repo_dialog_commit.ui \
 	forms/repo_dialog_connect.ui \
+	forms/repo_dialog_federation.ui \
+	forms/repo_dialog_generic.ui \
+	forms/repo_dialog_history.ui \
+	forms/repo_dialog_manager_abstract.ui \
 	forms/repo_dialog_manager_access.ui \
 	forms/repo_dialog_manager_connect.ui \
+	forms/repo_dialog_map.ui \
 	forms/repo_dialog_project.ui \
 	forms/repo_dialog_role.ui \
+	forms/repo_dialog_settings.ui \
+	forms/repo_dialog_transformation.ui \
 	forms/repo_dialog_user.ui \
-	forms/repo_genericdialog.ui \
 	forms/repo_gui.ui \
-	forms/repo_maptilesdialog.ui \
-	forms/repo_transformationdialog.ui \
 	forms/repo_webview.ui \
 	forms/repo_widgetrepository.ui \
 	forms/repo_widget_manager_3ddiff.ui \

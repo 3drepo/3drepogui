@@ -16,18 +16,36 @@
  */
 
 
-#include "repo_genericdialog.h"
-#include "ui_repo_genericdialog.h"
+#ifndef REPO_GENERIC_DIALOG_H
+#define REPO_GENERIC_DIALOG_H
 
-repo::gui::RepoGenericDialog::RepoGenericDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::RepoGenericDialog)
-{
-    ui->setupUi(this);
+#include <QDialog>
 
+#include "repo_dialog_transformation.h"
+
+namespace Ui {
+class RepoGenericDialog;
 }
 
-repo::gui::RepoGenericDialog::~RepoGenericDialog()
+namespace repo {
+namespace gui {
+
+
+class RepoGenericDialog : public QDialog
 {
-    delete ui;
-}
+    Q_OBJECT
+
+public:
+    explicit RepoGenericDialog(QWidget *parent = 0);
+    ~RepoGenericDialog();
+
+private:
+    Ui::RepoGenericDialog *ui;
+
+
+}; // end class
+
+} // end namespace gui
+} // end namespace repo
+
+#endif // REPO_GENERIC_DIALOG_H

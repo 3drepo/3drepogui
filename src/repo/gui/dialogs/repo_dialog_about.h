@@ -22,25 +22,25 @@
 #include <QDialog>
 
 namespace Ui {
-class RepoDialogAbout;
+class repo_dialog_about;
 }
 
 namespace repo {
 namespace gui {
 
 //! 3D Repo GUI about dialog
-class RepoDialogAbout : public QDialog
+class repo_dialog_about : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RepoDialogAbout(QWidget *parent = 0);
-    ~RepoDialogAbout();
+    explicit repo_dialog_about(QWidget *parent = 0);
+    ~repo_dialog_about();
 
     static QString getVersionInfo(const QString& separator = "\n");
 
 private:
-    Ui::RepoDialogAbout *ui;
+    Ui::repo_dialog_about *ui;
 
 }; // end class
 

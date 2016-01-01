@@ -30,8 +30,8 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../primitives/repoidbcache.h"
-#include "repo_genericdialog.h"
-#include "repo_transformationdialog.h"
+#include "repo_dialog_generic.h"
+#include "repo_dialog_transformation.h"
 #include "../primitives/repo_standard_item.h"
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
 #include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
-    class RepoFederationDialog;
+    class repo_dialog_federation;
 }
 
 typedef QPair<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoTransRefPair;
@@ -50,7 +50,7 @@ Q_DECLARE_METATYPE(RepoTransRefPair)
 namespace repo {
 namespace gui {
 
-class RepoFederationDialog : public QDialog
+class repo_dialog_federation : public QDialog
 {
     Q_OBJECT
 
@@ -58,11 +58,11 @@ class RepoFederationDialog : public QDialog
 
 public:
 
-    explicit RepoFederationDialog(
+    explicit repo_dialog_federation(
             RepoIDBCache *dbCache,
             QWidget *parent = 0);
 
-    ~RepoFederationDialog();
+    ~repo_dialog_federation();
 
 public slots :
 
@@ -102,7 +102,7 @@ protected :
 
 private:
 
-    Ui::RepoFederationDialog *ui;
+    Ui::repo_dialog_federation *ui;
 
     RepoIDBCache *dbCache;
 };

@@ -16,8 +16,8 @@
  */
 
 
-#include "repo_transformationdialog.h"
-#include "ui_repo_transformationdialog.h"
+#include "repo_dialog_transformation.h"
+#include "ui_repo_dialog_transformation.h"
 
 #include <repo/core/model/bson/repo_bson_factory.h>
 #include <qmatrix4x4.h>
