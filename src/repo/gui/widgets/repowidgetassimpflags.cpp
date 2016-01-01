@@ -26,7 +26,7 @@ repo::gui::RepoWidgetAssimpFlags::RepoWidgetAssimpFlags(QWidget *parent) :
     ui(new Ui::RepoWidgetAssimpFlags)
 {
     ui->setupUi(this);
-	settings = new RepoSettings();
+    settings = new repo::settings::RepoSettings();
     //--------------------------------------------------------------------------
 
     ui->calculateTangentSpaceCheckBox->setChecked(settings->getCalculateTangentSpace());

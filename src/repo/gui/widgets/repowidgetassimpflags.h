@@ -26,7 +26,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../repo_settings.h"
+#include "../../settings/repo_settings.h"
 
 namespace Ui {
 class RepoWidgetAssimpFlags;
@@ -47,7 +47,7 @@ public:
 
     explicit RepoWidgetAssimpFlags(QWidget *parent = 0);
 
-	RepoSettings* getSettings() const { return settings; }
+    repo::settings::RepoSettings* getSettings() const { return settings; }
 
     ~RepoWidgetAssimpFlags();
 
@@ -81,7 +81,7 @@ private :
     Ui::RepoWidgetAssimpFlags *ui;
 
     //! Persistent application settings.
-    RepoSettings *settings;
+    repo::settings::RepoSettings *settings;
 
 };
 

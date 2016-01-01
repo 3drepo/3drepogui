@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
 #include "../gui/widgets/repowidgetassimpflags.h"
-#include "../gui/repo_settings.h"
+#include "../settings/repo_settings.h"
 //-----------------------------------------------------------------------------
 
 #include <QImage>
@@ -80,7 +80,7 @@ namespace repo {
 
 			repo::RepoController *controller;
 
-			repo::gui::RepoSettings *settings;
+                        repo::settings::RepoSettings *settings;
 
 		}; // end class
 

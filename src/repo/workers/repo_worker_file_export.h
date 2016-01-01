@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 #include "repo_worker_abstract.h"
 #include "../gui/widgets/repowidgetassimpflags.h"
-#include "../gui/repo_settings.h"
+#include "../settings/repo_settings.h"
 //-----------------------------------------------------------------------------
 
 #include <QImage>

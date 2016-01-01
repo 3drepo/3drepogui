@@ -6,7 +6,6 @@
 
 HEADERS +=  \
 	src/repo/gui/repo_gui.h \
-	src/repo/gui/repo_settings.h \
 	src/repo/gui/dialogs/repoabstractmanagerdialog.h \
 	src/repo/gui/dialogs/repodialogabout.h \
 	src/repo/gui/dialogs/repodialogsettings.h \
@@ -57,6 +56,7 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/settings/repo_settings.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/workers/repo_multithreader.h \
 	src/repo/workers/repo_mutex.h \
