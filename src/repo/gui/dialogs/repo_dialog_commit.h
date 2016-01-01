@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_DIALOG_COMMIT_H
-#define REPO_DIALOG_COMMIT_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // STL
@@ -45,139 +44,140 @@
 #include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
-class RepoDialogCommit;
+class CommitDialog;
 }
 
 Q_DECLARE_METATYPE(repo::core::model::RepoNode*)
 
 namespace repo {
 namespace gui {
+	namespace dialog{
 
-/*!fontawesome-webfont
- * Commit dialog which enables users to confirm those nodes that are to be
- * committed to the repository. The dialog modifies the "revision" object
- * accordingly.
- */
-class RepoDialogCommit : public QDialog
-{
-    Q_OBJECT
+		/*!fontawesome-webfont
+		 * Commit dialog which enables users to confirm those nodes that are to be
+		 * committed to the repository. The dialog modifies the "revision" object
+		 * accordingly.
+		 */
+		class CommitDialog : public QDialog
+		{
+			Q_OBJECT
 
-    Q_CLASSINFO("Since", "1.0.0")
+				Q_CLASSINFO("Since", "1.0.0")
 
-    enum Columns { NAME, TYPE, STATUS, UID, SID };
+			enum Columns { NAME, TYPE, STATUS, UID, SID };
 
-public:
+		public:
 
-    //--------------------------------------------------------------------------
-    //
-    // Constructor
-    //
-    //--------------------------------------------------------------------------
+			//--------------------------------------------------------------------------
+			//
+			// Constructor
+			//
+			//--------------------------------------------------------------------------
 
-    /*!
-     * Constructs the commit dialog with specified destination and a table of
-     * scene graph nodes to be commited. Use Qt::Window for flag to enable
-     * dialog to have minimize/maximize buttons.
-     */
-    RepoDialogCommit(
-            QWidget* parent = nullptr,
-            Qt::WindowFlags flags = nullptr,
-            RepoIDBCache *dbCache = nullptr,
-            repo::core::model::RepoScene * scene = nullptr);
+			/*!
+			 * Constructs the commit dialog with specified destination and a table of
+			 * scene graph nodes to be commited. Use Qt::Window for flag to enable
+			 * dialog to have minimize/maximize buttons.
+			 */
+			CommitDialog(
+				QWidget* parent = nullptr,
+				Qt::WindowFlags flags = nullptr,
+				RepoIDBCache *dbCache = nullptr,
+				repo::core::model::RepoScene * scene = nullptr);
 
-    //! Destructs the tree model.
-    ~RepoDialogCommit();
+			//! Destructs the tree model.
+			~CommitDialog();
 
-public slots:
+			public slots:
 
-    //! Cancels all ongoing threads, if any.
-    bool cancelAllThreads();
+			//! Cancels all ongoing threads, if any.
+			bool cancelAllThreads();
 
-    void infiniteScroll(int sliderPosition);
+			void infiniteScroll(int sliderPosition);
 
-signals :
+		signals:
 
-    //! Emitted whenever running threads are to be cancelled.
-    void cancel();
+			//! Emitted whenever running threads are to be cancelled.
+			void cancel();
 
-public :
+		public:
 
-    //! Returns the commit message
-    QString getMessage();
+			//! Returns the commit message
+			QString getMessage();
 
-    QString getCurrentHost() const;
+			QString getCurrentHost() const;
 
-    QString getCurrentDatabase() const;
+			QString getCurrentDatabase() const;
 
-    QString getCurrentProject() const;
+			QString getCurrentProject() const;
 
-    repo::core::model::RepoScene* getScene() { return scene; }
+			repo::core::model::RepoScene* getScene() { return scene; }
 
-public slots:
+			public slots:
 
-    void addNode(repo::core::model::RepoNode *node, const QString &status);
+			void addNode(repo::core::model::RepoNode *node, const QString &status);
 
-    void editItem(const QModelIndex &);
+			void editItem(const QModelIndex &);
 
-    /*!
-     * Shows the dialog as a modal window, blocking until the user closes it.
-     * If the user selects to connect, the dialog saves all filled-in values
-     * as user settings. Returns a DialogCode result.
-     */
-    virtual int exec();
+			/*!
+			 * Shows the dialog as a modal window, blocking until the user closes it.
+			 * If the user selects to connect, the dialog saves all filled-in values
+			 * as user settings. Returns a DialogCode result.
+			 */
+			virtual int exec();
 
-    void updateCountLabel() const;
+			void updateCountLabel() const;
 
-    void updateHosts();
+			void updateHosts();
 
-    void updateDatabases();
+			void updateDatabases();
 
-    void updateProjects();
+			void updateProjects();
 
-    void updateBranches();
+			void updateBranches();
 
-    //! Unlocks mutex when modified nodes loading has finished.
-    void unlockMutex() { mutex.unlock(); }
+			//! Unlocks mutex when modified nodes loading has finished.
+			void unlockMutex() { mutex.unlock(); }
 
-private :
+		private:
 
-    //! Extracts modified objects from the revision and scene to list in change table.
-    void loadModifiedObjects();
+			//! Extracts modified objects from the revision and scene to list in change table.
+			void loadModifiedObjects();
 
-private:
+		private:
 
-    //! Ui var.
-    Ui::RepoDialogCommit *ui;
+			//! Ui var.
+			Ui::CommitDialog *ui;
 
-    //! Scene from which the nodes to be committed come (based on info from revision object).
-    repo::core::model::RepoScene *scene;
+			//! Scene from which the nodes to be committed come (based on info from revision object).
+			repo::core::model::RepoScene *scene;
 
-    //! Data model to list commit table.
-    QStandardItemModel *model;
+			//! Data model to list commit table.
+			QStandardItemModel *model;
 
-    //! Proxy model to enable table sorting.
-    QSortFilterProxyModel *proxyModel;
+			//! Proxy model to enable table sorting.
+			QSortFilterProxyModel *proxyModel;
 
-    //! Database cache.
-    RepoIDBCache *dbCache;
+			//! Database cache.
+			RepoIDBCache *dbCache;
 
-    //! Selected project name.
-    QString projectName;
+			//! Selected project name.
+			QString projectName;
 
-    //! Threadpool for this object only.
-    QThreadPool threadPool;
+			//! Threadpool for this object only.
+			QThreadPool threadPool;
 
-    //! Number of scene graph nodes to be skipped when loading modified objects.
-    int skip;
+			//! Number of scene graph nodes to be skipped when loading modified objects.
+			int skip;
 
-    //! Number of modified nodes.
-    int modifiedNodesCount;
+			//! Number of modified nodes.
+			int modifiedNodesCount;
 
-    //! Mutex lock for loading modified objects.
-    QMutex mutex;
-};
+			//! Mutex lock for loading modified objects.
+			QMutex mutex;
+		};
 
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_DIALOG_COMMIT_H

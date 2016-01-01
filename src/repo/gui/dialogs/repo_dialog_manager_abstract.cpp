@@ -21,13 +21,15 @@
 
 #include "../primitives/repo_fontawesome.h"
 
-const QString repo::gui::repo_dialog_manager_abstract::COLUMNS_SETTINGS = "repo_dialog_manager_abstractColumnsSettings";
+using namespace repo::gui::dialog;
 
-repo::gui::repo_dialog_manager_abstract::repo_dialog_manager_abstract(
-        const RepoIDBCache *dbCache,
+const QString AbstractManagerDialog::COLUMNS_SETTINGS = "repo_dialog_manager_abstractColumnsSettings";
+
+AbstractManagerDialog::AbstractManagerDialog(
+        const repo::gui::RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::repo_dialog_manager_abstract)
+    , ui(new Ui::AbstractManagerDialog)
     , dbCache(dbCache)
 {
     ui->setupUi(this);
@@ -59,15 +61,15 @@ repo::gui::repo_dialog_manager_abstract::repo_dialog_manager_abstract(
 
     QObject::connect(
         proxy, &QSortFilterProxyModel::rowsInserted,
-        this, &repo_dialog_manager_abstract::updateCountLabel);
+        this, &AbstractManagerDialog::updateCountLabel);
 
     QObject::connect(
         proxy, &QSortFilterProxyModel::rowsRemoved,
-        this, &repo_dialog_manager_abstract::updateCountLabel);
+        this, &AbstractManagerDialog::updateCountLabel);
 
     QObject::connect(
         ui->treeView->selectionModel(), &QItemSelectionModel::selectionChanged,
-        this, &repo_dialog_manager_abstract::select);
+        this, &AbstractManagerDialog::select);
 
     QObject::connect(ui->treeView, SIGNAL(doubleClicked(const QModelIndex &)),
                      this, SLOT(edit(const QModelIndex &)));
@@ -94,7 +96,7 @@ repo::gui::repo_dialog_manager_abstract::repo_dialog_manager_abstract(
                 settings.value(COLUMNS_SETTINGS).toByteArray());
 }
 
-repo::gui::repo_dialog_manager_abstract::~repo_dialog_manager_abstract()
+AbstractManagerDialog::~AbstractManagerDialog()
 {
     QSettings settings(this->parentWidget());
     settings.setValue(COLUMNS_SETTINGS, ui->treeView->header()->saveState());
@@ -105,14 +107,14 @@ repo::gui::repo_dialog_manager_abstract::~repo_dialog_manager_abstract()
     delete ui;
 }
 
-bool repo::gui::repo_dialog_manager_abstract::cancelAllThreads()
+bool AbstractManagerDialog::cancelAllThreads()
 {
     //emit cancel();
     return threadPool.waitForDone(); // msecs
 }
 
 
-void repo::gui::repo_dialog_manager_abstract::clear()
+void AbstractManagerDialog::clear()
 {
     model->removeRows(0, model->rowCount());
     ui->filterLineEdit->clear();
@@ -122,7 +124,7 @@ void repo::gui::repo_dialog_manager_abstract::clear()
     updateCountLabel();
 }
 
-void repo::gui::repo_dialog_manager_abstract::select(
+void AbstractManagerDialog::select(
         const QItemSelection &,
         const QItemSelection &)
 {
@@ -130,24 +132,24 @@ void repo::gui::repo_dialog_manager_abstract::select(
     ui->editPushButton->setEnabled(true);
 }
 
-int repo::gui::repo_dialog_manager_abstract::exec()
+int AbstractManagerDialog::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void repo::gui::repo_dialog_manager_abstract::finish()
+void AbstractManagerDialog::finish()
 {
     ui->hostComboBox->setEnabled(true);
     ui->databaseComboBox->setEnabled(true);
 }
 
-void repo::gui::repo_dialog_manager_abstract::updateCountLabel() const
+void AbstractManagerDialog::updateCountLabel() const
 {
     ui->countLabel->setText(tr("Showing %1 of %2").arg(proxy->rowCount()).arg(model->rowCount()));
 }
 
-void repo::gui::repo_dialog_manager_abstract::showCustomContextMenu(const QPoint &point)
+void AbstractManagerDialog::showCustomContextMenu(const QPoint &point)
 {
     QMenu menu(ui->treeView);
 
@@ -173,7 +175,7 @@ void repo::gui::repo_dialog_manager_abstract::showCustomContextMenu(const QPoint
 
 }
 
-QStandardItem *repo::gui::repo_dialog_manager_abstract::createItem(const QString &data)
+QStandardItem *AbstractManagerDialog::createItem(const QString &data)
 {
     QStandardItem *item = new QStandardItem(data);
     item->setEditable(false);
@@ -181,7 +183,7 @@ QStandardItem *repo::gui::repo_dialog_manager_abstract::createItem(const QString
     return item;
 }
 
-QStandardItem *repo::gui::repo_dialog_manager_abstract::createItem(
+QStandardItem *AbstractManagerDialog::createItem(
     const QVariant& data)
 {
     QStandardItem* item = new QStandardItem();

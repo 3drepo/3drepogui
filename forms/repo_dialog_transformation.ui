@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoTransformationDialog</class>
- <widget class="QDialog" name="RepoTransformationDialog">
+ <class>TransformationDialog</class>
+ <widget class="QDialog" name="TransformationDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -945,7 +945,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoTransformationDialog</receiver>
+   <receiver>TransformationDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -961,7 +961,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoTransformationDialog</receiver>
+   <receiver>TransformationDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

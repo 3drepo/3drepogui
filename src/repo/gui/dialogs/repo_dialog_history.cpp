@@ -22,7 +22,9 @@
 
 //------------------------------------------------------------------------------
 
-repo::gui::RepoDialogHistory::RepoDialogHistory(
+using namespace repo::gui::dialog;
+
+HistoryDialog::HistoryDialog(
 	repo::RepoController  *controller,
 	const repo::RepoToken *token,
 	const QString &database,
@@ -34,7 +36,7 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
 	, token(token)
 	, database(database)
     , project(project)
-    , ui(new Ui::RepoDialogHistory)
+    , ui(new Ui::HistoryDialog)
 {
     ui->setupUi(this);
     setWindowIcon(RepoFontAwesome::getHistoryIcon());
@@ -96,16 +98,16 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
 		historyProxy, &QSortFilterProxyModel::setFilterFixedString);
     QObject::connect(
         historyProxy, &QSortFilterProxyModel::rowsInserted,
-        this, &RepoDialogHistory::updateCountLabel);
+        this, &HistoryDialog::updateCountLabel);
     QObject::connect(
         historyProxy, &QSortFilterProxyModel::rowsRemoved,
-        this, &RepoDialogHistory::updateCountLabel);
+        this, &HistoryDialog::updateCountLabel);
 
 
     //--------------------------------------------------------------------------
 	QObject::connect(
         ui->refreshPushButton, &QPushButton::pressed,
-		this, &RepoDialogHistory::refresh);
+		this, &HistoryDialog::refresh);
 
     QObject::connect(
                 ui->historyTreeView->selectionModel(),
@@ -119,7 +121,7 @@ repo::gui::RepoDialogHistory::RepoDialogHistory(
 
 //------------------------------------------------------------------------------
 
-repo::gui::RepoDialogHistory::~RepoDialogHistory()
+HistoryDialog::~HistoryDialog()
 {
 	cancelAllThreads();
 
@@ -130,20 +132,20 @@ repo::gui::RepoDialogHistory::~RepoDialogHistory()
     delete ui;
 }
 
-bool repo::gui::RepoDialogHistory::cancelAllThreads()
+bool HistoryDialog::cancelAllThreads()
 {
 	emit cancel();
 	return threadPool.waitForDone(); // msecs
 }
 
-int repo::gui::RepoDialogHistory::exec()
+int HistoryDialog::exec()
 {
 	refresh();
 	return QDialog::exec();
 }
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoDialogHistory::refresh()
+void HistoryDialog::refresh()
 {
 	if (controller && !database.isEmpty() &&  !project.isEmpty() && cancelAllThreads())
 	{
@@ -152,12 +154,12 @@ void repo::gui::RepoDialogHistory::refresh()
 
 		// Direct connection ensures cancel signal is processed ASAP
 		QObject::connect(
-			this, &RepoDialogHistory::cancel,
+			this, &HistoryDialog::cancel,
 			worker, &repo::worker::HistoryWorker::cancel, Qt::DirectConnection);
 
 		QObject::connect(
 			worker, &repo::worker::HistoryWorker::revisionFetched,
-			this, &RepoDialogHistory::addRevision);//, Qt::BlockingQueuedConnection);
+			this, &HistoryDialog::addRevision);//, Qt::BlockingQueuedConnection);
 		
         //----------------------------------------------------------------------
 		// Clear any previous entries : the collection model 
@@ -168,7 +170,7 @@ void repo::gui::RepoDialogHistory::refresh()
 	}
 }
 
-void repo::gui::RepoDialogHistory::addRevision(repo::core::model::RevisionNode *revision)
+void HistoryDialog::addRevision(repo::core::model::RevisionNode *revision)
 {
 	if (revision)
 	{
@@ -208,7 +210,7 @@ void repo::gui::RepoDialogHistory::addRevision(repo::core::model::RevisionNode *
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoDialogHistory::clearHistoryModel()
+void HistoryDialog::clearHistoryModel()
 {
 	historyModel->removeRows(0, historyModel->rowCount());
     //--------------------------------------------------------------------------
@@ -223,14 +225,14 @@ void repo::gui::RepoDialogHistory::clearHistoryModel()
     updateCountLabel();
 }
 
-void repo::gui::RepoDialogHistory::updateCountLabel()
+void HistoryDialog::updateCountLabel()
 {
     ui->revisionsCountLabel->setText(
                 tr("Showing %1 of %2").arg(historyProxy->rowCount()).arg(
         historyModel->rowCount()));
 }
 
-void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, const QModelIndex &)
+void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex &)
 {
     // Clear any previous entries
     revisionModel->removeRows(0, revisionModel->rowCount());
@@ -303,7 +305,7 @@ void repo::gui::RepoDialogHistory::changeRevision(const QModelIndex &current, co
 
 //------------------------------------------------------------------------------
 
-QList<QUuid> repo::gui::RepoDialogHistory::getSelectedRevisions()
+QList<QUuid> HistoryDialog::getSelectedRevisions()
 {
 	QList<QUuid> list;
     QModelIndexList selected = ui->historyTreeView->selectionModel()->selectedRows(
@@ -317,7 +319,7 @@ QList<QUuid> repo::gui::RepoDialogHistory::getSelectedRevisions()
 
 //------------------------------------------------------------------------------
 
-QStandardItem *repo::gui::RepoDialogHistory::createItem(QVariant& data)
+QStandardItem *HistoryDialog::createItem(QVariant& data)
 {
 	QStandardItem* item = new QStandardItem(data.toString());
 	item->setEditable(false);

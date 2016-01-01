@@ -19,15 +19,17 @@
 #include "repo_dialog_generic.h"
 #include "ui_repo_dialog_generic.h"
 
-repo::gui::RepoGenericDialog::RepoGenericDialog(QWidget *parent) :
+using namespace repo::gui::dialog;
+
+GenericDialog::GenericDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RepoGenericDialog)
+    ui(new Ui::GenericDialog)
 {
     ui->setupUi(this);
 
 }
 
-repo::gui::RepoGenericDialog::~RepoGenericDialog()
+GenericDialog::~GenericDialog()
 {
     delete ui;
 }

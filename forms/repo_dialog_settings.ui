@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>repo_dialog_settings</class>
+ <class>SettingsDialog</class>
  <widget class="QDialog" name="repo_dialog_settings">
   <property name="geometry">
    <rect>

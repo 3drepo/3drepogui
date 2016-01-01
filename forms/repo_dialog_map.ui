@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoMapTilesDialog</class>
- <widget class="QDialog" name="RepoMapTilesDialog">
+ <class>MapDialog</class>
+ <widget class="QDialog" name="MapDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -232,7 +232,7 @@
   <connection>
    <sender>ButtonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoMapTilesDialog</receiver>
+   <receiver>MapDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -248,7 +248,7 @@
   <connection>
    <sender>ButtonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoMapTilesDialog</receiver>
+   <receiver>MapDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

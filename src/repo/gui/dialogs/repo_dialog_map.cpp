@@ -21,21 +21,23 @@
 
 #include <repo/core/model/bson/repo_bson_factory.h>
 
-repo::gui::RepoMapTilesDialog::RepoMapTilesDialog(QWidget *parent)
+using namespace repo::gui::dialog;
+
+MapDialog::MapDialog(QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::RepoMapTilesDialog)
+    , ui(new Ui::MapDialog)
 {
     ui->setupUi(this);
 
     this->setWindowIcon(RepoFontAwesome::getMapTilesIcon());
 }
 
-repo::gui::RepoMapTilesDialog::~RepoMapTilesDialog()
+MapDialog::~MapDialog()
 {
     delete ui;
 }
 
-repo::core::model::MapNode repo::gui::RepoMapTilesDialog::getMap(){
+repo::core::model::MapNode MapDialog::getMap(){
 
     repo_vector_t centrePoint = { (float)ui->xSpinBox->value(), (float)ui->ySpinBox->value(), (float)ui->zSpinBox->value() };
 

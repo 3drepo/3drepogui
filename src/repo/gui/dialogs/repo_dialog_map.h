@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_MAP_TILES_DIALOG_H
-#define REPO_MAP_TILES_DIALOG_H
+#pragma once
 
 #include "../primitives/repo_fontawesome.h"
 
@@ -30,31 +28,30 @@
 //------------------------------------------------------------------------------
 
 namespace Ui {
-class RepoMapTilesDialog;
+class MapDialog;
 }
 
 namespace repo {
 namespace gui {
+namespace dialog{
+	class MapDialog : public QDialog
+	{
+		Q_OBJECT
 
-class RepoMapTilesDialog : public QDialog
-{
-    Q_OBJECT
+	public:
 
-public:
+		explicit MapDialog(
+			QWidget *parent = 0);
 
-    explicit RepoMapTilesDialog(
-            QWidget *parent = 0);
+		~MapDialog();
+		repo::core::model::MapNode getMap();
 
-    ~RepoMapTilesDialog();
-    repo::core::model::MapNode getMap();
+	private:
 
-private:
+		Ui::MapDialog *ui;
 
-    Ui::RepoMapTilesDialog *ui;
-
-}; // end class
-
+	}; // end class
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_MAP_TILES_DIALOG_H

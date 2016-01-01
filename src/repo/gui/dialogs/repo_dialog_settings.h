@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef repo_dialog_settings_H
-#define repo_dialog_settings_H
+#pragma once
 
 #include <QDialog>
 #include <QModelIndex>
@@ -25,42 +23,41 @@
 #include <QSortFilterProxyModel>
 
 namespace Ui {
-    class repo_dialog_settings;
+    class SettingsDialog;
 }
 
 namespace repo {
 namespace gui {
+namespace dialog{
+    class SettingsDialog : public QDialog
+    {
+        Q_OBJECT
 
-class repo_dialog_settings : public QDialog
-{
-    Q_OBJECT
+    public:
 
-public:
+        //! Default constructor.
+        explicit SettingsDialog(QWidget *parent = 0);
 
-    //! Default constructor.
-    explicit repo_dialog_settings(QWidget *parent = 0);
+        //! Destructor to clean up list view and model proxies.
+        ~SettingsDialog();
 
-    //! Destructor to clean up list view and model proxies.
-    ~repo_dialog_settings();
+    public slots :
 
-public slots :
+        //! Applies all of the currently selected settings.
+        void apply();
 
-    //! Applies all of the currently selected settings.
-    void apply();
+        void changeOptionsPane(const QModelIndex &);
 
-    void changeOptionsPane(const QModelIndex &);
+    private:
 
-private:
+        Ui::SettingsDialog *ui;
 
-    Ui::repo_dialog_settings *ui;
+        QStandardItemModel *optionsModel;
 
-    QStandardItemModel *optionsModel;
+        QSortFilterProxyModel *optionsProxy;
 
-    QSortFilterProxyModel *optionsProxy;
-
-};
-
+    };
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // repo_dialog_settings_H

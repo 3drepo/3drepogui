@@ -22,11 +22,13 @@
 #include <repo/core/model/bson/repo_bson_factory.h>
 #include <qmatrix4x4.h>
 
-repo::gui::RepoTransformationDialog::RepoTransformationDialog(
+using namespace repo::gui::dialog;
+
+TransformationDialog::TransformationDialog(
 	const repo::core::model::TransformationNode &transformation,
         QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::RepoTransformationDialog)
+    , ui(new Ui::TransformationDialog)
     , transformation(transformation)
 {
     ui->setupUi(this);
@@ -35,30 +37,30 @@ repo::gui::RepoTransformationDialog::RepoTransformationDialog(
     setMatrix(transformation.getTransMatrix(false));
 
     QObject::connect(ui->identityPushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::setIdentity);
+                     this, &TransformationDialog::setIdentity);
 
     QObject::connect(ui->rotateXpushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::rotateX90);
+                     this, &TransformationDialog::rotateX90);
 
     QObject::connect(ui->rotateYpushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::rotateY90);
+                     this, &TransformationDialog::rotateY90);
 
     QObject::connect(ui->rotateZpushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::rotateZ90);
+                     this, &TransformationDialog::rotateZ90);
 
     QObject::connect(ui->inversePushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::inverse);
+                     this, &TransformationDialog::inverse);
 
     QObject::connect(ui->transposePushButton, &QPushButton::pressed,
-                     this, &RepoTransformationDialog::transpose);
+                     this, &TransformationDialog::transpose);
 }
 
-repo::gui::RepoTransformationDialog::~RepoTransformationDialog()
+TransformationDialog::~TransformationDialog()
 {
     delete ui;
 }
 
-void repo::gui::RepoTransformationDialog::setIdentity()
+void TransformationDialog::setIdentity()
 {
     setMatrix(1.0, 0.0, 0.0, 0.0,
               0.0, 1.0, 0.0, 0.0,
@@ -66,12 +68,12 @@ void repo::gui::RepoTransformationDialog::setIdentity()
               0.0, 0.0, 0.0, 1.0);
 }
 
-void repo::gui::RepoTransformationDialog::setName(const std::string &name)
+void TransformationDialog::setName(const std::string &name)
 {
     ui->nameLineEdit->setText(QString::fromStdString(name));
 }
 
-void repo::gui::RepoTransformationDialog::setMatrix(const std::vector<float> &m)
+void TransformationDialog::setMatrix(const std::vector<float> &m)
 {
 	if (m.size() >=16)
 	{
@@ -83,7 +85,7 @@ void repo::gui::RepoTransformationDialog::setMatrix(const std::vector<float> &m)
     
 }
 
-void repo::gui::RepoTransformationDialog::setMatrix(
+void TransformationDialog::setMatrix(
         double a1, double a2, double a3, double a4,
         double b1, double b2, double b3, double b4,
         double c1, double c2, double c3, double c4,
@@ -110,12 +112,12 @@ void repo::gui::RepoTransformationDialog::setMatrix(
     ui->d4DoubleSpinBox->setValue(d4);
 }
 
-repo::core::model::TransformationNode repo::gui::RepoTransformationDialog::getTransformation()
+repo::core::model::TransformationNode TransformationDialog::getTransformation()
 {
 	return repo::core::model::RepoBSONFactory::makeTransformationNode(getMatrix2D(), getName());
 }
 
-std::vector<float> repo::gui::RepoTransformationDialog::getMatrix() const
+std::vector<float> TransformationDialog::getMatrix() const
 {
 	std::vector<float> mat;
 	mat.push_back(ui->a1DoubleSpinBox->value());
@@ -138,7 +140,7 @@ std::vector<float> repo::gui::RepoTransformationDialog::getMatrix() const
 	return mat;
 }
 
-std::vector<std::vector<float>> repo::gui::RepoTransformationDialog::getMatrix2D() const
+std::vector<std::vector<float>> TransformationDialog::getMatrix2D() const
 {
 	std::vector<std::vector<float>> mat;
 
@@ -173,30 +175,30 @@ std::vector<std::vector<float>> repo::gui::RepoTransformationDialog::getMatrix2D
 	return mat;
 }
 
-std::string repo::gui::RepoTransformationDialog::getName() const
+std::string TransformationDialog::getName() const
 {
     return ui->nameLineEdit->text().toStdString();
 }
 
-//void repo::gui::RepoTransformationDialog::rotateX(double radians)
+//void TransformationDialog::rotateX(double radians)
 //{
 //	/*aiMatrix4x4 tmp;
 //    setMatrix(getMatrix() * aiMatrix4x4::RotationX(radians, tmp));*/
 //}
 //
-//void repo::gui::RepoTransformationDialog::rotateY(double radians)
+//void TransformationDialog::rotateY(double radians)
 //{
 //	/*aiMatrix4x4 tmp;
 //    setMatrix(getMatrix() * aiMatrix4x4::RotationY(radians, tmp));*/
 //}
 //
-//void repo::gui::RepoTransformationDialog::rotateZ(double radians)
+//void TransformationDialog::rotateZ(double radians)
 //{
 //	/*aiMatrix4x4 tmp;
 //    setMatrix(getMatrix() * aiMatrix4x4::RotationZ(radians, tmp));*/
 //}
 
-void repo::gui::RepoTransformationDialog::rotateX90()
+void TransformationDialog::rotateX90()
 {
 	std::vector<float> mat = getMatrix();
 	//essentially, swap col 2 and 3, negate the 2nd row.
@@ -211,7 +213,7 @@ void repo::gui::RepoTransformationDialog::rotateX90()
 	setMatrix(mat);
 }	
 
-void repo::gui::RepoTransformationDialog::rotateY90()
+void TransformationDialog::rotateY90()
 {
 	std::vector<float> mat = getMatrix();
 	//essentially, swap col 1 and 3.
@@ -226,7 +228,7 @@ void repo::gui::RepoTransformationDialog::rotateY90()
 	setMatrix(mat);
 }
 
-void repo::gui::RepoTransformationDialog::rotateZ90()
+void TransformationDialog::rotateZ90()
 {
 	std::vector<float> mat = getMatrix();
 	//essentially, swap col 1 and 2.
@@ -242,7 +244,7 @@ void repo::gui::RepoTransformationDialog::rotateZ90()
 }
 
 
-void repo::gui::RepoTransformationDialog::inverse()
+void TransformationDialog::inverse()
 {
 
 	//Use QMatrix instead of implementing something complicated myself..
@@ -255,14 +257,14 @@ void repo::gui::RepoTransformationDialog::inverse()
 	setMatrix(m);
 }
 
-void repo::gui::RepoTransformationDialog::transpose()
+void TransformationDialog::transpose()
 {
 	std::vector<float> m = getMatrix();
 	transposeMat(m);
 	setMatrix(m);
 }
 
-void repo::gui::RepoTransformationDialog::transposeMat(std::vector<float> &mat)
+void TransformationDialog::transposeMat(std::vector<float> &mat)
 {
 
 	for (uint32_t row = 0; row < 3; row++)

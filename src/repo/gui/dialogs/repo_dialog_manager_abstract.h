@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_ABSTRACT_MANAGER_DIALOG_H
-#define REPO_ABSTRACT_MANAGER_DIALOG_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -36,13 +34,14 @@
 #include "../primitives/repoidbcache.h"
 
 namespace Ui {
-class repo_dialog_manager_abstract;
+class AbstractManagerDialog;
 }
 
 namespace repo {
 namespace gui {
+namespace dialog{
 
-class repo_dialog_manager_abstract : public QDialog
+class AbstractManagerDialog : public QDialog
 {
     Q_OBJECT
 
@@ -51,12 +50,12 @@ class repo_dialog_manager_abstract : public QDialog
 public:
 
     //! Explicit constructor.
-    explicit repo_dialog_manager_abstract(
-            const RepoIDBCache *dbCache = 0,
+    explicit AbstractManagerDialog(
+            const repo::gui::RepoIDBCache *dbCache = 0,
             QWidget *parent = 0);
 
     //! Destructor to clean up model and proxy.
-    ~repo_dialog_manager_abstract();
+    ~AbstractManagerDialog();
 
 signals :
 
@@ -121,13 +120,13 @@ protected :
     QThreadPool threadPool;
 
     //! Ui var.
-    Ui::repo_dialog_manager_abstract *ui;
+    Ui::AbstractManagerDialog *ui;
 
-    const RepoIDBCache* dbCache;
+    const repo::gui::RepoIDBCache* dbCache;
 
 }; // end class
 
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_ABSTRACT_MANAGER_DIALOG_H

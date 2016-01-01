@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_TRANSFORMATION_DIALOG_H
-#define REPO_TRANSFORMATION_DIALOG_H
+#pragma once
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -31,71 +29,73 @@
 
 
 namespace Ui {
-    class RepoTransformationDialog;
+    class TransformationDialog;
 }
 
 namespace repo {
 namespace gui {
+namespace dialog{
 
-class RepoTransformationDialog : public QDialog
-{
-    Q_OBJECT
+	class TransformationDialog : public QDialog
+	{
+		Q_OBJECT
 
-public:
+	public:
 
-    explicit RepoTransformationDialog(
-		const repo::core::model::TransformationNode &transformation = repo::core::model::TransformationNode(),
-            QWidget *parent = 0);
-    ~RepoTransformationDialog();
+		explicit TransformationDialog(
+			const repo::core::model::TransformationNode &transformation = repo::core::model::TransformationNode(),
+			QWidget *parent = 0);
+		~TransformationDialog();
 
-public slots :
+		public slots :
 
-    void setIdentity();
+		void setIdentity();
 
-    void setName(const std::string &name);
+		void setName(const std::string &name);
 
-    void setMatrix(const std::vector<float> &matrix);
+		void setMatrix(const std::vector<float> &matrix);
 
-    void setMatrix(double a1, double a2, double a3, double a4,
-                   double b1, double b2, double b3, double b4,
-                   double c1, double c2, double c3, double c4,
-                   double d1, double d2, double d3, double d4);
+		void setMatrix(double a1, double a2, double a3, double a4,
+			double b1, double b2, double b3, double b4,
+			double c1, double c2, double c3, double c4,
+			double d1, double d2, double d3, double d4);
 
-	repo::core::model::TransformationNode getTransformation();
+		repo::core::model::TransformationNode getTransformation();
 
-    std::vector<float> getMatrix() const;
+		std::vector<float> getMatrix() const;
 
-	std::vector<std::vector<float>> getMatrix2D() const;
+		std::vector<std::vector<float>> getMatrix2D() const;
 
-    std::string getName() const;
+		std::string getName() const;
 
-	//UI only allows rotation of 90 degrees, no point doing extra maths we don't need.
-	void rotateX90();/* { rotateX(M_PI/2); }*/
+		//UI only allows rotation of 90 degrees, no point doing extra maths we don't need.
+		void rotateX90();/* { rotateX(M_PI/2); }*/
 
-    //void rotateX(double radians);
+		//void rotateX(double radians);
 
-	void rotateY90(); /*{ rotateY(M_PI/2); }*/
+		void rotateY90(); /*{ rotateY(M_PI/2); }*/
 
-    //void rotateY(double radians);
+		//void rotateY(double radians);
 
-	void rotateZ90(); /*{ rotateZ(M_PI/2); }*/
+		void rotateZ90(); /*{ rotateZ(M_PI/2); }*/
 
-    //void rotateZ(double radians);
+		//void rotateZ(double radians);
 
-    void inverse();
+		void inverse();
 
-    void transpose();
-	void transposeMat(std::vector<float> &mat);
+		void transpose();
+		void transposeMat(std::vector<float> &mat);
 
-private:
+	private:
 
-    Ui::RepoTransformationDialog *ui;
+		Ui::TransformationDialog *ui;
 
-	repo::core::model::TransformationNode transformation;
+		repo::core::model::TransformationNode transformation;
 
-};
+	};
 
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_TRANSFORMATION_DIALOG_H
+

@@ -23,13 +23,13 @@
 #include "../primitives/repocomboboxdelegate.h"
 #include "../../logger/repo_logger.h"
 
-using namespace repo::gui;
+using namespace repo::gui::dialog;
 
-repo_dialog_federation::repo_dialog_federation(
-        RepoIDBCache *dbCache,
+FederationDialog::FederationDialog(
+        repo::gui::RepoIDBCache *dbCache,
         QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::repo_dialog_federation)
+	, ui(new Ui::FederationDialog)
     , dbCache(dbCache)
 
 {
@@ -102,12 +102,12 @@ repo_dialog_federation::repo_dialog_federation(
         this, SLOT(showFederationMenu(QPoint)));
 }
 
-repo_dialog_federation::~repo_dialog_federation()
+FederationDialog::~FederationDialog()
 {
     delete ui;
 }
 
-void repo_dialog_federation::addAvailableProject(const QString &project)
+void FederationDialog::addAvailableProject(const QString &project)
 {
     QStandardItem *item = new QStandardItem(project);
     item->setEditable(false);
@@ -116,7 +116,7 @@ void repo_dialog_federation::addAvailableProject(const QString &project)
 }
 
 
-void repo_dialog_federation::addProjectsToFederation()
+void FederationDialog::addProjectsToFederation()
 {
     QStandardItem *item = getCurrentFederatedItem();
     if (item)
@@ -151,13 +151,13 @@ void repo_dialog_federation::addProjectsToFederation()
     }
 }
 
-int repo_dialog_federation::exec()
+int FederationDialog::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void repo_dialog_federation::refresh()
+void FederationDialog::refresh()
 {
     ui->availableWidget->clear();
 
@@ -169,7 +169,7 @@ void repo_dialog_federation::refresh()
 }
 
 
-void repo_dialog_federation::removeProjectsFromFederation()
+void FederationDialog::removeProjectsFromFederation()
 {
     QStandardItemModel *federatedModel = ui->federatedWidget->getModel();
     QModelIndexList selectedIndexes = getFederatedSelection();
@@ -183,7 +183,7 @@ void repo_dialog_federation::removeProjectsFromFederation()
     }
 }
 
-void repo_dialog_federation::showFederationMenu(const QPoint &point)
+void FederationDialog::showFederationMenu(const QPoint &point)
 {
     bool on = ui->federatedWidget->getModel()->invisibleRootItem()->rowCount() > 0;
     QTreeView *treeView = ui->federatedWidget->getTreeView();
@@ -206,9 +206,9 @@ void repo_dialog_federation::showFederationMenu(const QPoint &point)
     menu.exec(treeView->mapToGlobal(point));
 }
 
-void repo_dialog_federation::showTransformationDialog()
+void FederationDialog::showTransformationDialog()
 {
-    RepoTransformationDialog d(getCurrentFederatedTransformation(), this);
+    dialog::TransformationDialog d(getCurrentFederatedTransformation(), this);
     if (d.exec())
     {
 		repo::core::model::TransformationNode transformation = d.getTransformation();
@@ -227,7 +227,7 @@ void repo_dialog_federation::showTransformationDialog()
 }
 
 
-QStandardItem *repo_dialog_federation::getCurrentFederatedItem() const
+QStandardItem *FederationDialog::getCurrentFederatedItem() const
 {
     QModelIndex proxyCurrent = ui->federatedWidget->getSelectionModel()->currentIndex();
     QStandardItem *item = 0;
@@ -242,7 +242,7 @@ QStandardItem *repo_dialog_federation::getCurrentFederatedItem() const
     return item;
 }
 
-repo::core::model::TransformationNode repo_dialog_federation::getCurrentFederatedTransformation() const
+repo::core::model::TransformationNode FederationDialog::getCurrentFederatedTransformation() const
 {
     QStandardItem *item = getCurrentFederatedItem();
 	repo::core::model::TransformationNode transformation;
@@ -257,24 +257,24 @@ repo::core::model::TransformationNode repo_dialog_federation::getCurrentFederate
 
 //------------------------------------------------------------------------------
 
-QModelIndexList repo_dialog_federation::getAvailableSelection() const
+QModelIndexList FederationDialog::getAvailableSelection() const
 {
     return ui->availableWidget->getCurrentSelection();
 }
 
-QModelIndexList repo_dialog_federation::getFederatedSelection() const
+QModelIndexList FederationDialog::getFederatedSelection() const
 {
     return ui->federatedWidget->getCurrentSelection();
 }
 
-std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> repo_dialog_federation::getFederation()
+std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> FederationDialog::getFederation()
 {
 
 	return getFederationRecursively(ui->federatedWidget->getModel()->invisibleRootItem());
 }
 
 std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
-	repo_dialog_federation::getFederationRecursively(
+	FederationDialog::getFederationRecursively(
         QStandardItem *parentItem)
 {
 	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> fedMap;

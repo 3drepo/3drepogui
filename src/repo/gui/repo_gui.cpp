@@ -296,13 +296,13 @@ repo::gui::RepoGUI::~RepoGUI()
 
 void repo::gui::RepoGUI::about()
 {
-    repo_dialog_about aboutDialog(this);
+    dialog::AboutDialog aboutDialog(this);
     aboutDialog.exec();
 }
 
 void repo::gui::RepoGUI::addMapTiles()
 {
-    RepoMapTilesDialog mapTilesDialog(this);
+    dialog::MapDialog mapTilesDialog(this);
     if(mapTilesDialog.exec()){
 
         repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
@@ -357,7 +357,7 @@ void repo::gui::RepoGUI::commit(
 {	
     if (scene)
     {
-        repo::gui::RepoDialogCommit commitDialog(
+        repo::gui::dialog::CommitDialog commitDialog(
                     this,
                     Qt::Window,
                     ui->widgetRepository,
@@ -495,7 +495,7 @@ void repo::gui::RepoGUI::drop()
 
 void repo::gui::RepoGUI::federate()
 {
-    repo_dialog_federation fed(ui->widgetRepository, this);
+    dialog::FederationDialog fed(ui->widgetRepository, this);
     if (fed.exec())
     {
         repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
@@ -544,7 +544,7 @@ void repo::gui::RepoGUI::history()
     QString          database = ui->widgetRepository->getSelectedDatabase();
     QString          project  = ui->widgetRepository->getSelectedProject();
     repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
-    RepoDialogHistory historyDialog(controller, token, database, project, this);
+    dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
         std::cout << "Revision History dialog cancelled by user." << std::endl;
@@ -698,7 +698,7 @@ void repo::gui::RepoGUI::optimizeGraph()
 
 void repo::gui::RepoGUI::openSettings() const
 {
-    repo_dialog_settings settingsDialog((QWidget*) this);
+    dialog::SettingsDialog settingsDialog((QWidget*) this);
     settingsDialog.exec();
 }
 
@@ -717,7 +717,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
     QDesktopServices::openUrl(
                 QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
-                     "&body=" + repo_dialog_about::getVersionInfo()));
+                     "&body=" + dialog::AboutDialog::getVersionInfo()));
 }
 
 void repo::gui::RepoGUI::refresh()

@@ -40,7 +40,7 @@
 #include <repo/core/model/collection/repo_scene.h>
 
 namespace Ui {
-    class repo_dialog_federation;
+    class FederationDialog;
 }
 
 typedef QPair<repo::core::model::TransformationNode, repo::core::model::ReferenceNode> RepoTransRefPair;
@@ -49,64 +49,65 @@ Q_DECLARE_METATYPE(RepoTransRefPair)
 
 namespace repo {
 namespace gui {
+namespace dialog{
 
-class repo_dialog_federation : public QDialog
-{
-    Q_OBJECT
+	class FederationDialog : public QDialog
+	{
+		Q_OBJECT
 
-    enum Columns { PROJECT = 0, BRANCH = 1, REVISION = 2 };
+		enum Columns { PROJECT = 0, BRANCH = 1, REVISION = 2 };
 
-public:
+	public:
 
-    explicit repo_dialog_federation(
-            RepoIDBCache *dbCache,
-            QWidget *parent = 0);
+		explicit FederationDialog(
+			RepoIDBCache *dbCache,
+			QWidget *parent = 0);
 
-    ~repo_dialog_federation();
+		~FederationDialog();
 
-public slots :
+		public slots :
 
-    void addAvailableProject(const QString &);
+		void addAvailableProject(const QString &);
 
-    void addProjectsToFederation();
+		void addProjectsToFederation();
 
-    int exec();
+		int exec();
 
-    void refresh();
+		void refresh();
 
-    void refreshCache() { dbCache->refresh(); }
+		void refreshCache() { dbCache->refresh(); }
 
-    void removeProjectsFromFederation();
+		void removeProjectsFromFederation();
 
-    void showFederationMenu(const QPoint &);
+		void showFederationMenu(const QPoint &);
 
-    void showTransformationDialog();
+		void showTransformationDialog();
 
-    //--------------------------------------------------------------------------
+		//--------------------------------------------------------------------------
 
-    QStandardItem *getCurrentFederatedItem() const;
+		QStandardItem *getCurrentFederatedItem() const;
 
-	repo::core::model::TransformationNode getCurrentFederatedTransformation() const;
+		repo::core::model::TransformationNode getCurrentFederatedTransformation() const;
 
-    QModelIndexList getAvailableSelection() const;
+		QModelIndexList getAvailableSelection() const;
 
-    QModelIndexList getFederatedSelection() const;
+		QModelIndexList getFederatedSelection() const;
 
-	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  getFederation();
+		std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>  getFederation();
 
-protected :
+	protected:
 
-	std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
-        getFederationRecursively(
-		QStandardItem *parentItem);
+		std::map<repo::core::model::TransformationNode, repo::core::model::ReferenceNode>
+			getFederationRecursively(
+			QStandardItem *parentItem);
 
-private:
+	private:
 
-    Ui::repo_dialog_federation *ui;
+        Ui::FederationDialog *ui;
 
-    RepoIDBCache *dbCache;
-};
-
+		RepoIDBCache *dbCache;
+	};
+}
 } // end namespace gui
 } // end namespace repo
 

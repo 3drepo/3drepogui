@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoGenericDialog</class>
- <widget class="QDialog" name="RepoGenericDialog">
+ <class>GenericDialog</class>
+ <widget class="QDialog" name="GenericDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -73,7 +73,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoGenericDialog</receiver>
+   <receiver>GenericDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -89,7 +89,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoGenericDialog</receiver>
+   <receiver>GenericDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

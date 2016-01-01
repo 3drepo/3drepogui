@@ -242,7 +242,7 @@ void repo::gui::RepoSelectionTreeDockWidget::editSelectedItems() const
 void repo::gui::RepoSelectionTreeDockWidget::editSelectedTransformations() const
 {
    /* core::RepoNodeTransformation *t = getTransformation(ui->filterableTreeWidget->getCurrentItem(Columns::NAME));
-    RepoTransformationDialog transformationDialog(t ? *t : core::RepoNodeTransformation(),
+    TransformationDialog transformationDialog(t ? *t : core::RepoNodeTransformation(),
                                                   this->parentWidget());
     if (transformationDialog.exec())
     {

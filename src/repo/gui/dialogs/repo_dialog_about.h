@@ -16,35 +16,35 @@
  */
 
 
-#ifndef REPO_DIALOG_ABOUT_H
-#define REPO_DIALOG_ABOUT_H
+#pragma once
 
 #include <QDialog>
 
 namespace Ui {
-class repo_dialog_about;
+class AboutDialog;
 }
 
 namespace repo {
 namespace gui {
+namespace dialog {
 
-//! 3D Repo GUI about dialog
-class repo_dialog_about : public QDialog
-{
-    Q_OBJECT
+	//! 3D Repo GUI about dialog
+	class AboutDialog : public QDialog
+	{
+		Q_OBJECT
 
-public:
-    explicit repo_dialog_about(QWidget *parent = 0);
-    ~repo_dialog_about();
+	public:
+		explicit AboutDialog(QWidget *parent = 0);
+		~AboutDialog();
 
-    static QString getVersionInfo(const QString& separator = "\n");
+		static QString getVersionInfo(const QString& separator = "\n");
 
-private:
-    Ui::repo_dialog_about *ui;
+	private:
+		Ui::AboutDialog *ui;
 
-}; // end class
+	}; // end class
 
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_DIALOG_ABOUT_H

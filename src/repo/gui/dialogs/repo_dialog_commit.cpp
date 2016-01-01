@@ -27,14 +27,16 @@
 #include "../../logger/repo_logger.h"
 //------------------------------------------------------------------------------
 
-repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
+using namespace repo::gui::dialog;
+
+CommitDialog::CommitDialog(QWidget *parent,
                                               Qt::WindowFlags flags,
-                                              RepoIDBCache *dbCache,
+                                              repo::gui::RepoIDBCache *dbCache,
                                               repo::core::model::RepoScene * scene)
     : QDialog(parent, flags)
     , dbCache(dbCache)
     , scene(scene)
-    , ui(new Ui::RepoDialogCommit)
+    , ui(new Ui::CommitDialog)
     , skip(0)
     , modifiedNodesCount(scene ? scene->getTotalNodesChanged() : 0)
 {
@@ -68,11 +70,11 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
                 proxyModel, &QSortFilterProxyModel::setFilterFixedString);
     QObject::connect(
                 proxyModel, &QSortFilterProxyModel::rowsInserted,
-                this, &RepoDialogCommit::updateCountLabel);
+                this, &CommitDialog::updateCountLabel);
 
     QObject::connect(
                 proxyModel, &QSortFilterProxyModel::rowsRemoved,
-                this, &RepoDialogCommit::updateCountLabel);
+                this, &CommitDialog::updateCountLabel);
 
     QObject::connect(
                 ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
@@ -95,12 +97,12 @@ repo::gui::RepoDialogCommit::RepoDialogCommit(QWidget *parent,
     //--------------------------------------------------------------------------
 
     QObject::connect(ui->treeView->verticalScrollBar(), &QScrollBar::sliderMoved,
-                     this, &RepoDialogCommit::infiniteScroll);
+                     this, &CommitDialog::infiniteScroll);
 
 }
 
 //------------------------------------------------------------------------------
-repo::gui::RepoDialogCommit::~RepoDialogCommit() 
+CommitDialog::~CommitDialog() 
 {
     cancelAllThreads();
 
@@ -108,25 +110,25 @@ repo::gui::RepoDialogCommit::~RepoDialogCommit()
     delete model;
 }
 
-bool repo::gui::RepoDialogCommit::cancelAllThreads()
+bool CommitDialog::cancelAllThreads()
 {
     emit cancel();
     return threadPool.waitForDone(); // msecs
 }
 
-void repo::gui::RepoDialogCommit::infiniteScroll(int sliderPosition)
+void CommitDialog::infiniteScroll(int sliderPosition)
 {
     if (sliderPosition == ui->treeView->verticalScrollBar()->maximum())
         loadModifiedObjects();
 }
 
 //------------------------------------------------------------------------------
-QString repo::gui::RepoDialogCommit::getMessage()
+QString CommitDialog::getMessage()
 {
     return ui->messagePlainTextEdit->toPlainText();
 }
 
-void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node, const QString &status)
+void CommitDialog::addNode(repo::core::model::RepoNode *node, const QString &status)
 {
     if (node)
     {
@@ -185,7 +187,7 @@ void repo::gui::RepoDialogCommit::addNode(repo::core::model::RepoNode *node, con
 	}
 }
 
-void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
+void CommitDialog::editItem(const QModelIndex &proxyIndex)
 {
     /*
    FIXME: Alteration of the transformation would only update the one in unoptimized, not the stash.
@@ -222,7 +224,7 @@ void repo::gui::RepoDialogCommit::editItem(const QModelIndex &proxyIndex)
 }
 
 //------------------------------------------------------------------------------
-int repo::gui::RepoDialogCommit::exec()
+int CommitDialog::exec()
 {    
     //--------------------------------------------------------------------------
     // Blocking operation
@@ -249,7 +251,7 @@ int repo::gui::RepoDialogCommit::exec()
     return result;
 }
 
-void repo::gui::RepoDialogCommit::updateHosts()
+void CommitDialog::updateHosts()
 {
     if (dbCache)
     {
@@ -259,7 +261,7 @@ void repo::gui::RepoDialogCommit::updateHosts()
     }
 }
 
-void repo::gui::RepoDialogCommit::updateDatabases()
+void CommitDialog::updateDatabases()
 {
     if (dbCache)
     {
@@ -271,7 +273,7 @@ void repo::gui::RepoDialogCommit::updateDatabases()
     }
 }
 
-void repo::gui::RepoDialogCommit::updateProjects()
+void CommitDialog::updateProjects()
 {
     if (dbCache)
     {
@@ -284,13 +286,13 @@ void repo::gui::RepoDialogCommit::updateProjects()
     }
 }
 
-void repo::gui::RepoDialogCommit::updateBranches()
+void CommitDialog::updateBranches()
 {
     // TODO: load branches depending on the selected project
 }
 
 //------------------------------------------------------------------------------
-void repo::gui::RepoDialogCommit::loadModifiedObjects()
+void CommitDialog::loadModifiedObjects()
 {	
     if (mutex.tryLock() && scene && (skip < modifiedNodesCount || 0 == skip) && cancelAllThreads())
     {
@@ -301,13 +303,13 @@ void repo::gui::RepoDialogCommit::loadModifiedObjects()
 
         // Direct connection ensures cancel signal is processed ASAP
         QObject::connect(
-                    this, &RepoDialogCommit::cancel,
+                    this, &CommitDialog::cancel,
                     worker, &repo::worker::RepoWorkerModifiedNodes::cancel,
                     Qt::DirectConnection);
 
         QObject::connect(
                     worker, &repo::worker::RepoWorkerModifiedNodes::modifiedNode,
-                    this, &RepoDialogCommit::addNode);
+                    this, &CommitDialog::addNode);
 
         QObject::connect(
                     worker, &repo::worker::RepoWorkerModifiedNodes::finished,
@@ -323,7 +325,7 @@ void repo::gui::RepoDialogCommit::loadModifiedObjects()
 
         QObject::connect(
                     worker, &repo::worker::RepoWorkerModifiedNodes::finished,
-                    this, &RepoDialogCommit::unlockMutex);
+                    this, &CommitDialog::unlockMutex);
 
         ui->progressBar->show();
         //----------------------------------------------------------------------
@@ -331,22 +333,22 @@ void repo::gui::RepoDialogCommit::loadModifiedObjects()
     }
 }
 
-QString repo::gui::RepoDialogCommit::getCurrentHost() const
+QString CommitDialog::getCurrentHost() const
 {
     return ui->serverComboBox->currentText();
 }
 
-QString repo::gui::RepoDialogCommit::getCurrentDatabase() const
+QString CommitDialog::getCurrentDatabase() const
 {
     return ui->databaseComboBox->currentText();
 }
 
-QString repo::gui::RepoDialogCommit::getCurrentProject() const
+QString CommitDialog::getCurrentProject() const
 {
     return ui->projectComboBox->currentText();
 }
 
-void repo::gui::RepoDialogCommit::updateCountLabel() const
+void CommitDialog::updateCountLabel() const
 {
     static QLocale locale;
     QString msg = skip != modifiedNodesCount ? tr(" - scroll down to reveal more") : "";
