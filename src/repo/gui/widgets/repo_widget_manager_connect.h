@@ -25,7 +25,7 @@
 // GUI
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
-#include "repo_dialog_connect.h"
+#include "../dialogs/repo_dialog_connect.h"
 #include "../primitives/repo_idbcache.h"
 #include "../primitives/repo_standard_item.h"
 #include "../../settings/repo_settings_credentials.h"

@@ -24,7 +24,7 @@
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
 #include "../../workers/repo_worker_roles.h"
-#include "repo_dialog_role.h"
+#include "../dialogs/repo_dialog_role.h"
 
 //------------------------------------------------------------------------------
 // CORE

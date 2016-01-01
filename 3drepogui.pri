@@ -8,13 +8,19 @@ HEADERS +=  \
 	src/repo/gui/repo_gui.h \
 	src/repo/gui/dialogs/repo_dialog_about.h \
 	src/repo/gui/dialogs/repo_dialog_commit.h \
+	src/repo/gui/dialogs/repo_dialog_connect.h \
 	src/repo/gui/dialogs/repo_dialog_federation.h \
 	src/repo/gui/dialogs/repo_dialog_generic.h \
 	src/repo/gui/dialogs/repo_dialog_history.h \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.h \
+	src/repo/gui/dialogs/repo_dialog_manager_access.h \
+	src/repo/gui/dialogs/repo_dialog_manager_connect.h \
 	src/repo/gui/dialogs/repo_dialog_map.h \
+	src/repo/gui/dialogs/repo_dialog_project.h \
+	src/repo/gui/dialogs/repo_dialog_role.h \
 	src/repo/gui/dialogs/repo_dialog_settings.h \
 	src/repo/gui/dialogs/repo_dialog_transformation.h \
+	src/repo/gui/dialogs/repo_dialog_user.h \
 	src/repo/gui/primitives/repo_color.h \
 	src/repo/gui/primitives/repo_combo_box_delegate.h \
 	src/repo/gui/primitives/repo_combo_box_editor.h \
@@ -30,12 +36,6 @@ HEADERS +=  \
 	src/repo/gui/renderers/repo_webview.h \
 	src/repo/gui/widgets/reposelectiontreedockwidget.h \
 	src/repo/gui/widgets/repowidgetassimpflags.h \
-	src/repo/gui/widgets/repo_dialog_connect.h \
-	src/repo/gui/widgets/repo_dialog_manager_access.h \
-	src/repo/gui/widgets/repo_dialog_manager_connect.h \
-	src/repo/gui/widgets/repo_dialog_project.h \
-	src/repo/gui/widgets/repo_dialog_role.h \
-	src/repo/gui/widgets/repo_dialog_user.h \
 	src/repo/gui/widgets/repo_lineedit.h \
 	src/repo/gui/widgets/repo_mdiarea.h \
 	src/repo/gui/widgets/repo_mdisubwindow.h \
@@ -81,13 +81,19 @@ SOURCES +=  \
 	src/repo/gui/repo_gui.cpp \
 	src/repo/gui/dialogs/repo_dialog_about.cpp \
 	src/repo/gui/dialogs/repo_dialog_commit.cpp \
+	src/repo/gui/dialogs/repo_dialog_connect.cpp \
 	src/repo/gui/dialogs/repo_dialog_federation.cpp \
 	src/repo/gui/dialogs/repo_dialog_generic.cpp \
 	src/repo/gui/dialogs/repo_dialog_history.cpp \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.cpp \
+	src/repo/gui/dialogs/repo_dialog_manager_access.cpp \
+	src/repo/gui/dialogs/repo_dialog_manager_connect.cpp \
 	src/repo/gui/dialogs/repo_dialog_map.cpp \
+	src/repo/gui/dialogs/repo_dialog_project.cpp \
+	src/repo/gui/dialogs/repo_dialog_role.cpp \
 	src/repo/gui/dialogs/repo_dialog_settings.cpp \
 	src/repo/gui/dialogs/repo_dialog_transformation.cpp \
+	src/repo/gui/dialogs/repo_dialog_user.cpp \
 	src/repo/gui/primitives/repo_color.cpp \
 	src/repo/gui/primitives/repo_combo_box_delegate.cpp \
 	src/repo/gui/primitives/repo_combo_box_editor.cpp \
@@ -103,12 +109,6 @@ SOURCES +=  \
 	src/repo/gui/renderers/repo_webview.cpp \
 	src/repo/gui/widgets/reposelectiontreedockwidget.cpp \
 	src/repo/gui/widgets/repowidgetassimpflags.cpp \
-	src/repo/gui/widgets/repo_dialog_connect.cpp \
-	src/repo/gui/widgets/repo_dialog_manager_access.cpp \
-	src/repo/gui/widgets/repo_dialog_manager_connect.cpp \
-	src/repo/gui/widgets/repo_dialog_project.cpp \
-	src/repo/gui/widgets/repo_dialog_role.cpp \
-	src/repo/gui/widgets/repo_dialog_user.cpp \
 	src/repo/gui/widgets/repo_lineedit.cpp \
 	src/repo/gui/widgets/repo_mdiarea.cpp \
 	src/repo/gui/widgets/repo_mdisubwindow.cpp \

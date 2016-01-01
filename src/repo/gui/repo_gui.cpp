@@ -29,7 +29,7 @@
 #include "dialogs/repo_dialog_settings.h"
 #include "dialogs/repo_dialog_about.h"
 #include "../logger/repo_logger.h"
-#include "widgets/repo_dialog_connect.h"
+#include "dialogs/repo_dialog_connect.h"
 #include "widgets/repo_widgetrepository.h"
 #include "widgets/repo_textbrowser.h"
 #include "widgets/repowidgetassimpflags.h"
@@ -46,8 +46,8 @@
 
 
 //------------------------------------------------------------------------------
-#include "widgets/repo_dialog_manager_access.h"
-#include "widgets/repo_dialog_manager_connect.h"
+#include "dialogs/repo_dialog_manager_access.h"
+#include "dialogs/repo_dialog_manager_connect.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
@@ -396,7 +396,7 @@ void repo::gui::RepoGUI::connectDB()
     // TODO: remove when expanding to multiple connections
     ui->widgetRepository->disconnectDB();
 
-    repo::widgets::RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
+    dialog::ConnectManagerDialog connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
@@ -635,7 +635,7 @@ void repo::gui::RepoGUI::open3DDiff()
 
 void repo::gui::RepoGUI::openAccessManager()
 {
-    repo::widgets::RepoDialogManagerAccess accessManager(
+    dialog::AccessManagerDialog accessManager(
                 ui->widgetRepository,
                 controller,
                 (QWidget*) this);
@@ -831,7 +831,7 @@ void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 void repo::gui::RepoGUI::startup()
 {
     // TODO: add this functionality back in
-    //    RepoDialogConnect connectionDialog(this);
+    //    ConnectDialog connectionDialog(this);
     //    if (connectionDialog.isShowAtStartup())
     connectDB();
 }

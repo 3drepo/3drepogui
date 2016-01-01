@@ -19,10 +19,10 @@
 #include "repo_dialog_role.h"
 #include "ui_repo_dialog_role.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::dialog;
 using namespace repo::gui;
 
-RepoDialogRole::RepoDialogRole(
+RoleDialog::RoleDialog(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings,
         const QString &currentDatabase,
@@ -33,7 +33,7 @@ RepoDialogRole::RepoDialogRole(
     , oldRole(role)
     , settings(settings)
     , databasesWithProjects(databasesWithProjects)
-    , ui(new Ui::RepoDialogRole)
+    , ui(new Ui::RoleDialog)
     , rwSeparatedEntries(repo::gui::primitive::RepoComboBoxEditor::getSeparatedEntries({
 	tr("Read").toStdString(),
 	tr("Write").toStdString(),
@@ -67,7 +67,7 @@ RepoDialogRole::RepoDialogRole(
                     accessRightToString(p.permission));
     }
     QObject::connect(ui->databaseComboBox, &QComboBox::currentTextChanged,
-                     this, &RepoDialogRole::setDelegate);
+                     this, &RoleDialog::setDelegate);
 
 
     //--------------------------------------------------------------------------
@@ -99,7 +99,7 @@ RepoDialogRole::RepoDialogRole(
     // Color
     ui->colorLineEdit->addAction(QIcon(), QLineEdit::TrailingPosition);
     QObject::connect(ui->colorLineEdit->actions()[0], &QAction::triggered,
-            this, &RepoDialogRole::showColorDialog);
+            this, &RoleDialog::showColorDialog);
     setColor(QString::fromStdString(settings.getColor()));
 
 
@@ -156,19 +156,19 @@ RepoDialogRole::RepoDialogRole(
     // Connect buttons
     QObject::connect(
                 ui->colorPickerPushButton, &QPushButton::pressed,
-                this, &RepoDialogRole::showColorDialog);
+                this, &RoleDialog::showColorDialog);
 
     QObject::connect(
                 ui->colorLineEdit, &QLineEdit::textEdited,
-                this, &RepoDialogRole::setColor);
+                this, &RoleDialog::setColor);
 }
 
-RepoDialogRole::~RepoDialogRole()
+RoleDialog::~RoleDialog()
 {
     delete ui;
 }
 
-QTreeWidgetItem *RepoDialogRole::addPermissionItem()
+QTreeWidgetItem *RoleDialog::addPermissionItem()
 {
     //    std::string database = ui->databaseComboBox->currentText().toStdString();
     //    std::map<std::string, std::list<std::string> >::iterator it =
@@ -189,32 +189,32 @@ QTreeWidgetItem *RepoDialogRole::addPermissionItem()
     return 0;
 }
 
-std::string RepoDialogRole::getColor() const
+std::string RoleDialog::getColor() const
 {
     return ui->colorLineEdit->text().toStdString();
 }
 
-std::string RepoDialogRole::getDescription() const
+std::string RoleDialog::getDescription() const
 {
     return ui->descriptionPlainTextEdit->toPlainText().toStdString();
 }
 
-std::string RepoDialogRole::getName() const
+std::string RoleDialog::getName() const
 {
     return ui->nameLineEdit->text().toStdString();
 }
 
-std::string RepoDialogRole::getDatabase() const
+std::string RoleDialog::getDatabase() const
 {
     return ui->databaseComboBox->currentText().toStdString();
 }
 
-std::vector<std::string> RepoDialogRole::getModules() const
+std::vector<std::string> RoleDialog::getModules() const
 {
     return ui->modulesUnfilterableTree->getItemsAsVectorOfStrings();
 }
 
-std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() const
+std::vector<repo::core::model::RepoPermission> RoleDialog::getPermissions() const
 {
     std::list<std::pair<std::string, std::string> > items =
             ui->permissionsUnfilterableTree->getItemsAsListOfPairsOfStrings();
@@ -232,13 +232,13 @@ std::vector<repo::core::model::RepoPermission> RepoDialogRole::getPermissions() 
     return permissions;
 }
 
-bool RepoDialogRole::isNewRole() const
+bool RoleDialog::isNewRole() const
 {
     return getName() != oldRole.getName() ||
             getDatabase() != oldRole.getDatabase();
 }
 
-void RepoDialogRole::showColorDialog()
+void RoleDialog::showColorDialog()
 {
     QColor oldColor(ui->colorLineEdit->text());
     QColor color = QColor(QColorDialog::getColor(oldColor, this));
@@ -248,7 +248,7 @@ void RepoDialogRole::showColorDialog()
     }
 }
 
-void RepoDialogRole::setColor(const QString &hex)
+void RoleDialog::setColor(const QString &hex)
 {
     if (!hex.isEmpty())
     {
@@ -260,13 +260,13 @@ void RepoDialogRole::setColor(const QString &hex)
     }
 }
 
-void RepoDialogRole::setDelegate(const QString &database)
+void RoleDialog::setDelegate(const QString &database)
 {
     ui->permissionsUnfilterableTree->setItemDelegateForColumn(database,0);
     ui->permissionsUnfilterableTree->setItemDelegateForColumn(database,1);
 }
 
-repo::core::model::RepoRole RepoDialogRole::getUpdatedRole() const
+repo::core::model::RepoRole RoleDialog::getUpdatedRole() const
 {
 //    repo::core::model::RepoRole oldRole = role.cloneAndUpdatePermissions(getPermissions());
 //    repo::core::model::RepoRole newRole = repo::core::model::RepoBSONFactory::makeRepoRole(
@@ -278,7 +278,7 @@ repo::core::model::RepoRole RepoDialogRole::getUpdatedRole() const
                 getName(), getDatabase(), getPermissions(), oldRole);
 }
 
-repo::core::model::RepoRoleSettings RepoDialogRole::getUpdatedRoleSettings() const
+repo::core::model::RepoRoleSettings RoleDialog::getUpdatedRoleSettings() const
 {
     repo::core::model::RepoRoleSettings settings =
             repo::core::model::RepoBSONFactory::makeRepoRoleSettings(
@@ -286,7 +286,7 @@ repo::core::model::RepoRoleSettings RepoDialogRole::getUpdatedRoleSettings() con
     return settings;
 }
 
-QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight &rw)
+QString RoleDialog::accessRightToString(const repo::core::model::AccessRight &rw)
 {
     QString str;
     switch(rw)
@@ -304,7 +304,7 @@ QString RepoDialogRole::accessRightToString(const repo::core::model::AccessRight
     return str;
 }
 
-repo::core::model::AccessRight RepoDialogRole::stringToAccessRight(
+repo::core::model::AccessRight RoleDialog::stringToAccessRight(
         const QString &str)
 {
     repo::core::model::AccessRight ar;

@@ -18,7 +18,7 @@
 #include "repo_widget_manager_users.h"
 
 using namespace repo::widgets;
-using namespace repo::worker;
+using namespace repo::gui;
 
 const QString RepoWidgetManagerUsers::COLUMNS_SETTINGS = "RepoWidgetManagerUsersHeaders";
 
@@ -140,17 +140,17 @@ void RepoWidgetManagerUsers::refresh(
         // Clear any previous entries
         clear();
 
-        UsersWorker* worker = new UsersWorker(
+        repo::worker::UsersWorker* worker = new repo::worker::UsersWorker(
                     token,
                     controller,
                     database,
                     user,
                     command);
         QObject::connect(
-                    worker, &UsersWorker::userFetched,
+                    worker, &repo::worker::UsersWorker::userFetched,
                     this, &RepoWidgetManagerUsers::addUser);
         QObject::connect(
-                    worker, &UsersWorker::customRolesFetched,
+                    worker, &repo::worker::UsersWorker::customRolesFetched,
                     this, &RepoWidgetManagerUsers::addCustomRoles);
         connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
     }
@@ -180,7 +180,7 @@ void RepoWidgetManagerUsers::showEditDialog(
         const repo::core::model::RepoUser &user,
         Action action)
 {
-    RepoDialogUser userDialog(
+    dialog::UserDialog userDialog(
                 token,
                 controller,
                 user,

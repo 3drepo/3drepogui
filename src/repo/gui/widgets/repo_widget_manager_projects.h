@@ -23,7 +23,7 @@
 // GUI
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
-#include "repo_dialog_project.h"
+#include "../dialogs/repo_dialog_project.h"
 #include "../../workers/repo_worker_project_settings.h"
 #include <repo/core/model/bson/repo_bson_project_settings.h>
 

@@ -18,6 +18,7 @@
 #include "repo_widget_manager_projects.h"
 #include "../primitives/repo_standard_item.h"
 
+using namespace repo::gui;
 using namespace repo::widgets;
 
 const QString RepoWidgetManagerProjects::COLUMNS_SETTINGS = "RepoWidgetManagerProjectsColumnsSettings";
@@ -142,7 +143,7 @@ void RepoWidgetManagerProjects::showEditDialog(
         const repo::core::model::RepoProjectSettings &projectSettings,
         const Action action)
 {
-    RepoDialogProject projectDialog(
+    dialog::ProjectDialog projectDialog(
                 projectSettings,
                 action == Action::COPY,
                 this);

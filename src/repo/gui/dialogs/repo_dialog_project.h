@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#ifndef REPO_PROJECT_DIALOG_H
-#define REPO_PROJECT_DIALOG_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -29,44 +27,44 @@
 #include <repo/core/model/bson/repo_bson_project_settings.h>
 
 namespace Ui {
-class RepoDialogProject;
+class ProjectDialog;
 }
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace dialog {
 
 
-class RepoDialogProject : public QDialog
-{
-    Q_OBJECT
+	class ProjectDialog : public QDialog
+	{
+		Q_OBJECT
 
-    enum Permissions { BITS, OWNER, GROUP, PUBLIC };
+		enum Permissions { BITS, OWNER, GROUP, PUBLIC };
 
-public:
+	public:
 
-    explicit RepoDialogProject(
-            const repo::core::model::RepoProjectSettings &projectSettings,
-            const bool isCopy = false,
-            QWidget *parent = 0);
+		explicit ProjectDialog(
+			const repo::core::model::RepoProjectSettings &projectSettings,
+			const bool isCopy = false,
+			QWidget *parent = 0);
 
-    ~RepoDialogProject();
+		~ProjectDialog();
 
-public slots :
+		public slots :
 
-    //! Returns bson.
-    repo::core::model::RepoProjectSettings getSettings() const;
+		//! Returns bson.
+		repo::core::model::RepoProjectSettings getSettings() const;
 
-private:
+	private:
 
-    void explainDefaultValue(QLabel *label, double value);
+		void explainDefaultValue(QLabel *label, double value);
 
-private :
+	private:
 
-    Ui::RepoDialogProject *ui;
+		Ui::ProjectDialog *ui;
 
-}; // end class
-
+	}; // end class
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_PROJECT_DIALOG_H

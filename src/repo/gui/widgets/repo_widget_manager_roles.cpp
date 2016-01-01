@@ -18,6 +18,7 @@
 #include "repo_widget_manager_roles.h"
 #include "../primitives/repo_standard_item.h"
 
+using namespace repo::gui;
 using namespace repo::widgets;
 
 const QString RepoWidgetManagerRoles::COLUMNS_SETTINGS = "RepoWidgetManagerRolesColumnsSettings";
@@ -208,7 +209,7 @@ void RepoWidgetManagerRoles::showEditDialog(
         const repo::core::model::RepoRoleSettings &settings,
         const RepoWidgetTreeEditable::Action action)
 {
-    repo::widgets::RepoDialogRole roleDialog(
+    dialog::RoleDialog roleDialog(
                 role,
                 settings,
                 QString::fromStdString(database),

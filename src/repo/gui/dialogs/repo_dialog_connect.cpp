@@ -17,17 +17,17 @@
 
 #include "repo_dialog_connect.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::dialog;
 
 //------------------------------------------------------------------------------
-RepoDialogConnect::RepoDialogConnect(
+ConnectDialog::ConnectDialog(
         repo::RepoController *controller,
         const repo::RepoCredentials &credentials,
         const bool isCopy,
         QWidget *parent,
         Qt::WindowFlags flags)
     : QDialog(parent, flags)
-    , ui(new Ui::RepoDialogConnect)
+    , ui(new Ui::ConnectDialog)
     , controller(controller)
 {
     ui->setupUi(this);
@@ -72,13 +72,13 @@ RepoDialogConnect::RepoDialogConnect(
 }
 
 //------------------------------------------------------------------------------
-RepoDialogConnect::~RepoDialogConnect()
+ConnectDialog::~ConnectDialog()
 {
     delete databasesCompleter;
     delete ui;
 }
 
-void RepoDialogConnect::validate()
+void ConnectDialog::validate()
 {
 //    ui->validateProgressBar->show();
 
@@ -90,7 +90,7 @@ void RepoDialogConnect::validate()
 //    ui->validateProgressBar->hide();
 }
 
-repo::RepoCredentials RepoDialogConnect::getConnectionSettings() const
+repo::RepoCredentials ConnectDialog::getConnectionSettings() const
 {
     repo::RepoCredentials credentials(
                 ui->aliasLineEdit->text().toStdString(),

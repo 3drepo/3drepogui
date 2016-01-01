@@ -21,14 +21,14 @@
 
 #include <repo/core/model/bson/repo_bson_factory.h>
 
-using namespace repo::widgets;
+using namespace repo::gui::dialog;
 
-RepoDialogProject::RepoDialogProject(
+ProjectDialog::ProjectDialog(
         const repo::core::model::RepoProjectSettings &projectSettings,
         bool isCopy,
         QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::RepoDialogProject)
+    ui(new Ui::ProjectDialog)
 {
     ui->setupUi(this);
 
@@ -63,13 +63,13 @@ RepoDialogProject::RepoDialogProject(
     explainDefaultValue(ui->zNearExplanationLabel, REPO_DEFAULT_PROJECT_ZNEAR);
 }
 
-RepoDialogProject::~RepoDialogProject()
+ProjectDialog::~ProjectDialog()
 {
     delete ui;
 }
 
 
-repo::core::model::RepoProjectSettings RepoDialogProject::getSettings() const
+repo::core::model::RepoProjectSettings ProjectDialog::getSettings() const
 {
     // TODO: add some kind of validation to input fields.
 
@@ -88,7 +88,7 @@ repo::core::model::RepoProjectSettings RepoDialogProject::getSettings() const
                 ui->zFarDoubleSpinBox->value());
 }
 
-void RepoDialogProject::explainDefaultValue(QLabel *label, double value)
+void ProjectDialog::explainDefaultValue(QLabel *label, double value)
 {
     QLocale locale;
     label->setText(

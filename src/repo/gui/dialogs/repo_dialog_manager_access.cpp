@@ -19,14 +19,14 @@
 #include "repo_dialog_manager_access.h"
 #include "ui_repo_dialog_manager_access.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::dialog;
 
-RepoDialogManagerAccess::RepoDialogManagerAccess(
+AccessManagerDialog::AccessManagerDialog(
         const repo::gui::primitive::RepoIDBCache *dbCache,
         repo::RepoController *controller,
         QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::RepoDialogManagerAccess)
+    , ui(new Ui::AccessManagerDialog)
     , dbCache(dbCache)
     , controller(controller)
 {
@@ -42,43 +42,43 @@ RepoDialogManagerAccess::RepoDialogManagerAccess(
     //--------------------------------------------------------------------------
 
     QObject::connect(ui->refreshPushButton, &QPushButton::pressed,
-                     this, &RepoDialogManagerAccess::refresh);
+                     this, &AccessManagerDialog::refresh);
 
     QObject::connect(ui->databaseComboBox, SIGNAL(currentIndexChanged(const QString &)),
                      this, SLOT(refresh()));
 
     QObject::connect(
                 ui->usersManagerWidget->getFilterableTree(),
-                &RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
                 this,
-                &RepoDialogManagerAccess::updateUsersTabCount);
+                &AccessManagerDialog::updateUsersTabCount);
 
     QObject::connect(
                 ui->rolesManagerWidget->getFilterableTree(),
-                &RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
                 this,
-                &RepoDialogManagerAccess::updateRolesTabCount);
+                &AccessManagerDialog::updateRolesTabCount);
 
     QObject::connect(
                 ui->projectsManagerWidget->getFilterableTree(),
-                &RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
                 this,
-                &RepoDialogManagerAccess::updateProjectsTabCount);
+                &AccessManagerDialog::updateProjectsTabCount);
 
 }
 
-RepoDialogManagerAccess::~RepoDialogManagerAccess()
+AccessManagerDialog::~AccessManagerDialog()
 {
     delete ui;
 }
 
-int RepoDialogManagerAccess::exec()
+int AccessManagerDialog::exec()
 {
     refresh();
     return QDialog::exec();
 }
 
-void RepoDialogManagerAccess::refresh()
+void AccessManagerDialog::refresh()
 {
     //--------------------------------------------------------------------------
     // Retrieve databases with their projects
@@ -92,12 +92,12 @@ void RepoDialogManagerAccess::refresh()
         QObject::connect(worker,
                          &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
                          ui->rolesManagerWidget,
-                         &RepoWidgetManagerRoles::setDatabasesWithProjects);
+                         &repo::widgets::RepoWidgetManagerRoles::setDatabasesWithProjects);
 
         QObject::connect(worker,
                          &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
                          ui->usersManagerWidget,
-                         &RepoWidgetManagerUsers::setDatabasesWithProjects);
+                         &repo::widgets::RepoWidgetManagerUsers::setDatabasesWithProjects);
 
         connectAndStartWorker(worker);
     }
@@ -113,28 +113,28 @@ void RepoDialogManagerAccess::refresh()
 
 }
 
-void RepoDialogManagerAccess::updateUsersTabCount(int count)
+void AccessManagerDialog::updateUsersTabCount(int count)
 {
     updateTabCount(Tab::USERS, tr("Users"), count);
 }
 
-void RepoDialogManagerAccess::updateRolesTabCount(int count)
+void AccessManagerDialog::updateRolesTabCount(int count)
 {
     updateTabCount(Tab::ROLES, tr("Roles"), count);
 }
 
-void RepoDialogManagerAccess::updateProjectsTabCount(int count)
+void AccessManagerDialog::updateProjectsTabCount(int count)
 {
     updateTabCount(Tab::PROJECTS, tr("Projects"), count);
 }
 
-void RepoDialogManagerAccess::updateTabCount(Tab tab, const QString &title, int count)
+void AccessManagerDialog::updateTabCount(Tab tab, const QString &title, int count)
 {
     ui->tabWidget->setTabText((int) tab,  title + " (" + QString::number(count) + ")");
 }
 
 
-void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)
+void AccessManagerDialog::keyPressEvent(QKeyEvent* e)
 {
     switch (e->key())
     {
@@ -146,12 +146,12 @@ void RepoDialogManagerAccess::keyPressEvent(QKeyEvent* e)
     QWidget::keyPressEvent(e);
 }
 
-repo::RepoToken* RepoDialogManagerAccess::getToken() const
+repo::RepoToken* AccessManagerDialog::getToken() const
 {
     return dbCache ? dbCache->getConnection(ui->hostComboBox->currentText()) : 0;
 }
 
-std::string RepoDialogManagerAccess::getDatabase() const
+std::string AccessManagerDialog::getDatabase() const
 {
     return ui->databaseComboBox->currentText().toStdString();
 }

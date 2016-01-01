@@ -20,10 +20,10 @@
 #include "repo_dialog_user.h"
 #include "ui_repo_dialog_user.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::dialog;
 using namespace repo::gui;
 
-RepoDialogUser::RepoDialogUser(
+UserDialog::UserDialog(
         const repo::RepoToken *token,
         repo::RepoController *controller,
         const repo::core::model::RepoUser &user,
@@ -35,7 +35,7 @@ RepoDialogUser::RepoDialogUser(
     , controller(controller)
 	, token(token)
     , user(user)
-    , ui(new Ui::RepoDialogUser)
+    , ui(new Ui::UserDialog)
 {
     ui->setupUi(this);
     setWindowIcon(getIcon());
@@ -45,7 +45,7 @@ RepoDialogUser::RepoDialogUser(
     // Connections
     QObject::connect(
         ui->avatarPushButton, &QPushButton::pressed,
-        this, &RepoDialogUser::openImageFileDialog);
+        this, &UserDialog::openImageFileDialog);
 
     ui->projectsUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::PROJECTS);
     ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::ROLES);
@@ -157,8 +157,8 @@ RepoDialogUser::RepoDialogUser(
 
 
     QObject::connect(ui->apiKeysUnfilterableTreeWidget,
-                     &RepoWidgetTreeUnfilterable::rowCountChanged,
-                     this, &RepoDialogUser::setNextAPIKey);
+                     &repo::widgets::RepoWidgetTreeUnfilterable::rowCountChanged,
+                     this, &UserDialog::setNextAPIKey);
 
     //--------------------------------------------------------------------------
     // Regular expression validator for email
@@ -169,59 +169,59 @@ RepoDialogUser::RepoDialogUser(
 
 }
 
-RepoDialogUser::~RepoDialogUser()
+UserDialog::~UserDialog()
 {
     delete ui;
     delete emailValidator;
 }
 
-QIcon RepoDialogUser::getIcon()
+QIcon UserDialog::getIcon()
 {
    return repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(repo::gui::primitive::RepoFontAwesome::fa_user);
 }
 
-std::string RepoDialogUser::getEmail() const
+std::string UserDialog::getEmail() const
 {
     return ui->emailLineEdit->text().toStdString();
 }
 
-std::string RepoDialogUser::getFirstName() const
+std::string UserDialog::getFirstName() const
 {
     return ui->firstNameLineEdit->text().toStdString();
 }
 
-std::list<std::pair<std::string, std::string> > RepoDialogUser::getAPIKeys() const
+std::list<std::pair<std::string, std::string> > UserDialog::getAPIKeys() const
 {
     return ui->apiKeysUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
-std::string RepoDialogUser::getLastName() const
+std::string UserDialog::getLastName() const
 {
     return ui->lastNameLineEdit->text().toStdString();
 }
 
-std::string RepoDialogUser::getPassword() const
+std::string UserDialog::getPassword() const
 {
     std::string currentPassword = ui->passwordLineEdit->text().toStdString();
     return currentPassword != user.getPassword() ? currentPassword : "";
 }
 
-std::list<std::pair<std::string, std::string> > RepoDialogUser::getProjects() const
+std::list<std::pair<std::string, std::string> > UserDialog::getProjects() const
 {
     return ui->projectsUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
-std::list<std::pair<std::string, std::string> > RepoDialogUser::getRoles() const
+std::list<std::pair<std::string, std::string> > UserDialog::getRoles() const
 {
     return ui->rolesUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
-std::string RepoDialogUser::getUsername() const
+std::string UserDialog::getUsername() const
 {
     return ui->usernameLineEdit->text().toStdString();
 }
 
-void RepoDialogUser::openImageFileDialog()
+void UserDialog::openImageFileDialog()
 {
     QImageReader::supportedImageFormats();
 
@@ -250,13 +250,13 @@ void RepoDialogUser::openImageFileDialog()
     }
 }
 
-void RepoDialogUser::setNextAPIKey()
+void UserDialog::setNextAPIKey()
 {
     ui->apiKeysUnfilterableTreeWidget->setNewRowText(
         {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
 }
 
-repo::core::model::RepoUser RepoDialogUser::getUpdatedUser() const
+repo::core::model::RepoUser UserDialog::getUpdatedUser() const
 {
     // TODO: validate fields are set correctly including
     // non-empty selections in projects, groups and roles
@@ -275,7 +275,7 @@ repo::core::model::RepoUser RepoDialogUser::getUpdatedUser() const
                 avatar);
 }
 
-void RepoDialogUser::setAvatar(const std::vector<char> &image)
+void UserDialog::setAvatar(const std::vector<char> &image)
 {
     if (!image.empty())
     {
@@ -284,7 +284,7 @@ void RepoDialogUser::setAvatar(const std::vector<char> &image)
     }
 }
 
-void RepoDialogUser::setAvatar(const QImage &image)
+void UserDialog::setAvatar(const QImage &image)
 {
     QByteArray byteArray;
     QBuffer buffer(&byteArray);

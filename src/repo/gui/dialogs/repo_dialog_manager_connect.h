@@ -32,20 +32,21 @@
 #include "../../settings/repo_settings_credentials.h"
 
 namespace Ui {
-class RepoDialogManagerConnect;
+class ConnectManagerDialog;
 }
 
-namespace repo {
-namespace widgets {
+namespace repo{
+namespace gui {
+namespace dialog {
 
 
-class RepoDialogManagerConnect : public QDialog
+class ConnectManagerDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
-    ~RepoDialogManagerConnect();
+    explicit ConnectManagerDialog(repo::RepoController *controller, QWidget *parent = 0);
+    ~ConnectManagerDialog();
 
 public slots :
 
@@ -56,10 +57,11 @@ public slots :
     repo::RepoCredentials getConnection();
 
 private:
-    Ui::RepoDialogManagerConnect *ui;
+    Ui::ConnectManagerDialog *ui;
 
     repo::RepoController *controller;
 };
 
 } // end namespace widgets
+}
 } // end namespace repo

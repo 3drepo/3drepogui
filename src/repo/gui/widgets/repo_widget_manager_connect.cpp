@@ -19,6 +19,7 @@
 #include "repo_widget_manager_connect.h"
 
 using namespace repo::widgets;
+using namespace repo::gui;
 
 const QString RepoWidgetManagerConnect::COLUMNS_SETTINGS = "RepoWidgetManagerConnectHeaders";
 const QString RepoWidgetManagerConnect::SELECTION_SETTINGS = "RepoWidgetManagerSelectionSettings";
@@ -132,7 +133,7 @@ void RepoWidgetManagerConnect::showEditDialog(
         const QModelIndex &index,
         const Action action)
 {
-    RepoDialogConnect connectionSettingsDialog(
+    dialog::ConnectDialog connectionSettingsDialog(
                 controller,
                 credentials,
                 action == RepoWidgetTreeEditable::Action::COPY,
