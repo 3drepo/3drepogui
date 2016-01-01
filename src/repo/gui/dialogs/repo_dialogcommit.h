@@ -35,9 +35,9 @@
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_dialogcommit.h"
-#include "../widgets/repo_lineedit.h"
-#include "../../../primitives/repoidbcache.h"
 #include "repo_transformationdialog.h"
+#include "../widgets/repo_lineedit.h"
+#include "../primitives/repoidbcache.h"
 #include "../../workers/repo_worker_modified_nodes.h"
 
 //------------------------------------------------------------------------------

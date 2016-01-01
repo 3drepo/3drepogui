@@ -15,51 +15,50 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
 
-#include <QDialog>
-
+#ifndef REPO_COMBO_BOX_DELEGATE_H
+#define REPO_COMBO_BOX_DELEGATE_H
 
 //------------------------------------------------------------------------------
-// CORE
-#include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
+// Qt
+#include <QItemDelegate>
 
 //------------------------------------------------------------------------------
 // GUI
-#include "repo_dialog_connect.h"
-#include "../primitives/repo_fontawesome.h"
-#include "../../settings/repo_settings_credentials.h"
-
-namespace Ui {
-class RepoDialogManagerConnect;
-}
+#include "repocomboboxeditor.h"
 
 namespace repo {
-namespace widgets {
+namespace gui {
 
-
-class RepoDialogManagerConnect : public QDialog
+/*!
+ * Enables drop down selectors for editing delegate.
+ * See http://doc.qt.io/qt-5/qtwidgets-itemviews-coloreditorfactory-example.html
+ */
+class RepoComboBoxDelegate : public QItemDelegate
 {
-    Q_OBJECT
 
-public:
-    explicit RepoDialogManagerConnect(repo::RepoController *controller, QWidget *parent = 0);
-    ~RepoDialogManagerConnect();
+public :
 
-public slots :
+//    RepoComboBoxDelegate() {}
 
-    int exec();
+    //! A list of combo box entries per column.
+    RepoComboBoxDelegate(
+            const QList<RepoComboBoxEditor::SeparatedEntries> &comboBoxLists);
 
-    void refresh();
+    ~RepoComboBoxDelegate();
 
-    repo::RepoCredentials getConnection();
+    QWidget *createEditor(
+            QWidget * parent,
+            const QStyleOptionViewItem &,
+            const QModelIndex &index) const;
 
-private:
-    Ui::RepoDialogManagerConnect *ui;
+private :
 
-    repo::RepoController *controller;
+    //! Standard item factories list per column
+    QList<QItemEditorFactory *> factories;
 };
 
-} // end namespace widgets
+} // end namespace gui
 } // end namespace repo
+
+#endif // REPO_COMBO_BOX_DELEGATE_H

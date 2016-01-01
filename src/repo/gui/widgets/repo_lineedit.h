@@ -26,7 +26,7 @@
 
 //-----------------------------------------------------------------------------
 // Repo GUI
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 namespace repo {
 namespace gui {

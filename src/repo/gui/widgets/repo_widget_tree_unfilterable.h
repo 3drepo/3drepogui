@@ -22,7 +22,7 @@
 #include <QHash>
 #include <QLocale>
 
-#include "../../../primitives/repocomboboxdelegate.h"
+#include "../primitives/repocomboboxdelegate.h"
 
 namespace Ui {
 class RepoWidgetTreeUnfilterable;

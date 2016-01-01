@@ -19,7 +19,7 @@
 #include "repoabstractmanagerdialog.h"
 #include "ui_repoabstractmanagerdialog.h"
 
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 const QString repo::gui::RepoAbstractManagerDialog::COLUMNS_SETTINGS = "RepoAbstractManagerDialogColumnsSettings";
 

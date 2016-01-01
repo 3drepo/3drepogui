@@ -19,7 +19,7 @@
 #include "repo_worker_diff.h"
 
 #include "../logger/repo_logger.h"
-#include "../../primitives/repo_color.h"
+#include "../gui/primitives/repo_color.h"
 
 
 using namespace repo::worker;

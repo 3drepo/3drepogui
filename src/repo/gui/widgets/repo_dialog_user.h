@@ -39,9 +39,9 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../../../primitives/repocomboboxeditor.h"
-#include "../../../primitives/repocomboboxdelegate.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repocomboboxeditor.h"
+#include "../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_fontawesome.h"
 
 //------------------------------------------------------------------------------
 // Core

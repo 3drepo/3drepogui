@@ -19,7 +19,7 @@
 #pragma once
 
 #include "../widgets/repo_widget_rendering.h"
-#include "../../../primitives/repo_color.h"
+#include "../primitives/repo_color.h"
 #include "../../workers/repo_worker_diff.h"
 #include <repo/repo_controller.h>
 

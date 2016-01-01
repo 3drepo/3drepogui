@@ -19,7 +19,7 @@
 #include "repowidgetassimpflags.h"
 #include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 #include "../../workers/repo_worker_glc_export.h"
 #include "../../logger/repo_logger.h"

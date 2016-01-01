@@ -23,7 +23,7 @@
 #include <QGraphicsItem>
 
 // GUI
-#include "../../../primitives/repo_color.h"
+#include "../primitives/repo_color.h"
 
 // Core
 #include <repo/core/model/collection/repo_scene.h>

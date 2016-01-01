@@ -18,7 +18,7 @@
 
 #include "reposelectiontreedockwidget.h"
 #include "ui_reposelectiontreedockwidget.h"
-#include "../../../primitives/repo_sortfilterproxymodel.h"
+#include "../primitives/repo_sortfilterproxymodel.h"
 
 repo::gui::RepoSelectionTreeDockWidget::RepoSelectionTreeDockWidget(
         widgets::RepoRenderingWidget *glcWidget,

@@ -18,7 +18,7 @@
 
 #include "repodialogsettings.h"
 #include "ui_repodialogsettings.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 repo::gui::RepoDialogSettings::RepoDialogSettings(QWidget *parent) :
     QDialog(parent),

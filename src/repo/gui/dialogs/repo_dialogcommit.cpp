@@ -23,7 +23,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 //------------------------------------------------------------------------------
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 #include "../../logger/repo_logger.h"
 //------------------------------------------------------------------------------
 

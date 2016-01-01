@@ -19,8 +19,8 @@
 #include "repofederationdialog.h"
 #include "ui_repofederationdialog.h"
 
-#include "../../../primitives/repo_fontawesome.h"
-#include "../../../primitives/repocomboboxdelegate.h"
+#include "../primitives/repo_fontawesome.h"
+#include "../primitives/repocomboboxdelegate.h"
 #include "../../logger/repo_logger.h"
 
 using namespace repo::gui;

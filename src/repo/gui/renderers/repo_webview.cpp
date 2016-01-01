@@ -18,7 +18,7 @@
 
 #include "repo_webview.h"
 #include "ui_repo_webview.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 
 repo::gui::RepoWebView::RepoWebView(

@@ -33,7 +33,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "ui_repo_dialog_connect.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
 class RepoDialogConnect;

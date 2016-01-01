@@ -33,7 +33,7 @@
 
 
 // GUI
-#include "../../../primitives/repoidbcache.h"
+#include "../primitives/repoidbcache.h"
 
 namespace Ui {
 class RepoAbstractManagerDialog;

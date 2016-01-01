@@ -21,8 +21,8 @@
 #include <QMutex>
 #include <QThreadPool>
 
-#include "../../../primitives/repo_fontawesome.h"
-#include "../../../primitives/repoidbcache.h"
+#include "../primitives/repo_fontawesome.h"
+#include "../primitives/repoidbcache.h"
 #include "../../workers/repo_worker_projects.h"
 #include "../../workers/repo_multithreader.h"
 

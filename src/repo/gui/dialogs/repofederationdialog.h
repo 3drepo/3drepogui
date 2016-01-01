@@ -29,10 +29,10 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../../../primitives/repoidbcache.h"
+#include "../primitives/repoidbcache.h"
 #include "repo_genericdialog.h"
 #include "repo_transformationdialog.h"
-#include "../../primitives/repo_standard_item.h"
+#include "../primitives/repo_standard_item.h"
 
 //------------------------------------------------------------------------------
 // Core

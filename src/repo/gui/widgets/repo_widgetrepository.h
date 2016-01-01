@@ -34,9 +34,9 @@
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "ui_repo_widgetrepository.h"
-#include "../../../primitives/repo_fontawesome.h"
-#include "../../../primitives/repoidbcache.h"
-#include "../../../primitives/repo_sortfilterproxymodel.h"
+#include "../primitives/repo_fontawesome.h"
+#include "../primitives/repoidbcache.h"
+#include "../primitives/repo_sortfilterproxymodel.h"
 #include "repo_lineedit.h"
 
 namespace Ui {

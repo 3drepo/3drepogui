@@ -32,9 +32,9 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../../../primitives/repocomboboxdelegate.h"
+#include "../primitives/repocomboboxdelegate.h"
 #include "../../workers/repo_worker_projects.h"
-#include "../../../primitives/repo_color.h"
+#include "../primitives/repo_color.h"
 
 //------------------------------------------------------------------------------
 // CORE

@@ -30,7 +30,7 @@
 // GUI
 #include "repo_widget_rendering.h"
 #include "../dialogs/repo_transformationdialog.h"
-#include "../../../primitives/repo_fontawesome.h"
+#include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
     class RepoSelectionTreeDockWidget;

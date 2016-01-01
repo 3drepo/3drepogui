@@ -16,7 +16,7 @@
  */
 
 #include "repo_widget_manager_roles.h"
-#include "../../primitives/repo_standard_item.h"
+#include "../primitives/repo_standard_item.h"
 
 using namespace repo::widgets;
 

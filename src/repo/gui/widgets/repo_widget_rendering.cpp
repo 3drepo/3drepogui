@@ -17,8 +17,8 @@
 
 
 #include "repo_widget_rendering.h"
-#include "../../../primitives/repo_fontawesome.h"
-#include "../../../primitives/repo_color.h"
+#include "../primitives/repo_fontawesome.h"
+#include "../primitives/repo_color.h"
 #include "../../logger/repo_logger.h"
 #include "../renderers/repo_renderer_glc.h"
 //------------------------------------------------------------------------------

@@ -22,9 +22,9 @@
 #include "repo_widget_tree_editable.h"
 #include "repo_widget_tree_clickable.h"
 #include "repo_dialog_user.h"
-#include "../../../primitives/repoidbcache.h"
+#include "../primitives/repoidbcache.h"
 #include "../../workers/repo_worker_users.h"
-#include "../../primitives/repo_standard_item.h"
+#include "../primitives/repo_standard_item.h"
 
 //------------------------------------------------------------------------------
 // CORE

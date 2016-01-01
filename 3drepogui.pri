@@ -5,13 +5,6 @@
 
 
 HEADERS +=  \
-	src/primitives/repocomboboxdelegate.h \
-	src/primitives/repocomboboxeditor.h \
-	src/primitives/repoidbcache.h \
-	src/primitives/repo_color.h \
-	src/primitives/repo_fontawesome.h \
-	src/primitives/repo_glccamera.h \
-	src/primitives/repo_sortfilterproxymodel.h \
 	src/repo/gui/repo_gui.h \
 	src/repo/gui/repo_settings.h \
 	src/repo/gui/dialogs/repoabstractmanagerdialog.h \
@@ -23,6 +16,14 @@ HEADERS +=  \
 	src/repo/gui/dialogs/repo_genericdialog.h \
 	src/repo/gui/dialogs/repo_maptilesdialog.h \
 	src/repo/gui/dialogs/repo_transformationdialog.h \
+	src/repo/gui/primitives/repocomboboxdelegate.h \
+	src/repo/gui/primitives/repocomboboxeditor.h \
+	src/repo/gui/primitives/repoidbcache.h \
+	src/repo/gui/primitives/repo_color.h \
+	src/repo/gui/primitives/repo_fontawesome.h \
+	src/repo/gui/primitives/repo_glccamera.h \
+	src/repo/gui/primitives/repo_sortfilterproxymodel.h \
+	src/repo/gui/primitives/repo_standard_item.h \
 	src/repo/gui/renderers/repo_3ddiffrenderer.h \
 	src/repo/gui/renderers/repo_fpscounter.h \
 	src/repo/gui/renderers/repo_renderer_abstract.h \
@@ -56,7 +57,6 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
-	src/repo/primitives/repo_standard_item.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/workers/repo_multithreader.h \
 	src/repo/workers/repo_mutex.h \
@@ -79,13 +79,6 @@ HEADERS +=  \
 
 SOURCES +=  \
 	src/main.cpp \
-	src/primitives/repocomboboxdelegate.cpp \
-	src/primitives/repocomboboxeditor.cpp \
-	src/primitives/repoidbcache.cpp \
-	src/primitives/repo_color.cpp \
-	src/primitives/repo_fontawesome.cpp \
-	src/primitives/repo_glccamera.cpp \
-	src/primitives/repo_sortfilterproxymodel.cpp \
 	src/repo/gui/repo_gui.cpp \
 	src/repo/gui/dialogs/repoabstractmanagerdialog.cpp \
 	src/repo/gui/dialogs/repodialogabout.cpp \
@@ -96,6 +89,14 @@ SOURCES +=  \
 	src/repo/gui/dialogs/repo_genericdialog.cpp \
 	src/repo/gui/dialogs/repo_maptilesdialog.cpp \
 	src/repo/gui/dialogs/repo_transformationdialog.cpp \
+	src/repo/gui/primitives/repocomboboxdelegate.cpp \
+	src/repo/gui/primitives/repocomboboxeditor.cpp \
+	src/repo/gui/primitives/repoidbcache.cpp \
+	src/repo/gui/primitives/repo_color.cpp \
+	src/repo/gui/primitives/repo_fontawesome.cpp \
+	src/repo/gui/primitives/repo_glccamera.cpp \
+	src/repo/gui/primitives/repo_sortfilterproxymodel.cpp \
+	src/repo/gui/primitives/repo_standard_item.cpp \
 	src/repo/gui/renderers/repo_3ddiffrenderer.cpp \
 	src/repo/gui/renderers/repo_fpscounter.cpp \
 	src/repo/gui/renderers/repo_renderer_abstract.cpp \
@@ -129,7 +130,6 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
-	src/repo/primitives/repo_standard_item.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/workers/repo_multithreader.cpp \
 	src/repo/workers/repo_mutex.cpp \
