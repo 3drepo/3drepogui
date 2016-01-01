@@ -5,7 +5,6 @@
 
 
 HEADERS +=  \
-	src/reposettings.h \
 	src/primitives/repocomboboxdelegate.h \
 	src/primitives/repocomboboxeditor.h \
 	src/primitives/repoidbcache.h \
@@ -17,6 +16,7 @@ HEADERS +=  \
 	src/renderers/repo_fpscounter.h \
 	src/renderers/repo_webview.h \
 	src/repo/gui/repo_gui.h \
+	src/repo/gui/repo_settings.h \
 	src/repo/gui/dialogs/repoabstractmanagerdialog.h \
 	src/repo/gui/dialogs/repodialogabout.h \
 	src/repo/gui/dialogs/repodialogsettings.h \
@@ -79,7 +79,6 @@ HEADERS +=  \
 
 SOURCES +=  \
 	src/main.cpp \
-	src/reposettings.cpp \
 	src/primitives/repocomboboxdelegate.cpp \
 	src/primitives/repocomboboxeditor.cpp \
 	src/primitives/repoidbcache.cpp \

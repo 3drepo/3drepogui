@@ -26,7 +26,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../../../reposettings.h"
+#include "../repo_settings.h"
 
 namespace Ui {
 class RepoWidgetAssimpFlags;
