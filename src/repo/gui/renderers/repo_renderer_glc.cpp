@@ -17,7 +17,7 @@
 
 
 #include "repo_renderer_glc.h"
-#include "../workers/repo_worker_glc_export.h"
+#include "../../workers/repo_worker_glc_export.h"
 #include <repo/core/model/bson/repo_bson_factory.h>
 //------------------------------------------------------------------------------
 #include <GLC_UserInput>

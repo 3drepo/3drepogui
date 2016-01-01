@@ -20,7 +20,7 @@
 #include "../../../primitives/repo_fontawesome.h"
 #include "../../../primitives/repo_color.h"
 #include "../../logger/repo_logger.h"
-#include "../../renderer/repo_renderer_glc.h"
+#include "../renderers/repo_renderer_glc.h"
 //------------------------------------------------------------------------------
 #include <iostream>
 //------------------------------------------------------------------------------

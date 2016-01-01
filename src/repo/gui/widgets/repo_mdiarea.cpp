@@ -19,7 +19,7 @@
 #include "../../workers/repo_worker_scene_graph.h"
 #include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"
-#include "../../../renderers/repo_webview.h"
+#include "../renderers/repo_webview.h"
 
 
 repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)

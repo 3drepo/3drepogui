@@ -25,7 +25,7 @@
 #include <repo/core/model/collection/repo_scene.h>
 #include <repo/core/model/repo_node_utils.h>
 
-#include "../../renderers/repo_fpscounter.h"
+#include "repo_fpscounter.h"
 
 namespace repo {
 	namespace gui {

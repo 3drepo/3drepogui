@@ -26,7 +26,7 @@
 #include <QSurfaceFormat>
 
 #include "../../../primitives/repo_fontawesome.h"
-#include "../../renderer/repo_renderer_graph.h"
+#include "../renderers/repo_renderer_graph.h"
 
 #include <repo/core/model/collection/repo_scene.h>
 

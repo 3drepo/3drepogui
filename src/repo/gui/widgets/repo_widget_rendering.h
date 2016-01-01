@@ -23,7 +23,7 @@
 
 //------------------------------------------------------------------------------
 // GUI
-#include "../../renderer/repo_renderer_abstract.h"
+#include "../renderers/repo_renderer_abstract.h"
 
 //------------------------------------------------------------------------------
 #include <QGLWidget>

@@ -25,7 +25,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_mdiarea.h"
-#include "../../../renderers/repo_3ddiffrenderer.h"
+#include "../renderers/repo_3ddiffrenderer.h"
 #include "../../workers/repo_multithreader.h"
 
 namespace Ui {
