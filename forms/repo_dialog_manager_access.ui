@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoDialogManagerAccess</class>
- <widget class="QDialog" name="RepoDialogManagerAccess">
+ <class>AccessManagerDialog</class>
+ <widget class="QDialog" name="AccessManagerDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -40,7 +40,7 @@
         <number>9</number>
        </property>
        <item>
-        <widget class="repo::widgets::RepoWidgetManagerUsers" name="usersManagerWidget" native="true"/>
+        <widget class="repo::gui::widget::UsersManagerWidget" name="usersManagerWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -62,7 +62,7 @@
         <number>9</number>
        </property>
        <item>
-        <widget class="repo::widgets::RepoWidgetManagerRoles" name="rolesManagerWidget" native="true"/>
+        <widget class="repo::gui::widget::RolesManagerWidget" name="rolesManagerWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -84,7 +84,7 @@
         <number>9</number>
        </property>
        <item>
-        <widget class="repo::widgets::RepoWidgetManagerProjects" name="projectsManagerWidget" native="true"/>
+        <widget class="repo::gui::widget::ProjectsManagerWidget" name="projectsManagerWidget" native="true"/>
        </item>
       </layout>
      </widget>
@@ -135,21 +135,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::widgets::RepoWidgetManagerUsers</class>
+   <class>repo::gui::widget::UsersManagerWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_users.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_users.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>repo::widgets::RepoWidgetManagerRoles</class>
+   <class>repo::gui::widget::RolesManagerWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_roles.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_roles.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>repo::widgets::RepoWidgetManagerProjects</class>
+   <class>repo::gui::widget::ProjectsManagerWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_projects.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_projects.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -158,7 +158,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoDialogManagerAccess</receiver>
+   <receiver>AccessManagerDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -174,7 +174,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoDialogManagerAccess</receiver>
+   <receiver>AccessManagerDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

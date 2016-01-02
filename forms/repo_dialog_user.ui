@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoDialogUser</class>
- <widget class="QDialog" name="RepoDialogUser">
+ <class>UserDialog</class>
+ <widget class="QDialog" name="UserDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -264,7 +264,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="projectsUnfilterableTreeWidget" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="projectsUnfilterableTreeWidget" native="true"/>
           </item>
          </layout>
         </widget>
@@ -295,7 +295,7 @@
            <number>9</number>
           </property>
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="rolesUnfilterableTreeWidget" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="rolesUnfilterableTreeWidget" native="true"/>
           </item>
          </layout>
         </widget>
@@ -314,7 +314,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="apiKeysUnfilterableTreeWidget" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="apiKeysUnfilterableTreeWidget" native="true"/>
           </item>
          </layout>
         </widget>
@@ -337,9 +337,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::widgets::RepoWidgetTreeUnfilterable</class>
+   <class>repo::gui::widget::UnfilterableTreeWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_tree_unfilterable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_unfilterable.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -348,7 +348,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoDialogUser</receiver>
+   <receiver>UserDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -364,7 +364,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoDialogUser</receiver>
+   <receiver>UserDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
