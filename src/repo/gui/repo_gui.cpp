@@ -24,29 +24,30 @@
 // GUI
 #include "repo_gui.h"
 #include "ui_repo_gui.h"
-#include "../../dialogs/repo_dialogcommit.h"
-#include "../../repo/widgets/repo_dialog_connect.h"
-#include "../../dialogs/repo_dialoghistory.h"
-#include "../../dialogs/repodialogsettings.h"
-#include "../../dialogs/repodialogabout.h"
-#include "../../repo/logger/repo_logger.h"
-#include "../../widgets/repo_widgetrepository.h"
-#include "../../widgets/repo_textbrowser.h"
-#include "../../widgets/repowidgetassimpflags.h"
-#include "../../widgets/reposelectiontreedockwidget.h"
-#include "../../repo/workers/repo_worker_commit.h"
-#include "../../repo/workers/repo_worker_file_export.h"
-#include "../../repo/workers/repo_worker_optimize.h"
-#include "../../primitives/repo_fontawesome.h"
-#include "../../primitives/repo_color.h"
-#include "../../dialogs/repoabstractmanagerdialog.h"
-#include "../../dialogs/repofederationdialog.h"
-#include "../../dialogs/repo_maptilesdialog.h"
-#include "../../repo/widgets/repo_widget_manager_3ddiff.h"
+#include "dialogs/repo_dialog_commit.h"
+#include "dialogs/repo_dialog_history.h"
+#include "dialogs/repo_dialog_settings.h"
+#include "dialogs/repo_dialog_about.h"
+#include "../logger/repo_logger.h"
+#include "dialogs/repo_dialog_connect.h"
+#include "widgets/repo_widget_repository.h"
+#include "widgets/repo_text_browser.h"
+#include "widgets/repo_widget_flags.h"
+#include "widgets/repo_widget_tree_dock.h"
+#include "widgets/repo_widget_manager_3ddiff.h"
+#include "../workers/repo_worker_commit.h"
+#include "../workers/repo_worker_file_export.h"
+#include "../workers/repo_worker_optimize.h"
+#include "primitives/repo_fontawesome.h"
+#include "primitives/repo_color.h"
+#include "dialogs/repo_dialog_manager_abstract.h"
+#include "dialogs/repo_dialog_federation.h"
+#include "dialogs/repo_dialog_map.h"
+
 
 //------------------------------------------------------------------------------
-#include "../../repo/widgets/repo_dialog_manager_access.h"
-#include "../../repo/widgets/repo_dialog_manager_connect.h"
+#include "dialogs/repo_dialog_manager_access.h"
+#include "dialogs/repo_dialog_manager_connect.h"
 //------------------------------------------------------------------------------
 
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
@@ -88,12 +89,12 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Open
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openFile()));
-    ui->actionOpen->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_folder_open));
+    ui->actionOpen->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_folder_open));
 
     // Save As
     QObject::connect(ui->actionSave_As, SIGNAL(triggered()), this,
                      SLOT(saveAs()));
-    ui->actionSave_As->setIcon(repo::gui::RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_floppy_o));
+    ui->actionSave_As->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_floppy_o));
 
     // Save Screenshot
     QObject::connect(ui->actionSave_Screenshot, SIGNAL(triggered()), this,
@@ -105,8 +106,8 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionExit, SIGNAL(triggered()),
                      QApplication::instance(), SLOT(quit()));
     ui->actionExit->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_times, QColor(Qt::darkRed)));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_times, QColor(Qt::darkRed)));
 
 
     //--------------------------------------------------------------------------
@@ -116,33 +117,33 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Connect
     QObject::connect(ui->actionConnect, SIGNAL(triggered()), this, SLOT(connectDB()));
-    ui->actionConnect->setIcon(RepoFontAwesome::getConnectIcon());
+    ui->actionConnect->setIcon(primitive::RepoFontAwesome::getConnectIcon());
 
     // Disconnect
     QObject::connect(ui->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnectDB()));
-    ui->actionDisconnect->setIcon(RepoFontAwesome::getDisconnectIcon());
+    ui->actionDisconnect->setIcon(primitive::RepoFontAwesome::getDisconnectIcon());
 
     // Refresh
     QObject::connect(ui->actionRefresh, SIGNAL(triggered()), this, SLOT(refresh()));
     ui->actionRefresh->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_refresh,
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_refresh,
                     QColor(Qt::darkGreen)));
 
     // Head
     QObject::connect(ui->actionHead, SIGNAL(triggered()), this, SLOT(fetchHead()));
     ui->actionHead->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_download));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_download));
 
     // History
     QObject::connect(ui->actionHistory, SIGNAL(triggered()), this, SLOT(history()));
-    ui->actionHistory->setIcon(RepoFontAwesome::getHistoryIcon());
+    ui->actionHistory->setIcon(primitive::RepoFontAwesome::getHistoryIcon());
 
 
     // Commit
     QObject::connect(ui->actionCommit, SIGNAL(triggered()), this, SLOT(commit()));
-    ui->actionCommit->setIcon(RepoFontAwesome::getCommitIcon());
+    ui->actionCommit->setIcon(primitive::RepoFontAwesome::getCommitIcon());
 
     // Federate...
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
@@ -158,7 +159,7 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
-    ui->actionDrop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_trash_o));
+    ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
 
 
 
@@ -171,21 +172,21 @@ repo::gui::RepoGUI::RepoGUI(
     // Link
     QObject::connect(ui->actionLink, SIGNAL(triggered(bool)), ui->mdiArea, SLOT(chainSubWindows(bool)));
     ui->actionLink->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_link,
-                    RepoFontAwesome::fa_chain_broken));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_link,
+                    primitive::RepoFontAwesome::fa_chain_broken));
 
     // Scene Graph
     QObject::connect(ui->actionSceneGraph, &QAction::triggered,
                      this, &RepoGUI::openSceneGraph);
-    ui->actionSceneGraph->setIcon(RepoFontAwesome::getSceneGraphIcon());
+    ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
     // Web View
     QObject::connect(ui->actionWeb_View, &QAction::triggered,
-                     ui->mdiArea, &RepoMdiArea::addWebViewSubWindow);
+                     ui->mdiArea, &widget::RepoMdiArea::addWebViewSubWindow);
     ui->actionWeb_View->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_globe));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_globe));
 
 
     //--------------------------------------------------------------------------
@@ -203,8 +204,8 @@ repo::gui::RepoGUI::RepoGUI(
 
     // 3D Diff...
     QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
-    ui->action3D_Diff->setIcon(RepoFontAwesome::getInstance().getIcon(
-                                   RepoFontAwesome::fa_wrench));
+    ui->action3D_Diff->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(
+                                   primitive::RepoFontAwesome::fa_wrench));
 
     // Options
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -222,15 +223,15 @@ repo::gui::RepoGUI::RepoGUI(
                      SIGNAL(triggered()),
                      this, SLOT(toggleFullScreen()));
     ui->actionFull_Screen->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_arrows_alt));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_arrows_alt));
 
     // Maximize (Tile)
     QObject::connect(ui->actionMaximize, SIGNAL(triggered()),
                      ui->mdiArea, SLOT(maximizeSubWindows()));
     ui->actionMaximize->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_th));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_th));
 
 
     // Selection Tree (Scene Graph)
@@ -253,8 +254,8 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionEmail_Technical_Support, SIGNAL(triggered()),
                      this, SLOT(openSupportEmail()));
     ui->actionEmail_Technical_Support->setIcon(
-                RepoFontAwesome::getInstance().getIcon(
-                    RepoFontAwesome::fa_envelope_o));
+                primitive::RepoFontAwesome::getInstance().getIcon(
+                    primitive::RepoFontAwesome::fa_envelope_o));
 
     //--------------------------------------------------------------------------
     // Report Issue
@@ -295,13 +296,13 @@ repo::gui::RepoGUI::~RepoGUI()
 
 void repo::gui::RepoGUI::about()
 {
-    RepoDialogAbout aboutDialog(this);
+    dialog::AboutDialog aboutDialog(this);
     aboutDialog.exec();
 }
 
 void repo::gui::RepoGUI::addMapTiles()
 {
-    RepoMapTilesDialog mapTilesDialog(this);
+    dialog::MapDialog mapTilesDialog(this);
     if(mapTilesDialog.exec()){
 
         repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
@@ -312,9 +313,9 @@ void repo::gui::RepoGUI::addMapTiles()
     }
 }
 
-void repo::gui::RepoGUI::addSelectionTree(widgets::RepoRenderingWidget* widget, Qt::DockWidgetArea area)
+void repo::gui::RepoGUI::addSelectionTree(widget::Rendering3DWidget* widget, Qt::DockWidgetArea area)
 {
-    RepoSelectionTreeDockWidget* dock = new RepoSelectionTreeDockWidget(widget, this);
+    widget::TreeDockWidget* dock = new  widget::TreeDockWidget(widget, this);
     this->addDockWidget(area, dock);
     if (panelsMenu)
         delete panelsMenu;
@@ -325,8 +326,8 @@ void repo::gui::RepoGUI::addSelectionTree(widgets::RepoRenderingWidget* widget, 
 
 void repo::gui::RepoGUI::commit()
 {
-    RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
-    const widgets::RepoRenderingWidget *widget = getActiveWidget();
+    widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+    const widget::Rendering3DWidget *widget = getActiveWidget();
 
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
@@ -352,11 +353,11 @@ void repo::gui::RepoGUI::commit()
 
 void repo::gui::RepoGUI::commit(
         repo::core::model::RepoScene *scene,
-        RepoMdiSubWindow *activeWindow)
+        widget::RepoMdiSubWindow *activeWindow)
 {	
     if (scene)
     {
-        repo::gui::RepoDialogCommit commitDialog(
+        dialog::CommitDialog commitDialog(
                     this,
                     Qt::Window,
                     ui->widgetRepository,
@@ -395,7 +396,7 @@ void repo::gui::RepoGUI::connectDB()
     // TODO: remove when expanding to multiple connections
     ui->widgetRepository->disconnectDB();
 
-    repo::widgets::RepoDialogManagerConnect connectManager(controller, (QWidget*)this);
+    dialog::ConnectManagerDialog connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
         std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
@@ -439,7 +440,7 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
 {
     QMenu* panelsMenu = QMainWindow::createPopupMenu();
     panelsMenu->setTitle(tr("Dock Widgets"));
-    panelsMenu->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_columns));
+    panelsMenu->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_columns));
     return panelsMenu;
 }
 
@@ -494,7 +495,7 @@ void repo::gui::RepoGUI::drop()
 
 void repo::gui::RepoGUI::federate()
 {
-    RepoFederationDialog fed(ui->widgetRepository, this);
+    dialog::FederationDialog fed(ui->widgetRepository, this);
     if (fed.exec())
     {
         repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
@@ -521,10 +522,10 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-repo::gui::widgets::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget() const
+repo::gui::widget::Rendering3DWidget* repo::gui::RepoGUI::getActiveWidget() const
 {
-    widgets::RepoRenderingWidget *widget =
-            ui->mdiArea->activeSubWidget<repo::gui::widgets::RepoRenderingWidget *>();
+    widget::Rendering3DWidget *widget =
+            ui->mdiArea->activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
     if (!widget)
         std::cerr << tr("A 3D window has to be open.").toStdString() << std::endl;
     return widget;
@@ -533,7 +534,7 @@ repo::gui::widgets::RepoRenderingWidget* repo::gui::RepoGUI::getActiveWidget() c
 const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene() const
 {
     const repo::core::model::RepoScene *scene = 0;
-    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
 }
@@ -543,7 +544,7 @@ void repo::gui::RepoGUI::history()
     QString          database = ui->widgetRepository->getSelectedDatabase();
     QString          project  = ui->widgetRepository->getSelectedProject();
     repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
-    RepoDialogHistory historyDialog(controller, token, database, project, this);
+    dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
         std::cout << "Revision History dialog cancelled by user." << std::endl;
@@ -598,8 +599,8 @@ void repo::gui::RepoGUI::open3DDiff()
 {
     ui->mdiArea->closeHiddenSubWindows();
 
-    repo::widgets::RepoWidgetManager3DDiff *diffWidget =
-            new repo::widgets::RepoWidgetManager3DDiff(
+    repo::gui::widget::Repo3DDiffManagerWidget *diffWidget =
+            new repo::gui::widget::Repo3DDiffManagerWidget(
                 ui->mdiArea, controller,
                 ui->widgetRepository->getSelectedConnection());
     QDockWidget *dockWidget = new QDockWidget(tr("3D Diff"), this);
@@ -615,8 +616,8 @@ void repo::gui::RepoGUI::open3DDiff()
 
     if (ui->mdiArea->subWindowList().count() == 2)
     {
-        //        widgets::RepoRenderingWidget *widgetA = dynamic_cast<widgets::RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
-        //        widgets::RepoRenderingWidget *widgetB = dynamic_cast<widgets::RepoRenderingWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
+        //        widget::Rendering3DWidget *widgetA = dynamic_cast<widget::Rendering3DWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
+        //        widget::Rendering3DWidget *widgetB = dynamic_cast<widget::Rendering3DWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
 
         //        if (widgetA && widgetB)
         //        {
@@ -634,7 +635,7 @@ void repo::gui::RepoGUI::open3DDiff()
 
 void repo::gui::RepoGUI::openAccessManager()
 {
-    repo::widgets::RepoDialogManagerAccess accessManager(
+    dialog::AccessManagerDialog accessManager(
                 ui->widgetRepository,
                 controller,
                 (QWidget*) this);
@@ -653,7 +654,7 @@ void repo::gui::RepoGUI::openFile()
 
 void repo::gui::RepoGUI::openMetadataManager()
 {
-    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = getActiveWidget())
     {
         QString filePath = QFileDialog::getOpenFileName(
                     this,
@@ -676,9 +677,9 @@ void repo::gui::RepoGUI::openMetadataManager()
 
 void repo::gui::RepoGUI::optimizeGraph()
 {
-    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = getActiveWidget())
     {
-        RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
+        widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
         repo::worker::OptimizeWorker *worker =
                 new repo::worker::OptimizeWorker(controller, ui->widgetRepository->getSelectedConnection(), scene);
@@ -697,7 +698,7 @@ void repo::gui::RepoGUI::optimizeGraph()
 
 void repo::gui::RepoGUI::openSettings() const
 {
-    RepoDialogSettings settingsDialog((QWidget*) this);
+    dialog::SettingsDialog settingsDialog((QWidget*) this);
     settingsDialog.exec();
 }
 
@@ -716,7 +717,7 @@ void repo::gui::RepoGUI::openSupportEmail() const
     QDesktopServices::openUrl(
                 QUrl("mailto:support@3drepo.org" + email +
                      "?subject=" + subject +
-                     "&body=" + RepoDialogAbout::getVersionInfo()));
+                     "&body=" + dialog::AboutDialog::getVersionInfo()));
 }
 
 void repo::gui::RepoGUI::refresh()
@@ -731,7 +732,7 @@ void repo::gui::RepoGUI::reportIssue() const
 
 void repo::gui::RepoGUI::saveAs()
 {
-    if (const widgets::RepoRenderingWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = getActiveWidget())
     {
         // TODO: create export worker
         QString path = QFileDialog::getSaveFileName(
@@ -764,8 +765,8 @@ void repo::gui::RepoGUI::saveAs()
 
 void repo::gui::RepoGUI::saveScreenshot()
 {
-    const repo::gui::widgets::RepoRenderingWidget * widget = getActiveWidget();
-    std::vector<repo::gui::widgets::RepoRenderingWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::widgets::RepoRenderingWidget*>();
+    const repo::gui::widget::Rendering3DWidget * widget = getActiveWidget();
+    std::vector<repo::gui::widget::Rendering3DWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::widget::Rendering3DWidget*>();
 
     if (widgets.size() == 0)
     {
@@ -782,7 +783,7 @@ void repo::gui::RepoGUI::saveScreenshot()
         QFileInfo fileInfo(path);
         for (int i = 0; i < widgets.size(); ++i)
         {
-            repo::gui::widgets::RepoRenderingWidget *widget = widgets[i];
+            repo::gui::widget::Rendering3DWidget *widget = widgets[i];
             if (widget)
             {
                 QString newPath = fileInfo.absolutePath() + QDir::separator() + fileInfo.baseName() + QString::number(i);
@@ -830,7 +831,7 @@ void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 void repo::gui::RepoGUI::startup()
 {
     // TODO: add this functionality back in
-    //    RepoDialogConnect connectionDialog(this);
+    //    ConnectDialog connectionDialog(this);
     //    if (connectionDialog.isShowAtStartup())
     connectDB();
 }

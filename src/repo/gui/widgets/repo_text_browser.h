@@ -1,0 +1,74 @@
+/**
+ *  Copyright (C) 2014 3D Repo Ltd
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+//------------------------------------------------------------------------------
+// Qt
+#include <QFile>
+#include <QPair>
+#include <QTextBrowser>
+#include <QTextStream>
+#include <QFileSystemWatcher>
+
+//------------------------------------------------------------------------------
+// Core
+//#include <repo/lib/repo_listener_abstract.h>
+
+#include "../../logger/repo_subscriber_abstract.h"
+
+namespace repo {
+namespace gui {
+namespace widget{
+
+	class RepoTextBrowser
+		: public QTextBrowser
+		, public repo::logger::AbstractSubscriber
+	{
+		Q_OBJECT
+
+	public:
+
+		//! Default constructor that allocates a file system watcher.
+		RepoTextBrowser(QWidget * parent = 0);
+
+		//! Deallocates file system watcher and associated text streams if any.
+		~RepoTextBrowser();
+
+		//! Reimplemented from AbstractSubscriber.
+		void newMessageReceived(const std::string &msg);
+
+		public slots :
+
+		//! Adds full file path to a log file that is to be monitored.
+		void addFilePath(const QString &filePath);
+
+		//! Appends the last line from the given file to the text browser.
+		void watchedFileChanged(const QString &filePath);
+
+	private:
+
+		//! On old macs there can be only 256 file watchers on the OS.
+		QFileSystemWatcher *fileWatcher;
+
+		//! Hash map of full file paths and the associated streams.
+		QHash<QString, QPair<QFile*, QTextStream*>> watchedFiles;
+
+	};
+}
+} // end namespace gui
+} // end namespace repo

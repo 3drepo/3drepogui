@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoDialogManagerConnect</class>
- <widget class="QDialog" name="RepoDialogManagerConnect">
+ <class>ConnectManagerDialog</class>
+ <widget class="QDialog" name="ConnectManagerDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -21,7 +21,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="repo::widgets::RepoWidgetManagerConnect" name="connectionManagerWidget" native="true"/>
+    <widget class="repo::gui::widget::ConnectionManagerWidget" name="connectionManagerWidget" native="true"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -37,9 +37,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::widgets::RepoWidgetManagerConnect</class>
+   <class>repo::gui::widget::ConnectionManagerWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_manager_connect.h</header>
+   <header>src/repo/gui/widgets/repo_widget_manager_connect.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -48,7 +48,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoDialogManagerConnect</receiver>
+   <receiver>ConnectManagerDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -64,7 +64,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoDialogManagerConnect</receiver>
+   <receiver>ConnectManagerDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoDialogRole</class>
- <widget class="QDialog" name="RepoDialogRole">
+ <class>RoleDialog</class>
+ <widget class="QDialog" name="RoleDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -233,7 +233,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="permissionsUnfilterableTree" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="permissionsUnfilterableTree" native="true"/>
           </item>
          </layout>
         </widget>
@@ -252,7 +252,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="privilegesUnfilterableTree" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="privilegesUnfilterableTree" native="true"/>
           </item>
          </layout>
         </widget>
@@ -271,7 +271,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="inheritedRolesUnfilterableTree" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="inheritedRolesUnfilterableTree" native="true"/>
           </item>
          </layout>
         </widget>
@@ -290,7 +290,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="repo::widgets::RepoWidgetTreeUnfilterable" name="modulesUnfilterableTree" native="true"/>
+           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="modulesUnfilterableTree" native="true"/>
           </item>
          </layout>
         </widget>
@@ -313,9 +313,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::widgets::RepoWidgetTreeUnfilterable</class>
+   <class>repo::gui::widget::UnfilterableTreeWidget</class>
    <extends>QWidget</extends>
-   <header>src/repo/widgets/repo_widget_tree_unfilterable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_unfilterable.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
@@ -324,7 +324,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>RepoDialogRole</receiver>
+   <receiver>RoleDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -340,7 +340,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>RepoDialogRole</receiver>
+   <receiver>RoleDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

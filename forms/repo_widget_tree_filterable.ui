@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoWidgetTreeFilterable</class>
- <widget class="QWidget" name="RepoWidgetTreeFilterable">
+ <class>FilterableTreeWidget</class>
+ <widget class="QWidget" name="FilterableTreeWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -30,14 +30,14 @@
     <number>9</number>
    </property>
    <item>
-    <widget class="repo::gui::RepoLineEdit" name="lineEdit">
+    <widget class="repo::gui::widget::RepoLineEdit" name="lineEdit">
      <property name="frame">
       <bool>true</bool>
      </property>
     </widget>
    </item>
    <item>
-    <widget class="repo::widgets::RepoWidgetTreeClickable" name="treeView">
+    <widget class="repo::gui::widget::ClickableTreeWidget" name="treeView">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
@@ -88,14 +88,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::gui::RepoLineEdit</class>
+   <class>repo::gui::widget::RepoLineEdit</class>
    <extends>QLineEdit</extends>
-   <header>src/widgets/repo_lineedit.h</header>
+   <header>src/repo/gui/widgets/repo_line_edit.h</header>
   </customwidget>
   <customwidget>
-   <class>repo::widgets::RepoWidgetTreeClickable</class>
+   <class>repo::gui::widget::ClickableTreeWidget</class>
    <extends>QTreeView</extends>
-   <header>src/repo/widgets/repo_widget_tree_clickable.h</header>
+   <header>src/repo/gui/widgets/repo_widget_tree_clickable.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

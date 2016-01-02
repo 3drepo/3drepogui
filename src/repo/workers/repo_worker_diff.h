@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 // Repo GUI
 #include "repo_worker_abstract.h"
-#include "../widgets/repo_widget_rendering.h"
+#include "../gui/widgets/repo_widget_rendering.h"
 
 
 namespace repo {

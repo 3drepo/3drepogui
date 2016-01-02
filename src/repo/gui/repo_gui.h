@@ -26,8 +26,8 @@
 
 // GUI
 
-#include "../../repo/widgets/repo_widget_rendering.h"
-#include "../../widgets/repo_mdisubwindow.h"
+#include "widgets/repo_widget_rendering.h"
+#include "widgets/repo_mdi_subwindow.h"
 //------------------------------------------------------------------------------
 
 
@@ -78,7 +78,7 @@ public slots:
 
     //! Adds a selection tree for a given widget.
     void addSelectionTree(
-            widgets::RepoRenderingWidget* widget,
+            widget::Rendering3DWidget* widget,
             Qt::DockWidgetArea area = Qt::RightDockWidgetArea);
 
 
@@ -86,7 +86,7 @@ public slots:
     void commit();
 
 	void commit(repo::core::model::RepoScene *scene,
-                repo::gui::RepoMdiSubWindow *activeWindow = 0);
+                repo::gui::widget::RepoMdiSubWindow *activeWindow = 0);
 
     //! Shows a connection dialog and connects to the specified database.
     void connectDB();
@@ -107,7 +107,7 @@ public slots:
     void fetchHead();
 
     //! Returns active 3D window, returns null if none and writes to cout.
-    widgets::RepoRenderingWidget *getActiveWidget() const;
+    widget::Rendering3DWidget *getActiveWidget() const;
 
     //! Returns the scene graph of the active 3D window if any.
     const repo::core::model::RepoScene *getActiveScene() const;
