@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>repo_widget_flags</class>
- <widget class="QWidget" name="repo_widget_flags">
+ <class>FlagsWidget</class>
+ <widget class="QWidget" name="repo_widget_flags.h">
   <property name="geometry">
    <rect>
     <x>0</x>

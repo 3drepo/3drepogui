@@ -21,45 +21,47 @@
 #include <QTreeView>
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace widget {
 
-/*!
- * \brief
- * Standard QTreeView emits signals on click and double click only if an item
- * is selected. This extended class emits the same signal with an invalid
- * QModelIndex also when the widget is clicked outside of selection. This is
- * useful for instance to open an AddItem dialog that creates a new entry in the
- * TreeView.
- */
-class RepoWidgetTreeClickable : public QTreeView
-{    
-    Q_OBJECT
+	/*!
+		* \brief
+		* Standard QTreeView emits signals on click and double click only if an item
+		* is selected. This extended class emits the same signal with an invalid
+		* QModelIndex also when the widget is clicked outside of selection. This is
+		* useful for instance to open an AddItem dialog that creates a new entry in the
+		* TreeView.
+		*/
+	class ClickableTreeWidget : public QTreeView
+	{
+		Q_OBJECT
 
-public:
+	public:
 
-    RepoWidgetTreeClickable(QWidget *parent);
+		ClickableTreeWidget(QWidget *parent);
 
-    ~RepoWidgetTreeClickable() {}
+        ~ClickableTreeWidget() {}
 
-public slots:
+		public slots:
 
-    void setDoubleClickMutex();
+		void setDoubleClickMutex();
 
-    void resetDoubleClickMutex();
+		void resetDoubleClickMutex();
 
-public :
+	public:
 
-    //! Returns font of the tree view.
-    QFont getFont() const;
+		//! Returns font of the tree view.
+		QFont getFont() const;
 
-protected :
+	protected:
 
-    virtual void mouseDoubleClickEvent(QMouseEvent*);
+		virtual void mouseDoubleClickEvent(QMouseEvent*);
 
-    bool doubleClickMutex;
+		bool doubleClickMutex;
 
-};
+	};
 
-} // end namespace widgets
+} // end namespace widget
+}
 } // end namespace repo
 

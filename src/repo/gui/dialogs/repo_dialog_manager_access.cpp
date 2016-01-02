@@ -49,19 +49,19 @@ AccessManagerDialog::AccessManagerDialog(
 
     QObject::connect(
                 ui->usersManagerWidget->getFilterableTree(),
-                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::gui::widget::FilterableTreeWidget::totalCountChanged,
                 this,
                 &AccessManagerDialog::updateUsersTabCount);
 
     QObject::connect(
                 ui->rolesManagerWidget->getFilterableTree(),
-                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::gui::widget::FilterableTreeWidget::totalCountChanged,
                 this,
                 &AccessManagerDialog::updateRolesTabCount);
 
     QObject::connect(
                 ui->projectsManagerWidget->getFilterableTree(),
-                &repo::widgets::RepoWidgetTreeFilterable::totalCountChanged,
+                &repo::gui::widget::FilterableTreeWidget::totalCountChanged,
                 this,
                 &AccessManagerDialog::updateProjectsTabCount);
 
@@ -92,12 +92,12 @@ void AccessManagerDialog::refresh()
         QObject::connect(worker,
                          &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
                          ui->rolesManagerWidget,
-                         &repo::widgets::RepoWidgetManagerRoles::setDatabasesWithProjects);
+                         &repo::gui::widget::RolesManagerWidget::setDatabasesWithProjects);
 
         QObject::connect(worker,
                          &repo::worker::RepoWorkerProjects::databasesWithProjectsFetched,
                          ui->usersManagerWidget,
-                         &repo::widgets::RepoWidgetManagerUsers::setDatabasesWithProjects);
+                         &repo::gui::widget::UsersManagerWidget::setDatabasesWithProjects);
 
         connectAndStartWorker(worker);
     }

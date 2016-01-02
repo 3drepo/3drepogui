@@ -157,7 +157,7 @@ UserDialog::UserDialog(
 
 
     QObject::connect(ui->apiKeysUnfilterableTreeWidget,
-                     &repo::widgets::RepoWidgetTreeUnfilterable::rowCountChanged,
+                     &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
                      this, &UserDialog::setNextAPIKey);
 
     //--------------------------------------------------------------------------

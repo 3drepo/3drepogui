@@ -16,8 +16,7 @@
  */
 
 
-#ifndef REPO_SELECTION_TREE_DOCK_WIDGET_H
-#define REPO_SELECTION_TREE_DOCK_WIDGET_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -33,73 +32,65 @@
 #include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
-    class repo_widget_tree_dock;
+    class TreeDockWidget;
 }
 
 namespace repo {
 namespace gui {
+namespace widget {
 
-class repo_widget_tree_dock : public QDockWidget
-{
-    Q_OBJECT    
+	class TreeDockWidget : public QDockWidget
+	{
+		Q_OBJECT
 
-    enum Columns { NAME, TYPE, UID, SID };
+		enum Columns { NAME, TYPE, UID, SID };
 
-public:
+	public:
 
-    explicit repo_widget_tree_dock(
-            widgets::RepoRenderingWidget *glcWidget,
-            QWidget *parent = 0);
+		explicit TreeDockWidget(
+			Rendering3DWidget *glcWidget,
+			QWidget *parent = 0);
 
-    ~repo_widget_tree_dock();
+		~TreeDockWidget();
 
-public slots :
+		public slots :
 
-    //void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
+		//void addNode(QStandardItem *parentItem, const core::RepoNodeAbstract* node);
 
-    void attachPDF();
+		void attachPDF();
 
-    void changeItem(QStandardItem*);
+		void changeItem(QStandardItem*);
 
-    void changeSelection(
-            const QItemSelection& selected,
-            const QItemSelection& deselected);
+		void changeSelection(
+			const QItemSelection& selected,
+			const QItemSelection& deselected);
 
-    void changeSelection(const QItemSelection& selection,
-                         bool unselectSelected);
+		void changeSelection(const QItemSelection& selection,
+			bool unselectSelected);
 
-    void editItem(const QModelIndex &) const;
+		void editItem(const QModelIndex &) const;
 
-    void editSelectedTransformations() const;
+		void editSelectedTransformations() const;
 
-    void editSelectedItems() const;
+		void editSelectedItems() const;
 
-    //void select(const core::RepoNodeAbstract* node,
-    //            bool unselectSelected);
+		//void select(const core::RepoNodeAbstract* node,
+		//            bool unselectSelected);
 
-    void showContextMenu(const QPoint &point);
+		void showContextMenu(const QPoint &point);
 
-protected :
+	protected:
 
-    //core::RepoNodeTransformation *getTransformationFromProxy(const QModelIndex &proxyIndex) const;
+		std::string getType(const QStandardItem *) const;
 
-    //core::RepoNodeTransformation *getTransformationFromSource(const QModelIndex &proxyIndex) const;
+	private:
 
-    //core::RepoNodeAbstract *getNode(const QStandardItem *) const;
+		Ui::TreeDockWidget *ui;
 
-    //core::RepoNodeTransformation *getTransformation(const QStandardItem *) const;
+		Rendering3DWidget* glcWidget;
 
-    std::string getType(const QStandardItem *) const;
-
-private:
-
-    Ui::repo_widget_tree_dock *ui;
-
-    widgets::RepoRenderingWidget* glcWidget;
-
-};
-
+	};
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_SELECTION_TREE_DOCK_WIDGET_H

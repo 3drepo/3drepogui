@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_TEXT_BROWSER_H
-#define REPO_TEXT_BROWSER_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -34,45 +33,42 @@
 
 namespace repo {
 namespace gui {
+namespace widget{
 
-
-class RepoTextBrowser
-        : public QTextBrowser
+	class RepoTextBrowser
+		: public QTextBrowser
 		, public repo::logger::AbstractSubscriber
-{
-	Q_OBJECT
-		
-public :
+	{
+		Q_OBJECT
 
-    //! Default constructor that allocates a file system watcher.
-    RepoTextBrowser(QWidget * parent = 0);
+	public:
 
-    //! Deallocates file system watcher and associated text streams if any.
-    ~RepoTextBrowser();
+		//! Default constructor that allocates a file system watcher.
+		RepoTextBrowser(QWidget * parent = 0);
 
-    //! Reimplemented from AbstractSubscriber.
-	void newMessageReceived(const std::string &msg);
+		//! Deallocates file system watcher and associated text streams if any.
+		~RepoTextBrowser();
 
-public slots :
+		//! Reimplemented from AbstractSubscriber.
+		void newMessageReceived(const std::string &msg);
 
-    //! Adds full file path to a log file that is to be monitored.
-    void addFilePath(const QString &filePath);
+		public slots :
 
-    //! Appends the last line from the given file to the text browser.
-    void watchedFileChanged(const QString &filePath);
+		//! Adds full file path to a log file that is to be monitored.
+		void addFilePath(const QString &filePath);
 
-private :
+		//! Appends the last line from the given file to the text browser.
+		void watchedFileChanged(const QString &filePath);
 
-    //! On old macs there can be only 256 file watchers on the OS.
-    QFileSystemWatcher *fileWatcher;
+	private:
 
-    //! Hash map of full file paths and the associated streams.
-    QHash<QString, QPair<QFile*, QTextStream*>> watchedFiles;
+		//! On old macs there can be only 256 file watchers on the OS.
+		QFileSystemWatcher *fileWatcher;
 
-};
+		//! Hash map of full file paths and the associated streams.
+		QHash<QString, QPair<QFile*, QTextStream*>> watchedFiles;
 
+	};
+}
 } // end namespace gui
 } // end namespace repo
-
-#endif // REPO_TEXT_BROWSER_H
-

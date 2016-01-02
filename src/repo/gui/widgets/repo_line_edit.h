@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_LINE_EDIT_H
-#define REPO_LINE_EDIT_H
-
+#pragma once
 //-----------------------------------------------------------------------------
 // Qt
 #include <QLineEdit>
@@ -30,39 +28,39 @@
 
 namespace repo {
 namespace gui {
+namespace widget{
 
-/*!	
-	Line edit with clear button
-	\sa http://blog.qt.digia.com/blog/2007/06/06/lineedit-with-a-clear-button/
+	/*!
+		Line edit with clear button
+		\sa http://blog.qt.digia.com/blog/2007/06/06/lineedit-with-a-clear-button/
 
 
-    This function is not needed as from QT5.2 line edit now impelements clear
-    button by default!
-*/
-class RepoLineEdit : public QLineEdit
-{
-	Q_OBJECT
-		
-public :
+		This function is not needed as from QT5.2 line edit now impelements clear
+		button by default!
+		*/
+	class RepoLineEdit : public QLineEdit
+	{
+		Q_OBJECT
 
-	RepoLineEdit(QWidget * parent = 0);
-	~RepoLineEdit();
+	public:
 
-public slots :
+		RepoLineEdit(QWidget * parent = 0);
+		~RepoLineEdit();
 
-	//! Sets clear button enabled is text is not empty, disabled otherwise.
-	void setClearButtonEnabled(const QString &text);
+		public slots :
 
-protected :
+		//! Sets clear button enabled is text is not empty, disabled otherwise.
+		void setClearButtonEnabled(const QString &text);
 
-	void resizeEvent(QResizeEvent *);
+	protected:
 
-private :
+		void resizeEvent(QResizeEvent *);
 
-    QToolButton *clearButton;
-};
+	private:
 
+		QToolButton *clearButton;
+	};
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_LINE_EDIT_H

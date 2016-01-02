@@ -18,11 +18,11 @@
 #include "repo_widget_tree_filterable.h"
 #include "ui_repo_widget_tree_filterable.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 
-RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
+FilterableTreeWidget::FilterableTreeWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::RepoWidgetTreeFilterable)
+    , ui(new Ui::FilterableTreeWidget)
     , model(0)
     , proxy(0)
 {
@@ -33,22 +33,22 @@ RepoWidgetTreeFilterable::RepoWidgetTreeFilterable(QWidget *parent)
 
     QObject::connect(
                 proxy, &QSortFilterProxyModel::rowsInserted,
-                this, &RepoWidgetTreeFilterable::updateCountLabel);
+                this, &FilterableTreeWidget::updateCountLabel);
 
     QObject::connect(
                 proxy, &QSortFilterProxyModel::rowsRemoved,
-                this, &RepoWidgetTreeFilterable::updateCountLabel);
+                this, &FilterableTreeWidget::updateCountLabel);
 
     QObject::connect(
                 model, &QStandardItemModel::rowsRemoved,
-                this, &RepoWidgetTreeFilterable::notifyOfTotalCountChange);
+                this, &FilterableTreeWidget::notifyOfTotalCountChange);
 
     QObject::connect(
                 model, &QStandardItemModel::rowsInserted,
-                this, &RepoWidgetTreeFilterable::notifyOfTotalCountChange);
+                this, &FilterableTreeWidget::notifyOfTotalCountChange);
 }
 
-RepoWidgetTreeFilterable::~RepoWidgetTreeFilterable()
+FilterableTreeWidget::~FilterableTreeWidget()
 {    
     delete ui;
 
@@ -61,7 +61,7 @@ RepoWidgetTreeFilterable::~RepoWidgetTreeFilterable()
     proxy = nullptr;
 }
 
-void RepoWidgetTreeFilterable::setCollapsedUI()
+void FilterableTreeWidget::setCollapsedUI()
 {
     this->layout()->setContentsMargins(0,0,0,0);
     this->layout()->setSpacing(0);
@@ -70,7 +70,7 @@ void RepoWidgetTreeFilterable::setCollapsedUI()
     ui->treeView->setLineWidth(0);
 }
 
-void RepoWidgetTreeFilterable::setExpandedUI()
+void FilterableTreeWidget::setExpandedUI()
 {
     this->layout()->setContentsMargins(9,9,9,9);
     this->layout()->setSpacing(6);
@@ -79,22 +79,22 @@ void RepoWidgetTreeFilterable::setExpandedUI()
     ui->treeView->setLineWidth(1);
 }
 
-void RepoWidgetTreeFilterable::setMargins(int m)
+void FilterableTreeWidget::setMargins(int m)
 {
     this->layout()->setContentsMargins(m,m,m,m);
 }
 
-void RepoWidgetTreeFilterable::expandTopLevelItems() const
+void FilterableTreeWidget::expandTopLevelItems() const
 {
     ui->treeView->expandToDepth(1);
 }
 
-void RepoWidgetTreeFilterable::expandItem(const QStandardItem *item) const
+void FilterableTreeWidget::expandItem(const QStandardItem *item) const
 {
     ui->treeView->expand(proxy->mapFromSource(model->indexFromItem(item)));
 }
 
-void RepoWidgetTreeFilterable::clear()
+void FilterableTreeWidget::clear()
 {
     model->removeRows(0, model->rowCount());
     ui->lineEdit->clear();
@@ -102,19 +102,19 @@ void RepoWidgetTreeFilterable::clear()
 }
 
 
-void RepoWidgetTreeFilterable::updateCountLabel() const
+void FilterableTreeWidget::updateCountLabel() const
 {
     ui->countLabel->setText(tr("Showing %1 of %2").arg(proxy->rowCount()).arg(model->rowCount()));
 }
 
-void RepoWidgetTreeFilterable::selectRow(const QStandardItem *item) const
+void FilterableTreeWidget::selectRow(const QStandardItem *item) const
 {
     getSelectionModel()->setCurrentIndex(
                 proxy->mapFromSource(model->indexFromItem(item)),
                 QItemSelectionModel::Select | QItemSelectionModel::Rows);
 }
 
-void RepoWidgetTreeFilterable::removeRow(const QModelIndex &index)
+void FilterableTreeWidget::removeRow(const QModelIndex &index)
 {
     if (index.isValid())
     {
@@ -124,29 +124,29 @@ void RepoWidgetTreeFilterable::removeRow(const QModelIndex &index)
 }
 
 
-void RepoWidgetTreeFilterable::notifyOfTotalCountChange()
+void FilterableTreeWidget::notifyOfTotalCountChange()
 {
     emit totalCountChanged(model->rowCount());
 }
 
 //------------------------------------------------------------------------------
 
-QFont RepoWidgetTreeFilterable::getTreeFont() const
+QFont FilterableTreeWidget::getTreeFont() const
 {
     return ui->treeView->getFont();
 }
 
-QProgressBar* RepoWidgetTreeFilterable::getProgressBar() const
+QProgressBar* FilterableTreeWidget::getProgressBar() const
 {
     return ui->progressBar;
 }
 
-QItemSelectionModel* RepoWidgetTreeFilterable::getSelectionModel() const
+QItemSelectionModel* FilterableTreeWidget::getSelectionModel() const
 {
     return ui->treeView->selectionModel();
 }
 
-QStandardItem *RepoWidgetTreeFilterable::getCurrentItem(int column) const
+QStandardItem *FilterableTreeWidget::getCurrentItem(int column) const
 {
     QModelIndex proxyCurrent = getSelectionModel()->currentIndex();
     QStandardItem *item = 0;
@@ -159,31 +159,31 @@ QStandardItem *RepoWidgetTreeFilterable::getCurrentItem(int column) const
     return item;
 }
 
-QModelIndexList RepoWidgetTreeFilterable::getCurrentSelection() const
+QModelIndexList FilterableTreeWidget::getCurrentSelection() const
 {
     return getProxyModel()->mapSelectionToSource(getSelectionModel()->selection()).indexes();
 }
 
-void RepoWidgetTreeFilterable::setHeaders(const QList<QString>& headers)
+void FilterableTreeWidget::setHeaders(const QList<QString>& headers)
 {
     model->setColumnCount(headers.size());
     for (int i = 0; i < headers.size(); ++i)
         model->setHeaderData(i, Qt::Horizontal, headers[i]);
 }
 
-QTreeView *RepoWidgetTreeFilterable::getTreeView() const
+QTreeView *FilterableTreeWidget::getTreeView() const
 {
     return ui->treeView;
 }
 
-QStandardItem *RepoWidgetTreeFilterable::getItemFromProxy(
+QStandardItem *FilterableTreeWidget::getItemFromProxy(
         const QModelIndex &proxyIndex, int column) const
 {
     QModelIndex sourceIndex = proxy->mapToSource(proxyIndex);
     return getItemFromSource(sourceIndex, column);
 }
 
-QStandardItem *RepoWidgetTreeFilterable::getItemFromSource(
+QStandardItem *FilterableTreeWidget::getItemFromSource(
         const QModelIndex &sourceIndex,
         int column) const
 {
@@ -191,7 +191,7 @@ QStandardItem *RepoWidgetTreeFilterable::getItemFromSource(
     return model->itemFromIndex(index);
 }
 
-void RepoWidgetTreeFilterable::setProxyModel(QSortFilterProxyModel* proxy)
+void FilterableTreeWidget::setProxyModel(QSortFilterProxyModel* proxy)
 {
     if (this->proxy)
         delete this->proxy;
@@ -210,23 +210,23 @@ void RepoWidgetTreeFilterable::setProxyModel(QSortFilterProxyModel* proxy)
                 proxy, &QSortFilterProxyModel::setFilterFixedString);
 }
 
-void RepoWidgetTreeFilterable::setSelectionMode(QAbstractItemView::SelectionMode mode)
+void FilterableTreeWidget::setSelectionMode(QAbstractItemView::SelectionMode mode)
 {
     ui->treeView->setSelectionMode(mode);
 }
 
-void RepoWidgetTreeFilterable::setRootIsDecorated(bool on)
+void FilterableTreeWidget::setRootIsDecorated(bool on)
 {
     ui->treeView->setRootIsDecorated(on);
 }
 
-void RepoWidgetTreeFilterable::storeHeaders(const QString &label)
+void FilterableTreeWidget::storeHeaders(const QString &label)
 {
     QSettings settings(this);
     settings.setValue(label, ui->treeView->header()->saveState());
 }
 
-void RepoWidgetTreeFilterable::storeSelection(const QString &label)
+void FilterableTreeWidget::storeSelection(const QString &label)
 {
     QSettings settings(this);
     // See  https://bugreports.qt.io/browse/QTBUG-42438
@@ -237,7 +237,7 @@ void RepoWidgetTreeFilterable::storeSelection(const QString &label)
     settings.setValue(label, row);
 }
 
-void RepoWidgetTreeFilterable::restoreHeaders(
+void FilterableTreeWidget::restoreHeaders(
         const QList<QString> &headers,
         const QString &label)
 {
@@ -246,7 +246,7 @@ void RepoWidgetTreeFilterable::restoreHeaders(
     ui->treeView->header()->restoreState(settings.value(label).toByteArray());
 }
 
-void RepoWidgetTreeFilterable::restoreSelection(const QString &label)
+void FilterableTreeWidget::restoreSelection(const QString &label)
 {
     // See https://bugreports.qt.io/browse/QTBUG-42438
     // This should magically work from Qt 5.4.0 RC onwards

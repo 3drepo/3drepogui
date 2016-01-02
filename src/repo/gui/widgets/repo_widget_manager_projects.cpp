@@ -19,12 +19,12 @@
 #include "../primitives/repo_standard_item.h"
 
 using namespace repo::gui;
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 
-const QString RepoWidgetManagerProjects::COLUMNS_SETTINGS = "RepoWidgetManagerProjectsColumnsSettings";
+const QString ProjectsManagerWidget::COLUMNS_SETTINGS = "ProjectsManagerWidgetColumnsSettings";
 
-RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
-    : RepoWidgetTreeEditable(parent)
+ProjectsManagerWidget::ProjectsManagerWidget(QWidget *parent)
+    : EditableTreeWidget(parent)
 {
     QList<QString> headers = {
         tr("Project"),
@@ -32,20 +32,20 @@ RepoWidgetManagerProjects::RepoWidgetManagerProjects(QWidget *parent)
         tr("Type"),
         tr("Description")};
 
-    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    FilterableTreeWidget *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
 }
 
-RepoWidgetManagerProjects::~RepoWidgetManagerProjects()
+ProjectsManagerWidget::~ProjectsManagerWidget()
 {
 
     // TODO: store column settings
 }
 
-void RepoWidgetManagerProjects::addProjectSettings(
+void ProjectsManagerWidget::addProjectSettings(
         repo::core::model::RepoProjectSettings projectSettings)
 {
     QList<QStandardItem *> row;
@@ -74,13 +74,13 @@ void RepoWidgetManagerProjects::addProjectSettings(
     getFilterableTree()->addTopLevelRow(row);
 }
 
-repo::core::model::RepoProjectSettings RepoWidgetManagerProjects::getProjectSettings()
+repo::core::model::RepoProjectSettings ProjectsManagerWidget::getProjectSettings()
 {
     return getProjectSettings(getFilterableTree()->getCurrentIndex());
 }
 
 repo::core::model::RepoProjectSettings
-   RepoWidgetManagerProjects::getProjectSettings(const QModelIndex &index)
+   ProjectsManagerWidget::getProjectSettings(const QModelIndex &index)
 {
     repo::core::model::RepoProjectSettings projectSettings;
     if (index.isValid())
@@ -93,7 +93,7 @@ repo::core::model::RepoProjectSettings
 
 
 
-void RepoWidgetManagerProjects::refresh(
+void ProjectsManagerWidget::refresh(
         const repo::core::model::RepoProjectSettings &settings,
         bool isDelete)
 {
@@ -109,7 +109,7 @@ void RepoWidgetManagerProjects::refresh(
 
         QObject::connect(
             worker, &repo::worker::ProjectSettingsWorker::projectSettingsFetched,
-            this, &RepoWidgetManagerProjects::addProjectSettings);
+            this, &ProjectsManagerWidget::addProjectSettings);
 
         //----------------------------------------------------------------------
         // Clear any previous entries
@@ -120,7 +120,7 @@ void RepoWidgetManagerProjects::refresh(
     }
 }
 
-void RepoWidgetManagerProjects::removeItem()
+void ProjectsManagerWidget::removeItem()
 {
     repo::core::model::RepoProjectSettings projectSettings = this->getProjectSettings();
     switch(QMessageBox::warning(this,
@@ -139,7 +139,7 @@ void RepoWidgetManagerProjects::removeItem()
         }
 }
 
-void RepoWidgetManagerProjects::showEditDialog(
+void ProjectsManagerWidget::showEditDialog(
         const repo::core::model::RepoProjectSettings &projectSettings,
         const Action action)
 {
@@ -158,7 +158,7 @@ void RepoWidgetManagerProjects::showEditDialog(
     }
 }
 
-void RepoWidgetManagerProjects::setDBConnection(
+void ProjectsManagerWidget::setDBConnection(
         repo::RepoController *controller,
         const repo::RepoToken* token,
         const std::string& database)

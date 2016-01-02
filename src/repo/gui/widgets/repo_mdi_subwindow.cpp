@@ -29,6 +29,7 @@
 #include <boost/filesystem.hpp>
 
 using namespace repo::gui;
+using namespace repo::gui::widget;
 
 RepoMdiSubWindow::RepoMdiSubWindow(
         QWidget *parent,
@@ -96,7 +97,7 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 
 void RepoMdiSubWindow::setWidget3D(const QString& windowTitle)
 {
-    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, windowTitle));
+    setWidget(new widget::Rendering3DWidget(0, widget::Renderer::GLC, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -104,7 +105,7 @@ void RepoMdiSubWindow::setWidget2D(
         const repo::core::model::RepoScene *scene,
         const QString &windowTitle)
 {
-    setWidget(new repo::widgets::RepoWidgetRendering2D(scene, windowTitle, this));
+    setWidget(new repo::gui::widget::Rendering2DWidget(scene, windowTitle, this));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -112,11 +113,11 @@ void RepoMdiSubWindow::setWidgetFromFile(
     const QString& filePath, repo::RepoController *controller)
 {
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new widgets::RepoRenderingWidget(0, widgets::Renderer::GLC, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widget::Rendering3DWidget(0, widget::Renderer::GLC, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new repo_widget_flags());
+	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new FlagsWidget());
 	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
 		this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
@@ -164,17 +165,17 @@ void RepoMdiSubWindow::finishedLoadingScene(
 {
 	repoLog("finished loading repo scene");
 
-	widgets::RepoRenderingWidget *widget = dynamic_cast<widgets::RepoRenderingWidget*>(this->widget());
+	widget::Rendering3DWidget *widget = dynamic_cast<widget::Rendering3DWidget*>(this->widget());
 
 	if (widget)
 	{
 		connect(
-			widget, &widgets::RepoRenderingWidget::modelLoadProgress,
+			widget, &widget::Rendering3DWidget::modelLoadProgress,
 			this, &RepoMdiSubWindow::progress);
 
 		QObject::connect(
 		 this, &RepoMdiSubWindow::aboutToDelete,
-		 widget, &widgets::RepoRenderingWidget::cancelOperations, Qt::DirectConnection);
+		 widget, &widget::Rendering3DWidget::cancelOperations, Qt::DirectConnection);
 
 		if (repoScene)
 			widget->setRepoScene(repoScene);

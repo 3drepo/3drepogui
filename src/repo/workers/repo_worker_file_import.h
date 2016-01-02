@@ -54,7 +54,7 @@ namespace repo {
 			*/
 			FileImportWorker(const std::string& fullPath,
 				repo::RepoController *controller,
-				const repo::gui::repo_widget_flags *assimpFlagsWidget);
+				const repo::gui::widget::FlagsWidget *assimpFlagsWidget);
 
 			//! Default empty destructor.
 			~FileImportWorker();

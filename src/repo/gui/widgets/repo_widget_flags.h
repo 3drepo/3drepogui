@@ -15,9 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//FIXME: RENAME!!!
-#ifndef REPO_WIDGET_ASSIMP_FLAGS_H
-#define REPO_WIDGET_ASSIMP_FLAGS_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -29,63 +27,63 @@
 #include "../../settings/repo_settings.h"
 
 namespace Ui {
-class repo_widget_flags;
+class FlagsWidget;
 }
 
 namespace repo {
 namespace gui {
+namespace widget {
 
-//! See http://assimp.sourceforge.net/lib_html/postprocess_8h.html
-class repo_widget_flags : public QWidget
-{
-    Q_OBJECT
+	//! See http://assimp.sourceforge.net/lib_html/postprocess_8h.html
+	class FlagsWidget : public QWidget
+	{
+		Q_OBJECT
 
-    //! Databases header positions
-    enum PreDefinedAssimpSettings { DEFAULT = 0, DIRECT_3D = 1, BASIC = 2, MEDIUM = 3, EXTREME = 4 };
+			//! Databases header positions
+		enum PreDefinedAssimpSettings { DEFAULT = 0, DIRECT_3D = 1, BASIC = 2, MEDIUM = 3, EXTREME = 4 };
 
-public:
+	public:
 
-    explicit repo_widget_flags(QWidget *parent = 0);
+		explicit FlagsWidget(QWidget *parent = 0);
 
-    repo::settings::RepoSettings* getSettings() const { return settings; }
+		repo::settings::RepoSettings* getSettings() const { return settings; }
 
-    ~repo_widget_flags();
+		~FlagsWidget();
 
-public slots :
+		public slots :
 
-    //! Saves the current state of the flags into settings.
-    void apply();
+		//! Saves the current state of the flags into settings.
+		void apply();
 
-    void reset();
+		void reset();
 
-    void setBasic();
+		void setBasic();
 
-    //! Sets the crease angle enabled or disabled based on the radio button.
-    void setCreaseAngleEnabled(bool on);
+		//! Sets the crease angle enabled or disabled based on the radio button.
+		void setCreaseAngleEnabled(bool on);
 
-    void setDirect3D();
+		void setDirect3D();
 
-    void setExtreme();
+		void setExtreme();
 
-    void setMedium();
+		void setMedium();
 
-    void setPredefinedSettings(int);
-
-
-
+		void setPredefinedSettings(int);
 
 
-private :
 
-    //! UI var.
-    Ui::repo_widget_flags *ui;
 
-    //! Persistent application settings.
-    repo::settings::RepoSettings *settings;
 
-};
+	private:
 
+		//! UI var.
+		Ui::FlagsWidget *ui;
+
+		//! Persistent application settings.
+		repo::settings::RepoSettings *settings;
+
+	};
+}
 } // end namespace gui
 } // end namespace repo
 
-#endif // REPO_WIDGET_ASSIMP_FLAGS_H

@@ -19,12 +19,12 @@
 #include "../primitives/repo_standard_item.h"
 
 using namespace repo::gui;
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 
-const QString RepoWidgetManagerRoles::COLUMNS_SETTINGS = "RepoWidgetManagerRolesColumnsSettings";
+const QString RolesManagerWidget::COLUMNS_SETTINGS = "RolesManagerWidgetColumnsSettings";
 
-RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
-    : RepoWidgetTreeEditable(parent)
+RolesManagerWidget::RolesManagerWidget(QWidget *parent)
+    : EditableTreeWidget(parent)
 {
     QList<QString> headers = {
         tr("Role"),
@@ -34,19 +34,19 @@ RepoWidgetManagerRoles::RepoWidgetManagerRoles(QWidget *parent)
         tr("Inherited Roles"),
         tr("Modules")};
 
-    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    FilterableTreeWidget *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
 }
 
-RepoWidgetManagerRoles::~RepoWidgetManagerRoles()
+RolesManagerWidget::~RolesManagerWidget()
 {
      getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
-void RepoWidgetManagerRoles::addRole(
+void RolesManagerWidget::addRole(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings)
 {
@@ -97,28 +97,28 @@ void RepoWidgetManagerRoles::addRole(
 }
 
 
-void RepoWidgetManagerRoles::edit()
+void RolesManagerWidget::edit()
 {
     showEditDialog(
                 getRole(),
                 getRoleSettings(),
-                RepoWidgetTreeEditable::Action::EDIT);
+                EditableTreeWidget::Action::EDIT);
 }
 
-void RepoWidgetManagerRoles::edit(const QModelIndex &index)
+void RolesManagerWidget::edit(const QModelIndex &index)
 {
     showEditDialog(
                 getRole(index),
                 getRoleSettings(index),
-                RepoWidgetTreeEditable::Action::EDIT);
+                EditableTreeWidget::Action::EDIT);
 }
 
-repo::core::model::RepoRole RepoWidgetManagerRoles::getRole() const
+repo::core::model::RepoRole RolesManagerWidget::getRole() const
 {
     return getRole(getFilterableTree()->getCurrentIndex());
 }
 
-repo::core::model::RepoRole RepoWidgetManagerRoles::getRole(
+repo::core::model::RepoRole RolesManagerWidget::getRole(
         const QModelIndex &index) const
 {
     repo::core::model::RepoRole role;
@@ -130,12 +130,12 @@ repo::core::model::RepoRole RepoWidgetManagerRoles::getRole(
     return role;
 }
 
-repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings() const
+repo::core::model::RepoRoleSettings RolesManagerWidget::getRoleSettings() const
 {
     return getRoleSettings(getFilterableTree()->getCurrentIndex());
 }
 
-repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings(
+repo::core::model::RepoRoleSettings RolesManagerWidget::getRoleSettings(
         const QModelIndex &index) const
 {
     repo::core::model::RepoRoleSettings settings;
@@ -147,7 +147,7 @@ repo::core::model::RepoRoleSettings RepoWidgetManagerRoles::getRoleSettings(
     return settings;
 }
 
-void RepoWidgetManagerRoles::refresh(
+void RolesManagerWidget::refresh(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings,
         repo::worker::RepoWorkerRoles::Command command)
@@ -167,12 +167,12 @@ void RepoWidgetManagerRoles::refresh(
                     command);
         QObject::connect(
                     worker, &repo::worker::RepoWorkerRoles::roleFetched,
-                    this, &RepoWidgetManagerRoles::addRole);
+                    this, &RolesManagerWidget::addRole);
         connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
     }
 }
 
-void RepoWidgetManagerRoles::setDBConnection(
+void RolesManagerWidget::setDBConnection(
         repo::RepoController *controller,
         const repo::RepoToken* token,
         const std::string& database)
@@ -183,7 +183,7 @@ void RepoWidgetManagerRoles::setDBConnection(
 }
 
 
-void RepoWidgetManagerRoles::removeItem()
+void RolesManagerWidget::removeItem()
 {
     repo::core::model::RepoRole role = this->getRole();
     repo::core::model::RepoRoleSettings settings = this->getRoleSettings();
@@ -204,17 +204,17 @@ void RepoWidgetManagerRoles::removeItem()
     }
 }
 
-void RepoWidgetManagerRoles::showEditDialog(
+void RolesManagerWidget::showEditDialog(
         const repo::core::model::RepoRole &role,
         const repo::core::model::RepoRoleSettings &settings,
-        const RepoWidgetTreeEditable::Action action)
+        const EditableTreeWidget::Action action)
 {
     dialog::RoleDialog roleDialog(
                 role,
                 settings,
                 QString::fromStdString(database),
                 databasesWithProjects,
-                action == RepoWidgetTreeEditable::Action::COPY,
+                action == EditableTreeWidget::Action::COPY,
                 this);
     if (QDialog::Rejected == roleDialog.exec())
     {
@@ -227,14 +227,14 @@ void RepoWidgetManagerRoles::showEditDialog(
         // Create or update role
         refresh(roleDialog.getUpdatedRole(),
                 roleDialog.getUpdatedRoleSettings(),
-                action == RepoWidgetTreeEditable::Action::ADD ||
+                action == EditableTreeWidget::Action::ADD ||
                 roleDialog.isNewRole()
                 ? repo::worker::RepoWorkerRoles::Command::INSERT
                 : repo::worker::RepoWorkerRoles::Command::UPDATE);
     }
 }
 
-void RepoWidgetManagerRoles::setDatabasesWithProjects(
+void RolesManagerWidget::setDatabasesWithProjects(
         const std::map<std::string, std::list<std::string> > &rdwp)
 {
     this->databasesWithProjects.clear();

@@ -35,101 +35,105 @@ Q_DECLARE_METATYPE(repo::core::model::RepoRole)
 Q_DECLARE_METATYPE(repo::core::model::RepoRoleSettings)
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace widget {
 
-class RepoWidgetManagerRoles : public RepoWidgetTreeEditable
-{
-    Q_OBJECT
+	class RolesManagerWidget : public EditableTreeWidget
+	{
+		Q_OBJECT
 
-    static const QString COLUMNS_SETTINGS;
+			static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { ROLE, DATABASE, PERMISSIONS, PRIVILEGES, INHERITED_ROLES, MODULES };
+		enum class Columns { ROLE, DATABASE, PERMISSIONS, PRIVILEGES, INHERITED_ROLES, MODULES };
 
-public:
+	public:
 
-    explicit RepoWidgetManagerRoles(QWidget *parent = 0);
+		explicit RolesManagerWidget(QWidget *parent = 0);
 
-    ~RepoWidgetManagerRoles();
+		~RolesManagerWidget();
 
-public slots:
+		public slots:
 
-    //! Adds role to the roles table (tree widget).
-    void addRole(const repo::core::model::RepoRole &role,
-                 const repo::core::model::RepoRoleSettings &settings);
+		//! Adds role to the roles table (tree widget).
+		void addRole(const repo::core::model::RepoRole &role,
+			const repo::core::model::RepoRoleSettings &settings);
 
-    void copyItem()
-    {
-        showEditDialog(
-                    getRole(),
-                    getRoleSettings(),
-                    RepoWidgetTreeEditable::Action::COPY);
-    }
+		void copyItem()
+		{
+			showEditDialog(
+				getRole(),
+				getRoleSettings(),
+				EditableTreeWidget::Action::COPY);
+		}
 
-    //! Updates selected item.
-    virtual void edit();
+		//! Updates selected item.
+		virtual void edit();
 
-    //! Updates item based on given model index.
-    virtual void edit(const QModelIndex &index);
+		//! Updates item based on given model index.
+		virtual void edit(const QModelIndex &index);
 
-    //! Returns currently selected role.
-    repo::core::model::RepoRole getRole() const;
+		//! Returns currently selected role.
+		repo::core::model::RepoRole getRole() const;
 
-    //! Returns role based on given model index.
-    repo::core::model::RepoRole getRole(const QModelIndex &index) const;
+		//! Returns role based on given model index.
+		repo::core::model::RepoRole getRole(const QModelIndex &index) const;
 
-    repo::core::model::RepoRoleSettings getRoleSettings() const;
+		repo::core::model::RepoRoleSettings getRoleSettings() const;
 
-    //! Returns role settings based on given model index.
-    repo::core::model::RepoRoleSettings getRoleSettings(const QModelIndex &index) const;
+		//! Returns role settings based on given model index.
+		repo::core::model::RepoRoleSettings getRoleSettings(const QModelIndex &index) const;
 
-    //! Refreshes the current list.
-    virtual void refresh()
-    { refresh(repo::core::model::RepoRole(),
-              repo::core::model::RepoRoleSettings(),
-              repo::worker::RepoWorkerRoles::Command::INSERT); }
+		//! Refreshes the current list.
+		virtual void refresh()
+		{
+			refresh(repo::core::model::RepoRole(),
+				repo::core::model::RepoRoleSettings(),
+				repo::worker::RepoWorkerRoles::Command::INSERT);
+		}
 
-    //! Refreshes the current list.
-    void refresh(
-            const repo::core::model::RepoRole &role,
-            const repo::core::model::RepoRoleSettings &settings,
-            repo::worker::RepoWorkerRoles::Command command);
+		//! Refreshes the current list.
+		void refresh(
+			const repo::core::model::RepoRole &role,
+			const repo::core::model::RepoRoleSettings &settings,
+			repo::worker::RepoWorkerRoles::Command command);
 
-    //! Removes item and refreshes the DB if necessary.
-    virtual void removeItem();
+		//! Removes item and refreshes the DB if necessary.
+		virtual void removeItem();
 
-    //! Shows edit dialog.
-    virtual void showEditDialog()
-    {
-        showEditDialog(repo::core::model::RepoRole(),
-                       repo::core::model::RepoRoleSettings(),
-                       RepoWidgetTreeEditable::Action::ADD);
-    }
+		//! Shows edit dialog.
+		virtual void showEditDialog()
+		{
+			showEditDialog(repo::core::model::RepoRole(),
+				repo::core::model::RepoRoleSettings(),
+				EditableTreeWidget::Action::ADD);
+		}
 
-    virtual void showEditDialog(
-            const repo::core::model::RepoRole &role,
-            const repo::core::model::RepoRoleSettings &settings,
-            const RepoWidgetTreeEditable::Action action);
+		virtual void showEditDialog(
+			const repo::core::model::RepoRole &role,
+			const repo::core::model::RepoRoleSettings &settings,
+			const EditableTreeWidget::Action action);
 
-    void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
+		void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 
-public :
+	public:
 
-    void setDBConnection(repo::RepoController *controller,
-            const repo::RepoToken* token,
-            const std::string& database);
+		void setDBConnection(repo::RepoController *controller,
+			const repo::RepoToken* token,
+			const std::string& database);
 
-private :
+	private:
 
-    const repo::RepoToken* token;
+		const repo::RepoToken* token;
 
-    std::string database;
+		std::string database;
 
-    repo::RepoController *controller;
+		repo::RepoController *controller;
 
-    std::map<std::string, std::list<std::string> > databasesWithProjects;
+		std::map<std::string, std::list<std::string> > databasesWithProjects;
 
-};
+	};
 
 } // widgets
+}
 } // repo
 

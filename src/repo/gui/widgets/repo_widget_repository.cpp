@@ -21,13 +21,15 @@
 #include "../../workers/repo_worker_collection.h"
 #include "../../logger/repo_logger.h"
 
+using namespace repo::gui;
+using namespace repo::gui::widget;
 
-const QString repo::gui::RepoWidgetRepository::DATABASES_COLUMNS_SETTINGS = "RepoWidgetRepositoryColumnsSettings";
+const QString RepositoryWidget::DATABASES_COLUMNS_SETTINGS = "RepositoryWidgetColumnsSettings";
 
 //------------------------------------------------------------------------------
-repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
+RepositoryWidget::RepositoryWidget(QWidget* parent)
     : QWidget(parent)
-    , ui(new Ui::RepoWidgetRepository)
+    , ui(new Ui::RepositoryWidget)
     , databaseRowCounter(0)
 {
     ui->setupUi(this);
@@ -67,7 +69,7 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
     //--------------------------------------------------------------------------
 	QObject::connect(
         ui->tabWidget, &QTabWidget::currentChanged,
-		this, &RepoWidgetRepository::changeTab);
+		this, &RepositoryWidget::changeTab);
 
     ui->databasesProgressBar->hide();
     ui->collectionProgressBar->hide();
@@ -83,7 +85,7 @@ repo::gui::RepoWidgetRepository::RepoWidgetRepository(QWidget* parent)
 
 //------------------------------------------------------------------------------
 
-repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
+RepositoryWidget::~RepositoryWidget()
 {   
     QSettings settings(this);
     settings.setValue(DATABASES_COLUMNS_SETTINGS, ui->databasesTreeView->header()->saveState());
@@ -105,7 +107,7 @@ repo::gui::RepoWidgetRepository::~RepoWidgetRepository()
 //
 //------------------------------------------------------------------------------
 
-QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host) const
+QList<QString> RepositoryWidget::getDatabases(const QString& host) const
 {
     // TODO retrieve appropriate host if connected to multiple hosts
     QList<QString> databases;
@@ -125,14 +127,14 @@ QList<QString> repo::gui::RepoWidgetRepository::getDatabases(const QString& host
     return databases;
 }
 
-repo::RepoToken*  repo::gui::RepoWidgetRepository::getConnection(
+repo::RepoToken*  RepositoryWidget::getConnection(
         const QString &host) const
 {
     // TODO: implement multiple host connections.
     return getSelectedConnection();
 }
 
-QList<QString> repo::gui::RepoWidgetRepository::getHosts() const
+QList<QString> RepositoryWidget::getHosts() const
 {
     QList<QString> hosts;
     QStandardItem *root = databasesModel->invisibleRootItem();
@@ -145,7 +147,7 @@ QList<QString> repo::gui::RepoWidgetRepository::getHosts() const
     return hosts;
 }
 
-QList<QString> repo::gui::RepoWidgetRepository::getProjects(
+QList<QString> RepositoryWidget::getProjects(
         const QString &host,
         const QString &database) const
 {
@@ -171,7 +173,7 @@ QList<QString> repo::gui::RepoWidgetRepository::getProjects(
     return projects.toList();
 }
 
-bool repo::gui::RepoWidgetRepository::disconnectDB()
+bool RepositoryWidget::disconnectDB()
 {
     bool success = (token != nullptr);
     if (token)
@@ -185,7 +187,7 @@ bool repo::gui::RepoWidgetRepository::disconnectDB()
     return success;
 }
 
-void repo::gui::RepoWidgetRepository::refresh()
+void RepositoryWidget::refresh()
 {
     // TODO: make sure if multiple mongo databases are connected,
     // all get refreshes
@@ -195,7 +197,7 @@ void repo::gui::RepoWidgetRepository::refresh()
 
 //------------------------------------------------------------------------------
 
-bool repo::gui::RepoWidgetRepository::cancelAllThreads()
+bool RepositoryWidget::cancelAllThreads()
 {
 	emit cancel();
 	return threadPool.waitForDone(); // msecs
@@ -203,7 +205,7 @@ bool repo::gui::RepoWidgetRepository::cancelAllThreads()
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::fetchDatabases(
+void RepositoryWidget::fetchDatabases(
         repo::RepoController *controller, repo::RepoToken *token)
 {
     //--------------------------------------------------------------------------
@@ -222,24 +224,24 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(
         //----------------------------------------------------------------------
 		// Direct connection ensures cancel signal is processed ASAP
 		QObject::connect(
-			this, &RepoWidgetRepository::cancel,
+			this, &RepositoryWidget::cancel,
 			worker, &repo::worker::DatabaseWorker::cancel, Qt::DirectConnection);
 
 		QObject::connect(
 			worker, &repo::worker::DatabaseWorker::hostFetched,
-			this, &RepoWidgetRepository::addHost);
+			this, &RepositoryWidget::addHost);
 
 		QObject::connect(
 			worker, &repo::worker::DatabaseWorker::databaseFetched,
-			this, &RepoWidgetRepository::addDatabase);
+			this, &RepositoryWidget::addDatabase);
 
         QObject::connect(
 			worker, &repo::worker::DatabaseWorker::databaseFinished,
-                    this, &RepoWidgetRepository::incrementDatabaseRow);
+                    this, &RepositoryWidget::incrementDatabaseRow);
 
 		QObject::connect(
 			worker, &repo::worker::DatabaseWorker::collectionFetched,
-			this, &RepoWidgetRepository::addCollection);
+			this, &RepositoryWidget::addCollection);
 
 		QObject::connect(
 			worker, &repo::worker::DatabaseWorker::finished,
@@ -263,14 +265,14 @@ void repo::gui::RepoWidgetRepository::fetchDatabases(
 	}
 }
 
-void repo::gui::RepoWidgetRepository::fetchCollection()
+void RepositoryWidget::fetchCollection()
 {	
 	fetchCollection(getSelectedDatabase(), getSelectedCollection());
 }
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::fetchCollection(
+void RepositoryWidget::fetchCollection(
 	const QString& database, 
 	const QString& collection)
 {
@@ -283,12 +285,12 @@ void repo::gui::RepoWidgetRepository::fetchCollection(
 
 		// Direct connection ensures cancel signal is processed ASAP
 		QObject::connect(
-			this, &RepoWidgetRepository::cancel,
+			this, &RepositoryWidget::cancel,
 			worker, &repo::worker::CollectionWorker::cancel, Qt::DirectConnection);
 
 		QObject::connect(
 			worker, &repo::worker::CollectionWorker::keyValuePairAdded,
-			this, &RepoWidgetRepository::addKeyValuePair);
+			this, &RepositoryWidget::addKeyValuePair);
 
 		QObject::connect(
 			worker, &repo::worker::CollectionWorker::finished,
@@ -314,7 +316,7 @@ void repo::gui::RepoWidgetRepository::fetchCollection(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::addHost(QString host)
+void RepositoryWidget::addHost(QString host)
 {	
 	QList<QStandardItem *> row;	
 	QStandardItem *hostItem = createItem(host, host, Qt::AlignLeft);
@@ -337,7 +339,7 @@ void repo::gui::RepoWidgetRepository::addHost(QString host)
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::addDatabase(QString database)
+void RepositoryWidget::addDatabase(QString database)
 {
 	QList<QStandardItem *> row;	
     //--------------------------------------------------------------------------
@@ -356,7 +358,7 @@ void repo::gui::RepoWidgetRepository::addDatabase(QString database)
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::addCollection(
+void RepositoryWidget::addCollection(
 	const repo::core::model::CollectionStats &stats)
 {
     QString collection = QString::fromStdString(stats.getCollection());
@@ -402,7 +404,7 @@ void repo::gui::RepoWidgetRepository::addCollection(
 	}
 }
 
-void repo::gui::RepoWidgetRepository::addKeyValuePair(
+void RepositoryWidget::addKeyValuePair(
 	QVariant document, 
 	QVariant value, 
 	QVariant type,
@@ -429,7 +431,7 @@ void repo::gui::RepoWidgetRepository::addKeyValuePair(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::clearDatabaseModel()
+void RepositoryWidget::clearDatabaseModel()
 {	
 	databasesModel->removeRows(0, databasesModel->rowCount());	
     ui->databasesFilterLineEdit->clear();
@@ -437,7 +439,7 @@ void repo::gui::RepoWidgetRepository::clearDatabaseModel()
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::clearCollectionModel()
+void RepositoryWidget::clearCollectionModel()
 {
     collectionModel->removeRows(0, collectionModel->rowCount());
     ui->collectionFilterLineEdit->clear();
@@ -445,7 +447,7 @@ void repo::gui::RepoWidgetRepository::clearCollectionModel()
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::changeTab(int index)
+void RepositoryWidget::changeTab(int index)
 {
 	if (0 == index)
 	{
@@ -461,7 +463,7 @@ void repo::gui::RepoWidgetRepository::changeTab(int index)
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::copySelectedCollectionCellToClipboard()
+void RepositoryWidget::copySelectedCollectionCellToClipboard()
 {
     const QModelIndex selectedIndex = ui->collectionTreeView->selectionModel()->currentIndex();
 	QClipboard *clipboard = QApplication::clipboard();
@@ -470,7 +472,7 @@ void repo::gui::RepoWidgetRepository::copySelectedCollectionCellToClipboard()
 
 //------------------------------------------------------------------------------
 
-QString repo::gui::RepoWidgetRepository::getSelectedHost() const
+QString RepositoryWidget::getSelectedHost() const
 {
 	QVariant host;
 	const QModelIndex index = getSelectedDatabasesTreeViewIndex();	
@@ -492,7 +494,7 @@ QString repo::gui::RepoWidgetRepository::getSelectedHost() const
 
 //------------------------------------------------------------------------------
 
-QString repo::gui::RepoWidgetRepository::getSelectedDatabase() const
+QString RepositoryWidget::getSelectedDatabase() const
 {
 	QVariant database;
 	const QModelIndex index = getSelectedDatabasesTreeViewIndex();	
@@ -507,7 +509,7 @@ QString repo::gui::RepoWidgetRepository::getSelectedDatabase() const
 
 //------------------------------------------------------------------------------
 
-QString repo::gui::RepoWidgetRepository::getSelectedCollection() const
+QString RepositoryWidget::getSelectedCollection() const
 {
 	QVariant collection;
 	const QModelIndex index = getSelectedDatabasesTreeViewIndex();	
@@ -517,7 +519,7 @@ QString repo::gui::RepoWidgetRepository::getSelectedCollection() const
 	return collection.toString();
 }
 
-QString repo::gui::RepoWidgetRepository::getSelectedProject() const
+QString RepositoryWidget::getSelectedProject() const
 {
     QString collection = getSelectedCollection();
     return collection.section(".",0,0);
@@ -525,7 +527,7 @@ QString repo::gui::RepoWidgetRepository::getSelectedProject() const
 
 //------------------------------------------------------------------------------
 
-QModelIndex repo::gui::RepoWidgetRepository::getSelectedDatabasesTreeViewIndex() const
+QModelIndex RepositoryWidget::getSelectedDatabasesTreeViewIndex() const
 {
     //--------------------------------------------------------------------------
 	// Selected index might be on different column, hence create a new index
@@ -534,7 +536,7 @@ QModelIndex repo::gui::RepoWidgetRepository::getSelectedDatabasesTreeViewIndex()
     return ui->databasesTreeView->model()->index(selectedIndex.row(), RepoDatabasesColumns::NAME, selectedIndex.parent());
 }
 
-QModelIndex repo::gui::RepoWidgetRepository::getHostModelIndex(const QString& host) const
+QModelIndex RepositoryWidget::getHostModelIndex(const QString& host) const
 {
     //for (ui->databasesTreeView->model())
     return QModelIndex();
@@ -542,7 +544,7 @@ QModelIndex repo::gui::RepoWidgetRepository::getHostModelIndex(const QString& ho
 
 //------------------------------------------------------------------------------
 
-unsigned int repo::gui::RepoWidgetRepository::getHierarchyDepth(const QModelIndex &index)
+unsigned int RepositoryWidget::getHierarchyDepth(const QModelIndex &index)
 {
 	// TODO: use itemFromIndex 
 	// This is inefficient to loop through.
@@ -560,7 +562,7 @@ unsigned int repo::gui::RepoWidgetRepository::getHierarchyDepth(const QModelInde
 	return hierarchyDepth;
 }
 
-QStandardItem* repo::gui::RepoWidgetRepository::getHierarchyDepth(
+QStandardItem* RepositoryWidget::getHierarchyDepth(
 	const QStandardItemModel* model, 
 	unsigned int depth)
 {
@@ -572,7 +574,7 @@ QStandardItem* repo::gui::RepoWidgetRepository::getHierarchyDepth(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::enableFiltering(
+void RepositoryWidget::enableFiltering(
 	QAbstractItemView* view, 
 	QStandardItemModel* model, 
 	QSortFilterProxyModel* proxy,
@@ -598,7 +600,7 @@ void repo::gui::RepoWidgetRepository::enableFiltering(
 
 //------------------------------------------------------------------------------
 
-QStandardItem * repo::gui::RepoWidgetRepository::createItem(
+QStandardItem * RepositoryWidget::createItem(
 	const QString& text, 
 	const QVariant& data,
 	Qt::Alignment alignment,
@@ -614,7 +616,7 @@ QStandardItem * repo::gui::RepoWidgetRepository::createItem(
 
 //------------------------------------------------------------------------------
 
-QStandardItem * repo::gui::RepoWidgetRepository::createItem(
+QStandardItem * RepositoryWidget::createItem(
 	const QVariant& data, 
 	Qt::Alignment alignment)
 {
@@ -623,7 +625,7 @@ QStandardItem * repo::gui::RepoWidgetRepository::createItem(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItem(
+void RepositoryWidget::setItem(
 	QStandardItem * item,	
 	const QString& text, 
 	const QVariant& data)
@@ -635,19 +637,19 @@ void repo::gui::RepoWidgetRepository::setItem(
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemCount(QStandardItem * item, uint64_t value)
+void RepositoryWidget::setItemCount(QStandardItem * item, uint64_t value)
 {
     setItem(item, toLocaleString((qulonglong)value), (qulonglong)value);
 }
 
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoWidgetRepository::setItemSize(QStandardItem * item, uint64_t value)
+void RepositoryWidget::setItemSize(QStandardItem * item, uint64_t value)
 {
     setItem(item, toFileSize((qulonglong)value), (qulonglong)value);
 }
 
-QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
+QIcon RepositoryWidget::getIcon(const QString &collection) const
 {
 	QIcon icon;		
 	QColor color = QWidget::palette().mid().color();
@@ -675,7 +677,7 @@ QIcon repo::gui::RepoWidgetRepository::getIcon(const QString &collection) const
 	return icon;
 }
 
-QString repo::gui::RepoWidgetRepository::toFileSize(uint64_t bytes)
+QString RepositoryWidget::toFileSize(uint64_t bytes)
  {
     QString value;
     if (0 != bytes)

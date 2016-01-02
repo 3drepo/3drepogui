@@ -18,10 +18,10 @@
 
 #include "repo_widget_rendering_2d.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 using namespace repo::gui;
 
-RepoWidgetRendering2D::RepoWidgetRendering2D(
+Rendering2DWidget::Rendering2DWidget(
         const repo::core::model::RepoScene *scene,
         const QString &windowTitle,
         QWidget *parent)
@@ -41,13 +41,13 @@ RepoWidgetRendering2D::RepoWidgetRendering2D(
     this->setWindowIcon(repo::gui::primitive::RepoFontAwesome::getSceneGraphIcon());
 }
 
-RepoWidgetRendering2D::~RepoWidgetRendering2D()
+Rendering2DWidget::~Rendering2DWidget()
 {
 	delete scene();
     delete openGLWidget;
 }
 
-void RepoWidgetRendering2D::zoom(bool in)
+void Rendering2DWidget::zoom(bool in)
 {
     double scaleFactor = 1.15;
     if(in) // zoom in
@@ -59,12 +59,12 @@ void RepoWidgetRendering2D::zoom(bool in)
     }
 }
 
-void RepoWidgetRendering2D::zoomReset()
+void Rendering2DWidget::zoomReset()
 {
     this->setTransform(QTransform());
 }
 
-void RepoWidgetRendering2D::resizeEvent(QResizeEvent * event)
+void Rendering2DWidget::resizeEvent(QResizeEvent * event)
 {
     QGraphicsView::resizeEvent(event);
     //-------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void RepoWidgetRendering2D::resizeEvent(QResizeEvent * event)
             scene()->sceneRect().width(), sceneHeight));
 }
 
-void RepoWidgetRendering2D::wheelEvent(QWheelEvent* event)
+void Rendering2DWidget::wheelEvent(QWheelEvent* event)
 {
     // Zoom if CTRL pressed and wheel rotated.
     if (Qt::Modifier::CTRL == event->modifiers())
@@ -91,21 +91,21 @@ void RepoWidgetRendering2D::wheelEvent(QWheelEvent* event)
         QGraphicsView::wheelEvent(event);
 }
 
-void RepoWidgetRendering2D::mousePressEvent(QMouseEvent *e)
+void Rendering2DWidget::mousePressEvent(QMouseEvent *e)
 {
     lastMousePosition = e->pos();
     QGraphicsView::mousePressEvent(e);
 }
 
 
-void RepoWidgetRendering2D::mouseReleaseEvent(QMouseEvent *e)
+void Rendering2DWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     this->setCursor(Qt::ArrowCursor);
     QGraphicsView::mousePressEvent(e);
 }
 
 
-void RepoWidgetRendering2D::mouseMoveEvent(QMouseEvent *e)
+void Rendering2DWidget::mouseMoveEvent(QMouseEvent *e)
 {
     if (e->buttons().testFlag(Qt::MidButton))
     {
@@ -121,7 +121,7 @@ void RepoWidgetRendering2D::mouseMoveEvent(QMouseEvent *e)
     QGraphicsView::mousePressEvent(e);
 }
 
-void RepoWidgetRendering2D::keyPressEvent(QKeyEvent *e)
+void Rendering2DWidget::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {

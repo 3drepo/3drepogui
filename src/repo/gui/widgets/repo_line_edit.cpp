@@ -17,7 +17,9 @@
 
 #include "repo_line_edit.h"
 
-repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent) 
+using namespace repo::gui::widget;
+
+RepoLineEdit::RepoLineEdit(QWidget * parent) 
 	: QLineEdit(parent)
 {
 	this->setPlaceholderText(tr("Filter"));
@@ -49,12 +51,12 @@ repo::gui::RepoLineEdit::RepoLineEdit(QWidget * parent)
 	setClearButtonEnabled(this->text());
 }
 
-repo::gui::RepoLineEdit::~RepoLineEdit()
+RepoLineEdit::~RepoLineEdit()
 {
 	delete clearButton;
 }
 
- void repo::gui::RepoLineEdit::resizeEvent(QResizeEvent *)
+ void RepoLineEdit::resizeEvent(QResizeEvent *)
 {
 	QSize size = clearButton->sizeHint();
 	int width = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
@@ -62,7 +64,7 @@ repo::gui::RepoLineEdit::~RepoLineEdit()
 		(rect().bottom() + 1 - size.height())/2);
 }
 
- void repo::gui::RepoLineEdit::setClearButtonEnabled(const QString &text)
+ void RepoLineEdit::setClearButtonEnabled(const QString &text)
 {
 	bool on = !text.isEmpty();
 	clearButton->setVisible(on);

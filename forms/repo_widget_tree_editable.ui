@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RepoWidgetTreeEditable</class>
- <widget class="QWidget" name="RepoWidgetTreeEditable">
+ <class>EditableTreeWidget</class>
+ <widget class="QWidget" name="EditableTreeWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="repo::widgets::RepoWidgetTreeFilterable" name="filterableTreeWidget" native="true"/>
+    <widget class="repo::gui::widget::FilterableTreeWidget" name="filterableTreeWidget" native="true"/>
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
@@ -119,7 +119,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::widgets::RepoWidgetTreeFilterable</class>
+   <class>repo::gui::widget::FilterableTreeWidget</class>
    <extends>QWidget</extends>
    <header>src/repo/gui/widgets/repo_widget_tree_filterable.h</header>
    <container>1</container>

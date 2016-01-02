@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPO_WIDGET_REPOSITORY_H
-#define REPO_WIDGET_REPOSITORY_H
+#pragma once
 
 //------------------------------------------------------------------------------
 // Qt
@@ -40,260 +39,264 @@
 #include "repo_line_edit.h"
 
 namespace Ui {
-    class RepoWidgetRepository;
+    class RepositoryWidget;
 }
 
 namespace repo {
 namespace gui {
+namespace widget{
 
-class RepoWidgetRepository : public QWidget, public repo::gui::primitive::RepoIDBCache
-{
-	Q_OBJECT
-		
-	//! Databases header positions
-    enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
+	class RepositoryWidget : public QWidget, public repo::gui::primitive::RepoIDBCache
+	{
+		Q_OBJECT
 
-	//! Collection header positions
-	enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
+			//! Databases header positions
+		enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
 
-    static const QString DATABASES_COLUMNS_SETTINGS;
+		//! Collection header positions
+		enum RepoCollectionColumns { DOCUMENT = 0, VALUE = 1, TYPE = 2 };
 
-public :
+		static const QString DATABASES_COLUMNS_SETTINGS;
 
-	//! Constructor
-    explicit RepoWidgetRepository(QWidget* parent = 0);
+	public:
 
-	//! Desctructor, removes the custom title bar widget.
-	~RepoWidgetRepository();
-	
-signals :
+		//! Constructor
+		explicit RepositoryWidget(QWidget* parent = 0);
 
-	/*! Signal emitted to cancel all running threads. 
-     *	Use waitForDone() to make sure all have finished.
-     */
-	void cancel();
+		//! Desctructor, removes the custom title bar widget.
+		~RepositoryWidget();
 
+	signals:
 
+		/*! Signal emitted to cancel all running threads.
+			*	Use waitForDone() to make sure all have finished.
+			*/
+		void cancel();
 
 
-    //--------------------------------------------------------------------------
-    //
-    // RepoIDBCache
-    //
-    //--------------------------------------------------------------------------
 
-public slots :
 
-    virtual QList<QString> getCollections(const QString &host, const QString &database) const
-    { return QList<QString>(); }
+		//--------------------------------------------------------------------------
+		//
+		// RepoIDBCache
+		//
+		//--------------------------------------------------------------------------
 
-    ////! Returns connection corresponding to given host.
-    virtual repo::RepoToken* getConnection(const QString &host) const;
+		public slots :
 
-    //! Returns a list of available hosts.
-    virtual QList<QString> getHosts() const;
+		virtual QList<QString> getCollections(const QString &host, const QString &database) const
+		{
+			return QList<QString>();
+		}
 
-    //! Returns a list of available projects in a given database (a subset of all collections).
-    virtual QList<QString> getProjects(const QString &host, const QString &database) const;
+		////! Returns connection corresponding to given host.
+		virtual repo::RepoToken* getConnection(const QString &host) const;
 
-    /*!
-     * Returns a copy of a selected connection. It is necessary to reconnect
-     * and reauthenticate.
-     */
-    repo::RepoToken* getSelectedConnection() const { return token; }
+		//! Returns a list of available hosts.
+		virtual QList<QString> getHosts() const;
 
-    //! Returns a list of available databases.
-    QList<QString> getDatabases(const QString& host) const;
+		//! Returns a list of available projects in a given database (a subset of all collections).
+		virtual QList<QString> getProjects(const QString &host, const QString &database) const;
 
-    //! Returns selected host, empty string if none selected.
-    QString getSelectedHost() const;
+		/*!
+			* Returns a copy of a selected connection. It is necessary to reconnect
+			* and reauthenticate.
+			*/
+		repo::RepoToken* getSelectedConnection() const { return token; }
 
-    //! Returns selected database, empty string if none selected.
-    QString getSelectedDatabase() const;
+		//! Returns a list of available databases.
+		QList<QString> getDatabases(const QString& host) const;
 
-    //--------------------------------------------------------------------------
+		//! Returns selected host, empty string if none selected.
+		QString getSelectedHost() const;
 
-public slots :
+		//! Returns selected database, empty string if none selected.
+		QString getSelectedDatabase() const;
 
-    //! Disconnects database connection, if any.
-    bool disconnectDB();
+		//--------------------------------------------------------------------------
 
-    //! Refreshes all connected databases. Only one at the moment.
-    void refresh();
-		
-	//! Removes all threads from the thread pool and returns true if successful.
-	bool cancelAllThreads();
+		public slots :
 
-	//! Fetches databases from the server.
-	void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
+		//! Disconnects database connection, if any.
+		bool disconnectDB();
 
-	//! Fetches currently selected collection (if any) from the server.
-	void fetchCollection();
+		//! Refreshes all connected databases. Only one at the moment.
+		void refresh();
 
-	////! Fetches collection.
-	void fetchCollection(
-		const QString& /* database */, 
-		const QString& /* collection */);
+		//! Removes all threads from the thread pool and returns true if successful.
+		bool cancelAllThreads();
 
-	void addHost(QString name);
+		//! Fetches databases from the server.
+		void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
 
-	void addDatabase(QString name);
+		//! Fetches currently selected collection (if any) from the server.
+		void fetchCollection();
 
-    void addCollection(const repo::core::model::CollectionStats &stats);
+		////! Fetches collection.
+		void fetchCollection(
+			const QString& /* database */,
+			const QString& /* collection */);
 
-	void addKeyValuePair(
-		QVariant /* key */, 
-		QVariant /* value */, 
-		QVariant /* type */,
-		unsigned int depth = 0);
+		void addHost(QString name);
 
-    //--------------------------------------------------------------------------
-	//
-	// Data management
-	//
-    //--------------------------------------------------------------------------
+		void addDatabase(QString name);
 
-	//! Removes all items from the databases model.
-	void clearDatabaseModel();
+		void addCollection(const repo::core::model::CollectionStats &stats);
 
-	//! Removes all items from the collection model.
-	void clearCollectionModel();
+		void addKeyValuePair(
+			QVariant /* key */,
+			QVariant /* value */,
+			QVariant /* type */,
+			unsigned int depth = 0);
 
-    //! Changes the tab based on an index value.
-	void changeTab(int index);
+		//--------------------------------------------------------------------------
+		//
+		// Data management
+		//
+		//--------------------------------------------------------------------------
 
-    //! Copies selected collection cell to clipboard.
-	void copySelectedCollectionCellToClipboard();
+		//! Removes all items from the databases model.
+		void clearDatabaseModel();
 
-    //! Expands all collection records.
-    inline void expandAllCollectionRecords() { ui->collectionTreeView->expandAll(); }
+		//! Removes all items from the collection model.
+		void clearCollectionModel();
 
-    //! Increments the current database row.
-    inline void incrementDatabaseRow() { databaseRowCounter++; }
+		//! Changes the tab based on an index value.
+		void changeTab(int index);
 
-public :
+		//! Copies selected collection cell to clipboard.
+		void copySelectedCollectionCellToClipboard();
 
-    //--------------------------------------------------------------------------
-    //
-    // Getters
-    //
-    //--------------------------------------------------------------------------
+		//! Expands all collection records.
+		inline void expandAllCollectionRecords() { ui->collectionTreeView->expandAll(); }
 
-	//! Returns selected collection, empty string if none selected.
-	QString getSelectedCollection() const;
+		//! Increments the current database row.
+		inline void incrementDatabaseRow() { databaseRowCounter++; }
 
-    //! Returns selected project, empty string if none selected.
-    QString getSelectedProject() const;
+	public:
 
-    //! Returns the databases tree view.
-    QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
+		//--------------------------------------------------------------------------
+		//
+		// Getters
+		//
+		//--------------------------------------------------------------------------
 
-    //! Returns the collection tree view.
-    QWidget *getCollectionTreeView() const { return ui->collectionTreeView; }
+		//! Returns selected collection, empty string if none selected.
+		QString getSelectedCollection() const;
 
-    const QPoint &mapToGlobalDatabasesTreeView(const QPoint &pos)
-        { return ui->databasesTreeView->viewport()->mapToGlobal(pos); }
+		//! Returns selected project, empty string if none selected.
+		QString getSelectedProject() const;
 
-    const QPoint &mapToGlobalCollectionTreeView(const QPoint &pos)
-        { return ui->collectionTreeView->viewport()->mapToGlobal(pos); }
+		//! Returns the databases tree view.
+		QWidget *getDatabasesTreeView() const { return ui->databasesTreeView; }
 
-private :
+		//! Returns the collection tree view.
+		QWidget *getCollectionTreeView() const { return ui->collectionTreeView; }
 
-	//! Returns a selected databases model corresponding to the NAME column.
-	QModelIndex getSelectedDatabasesTreeViewIndex() const;
+		const QPoint &mapToGlobalDatabasesTreeView(const QPoint &pos)
+		{
+			return ui->databasesTreeView->viewport()->mapToGlobal(pos);
+		}
 
-    QModelIndex getHostModelIndex(const QString& host) const;
+		const QPoint &mapToGlobalCollectionTreeView(const QPoint &pos)
+		{
+			return ui->collectionTreeView->viewport()->mapToGlobal(pos);
+		}
 
-    //--------------------------------------------------------------------------
-	//
-	// Static helpers
-	//
-    //--------------------------------------------------------------------------
-	
-	/*! Returns a hierarchy depth for given model index. 
-	    Root is depth 0, top level items are 1, their children are 2, etc.
-	*/
-	static unsigned int getHierarchyDepth(const QModelIndex&); 
+	private:
 
-	static QStandardItem* getHierarchyDepth(
-		const QStandardItemModel* /* model */, 
-		unsigned int /* depth */);
+		//! Returns a selected databases model corresponding to the NAME column.
+		QModelIndex getSelectedDatabasesTreeViewIndex() const;
 
-	/*! Sets the appropriate flags for case insensitive filtering for all 
-	 * columns of a model.
-	 */
-	static void enableFiltering(
-		QAbstractItemView*, 
-		QStandardItemModel*, 
-		QSortFilterProxyModel*,
-		QLineEdit*);
+		QModelIndex getHostModelIndex(const QString& host) const;
 
-    //--------------------------------------------------------------------------
-	//! Returns a non-editable item with set properties as given.
-	static QStandardItem* createItem(const QString&, const QVariant&, Qt::Alignment = Qt::AlignLeft, bool enabled = true);
+		//--------------------------------------------------------------------------
+		//
+		// Static helpers
+		//
+		//--------------------------------------------------------------------------
 
-	static QStandardItem* createItem(const QVariant&, Qt::Alignment = Qt::AlignLeft);
-	
-	static void setItem(QStandardItem*, const QString&, const QVariant&);
+		/*! Returns a hierarchy depth for given model index.
+			Root is depth 0, top level items are 1, their children are 2, etc.
+			*/
+		static unsigned int getHierarchyDepth(const QModelIndex&);
 
-	static void setItemSize(QStandardItem*, uint64_t);
+		static QStandardItem* getHierarchyDepth(
+			const QStandardItemModel* /* model */,
+			unsigned int /* depth */);
 
-	static void setItemCount(QStandardItem*, uint64_t);
+		/*! Sets the appropriate flags for case insensitive filtering for all
+			* columns of a model.
+			*/
+		static void enableFiltering(
+			QAbstractItemView*,
+			QStandardItemModel*,
+			QSortFilterProxyModel*,
+			QLineEdit*);
 
-	/*! Returns icon if collection contains recognized string such as "scene" or "history",
-     *	empty icon otherwise.
-     */
-	QIcon getIcon(const QString& collection) const;
+		//--------------------------------------------------------------------------
+		//! Returns a non-editable item with set properties as given.
+		static QStandardItem* createItem(const QString&, const QVariant&, Qt::Alignment = Qt::AlignLeft, bool enabled = true);
 
-    //! Returns a human readable string of kilobytes, megabytes etc.
-    static QString toFileSize(uint64_t bytes);
+		static QStandardItem* createItem(const QVariant&, Qt::Alignment = Qt::AlignLeft);
 
-    //! Returns the current locale string representation.
-    template <class T>
-    static QString toLocaleString(const T & value)
-    {
-        QLocale locale;
-        return locale.toString(value);
-    }
+		static void setItem(QStandardItem*, const QString&, const QVariant&);
 
-    //--------------------------------------------------------------------------
-	//
-	// Private variables
-	//
-    //--------------------------------------------------------------------------
+		static void setItemSize(QStandardItem*, uint64_t);
 
-private :
+		static void setItemCount(QStandardItem*, uint64_t);
 
-    //! Access to ui elements
-    Ui::RepoWidgetRepository *ui;
+		/*! Returns icon if collection contains recognized string such as "scene" or "history",
+			*	empty icon otherwise.
+			*/
+		QIcon getIcon(const QString& collection) const;
 
-	//! Default model for the databases.
-    QStandardItemModel *databasesModel;
+		//! Returns a human readable string of kilobytes, megabytes etc.
+		static QString toFileSize(uint64_t bytes);
 
-	//! Sorting model proxy for the databases.
-    QSortFilterProxyModel *databasesProxyModel;
+		//! Returns the current locale string representation.
+		template <class T>
+		static QString toLocaleString(const T & value)
+		{
+			QLocale locale;
+			return locale.toString(value);
+		}
 
-	//! Default model for the collection.
-    QStandardItemModel *collectionModel;
+		//--------------------------------------------------------------------------
+		//
+		// Private variables
+		//
+		//--------------------------------------------------------------------------
 
-	//! Sorting model proxy for the collection.
-    QSortFilterProxyModel *collectionProxyModel;
+	private:
 
-	//! Private thread pool local to this object only.
-	QThreadPool threadPool;
+		//! Access to ui elements
+		Ui::RepositoryWidget *ui;
 
-    //! Database controller
-    repo::RepoController *controller;
+		//! Default model for the databases.
+		QStandardItemModel *databasesModel;
 
-    //! Connection token
-    repo::RepoToken *token;
+		//! Sorting model proxy for the databases.
+		QSortFilterProxyModel *databasesProxyModel;
 
-    //! Counter of database rows
-    int databaseRowCounter;
-};
+		//! Default model for the collection.
+		QStandardItemModel *collectionModel;
 
+		//! Sorting model proxy for the collection.
+		QSortFilterProxyModel *collectionProxyModel;
+
+		//! Private thread pool local to this object only.
+		QThreadPool threadPool;
+
+		//! Database controller
+		repo::RepoController *controller;
+
+		//! Connection token
+		repo::RepoToken *token;
+
+		//! Counter of database rows
+		int databaseRowCounter;
+	};
+}
 } // end namespace gui
 } // end namespace repo
-
-#endif // REPO_WIDGET_REPOSITORY_H
-

@@ -22,8 +22,9 @@
 #include "../renderers/repo_webview.h"
 
 using namespace repo::gui;
+using namespace repo::gui::widget;
 
-repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
+RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
     , logo(":/images/3drepo-bg.png")
 {
@@ -46,9 +47,9 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 
 
     //--------------------------------------------------------------------------
-    // widgets::RepoRenderingWidget selection
+    // widget::Rendering3DWidget selection
 	qRegisterMetaType<std::vector<std::string>>("std::vector<std::string>");
-    qRegisterMetaType<const repo::gui::widgets::RepoRenderingWidget*>("const repo::gui::widgets::RepoRenderingWidget*");
+    qRegisterMetaType<const repo::gui::widget::Rendering3DWidget*>("const repo::gui::widget::Rendering3DWidget*");
 
 
     //--------------------------------------------------------------------------
@@ -58,7 +59,7 @@ repo::gui::RepoMdiArea::RepoMdiArea(QWidget * parent)
 //        fpsTimer.start(1/(QGuiApplication::screens()[0]->refreshRate()) * 1000);
 }
 
-repo::gui::RepoMdiArea::~RepoMdiArea()
+RepoMdiArea::~RepoMdiArea()
 {
     fpsTimer.stop();
 }
@@ -69,14 +70,14 @@ repo::gui::RepoMdiArea::~RepoMdiArea()
 //
 //------------------------------------------------------------------------------
 
-void repo::gui::RepoMdiArea::chainSubWindows(bool checked)
+void RepoMdiArea::chainSubWindows(bool checked)
 {
-    std::vector<widgets::RepoRenderingWidget *> visited;
-    std::vector<widgets::RepoRenderingWidget*>::size_type i, j;
-    std::vector<widgets::RepoRenderingWidget*> widgets = getWidgets<widgets::RepoRenderingWidget*>();
+    std::vector<widget::Rendering3DWidget *> visited;
+    std::vector<widget::Rendering3DWidget*>::size_type i, j;
+    std::vector<widget::Rendering3DWidget*> widgets = getWidgets<widget::Rendering3DWidget*>();
     for (j = 0; j < widgets.size(); ++j)
     {
-        widgets::RepoRenderingWidget * widget = widgets[j];
+        widget::Rendering3DWidget * widget = widgets[j];
         // dis/connect hooks to all previous windows
 		for(i = 0; i != visited.size(); ++i)
 		{
@@ -87,7 +88,7 @@ void repo::gui::RepoMdiArea::chainSubWindows(bool checked)
 	}
 }
 
-void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
+void RepoMdiArea::maximizeSubWindows(WindowOrder order)
 {
 	QList<RepoMdiSubWindow *> openWindows = subWindowList(true, order);
 
@@ -130,7 +131,7 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 //         ++it)
 //	{
 //        RepoMdiSubWindow *subWindow = *it;
-//        widgets::RepoRenderingWidget *widget = subWindow->widget<widgets::RepoRenderingWidget*>();
+//        widget::Rendering3DWidget *widget = subWindow->widget<widget::Rendering3DWidget*>();
 //        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
 //        for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
 //             i < meshes.size(); ++i)
@@ -150,7 +151,7 @@ void repo::gui::RepoMdiArea::maximizeSubWindows(WindowOrder order)
 	this->repaint();
 }
 
-void repo::gui::RepoMdiArea::closeHiddenSubWindows()
+void RepoMdiArea::closeHiddenSubWindows()
 {
     QList<RepoMdiSubWindow*> subwindows = this->subWindowList();
     for (int i = 0; i < subwindows.size(); ++i)
@@ -167,7 +168,7 @@ void repo::gui::RepoMdiArea::closeHiddenSubWindows()
 //
 //------------------------------------------------------------------------------
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWidget(QWidget* widget)
+repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWidget(QWidget* widget)
 {
     RepoMdiSubWindow * subWindow = new RepoMdiSubWindow();
     widget->setParent(subWindow);
@@ -184,7 +185,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWidget(QWidget* widge
     return subWindow;
 }
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
+repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWindow(
 	repo::RepoController *controller,
     const QString& fullPath)
 {
@@ -196,14 +197,14 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSubWindow(
     // FIXME: timer timeout
 //	QObject::connect(
 //        &fpsTimer, &QTimer::timeout,
-//        repoSubWindow->widget<widgets::RepoRenderingWidget*>(), &widgets::RepoRenderingWidget::update);
+//        repoSubWindow->widget<widget::Rendering3DWidget*>(), &widget::Rendering3DWidget::update);
 
 	this->update();
 	this->repaint();
 	return repoSubWindow;
 }
 
-repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
+repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	repo::RepoController *controller,
     const repo::RepoToken *token,
 	const QString& database,
@@ -219,7 +220,7 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
     // FIXME
 //	QObject::connect(
 //            &fpsTimer, &QTimer::timeout,
-//            repoSubWindow->widget<widgets::RepoRenderingWidget*>(), &widgets::RepoRenderingWidget::update);
+//            repoSubWindow->widget<widget::Rendering3DWidget*>(), &widget::Rendering3DWidget::update);
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
@@ -242,8 +243,8 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
 	return repoSubWindow;
 }
 
-repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
-    widgets::RepoRenderingWidget* widget)
+repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
+    widget::Rendering3DWidget* widget)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow(this);
 	repoSubWindow->setWidget(widget);
@@ -253,19 +254,19 @@ repo::gui::RepoMdiSubWindow * repo::gui::RepoMdiArea::addSubWindow(
     // FIXME
 //    QObject::connect(
 //            &fpsTimer, &QTimer::timeout,
-//            repoSubWindow->widget<widgets::RepoRenderingWidget*>(), &widgets::RepoRenderingWidget::update);
+//            repoSubWindow->widget<widget::Rendering3DWidget*>(), &widget::Rendering3DWidget::update);
 
 	this->update();
 	this->repaint();
 	return repoSubWindow;
 }
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addWebViewSubWindow()
+repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addWebViewSubWindow()
 {
     return addSubWidget(new renderer::RepoWebView());
 }
 
-repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSceneGraphSubWindow(
+repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSceneGraphSubWindow(
         const repo::core::model::RepoScene *scene,
         const QString &windowTitle)
 {
@@ -277,7 +278,7 @@ repo::gui::RepoMdiSubWindow* repo::gui::RepoMdiArea::addSceneGraphSubWindow(
     return repoSubWindow;
 }
 
-QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
+QList<repo::gui::widget::RepoMdiSubWindow *> RepoMdiArea::subWindowList(
 	bool onlyVisible,
 	WindowOrder order) const
 {
@@ -298,12 +299,12 @@ QList<repo::gui::RepoMdiSubWindow *> repo::gui::RepoMdiArea::subWindowList(
 	return subWindowList;
 }
 
-repo::gui::RepoMdiSubWindow *repo::gui::RepoMdiArea::activeSubWindow() const
+repo::gui::widget::RepoMdiSubWindow *RepoMdiArea::activeSubWindow() const
 {
     return dynamic_cast<RepoMdiSubWindow*>(QMdiArea::activeSubWindow());
 }
 
-void repo::gui::RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
+void RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 {
 	//this->maximizeSubWindows();
     // TODO: improve performance

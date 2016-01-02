@@ -25,112 +25,114 @@
 #include "../primitives/repo_combo_box_delegate.h"
 
 namespace Ui {
-class RepoWidgetTreeUnfilterable;
+class UnfilterableTreeWidget;
 }
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace widget {
 
-/**
- * Convenience class that makes use of simplified QTreeWidget instead of more
- * cumbersome QTreeView. This, however, does not provide any sorting or
- * filtering functionality and instead is targetting smaller dialogs with lesser
- * entries.
- *
- * @sa RepoWidgetTreeFilterable
- * @brief The RepoWidgetTreeUnfilterable class
- */
-class RepoWidgetTreeUnfilterable : public QWidget
-{
-    Q_OBJECT
+	/**
+		* Convenience class that makes use of simplified QTreeWidget instead of more
+		* cumbersome QTreeView. This, however, does not provide any sorting or
+		* filtering functionality and instead is targetting smaller dialogs with lesser
+		* entries.
+		*
+		* @sa FilterableTreeWidget
+		* @brief The UnfilterableTreeWidget class
+		*/
+	class UnfilterableTreeWidget : public QWidget
+	{
+		Q_OBJECT
 
-public:
+	public:
 
-    //! Constructs a default widget with no headers
-    explicit RepoWidgetTreeUnfilterable(QWidget *parent = 0);
+		//! Constructs a default widget with no headers
+		explicit UnfilterableTreeWidget(QWidget *parent = 0);
 
-    ~RepoWidgetTreeUnfilterable();
+		~UnfilterableTreeWidget();
 
-signals :
+	signals:
 
-    void rowCountChanged(int oldRowCount, int newRowCount);
+		void rowCountChanged(int oldRowCount, int newRowCount);
 
-    void tabTextChanged(int tab, QString text);
+		void tabTextChanged(int tab, QString text);
 
-public slots :
+		public slots :
 
-    void setButtonsEnabled(bool enabled);
+		void setButtonsEnabled(bool enabled);
 
-    //! Sets the headers on this model.
-    void setHeaders(const QStringList &headers);
+		//! Sets the headers on this model.
+		void setHeaders(const QStringList &headers);
 
-    //! Adds a default row depending on what it is set to.
-    virtual QTreeWidgetItem *addRow()
-    {
-        return addRow(newRowText);
-    }
+		//! Adds a default row depending on what it is set to.
+		virtual QTreeWidgetItem *addRow()
+		{
+			return addRow(newRowText);
+		}
 
-    //! Removes currently selected row item.
-    virtual void removeRow();
+		//! Removes currently selected row item.
+		virtual void removeRow();
 
-    //! Adds items as a list. Makes sure the size of the list mataches columns count.
-    QTreeWidgetItem *addRow(const QStringList &list, bool enabled = true);
+		//! Adds items as a list. Makes sure the size of the list mataches columns count.
+		QTreeWidgetItem *addRow(const QStringList &list, bool enabled = true);
 
-    QTreeWidgetItem *addRow(const QString &a, const QString &b);
+		QTreeWidgetItem *addRow(const QString &a, const QString &b);
 
-    QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair, bool enabled = true);
+		QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair, bool enabled = true);
 
-    void addRows(const std::list<std::pair<std::string, std::string> > &list);
+		void addRows(const std::list<std::pair<std::string, std::string> > &list);
 
-    std::list<std::pair<std::string, std::string> > getItemsAsListOfPairsOfStrings() const;
+		std::list<std::pair<std::string, std::string> > getItemsAsListOfPairsOfStrings() const;
 
-    std::vector<std::string> getItemsAsVectorOfStrings() const;
+		std::vector<std::string> getItemsAsVectorOfStrings() const;
 
-    int getRowCount() const;
+		int getRowCount() const;
 
-    void setItemDelegateForRow(const QString &item);
+		void setItemDelegateForRow(const QString &item);
 
-    void setItemDelegateForRow(const QString &item, int row);
+		void setItemDelegateForRow(const QString &item, int row);
 
-    void setItemDelegateForColumn(const QString &item, int column);
+		void setItemDelegateForColumn(const QString &item, int column);
 
-    void setDelegates(const QHash<QString, repo::gui::primitive::RepoComboBoxDelegate* > &delegates)
-    {
-        this->delegates = delegates;
-    }
+		void setDelegates(const QHash<QString, repo::gui::primitive::RepoComboBoxDelegate* > &delegates)
+		{
+			this->delegates = delegates;
+		}
 
-    void setNewRowText(const QStringList &defaultRow)
-    {
-        this->newRowText = defaultRow;
-    }
+		void setNewRowText(const QStringList &defaultRow)
+		{
+			this->newRowText = defaultRow;
+		}
 
-    //! Sets the appropriate delegate if the database column on the project item has changed.
-    void updateDelegate(QTreeWidgetItem *current, int column);
+		//! Sets the appropriate delegate if the database column on the project item has changed.
+		void updateDelegate(QTreeWidgetItem *current, int column);
 
-    void notifyTabTextChange(int oldRowCount, int newRowCount);
+		void notifyTabTextChange(int oldRowCount, int newRowCount);
 
-public :
+	public:
 
-    void registerTabWidget(QTabWidget *tabWidget, int tab);
+		void registerTabWidget(QTabWidget *tabWidget, int tab);
 
-    //! Chops last chars of type " (oldCount)" and appends " (newCount)"
-    static QString updateCountString(QString string, int oldCount, int newCount);
+		//! Chops last chars of type " (oldCount)" and appends " (newCount)"
+		static QString updateCountString(QString string, int oldCount, int newCount);
 
-private:
+	private:
 
-    //! Items to add as default row when Add button is pressed.
-    QStringList newRowText;
+		//! Items to add as default row when Add button is pressed.
+		QStringList newRowText;
 
-    //! Lookup table for roles delegates by database name.
-    QHash<QString, repo::gui::primitive::RepoComboBoxDelegate*> delegates;
+		//! Lookup table for roles delegates by database name.
+		QHash<QString, repo::gui::primitive::RepoComboBoxDelegate*> delegates;
 
-    QTabWidget *tabWidget;
+		QTabWidget *tabWidget;
 
-    int tab;
+		int tab;
 
-    //! Ui var.
-    Ui::RepoWidgetTreeUnfilterable *ui;
-};
+		//! Ui var.
+		Ui::UnfilterableTreeWidget *ui;
+	};
 
-} // end namespace widgets
+} // end namespace widget
+}
 } // end namespace repo

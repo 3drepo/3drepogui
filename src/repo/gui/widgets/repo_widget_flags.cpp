@@ -19,11 +19,13 @@
 #include "repo_widget_flags.h"
 #include "ui_repo_widget_flags.h"
 
+using namespace repo::gui::widget;
+
 //------------------------------------------------------------------------------
 
-repo::gui::repo_widget_flags::repo_widget_flags(QWidget *parent) :
+FlagsWidget::FlagsWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::repo_widget_flags)
+    ui(new Ui::FlagsWidget)
 {
     ui->setupUi(this);
     settings = new repo::settings::RepoSettings();
@@ -163,13 +165,13 @@ repo::gui::repo_widget_flags::repo_widget_flags(QWidget *parent) :
                      this, SLOT(setPredefinedSettings(int)));
 }
 
-repo::gui::repo_widget_flags::~repo_widget_flags()
+FlagsWidget::~FlagsWidget()
 {
 	delete settings;
     delete ui;
 }
 
-void repo::gui::repo_widget_flags::apply()
+void FlagsWidget::apply()
 {
     settings->setCalculateTangentSpace(ui->calculateTangentSpaceCheckBox->isChecked());
 
@@ -319,7 +321,7 @@ void repo::gui::repo_widget_flags::apply()
                       ui->validateDataStructuresCheckBox->isChecked());
 }
 
-void repo::gui::repo_widget_flags::reset()
+void FlagsWidget::reset()
 {
     ui->calculateTangentSpaceCheckBox->setChecked(false);
 
@@ -432,7 +434,7 @@ void repo::gui::repo_widget_flags::reset()
     ui->validateDataStructuresCheckBox->setChecked(false);
 }
 
-void repo::gui::repo_widget_flags::setBasic()
+void FlagsWidget::setBasic()
 {
     ui->calculateTangentSpaceCheckBox->setChecked(true);
     ui->generateNormalsGroupBox->setChecked(true);
@@ -443,21 +445,21 @@ void repo::gui::repo_widget_flags::setBasic()
     ui->sortAndRemoveGroupBox->setChecked(true);
 }
 
-void repo::gui::repo_widget_flags::setCreaseAngleEnabled(bool on)
+void FlagsWidget::setCreaseAngleEnabled(bool on)
 {
     ui->generateNormalsSmoothDoubleSpinBox->setEnabled(
                 on &&
                 ui->generateNormalsSmoothRadioButton->isChecked());
 }
 
-void repo::gui::repo_widget_flags::setDirect3D()
+void FlagsWidget::setDirect3D()
 {
     ui->makeLeftHandedCheckBox->setChecked(true);
     ui->flipUVCoordinatesCheckBox->setChecked(true);
     ui->flipWindingOrderCheckBox->setChecked(true);
 }
 
-void repo::gui::repo_widget_flags::setExtreme()
+void FlagsWidget::setExtreme()
 {
     setMedium();
     ui->findInstancesCheckBox->setChecked(true);
@@ -466,7 +468,7 @@ void repo::gui::repo_widget_flags::setExtreme()
     ui->deboneGroupBox->setChecked(true);
 }
 
-void repo::gui::repo_widget_flags::setMedium()
+void FlagsWidget::setMedium()
 {
     ui->calculateTangentSpaceCheckBox->setChecked(true);
     ui->generateNormalsGroupBox->setChecked(true);
@@ -483,7 +485,7 @@ void repo::gui::repo_widget_flags::setMedium()
     ui->findInvalidDataGroupBox->setChecked(true);
 }
 
-void repo::gui::repo_widget_flags::setPredefinedSettings(int selection)
+void FlagsWidget::setPredefinedSettings(int selection)
 {
     switch (selection)
     {

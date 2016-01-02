@@ -16,7 +16,7 @@
     <property name="windowTitle">
       <string>3D Repo GUI</string>
     </property>
-    <widget class="repo::gui::RepoMdiArea" name="mdiArea"/>
+    <widget class="repo::gui::widget::RepoMdiArea" name="mdiArea"/>
     <widget class="QMenuBar" name="menuBar">
       <property name="geometry">
         <rect>
@@ -177,7 +177,7 @@
             <number>0</number>
           </property>
           <item>
-            <widget class="repo::gui::RepoWidgetRepository" name="widgetRepository" native="true"/>
+            <widget class="repo::gui::widget::RepositoryWidget" name="widgetRepository" native="true"/>
           </item>
         </layout>
       </widget>
@@ -237,7 +237,7 @@
             <number>0</number>
           </property>
           <item>
-            <widget class="repo::gui::RepoTextBrowser" name="logTextBrowser"/>
+            <widget class="repo::gui::widget::RepoTextBrowser" name="logTextBrowser"/>
           </item>
         </layout>
       </widget>
@@ -554,19 +554,19 @@
   <layoutdefault spacing="6" margin="11"/>
   <customwidgets>
     <customwidget>
-      <class>repo::gui::RepoWidgetRepository</class>
+      <class>repo::gui::widget::RepositoryWidget</class>
       <extends>QWidget</extends>
       <header>src/repo/gui/widgets/repo_widget_repository.h</header>
       <container>1</container>
     </customwidget>
     <customwidget>
-      <class>repo::gui::RepoMdiArea</class>
+      <class>repo::gui::widget::RepoMdiArea</class>
       <extends>QWidget</extends>
       <header>src/repo/gui/widgets/repo_mdi_area.h</header>
       <container>1</container>
     </customwidget>
     <customwidget>
-      <class>repo::gui::RepoTextBrowser</class>
+      <class>repo::gui::widget::RepoTextBrowser</class>
       <extends>QTextBrowser</extends>
       <header>src/repo/gui/widgets/repo_text_browser.h</header>
     </customwidget>

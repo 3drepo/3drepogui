@@ -18,9 +18,9 @@
 
 #include "repo_widget_tree_clickable.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 
-RepoWidgetTreeClickable::RepoWidgetTreeClickable(QWidget *parent)
+ClickableTreeWidget::ClickableTreeWidget(QWidget *parent)
     : QTreeView(parent)
 {
     QObject::connect(this, SIGNAL(doubleClicked(QModelIndex)),
@@ -29,17 +29,17 @@ RepoWidgetTreeClickable::RepoWidgetTreeClickable(QWidget *parent)
     resetDoubleClickMutex();
 }
 
-void RepoWidgetTreeClickable::setDoubleClickMutex()
+void ClickableTreeWidget::setDoubleClickMutex()
 {
     doubleClickMutex = false;
 }
 
-void RepoWidgetTreeClickable::resetDoubleClickMutex()
+void ClickableTreeWidget::resetDoubleClickMutex()
 {
     doubleClickMutex = true;
 }
 
-void RepoWidgetTreeClickable::mouseDoubleClickEvent(QMouseEvent *e)
+void ClickableTreeWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
     resetDoubleClickMutex();
 
@@ -53,7 +53,7 @@ void RepoWidgetTreeClickable::mouseDoubleClickEvent(QMouseEvent *e)
     }
 }
 
-QFont RepoWidgetTreeClickable::getFont() const
+QFont ClickableTreeWidget::getFont() const
 {
     QStyleOptionViewItem options = viewOptions();
     return options.font;

@@ -32,76 +32,78 @@
 #include <QSortFilterProxyModel>
 //------------------------------------------------------------------------------
 
-namespace Ui { class RepoWidgetTreeEditable; }
+namespace Ui { class EditableTreeWidget; }
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace widget {
 
-class RepoWidgetTreeEditable
-        : public QWidget
-        , public repo::worker::RepoMultithreader
-{
-    Q_OBJECT    
+	class EditableTreeWidget
+		: public QWidget
+		, public repo::worker::RepoMultithreader
+	{
+		Q_OBJECT
 
-public:
+	public:
 
-    //! Editing actions.
-    enum class Action { ADD, REMOVE, EDIT, COPY };
+		//! Editing actions.
+		enum class Action { ADD, REMOVE, EDIT, COPY };
 
-    //! Explicit constructor.
-    explicit RepoWidgetTreeEditable(QWidget *parent = 0);
+		//! Explicit constructor.
+		explicit EditableTreeWidget(QWidget *parent = 0);
 
-    ~RepoWidgetTreeEditable();
+		~EditableTreeWidget();
 
-signals :
+	signals:
 
-    //! Emitted as soon as edit buttons are either enabled or disabled.
-    void editButtonsEnabledChanged(bool on);
+		//! Emitted as soon as edit buttons are either enabled or disabled.
+		void editButtonsEnabledChanged(bool on);
 
-public slots :
+		public slots :
 
-    //! Adds new empty item.
-    virtual void addItem() { showEditDialog(); }
+		//! Adds new empty item.
+		virtual void addItem() { showEditDialog(); }
 
-    //! Updates selected item.
-    virtual void edit() = 0;
+		//! Updates selected item.
+		virtual void edit() = 0;
 
-    //! Updates item based on model index.
-    virtual void edit(const QModelIndex &index) = 0;
+		//! Updates item based on model index.
+		virtual void edit(const QModelIndex &index) = 0;
 
-    //! Refreshes the current list
-    virtual void refresh() = 0;
+		//! Refreshes the current list
+		virtual void refresh() = 0;
 
-    //! Copies currectly selected item.
-    virtual void copyItem() = 0;
+		//! Copies currectly selected item.
+		virtual void copyItem() = 0;
 
-    //! Removes item and refreshes the DB if necessary.
-    virtual void removeItem() = 0;
+		//! Removes item and refreshes the DB if necessary.
+		virtual void removeItem() = 0;
 
-    //! Shows edit dialog.
-    virtual void showEditDialog() = 0;
+		//! Shows edit dialog.
+		virtual void showEditDialog() = 0;
 
-public slots :
+		public slots :
 
-    //! Clears the model.
-    virtual void clear();
+		//! Clears the model.
+		virtual void clear();
 
-    //! Selects the data from the given item.
-    virtual void select(const QItemSelection &, const QItemSelection &);
+		//! Selects the data from the given item.
+		virtual void select(const QItemSelection &, const QItemSelection &);
 
-    //! Shows custom context menu for treeView.
-    virtual void showCustomContextMenu(const QPoint &);   
+		//! Shows custom context menu for treeView.
+		virtual void showCustomContextMenu(const QPoint &);
 
-public :
+	public:
 
-    //! Returns filterable tree widget.
-    virtual RepoWidgetTreeFilterable* getFilterableTree() const;
+		//! Returns filterable tree widget.
+		virtual FilterableTreeWidget* getFilterableTree() const;
 
-protected :
+	protected:
 
-    //! Ui var.
-    Ui::RepoWidgetTreeEditable *ui;
-};
+		//! Ui var.
+		Ui::EditableTreeWidget *ui;
+	};
 
 } // end widgets
+}
 } // end repo

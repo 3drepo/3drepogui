@@ -17,13 +17,13 @@
 
 #include "repo_widget_manager_users.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 using namespace repo::gui;
 
-const QString RepoWidgetManagerUsers::COLUMNS_SETTINGS = "RepoWidgetManagerUsersHeaders";
+const QString UsersManagerWidget::COLUMNS_SETTINGS = "UsersManagerWidgetHeaders";
 
-RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
-    : RepoWidgetTreeEditable(parent)
+UsersManagerWidget::UsersManagerWidget(QWidget *parent)
+    : EditableTreeWidget(parent)
     , token(nullptr)
     , controller(nullptr)
 {
@@ -35,26 +35,26 @@ RepoWidgetManagerUsers::RepoWidgetManagerUsers(QWidget *parent)
         tr("Roles"),
         tr("API Keys")};
 
-    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    FilterableTreeWidget *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
 }
 
-RepoWidgetManagerUsers::~RepoWidgetManagerUsers()
+UsersManagerWidget::~UsersManagerWidget()
 {
     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
 }
 
-void RepoWidgetManagerUsers::addCustomRoles(const std::list<std::string> &list)
+void UsersManagerWidget::addCustomRoles(const std::list<std::string> &list)
 {
     customRolesList.clear();
     customRolesList = list;
     customRolesList.sort();
 }
 
-void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
+void UsersManagerWidget::addUser(const repo::core::model::RepoUser &user)
 {
     QList<QStandardItem *> row;
     //--------------------------------------------------------------------------
@@ -104,22 +104,22 @@ void RepoWidgetManagerUsers::addUser(const repo::core::model::RepoUser &user)
     getFilterableTree()->addTopLevelRow(row);
 }
 
-void RepoWidgetManagerUsers::edit()
+void UsersManagerWidget::edit()
 {
-    showEditDialog(getUser(), RepoWidgetTreeEditable::Action::EDIT);
+    showEditDialog(getUser(), EditableTreeWidget::Action::EDIT);
 }
 
-void RepoWidgetManagerUsers::edit(const QModelIndex &index)
+void UsersManagerWidget::edit(const QModelIndex &index)
 {
-    showEditDialog(getUser(index), RepoWidgetTreeEditable::Action::EDIT);
+    showEditDialog(getUser(index), EditableTreeWidget::Action::EDIT);
 }
 
-repo::core::model::RepoUser RepoWidgetManagerUsers::getUser() const
+repo::core::model::RepoUser UsersManagerWidget::getUser() const
 {
     return getUser(getFilterableTree()->getCurrentIndex());
 }
 
-repo::core::model::RepoUser RepoWidgetManagerUsers::getUser(
+repo::core::model::RepoUser UsersManagerWidget::getUser(
         const QModelIndex &index) const
 {
     repo::core::model::RepoUser user;
@@ -131,7 +131,7 @@ repo::core::model::RepoUser RepoWidgetManagerUsers::getUser(
     return user;
 }
 
-void RepoWidgetManagerUsers::refresh(
+void UsersManagerWidget::refresh(
         const repo::core::model::RepoUser& user,
         const repo::worker::UsersWorker::Command& command)
 {
@@ -148,15 +148,15 @@ void RepoWidgetManagerUsers::refresh(
                     command);
         QObject::connect(
                     worker, &repo::worker::UsersWorker::userFetched,
-                    this, &RepoWidgetManagerUsers::addUser);
+                    this, &UsersManagerWidget::addUser);
         QObject::connect(
                     worker, &repo::worker::UsersWorker::customRolesFetched,
-                    this, &RepoWidgetManagerUsers::addCustomRoles);
+                    this, &UsersManagerWidget::addCustomRoles);
         connectAndStartWorker(worker, getFilterableTree()->getProgressBar());
     }
 }
 
-void RepoWidgetManagerUsers::removeItem()
+void UsersManagerWidget::removeItem()
 {
     repo::core::model::RepoUser user = this->getUser();
     switch(QMessageBox::warning(this,
@@ -176,7 +176,7 @@ void RepoWidgetManagerUsers::removeItem()
     }
 }
 
-void RepoWidgetManagerUsers::showEditDialog(
+void UsersManagerWidget::showEditDialog(
         const repo::core::model::RepoUser &user,
         Action action)
 {
@@ -186,7 +186,7 @@ void RepoWidgetManagerUsers::showEditDialog(
                 user,
                 databasesWithProjects,
                 customRolesList,
-                action == RepoWidgetTreeEditable::Action::COPY,
+                action == EditableTreeWidget::Action::COPY,
                 this);
     if (QDialog::Rejected == userDialog.exec())
     {
@@ -198,14 +198,14 @@ void RepoWidgetManagerUsers::showEditDialog(
         repoLog("create or update user...\n");
         // Create or update user
         refresh(userDialog.getUpdatedUser(),
-                action == RepoWidgetTreeEditable::Action::ADD ||
-                action == RepoWidgetTreeEditable::Action::COPY
+                action == EditableTreeWidget::Action::ADD ||
+                action == EditableTreeWidget::Action::COPY
                 ? repo::worker::UsersWorker::Command::INSERT
                 : repo::worker::UsersWorker::Command::UPDATE);
     }
 }
 
-void RepoWidgetManagerUsers::setDatabasesWithProjects(
+void UsersManagerWidget::setDatabasesWithProjects(
         const std::map<std::string, std::list<std::string> > &rdwp)
 {
     this->databasesWithProjects.clear();
@@ -213,7 +213,7 @@ void RepoWidgetManagerUsers::setDatabasesWithProjects(
 }
 
 
-void  RepoWidgetManagerUsers::setDBConnection(
+void  UsersManagerWidget::setDBConnection(
         repo::RepoController *controller,
         const repo::RepoToken* token,
         const std::string& database)

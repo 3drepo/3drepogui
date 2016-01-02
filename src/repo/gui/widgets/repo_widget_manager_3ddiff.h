@@ -29,87 +29,93 @@
 #include "../../workers/repo_multithreader.h"
 
 namespace Ui {
-class RepoWidgetManager3DDiff;
+class Repo3DDiffManagerWidget;
 }
 
 namespace repo {
-namespace widgets {
+	namespace gui{
+		namespace widget {
 
 
-class RepoWidgetManager3DDiff : public QWidget, public repo::worker::RepoMultithreader
-{
-    Q_OBJECT
+			class Repo3DDiffManagerWidget : public QWidget, public repo::worker::RepoMultithreader
+			{
+				Q_OBJECT
 
-    enum class Visualization { DIFF, CORRESPONDENCE };
+				enum class Visualization { DIFF, CORRESPONDENCE };
 
-    enum class Algorithm { BASIC, VISUAL, STATISTICAL };
+				enum class Algorithm { BASIC, VISUAL, STATISTICAL };
 
-public:
+			public:
 
-    explicit RepoWidgetManager3DDiff(
-            repo::gui::RepoMdiArea *mdiArea,
-            repo::RepoController *controller,
-            const repo::RepoToken *token,
-            QWidget *parent = 0);
+				explicit Repo3DDiffManagerWidget(
+					repo::gui::widget::RepoMdiArea *mdiArea,
+					repo::RepoController *controller,
+					const repo::RepoToken *token,
+					QWidget *parent = 0);
 
-    ~RepoWidgetManager3DDiff();
+				~Repo3DDiffManagerWidget();
 
-public slots :
+				public slots :
 
-    //! Populates selection combo boxes with available models.
-    void populateModelComboBoxes();
+				//! Populates selection combo boxes with available models.
+				void populateModelComboBoxes();
 
-    //! Reset the models within the widgets to its original states
-    void resetModels();
+				//! Reset the models within the widgets to its original states
+				void resetModels();
 
-    //! Run the selected diff algorithm.
-    void runDiff();
+				//! Run the selected diff algorithm.
+				void runDiff();
 
-private :
+			private:
 
-    void runBouncerDiff(gui::widgets::RepoRenderingWidget *widgetA,
-                        gui::widgets::RepoRenderingWidget *widgetB,
-                        manipulator::diff::Mode diffMode,
-                        bool colourCorrespondence);
+				void runBouncerDiff(gui::widget::Rendering3DWidget *widgetA,
+					gui::widget::Rendering3DWidget *widgetB,
+					manipulator::diff::Mode diffMode,
+					bool colourCorrespondence);
 
-public :
+			public:
 
-    QList<repo::gui::RepoMdiSubWindow*> getSubWindows() const;
+				QList<repo::gui::widget::RepoMdiSubWindow*> getSubWindows() const;
 
-    //! Returns currectly selected visualization.
-    Visualization getVisualization() const;
+				//! Returns currectly selected visualization.
+				Visualization getVisualization() const;
 
-    //! Returns currectly selected diffing algorithm.
-    Algorithm getDiffAlgorithm() const;
+				//! Returns currectly selected diffing algorithm.
+				Algorithm getDiffAlgorithm() const;
 
-    repo::gui::widgets::RepoRenderingWidget* getModelWidget(int index) const;
+				repo::gui::widget::Rendering3DWidget* getModelWidget(int index) const;
 
-    repo::gui::widgets::RepoRenderingWidget* getSelectedModelAWidget() const
-    {    return getModelWidget(getSelectedModelAIndex()); }
+				repo::gui::widget::Rendering3DWidget* getSelectedModelAWidget() const
+				{
+					return getModelWidget(getSelectedModelAIndex());
+				}
 
-    QString getSelectedModelAString() const;
+				QString getSelectedModelAString() const;
 
-    int getSelectedModelAIndex() const;
+				int getSelectedModelAIndex() const;
 
-    repo::gui::widgets::RepoRenderingWidget* getSelectedModelBWidget() const
-    {    return getModelWidget(getSelectedModelBIndex()); }
+				repo::gui::widget::Rendering3DWidget* getSelectedModelBWidget() const
+				{
+					return getModelWidget(getSelectedModelBIndex());
+				}
 
-    QString getSelectedModelBString() const;
+				QString getSelectedModelBString() const;
 
-    int getSelectedModelBIndex() const;
+				int getSelectedModelBIndex() const;
 
-private:
+			private:
 
-    Ui::RepoWidgetManager3DDiff *ui;
+				Ui::Repo3DDiffManagerWidget *ui;
 
-    repo::gui::RepoMdiArea *mdiArea;
+				repo::gui::widget::RepoMdiArea *mdiArea;
 
-    RepoController *controller;
+				RepoController *controller;
 
-    const RepoToken *token;
+				const RepoToken *token;
 
-};
+			};
 
-} // widgets
+		} // widgets
+	}
 } // repo
 

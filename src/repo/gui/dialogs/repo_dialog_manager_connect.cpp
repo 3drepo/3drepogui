@@ -48,7 +48,7 @@ ConnectManagerDialog::ConnectManagerDialog(
                      &QDialog::accept);
 
     QObject::connect(ui->connectionManagerWidget,
-                     &repo::widgets::RepoWidgetTreeEditable::editButtonsEnabledChanged,
+                     &repo::gui::widget::EditableTreeWidget::editButtonsEnabledChanged,
                      connectPushButton,
                      &QPushButton::setEnabled);
 

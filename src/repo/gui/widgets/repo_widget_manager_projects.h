@@ -30,79 +30,89 @@
 Q_DECLARE_METATYPE(repo::core::model::RepoProjectSettings)
 
 namespace repo {
-namespace widgets {
+namespace gui{
+namespace widget {
 
-class RepoWidgetManagerProjects : public RepoWidgetTreeEditable
-{
-    Q_OBJECT
+	class ProjectsManagerWidget : public EditableTreeWidget
+	{
+		Q_OBJECT
 
-    static const QString COLUMNS_SETTINGS;
+			static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { PROJECT, OWNER, TYPE, DESCRIPTION };
+		enum class Columns { PROJECT, OWNER, TYPE, DESCRIPTION };
 
-public:
+	public:
 
-    explicit RepoWidgetManagerProjects(QWidget *parent = 0);
+		explicit ProjectsManagerWidget(QWidget *parent = 0);
 
-    ~RepoWidgetManagerProjects();
+		~ProjectsManagerWidget();
 
-public slots:
+		public slots:
 
-    void copyItem()
-    { showEditDialog(getProjectSettings(), Action::COPY); }
+		void copyItem()
+		{
+			showEditDialog(getProjectSettings(), Action::COPY);
+		}
 
-    void addProjectSettings(repo::core::model::RepoProjectSettings);
+		void addProjectSettings(repo::core::model::RepoProjectSettings);
 
-    //! Updates selected item.
-    virtual void edit()
-    { showEditDialog(getProjectSettings(), Action::EDIT); }
+		//! Updates selected item.
+		virtual void edit()
+		{
+			showEditDialog(getProjectSettings(), Action::EDIT);
+		}
 
-    //! Updates item based on model index.
-    void edit(const QModelIndex &index)
-    { showEditDialog(getProjectSettings(index), Action::EDIT); }
+		//! Updates item based on model index.
+		void edit(const QModelIndex &index)
+		{
+			showEditDialog(getProjectSettings(index), Action::EDIT);
+		}
 
-    repo::core::model::RepoProjectSettings getProjectSettings();
+		repo::core::model::RepoProjectSettings getProjectSettings();
 
-    repo::core::model::RepoProjectSettings getProjectSettings(const QModelIndex &index);
+		repo::core::model::RepoProjectSettings getProjectSettings(const QModelIndex &index);
 
 
-    //! Refreshes the current list of users by fetching from a database.
-    void refresh()
-    {
-        refresh(repo::core::model::RepoProjectSettings(), false);
-    }
+		//! Refreshes the current list of users by fetching from a database.
+		void refresh()
+		{
+			refresh(repo::core::model::RepoProjectSettings(), false);
+		}
 
-    void refresh(
-        const repo::core::model::RepoProjectSettings &settings,
-        bool isDelete);
+		void refresh(
+			const repo::core::model::RepoProjectSettings &settings,
+			bool isDelete);
 
-    //! Removes currently selected item if any.
-    void removeItem();
+		//! Removes currently selected item if any.
+		void removeItem();
 
-    void showEditDialog()
-    { showEditDialog(repo::core::model::RepoProjectSettings(), Action::ADD); }
+		void showEditDialog()
+		{
+			showEditDialog(repo::core::model::RepoProjectSettings(), Action::ADD);
+		}
 
-    void showEditDialog(
-            const repo::core::model::RepoProjectSettings &,
-            const RepoWidgetTreeEditable::Action action);
+		void showEditDialog(
+			const repo::core::model::RepoProjectSettings &,
+			const EditableTreeWidget::Action action);
 
-public :
+	public:
 
-    void setDBConnection(repo::RepoController *controller,
-            const repo::RepoToken* token,
-            const std::string& database);
+		void setDBConnection(repo::RepoController *controller,
+			const repo::RepoToken* token,
+			const std::string& database);
 
-private :
+	private:
 
-    const repo::RepoToken* token;
+		const repo::RepoToken* token;
 
-    std::string database;
+		std::string database;
 
-    repo::RepoController *controller;
+		repo::RepoController *controller;
 
-};
+	};
 
 } // widgets
+}
 } // repo
 
 

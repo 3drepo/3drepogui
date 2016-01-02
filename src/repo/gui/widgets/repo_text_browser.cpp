@@ -23,7 +23,10 @@
 #include <QTextStream>
 //------------------------------------------------------------------------------
 
-repo::gui::RepoTextBrowser::RepoTextBrowser(QWidget * parent)
+using namespace repo::gui;
+using namespace repo::gui::widget;
+
+RepoTextBrowser::RepoTextBrowser(QWidget * parent)
         : QTextBrowser(parent)
         //, RepoAbstractListener()
 {
@@ -38,7 +41,7 @@ repo::gui::RepoTextBrowser::RepoTextBrowser(QWidget * parent)
 
 }
 
-repo::gui::RepoTextBrowser::~RepoTextBrowser()
+RepoTextBrowser::~RepoTextBrowser()
 {
     delete fileWatcher;
 
@@ -53,13 +56,13 @@ repo::gui::RepoTextBrowser::~RepoTextBrowser()
     watchedFiles.clear();
 }
 
-void repo::gui::RepoTextBrowser::newMessageReceived(const std::string &msg)
+void RepoTextBrowser::newMessageReceived(const std::string &msg)
 { 
     QMetaObject::invokeMethod(this, "append", Qt::AutoConnection,
         Q_ARG(QString, QString::fromStdString(msg)));
 }
 
-void repo::gui::RepoTextBrowser::addFilePath(const QString &filePath)
+void RepoTextBrowser::addFilePath(const QString &filePath)
 {
     if(fileWatcher->addPath(filePath))
     {
@@ -78,7 +81,7 @@ void repo::gui::RepoTextBrowser::addFilePath(const QString &filePath)
     }
 }
 
-void repo::gui::RepoTextBrowser::watchedFileChanged(const QString &filePath)
+void RepoTextBrowser::watchedFileChanged(const QString &filePath)
 {
     QHash<QString, QPair<QFile*,QTextStream*>>::iterator it =
             watchedFiles.find(filePath);

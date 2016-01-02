@@ -34,21 +34,21 @@ namespace renderer {
 		Repo3DDiffRenderer(
 			repo::RepoController *controller,
 			const repo::RepoToken *token,
-			widgets::RepoRenderingWidget *widgetA,
-			widgets::RepoRenderingWidget *widgetB);
+			widget::Rendering3DWidget *widgetA,
+			widget::Rendering3DWidget *widgetB);
 
 		~Repo3DDiffRenderer();
 
 		void resultingDifference(const repo::manipulator::diff::DiffResult &res,
-			widgets::RepoRenderingWidget *widget,
+			widget::Rendering3DWidget *widget,
 			const QColor &modColor,
 			const QColor &addColor);
 
 	protected:
 
-		widgets::RepoRenderingWidget *widgetA;
+		widget::Rendering3DWidget *widgetA;
 
-		widgets::RepoRenderingWidget *widgetB;
+		widget::Rendering3DWidget *widgetB;
 
 		repo::RepoController *controller;
 		const repo::RepoToken *token;

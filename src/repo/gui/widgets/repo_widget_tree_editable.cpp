@@ -18,11 +18,12 @@
 #include "repo_widget_tree_editable.h"
 #include "ui_repo_widget_tree_editable.h"
 
-using namespace repo::widgets;
+using namespace repo::gui;
+using namespace repo::gui::widget;
 
-RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
+EditableTreeWidget::EditableTreeWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::RepoWidgetTreeEditable)
+    ui(new Ui::EditableTreeWidget)
 {
     ui->setupUi(this);
     ui->filterableTreeWidget->setMargins(0);
@@ -31,7 +32,7 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
         ui->filterableTreeWidget->getSelectionModel(),
         &QItemSelectionModel::selectionChanged,
         this,
-        &RepoWidgetTreeEditable::select);
+        &EditableTreeWidget::select);
 
     QObject::connect(
         ui->addPushButton, SIGNAL(pressed()),
@@ -57,12 +58,12 @@ RepoWidgetTreeEditable::RepoWidgetTreeEditable(QWidget *parent) :
                      this, SLOT(showCustomContextMenu(const QPoint&)));
 }
 
-RepoWidgetTreeEditable::~RepoWidgetTreeEditable()
+EditableTreeWidget::~EditableTreeWidget()
 {
     delete ui;
 }
 
-void RepoWidgetTreeEditable::clear()
+void EditableTreeWidget::clear()
 {
     ui->filterableTreeWidget->clear();
     ui->removePushButton->setEnabled(false);
@@ -72,7 +73,7 @@ void RepoWidgetTreeEditable::clear()
     emit editButtonsEnabledChanged(false);
 }
 
-void RepoWidgetTreeEditable::select(
+void EditableTreeWidget::select(
         const QItemSelection &,
         const QItemSelection &)
 {
@@ -83,7 +84,7 @@ void RepoWidgetTreeEditable::select(
     emit editButtonsEnabledChanged(true);
 }
 
-void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
+void EditableTreeWidget::showCustomContextMenu(const QPoint &point)
 {
     QTreeView *treeView = ui->filterableTreeWidget->getTreeView();
     QMenu menu(treeView);
@@ -114,7 +115,7 @@ void RepoWidgetTreeEditable::showCustomContextMenu(const QPoint &point)
     menu.exec(treeView->mapToGlobal(point));
 }
 
-RepoWidgetTreeFilterable* RepoWidgetTreeEditable::getFilterableTree() const
+FilterableTreeWidget* EditableTreeWidget::getFilterableTree() const
 {
     return ui->filterableTreeWidget;
 }

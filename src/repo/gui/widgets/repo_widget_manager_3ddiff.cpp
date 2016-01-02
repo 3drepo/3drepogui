@@ -19,11 +19,11 @@
 #include "repo_widget_manager_3ddiff.h"
 #include "ui_repo_widget_manager_3ddiff.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 using namespace repo::gui;
 
-RepoWidgetManager3DDiff::RepoWidgetManager3DDiff(
-        repo::gui::RepoMdiArea *mdiArea,
+Repo3DDiffManagerWidget::Repo3DDiffManagerWidget(
+        repo::gui::widget::RepoMdiArea *mdiArea,
         repo::RepoController *controller,
         const repo::RepoToken *token,
         QWidget *parent)
@@ -31,29 +31,29 @@ RepoWidgetManager3DDiff::RepoWidgetManager3DDiff(
     , mdiArea(mdiArea)
     , controller(controller)
     , token(token)
-    , ui(new Ui::RepoWidgetManager3DDiff)
+    , ui(new Ui::Repo3DDiffManagerWidget)
 {
     ui->setupUi(this);
     populateModelComboBoxes();
 
     // Connecting mdiArea signal which is emmitted whenever a new window is created
     // or an existing window is removed
-    QObject::connect(mdiArea, &repo::gui::RepoMdiArea::subWindowActivated,
-                     this, &RepoWidgetManager3DDiff::populateModelComboBoxes);
+    QObject::connect(mdiArea, &repo::gui::widget::RepoMdiArea::subWindowActivated,
+                     this, &Repo3DDiffManagerWidget::populateModelComboBoxes);
 
     QObject::connect(ui->diffPushButton, &QPushButton::pressed,
-                     this, &RepoWidgetManager3DDiff::runDiff);
+                     this, &Repo3DDiffManagerWidget::runDiff);
 
     QObject::connect(ui->resetPushButton, &QPushButton::pressed,
-                     this, &RepoWidgetManager3DDiff::resetModels);
+                     this, &Repo3DDiffManagerWidget::resetModels);
 }
 
-RepoWidgetManager3DDiff::~RepoWidgetManager3DDiff()
+Repo3DDiffManagerWidget::~Repo3DDiffManagerWidget()
 {
     delete ui;
 }
 
-void RepoWidgetManager3DDiff::populateModelComboBoxes()
+void Repo3DDiffManagerWidget::populateModelComboBoxes()
 {
 //    QString selectedA = getSelectedModelAString();
 //    QString selectedB = getSelectedModelBString();
@@ -69,7 +69,7 @@ void RepoWidgetManager3DDiff::populateModelComboBoxes()
     //--------------------------------------------------------------------------
     // Populate
     QStringList subWindows;
-    for (repo::gui::RepoMdiSubWindow* subWindow : getSubWindows())
+    for (repo::gui::widget::RepoMdiSubWindow* subWindow : getSubWindows())
     {
         subWindows.append(subWindow->windowTitle());
     }
@@ -89,21 +89,21 @@ void RepoWidgetManager3DDiff::populateModelComboBoxes()
 
 }
 
-void RepoWidgetManager3DDiff::resetModels()
+void Repo3DDiffManagerWidget::resetModels()
 {
-    repo::gui::widgets::RepoRenderingWidget* widgetA = getSelectedModelAWidget();
-    repo::gui::widgets::RepoRenderingWidget* widgetB = getSelectedModelBWidget();
+    repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
+    repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
     widgetA->resetColors();
     widgetB->resetColors();
 }
 
-void RepoWidgetManager3DDiff::runDiff()
+void Repo3DDiffManagerWidget::runDiff()
 {
     //Make sure the widgets are at its original state before starting
     resetModels();
-    repo::gui::widgets::RepoRenderingWidget* widgetA = getSelectedModelAWidget();
-    repo::gui::widgets::RepoRenderingWidget* widgetB = getSelectedModelBWidget();
+    repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
+    repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
     if (!widgetA)
         std::cerr << tr("Widget A is null.").toStdString() << std::endl;
@@ -134,9 +134,9 @@ void RepoWidgetManager3DDiff::runDiff()
     }
 }
 
-void RepoWidgetManager3DDiff::runBouncerDiff(
-        repo::gui::widgets::RepoRenderingWidget* widgetA,
-        repo::gui::widgets::RepoRenderingWidget* widgetB,
+void Repo3DDiffManagerWidget::runBouncerDiff(
+        repo::gui::widget::Rendering3DWidget* widgetA,
+        repo::gui::widget::Rendering3DWidget* widgetB,
         repo::manipulator::diff::Mode diffMode,
         bool colourCorrespondence)
 {
@@ -154,9 +154,9 @@ void RepoWidgetManager3DDiff::runBouncerDiff(
                     colourCorrespondence);
 
         QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
-                         widgetA, &repo::gui::widgets::RepoRenderingWidget::setMeshColor);
+                         widgetA, &repo::gui::widget::Rendering3DWidget::setMeshColor);
         QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
-                         widgetB, &repo::gui::widgets::RepoRenderingWidget::setMeshColor);
+                         widgetB, &repo::gui::widget::Rendering3DWidget::setMeshColor);
 
         //----------------------------------------------------------------------
         // Fire up the asynchronous calculation.
@@ -164,42 +164,42 @@ void RepoWidgetManager3DDiff::runBouncerDiff(
     }
 }
 
-repo::gui::widgets::RepoRenderingWidget* RepoWidgetManager3DDiff::getModelWidget(int index) const
+repo::gui::widget::Rendering3DWidget* Repo3DDiffManagerWidget::getModelWidget(int index) const
 {
-    repo::gui::widgets::RepoRenderingWidget* widget = nullptr;
+    repo::gui::widget::Rendering3DWidget* widget = nullptr;
     auto subWindows = getSubWindows();
     if (index >= 0 && subWindows.size() > index)
-        widget = dynamic_cast<repo::gui::widgets::RepoRenderingWidget*>(
+        widget = dynamic_cast<repo::gui::widget::Rendering3DWidget*>(
                     subWindows.at(index)->widget());
     return widget;
 }
 
-QString RepoWidgetManager3DDiff::getSelectedModelAString() const
+QString Repo3DDiffManagerWidget::getSelectedModelAString() const
 {
     return ui->modelAComboBox->currentText();
 }
 
-int RepoWidgetManager3DDiff::getSelectedModelAIndex() const
+int Repo3DDiffManagerWidget::getSelectedModelAIndex() const
 {
     return ui->modelAComboBox->currentIndex();
 }
 
-QString RepoWidgetManager3DDiff::getSelectedModelBString() const
+QString Repo3DDiffManagerWidget::getSelectedModelBString() const
 {
     return ui->modelBComboBox->currentText();
 }
 
-int RepoWidgetManager3DDiff::getSelectedModelBIndex() const
+int Repo3DDiffManagerWidget::getSelectedModelBIndex() const
 {
     return ui->modelBComboBox->currentIndex();
 }
 
-QList<repo::gui::RepoMdiSubWindow*> RepoWidgetManager3DDiff::getSubWindows() const
+QList<repo::gui::widget::RepoMdiSubWindow*> Repo3DDiffManagerWidget::getSubWindows() const
 {
-    return mdiArea->subWindowList(true, repo::gui::RepoMdiArea::WindowOrder::CreationOrder);
+    return mdiArea->subWindowList(true, repo::gui::widget::RepoMdiArea::WindowOrder::CreationOrder);
 }
 
-RepoWidgetManager3DDiff::Visualization RepoWidgetManager3DDiff::getVisualization() const
+Repo3DDiffManagerWidget::Visualization Repo3DDiffManagerWidget::getVisualization() const
 {
     Visualization viz;
     if (ui->showCorrespondenceRadioButton->isChecked())
@@ -209,7 +209,7 @@ RepoWidgetManager3DDiff::Visualization RepoWidgetManager3DDiff::getVisualization
     return viz;
 }
 
-RepoWidgetManager3DDiff::Algorithm RepoWidgetManager3DDiff::getDiffAlgorithm() const
+Repo3DDiffManagerWidget::Algorithm Repo3DDiffManagerWidget::getDiffAlgorithm() const
 {
     return (Algorithm) ui->diffAlgorithmComboBox->currentIndex();
 }

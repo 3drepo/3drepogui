@@ -62,6 +62,6 @@ private:
     repo::RepoController *controller;
 };
 
-} // end namespace widgets
+} // end namespace widget
 }
 } // end namespace repo

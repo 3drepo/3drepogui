@@ -43,94 +43,102 @@
 Q_DECLARE_METATYPE(repo::core::model::RepoUser)
 
 namespace repo {
-namespace widgets {
+namespace gui {
+namespace widget {
 
-class RepoWidgetManagerUsers : public RepoWidgetTreeEditable
-{
-    Q_OBJECT
+	class UsersManagerWidget : public EditableTreeWidget
+	{
+		Q_OBJECT
 
-    static const QString COLUMNS_SETTINGS;
+			static const QString COLUMNS_SETTINGS;
 
-    enum class Columns { USERNAME, FIRST_NAME, LAST_NAME, EMAIL, ROLES, API_KEYS };
+		enum class Columns { USERNAME, FIRST_NAME, LAST_NAME, EMAIL, ROLES, API_KEYS };
 
-public:
+	public:
 
-    explicit RepoWidgetManagerUsers(QWidget *parent = 0);
+		explicit UsersManagerWidget(QWidget *parent = 0);
 
-    ~RepoWidgetManagerUsers();
+		~UsersManagerWidget();
 
-public slots:
+		public slots:
 
-    //! Adds a fresh list of custom roles.
-    void addCustomRoles(const std::list<std::string> &);
+		//! Adds a fresh list of custom roles.
+		void addCustomRoles(const std::list<std::string> &);
 
-    void addItem()
-    { showEditDialog(); }
+		void addItem()
+		{
+			showEditDialog();
+		}
 
-    //! Adds user to the list of users.
-    void addUser(const repo::core::model::RepoUser &user);
+		//! Adds user to the list of users.
+		void addUser(const repo::core::model::RepoUser &user);
 
-    //! Updates selected user.
-    void edit();
+		//! Updates selected user.
+		void edit();
 
-    //! Updates user based on model index.
-    void edit(const QModelIndex &index);
+		//! Updates user based on model index.
+		void edit(const QModelIndex &index);
 
-    //! Returns a currently selected user if any.
-    repo::core::model::RepoUser getUser() const;
+		//! Returns a currently selected user if any.
+		repo::core::model::RepoUser getUser() const;
 
-    //! Returns a user specified by the model index.
-    repo::core::model::RepoUser getUser(const QModelIndex &index) const;
+		//! Returns a user specified by the model index.
+		repo::core::model::RepoUser getUser(const QModelIndex &index) const;
 
-    virtual void refresh()
-    { refresh(repo::core::model::RepoUser(),
-              repo::worker::UsersWorker::Command::INSERT); }
+		virtual void refresh()
+		{
+			refresh(repo::core::model::RepoUser(),
+				repo::worker::UsersWorker::Command::INSERT);
+		}
 
-    void refresh(
-            const repo::core::model::RepoUser& user,
-            const repo::worker::UsersWorker::Command& command);
+		void refresh(
+			const repo::core::model::RepoUser& user,
+			const repo::worker::UsersWorker::Command& command);
 
-    void copyItem()
-    {
-        showEditDialog(getUser(), RepoWidgetTreeEditable::Action::COPY);
-    }
+		void copyItem()
+		{
+			showEditDialog(getUser(), EditableTreeWidget::Action::COPY);
+		}
 
-    //! Drops user from the database.
-    void removeItem();
+		//! Drops user from the database.
+		void removeItem();
 
-    //! Shows the user dialog and saves edits to the database.
-    void showEditDialog()
-    { showEditDialog(repo::core::model::RepoUser(), RepoWidgetTreeEditable::Action::ADD); }
+		//! Shows the user dialog and saves edits to the database.
+		void showEditDialog()
+		{
+			showEditDialog(repo::core::model::RepoUser(), EditableTreeWidget::Action::ADD);
+		}
 
-    //! Shows the user dialog and saves edits to the database.
-    void showEditDialog(
-            const repo::core::model::RepoUser &user,
-            RepoWidgetTreeEditable::Action action);
+		//! Shows the user dialog and saves edits to the database.
+		void showEditDialog(
+			const repo::core::model::RepoUser &user,
+			EditableTreeWidget::Action action);
 
-    void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
+		void setDatabasesWithProjects(const std::map<std::string, std::list<std::string> > &rdwp);
 
-public :
+	public:
 
-    void setDBConnection(
-            repo::RepoController *controller,
-            const repo::RepoToken *token,
-            const std::string &database);
+		void setDBConnection(
+			repo::RepoController *controller,
+			const repo::RepoToken *token,
+			const std::string &database);
 
-private:
+	private:
 
-    //! List of custom roles updated upon each refresh.
-    std::list<std::string> customRolesList;
+		//! List of custom roles updated upon each refresh.
+		std::list<std::string> customRolesList;
 
-    //! Mapping of databases to their associated projects.
-    std::map<std::string, std::list<std::string> > databasesWithProjects;
+		//! Mapping of databases to their associated projects.
+		std::map<std::string, std::list<std::string> > databasesWithProjects;
 
-    const repo::RepoToken* token;
+		const repo::RepoToken* token;
 
-    std::string database;
+		std::string database;
 
-    repo::RepoController *controller;
-};
+		repo::RepoController *controller;
+	};
 
 } // widgets
+}
 } // repo
 

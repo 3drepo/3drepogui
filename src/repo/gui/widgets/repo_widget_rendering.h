@@ -33,11 +33,11 @@
 
 namespace repo {
 	namespace gui {
-		namespace widgets {
+		namespace widget {
 
 			enum class Renderer { GLC };
 
-			class RepoRenderingWidget : public QOpenGLWidget, QOpenGLFunctions
+			class Rendering3DWidget : public QOpenGLWidget, QOpenGLFunctions
 			{
 				Q_OBJECT
 
@@ -59,10 +59,10 @@ namespace repo {
 				//--------------------------------------------------------------------------
 
 				//! Default constructor
-				RepoRenderingWidget(QWidget *p_parent, Renderer rendererType, const QString &windowTitle = "");
+				Rendering3DWidget(QWidget *p_parent, Renderer rendererType, const QString &windowTitle = "");
 
 				//! Destructor
-				~RepoRenderingWidget();
+				~Rendering3DWidget();
 
 			protected:
 
@@ -147,12 +147,12 @@ namespace repo {
 
 				void modelLoadProgress(int value, int maximum);
 
-				void selectionChanged(const RepoRenderingWidget *, std::vector<std::string>);
+				void selectionChanged(const Rendering3DWidget *, std::vector<std::string>);
 
 			public:
 
 				//! Sets the widget to hook with
-				void linkCameras(const RepoRenderingWidget *widget, const bool& link = true) const;
+				void linkCameras(const Rendering3DWidget *widget, const bool& link = true) const;
 
 				//--------------------------------------------------------------------------
 				//

@@ -86,5 +86,5 @@ namespace dialog {
 
 	};
 }
-} // end namespace widgets
+} // end namespace widget
 } // end namespace repo

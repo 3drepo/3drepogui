@@ -203,7 +203,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="repo::gui::RepoLineEdit" name="filterLineEdit"/>
+        <widget class="repo::gui::widget::RepoLineEdit" name="filterLineEdit"/>
        </item>
        <item>
         <widget class="QTreeView" name="treeView">
@@ -289,7 +289,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>repo::gui::RepoLineEdit</class>
+   <class>repo::gui::widget::RepoLineEdit</class>
    <extends>QLineEdit</extends>
    <header>src/repo/gui/widgets/repo_line_edit.h</header>
   </customwidget>

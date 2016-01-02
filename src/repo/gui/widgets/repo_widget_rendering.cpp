@@ -57,18 +57,18 @@ uint32_t GetTickCount()
 #endif
 
 
-using namespace repo::gui::widgets;
+using namespace repo::gui::widget;
 
 //------------------------------------------------------------------------------
 //
 // Static variables
 //
 //------------------------------------------------------------------------------
-const double RepoRenderingWidget::ZOOM_FACTOR = 1.2;
+const double Rendering3DWidget::ZOOM_FACTOR = 1.2;
 
-//QList<GLC_Shader*> RepoRenderingWidget::shaders;
+//QList<GLC_Shader*> Rendering3DWidget::shaders;
 
-RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, Renderer rType, const QString& windowTitle)
+Rendering3DWidget::Rendering3DWidget(QWidget* parent, Renderer rType, const QString& windowTitle)
     : QOpenGLWidget(parent)
 	, isWireframe(false)
 	, isInfoVisible(true)
@@ -97,23 +97,23 @@ RepoRenderingWidget::RepoRenderingWidget(QWidget* parent, Renderer rType, const 
 	//--------------------------------------------------------------------------
     QObject::connect(
 		renderer, &renderer::AbstractRenderer::repaintNeeded,
-        this, &RepoRenderingWidget::repaintCurrent);
+        this, &Rendering3DWidget::repaintCurrent);
 
 	QObject::connect(
 		renderer, &renderer::AbstractRenderer::cameraChangedSignal,
-		this, &RepoRenderingWidget::broadcastCameraChange);
+		this, &Rendering3DWidget::broadcastCameraChange);
 
 
 }
 
-void RepoRenderingWidget::repaintCurrent()
+void Rendering3DWidget::repaintCurrent()
 {
     makeCurrent();
     paintGL();
     doneCurrent();
 }
 
-RepoRenderingWidget::~RepoRenderingWidget()
+Rendering3DWidget::~Rendering3DWidget()
 {
     makeCurrent();
 	renderer->deleteShaders(context()); 
@@ -132,7 +132,7 @@ RepoRenderingWidget::~RepoRenderingWidget()
 // OpenGL
 //
 //------------------------------------------------------------------------------
-void RepoRenderingWidget::initializeGL()
+void Rendering3DWidget::initializeGL()
 {
 	//--------------------------------------------------------------------------
 	// Renderer initialisation
@@ -144,7 +144,7 @@ void RepoRenderingWidget::initializeGL()
 	renderer->setActivationFlag(true);
 }
 
-void RepoRenderingWidget::instantiateRenderer(Renderer rendType)
+void Rendering3DWidget::instantiateRenderer(Renderer rendType)
 {
 	if (rendType == Renderer::GLC)
 	{
@@ -156,7 +156,7 @@ void RepoRenderingWidget::instantiateRenderer(Renderer rendType)
 	}
 }
 
-void RepoRenderingWidget::initializeShaders()
+void Rendering3DWidget::initializeShaders()
 {
     makeCurrent();
 
@@ -176,7 +176,7 @@ void RepoRenderingWidget::initializeShaders()
 	}
 }
 
-void RepoRenderingWidget::paintGL()
+void Rendering3DWidget::paintGL()
 {
 	if (isInfoVisible)
 	{
@@ -190,7 +190,7 @@ void RepoRenderingWidget::paintGL()
 }
 
 
-void RepoRenderingWidget::resizeGL(int width, int height)
+void Rendering3DWidget::resizeGL(int width, int height)
 {
     makeCurrent();
 	renderer->resizeWindow(width, height);
@@ -198,7 +198,7 @@ void RepoRenderingWidget::resizeGL(int width, int height)
 }
 
 //  ========== Not used at all. commenting them out for now. =========
-//void RepoRenderingWidget::reframe(const GLC_BoundingBox& boundingBox)
+//void Rendering3DWidget::reframe(const GLC_BoundingBox& boundingBox)
 //{
 //	const GLC_BoundingBox collectionBox = glcWorld.boundingBox();
 //	if (boundingBox.isEmpty())
@@ -224,7 +224,7 @@ void RepoRenderingWidget::resizeGL(int width, int height)
 //	}
 //}
 //
-//void RepoRenderingWidget::reframeOnSelection()
+//void Rendering3DWidget::reframeOnSelection()
 //{
 //	GLC_BoundingBox SelectionBox;
 //	PointerViewInstanceHash* pSelections = glcWorld.collection()->selection();
@@ -244,23 +244,23 @@ void RepoRenderingWidget::resizeGL(int width, int height)
 //
 //------------------------------------------------------------------------------
 
-void RepoRenderingWidget::broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
+void Rendering3DWidget::broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
 {
 	emit cameraChangedSignal(camera, emitSignal);
 }
 
-void RepoRenderingWidget::setCamera(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
+void Rendering3DWidget::setCamera(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
 {
 	renderer->setCamera(camera, emitSignal);
     update();
 }
-void RepoRenderingWidget::setPredefinedCamera(const repo::gui::renderer::CameraView& view)
+void Rendering3DWidget::setPredefinedCamera(const repo::gui::renderer::CameraView& view)
 {
 	renderer->setCamera(view);
     update();
 }
 
-void RepoRenderingWidget::setMeshColor(
+void Rendering3DWidget::setMeshColor(
 	const repoUUID &uniqueID,
 	const qreal &opacity,
 	const QColor &color)
@@ -269,7 +269,7 @@ void RepoRenderingWidget::setMeshColor(
 	update();
 }
 
-//void RepoRenderingWidget::setGLCMeshColors(
+//void Rendering3DWidget::setGLCMeshColors(
 //	const float r,
 //	const float g,
 //	const float b,
@@ -294,7 +294,7 @@ void RepoRenderingWidget::setMeshColor(
 //    update();
 //}
 //
-//void RepoRenderingWidget::setGLCMeshOpacity(const QString &name, qreal opacity)
+//void Rendering3DWidget::setGLCMeshOpacity(const QString &name, qreal opacity)
 //{
 //	GLC_Mesh* glcMesh = getGLCMesh(name);
 //	if (glcMesh)
@@ -310,7 +310,7 @@ void RepoRenderingWidget::setMeshColor(
 //	}
 //}
 //
-//void RepoRenderingWidget::setGLCOccurrenceRenderProperties(
+//void Rendering3DWidget::setGLCOccurrenceRenderProperties(
 //	const QString &occurrenceName,
 //	const GLC_RenderProperties &properties)
 //{
@@ -330,7 +330,7 @@ void RepoRenderingWidget::setMeshColor(
 //
 //}
 //
-//void RepoRenderingWidget::setGLCOccurrenceOpacity(
+//void Rendering3DWidget::setGLCOccurrenceOpacity(
 //	const QString &occurrenceName, qreal opacity, const QColor &color)
 //{
 //	repoLog("changing occurence properties for " + occurrenceName.toStdString());
@@ -348,7 +348,7 @@ void RepoRenderingWidget::setMeshColor(
 //	setGLCOccurrenceRenderProperties(occurrenceName, properties);
 //}
 //
-//void RepoRenderingWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
+//void Rendering3DWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
 //{
 //    QHash<QString, GLC_StructOccurrence *>::iterator it = glcOccurrences.find(occurrenceName);
 //	if (glcOccurrences.end() != it)
@@ -358,12 +358,12 @@ void RepoRenderingWidget::setMeshColor(
 //	}
 //}
 
-void RepoRenderingWidget::setInfoVisibility(const bool visible)
+void Rendering3DWidget::setInfoVisibility(const bool visible)
 {
 	isInfoVisible = visible;
 }
 
-void RepoRenderingWidget::setBackgroundColor(
+void Rendering3DWidget::setBackgroundColor(
 	const QColor &color,
     const bool isupdate)
 {
@@ -372,22 +372,22 @@ void RepoRenderingWidget::setBackgroundColor(
         update();
 }
 
-void RepoRenderingWidget::linkCameras(
-	const RepoRenderingWidget *widget,
+void Rendering3DWidget::linkCameras(
+	const Rendering3DWidget *widget,
 	const bool & on) const
 {
 	if (on)
 	{
 		connect(
-			this, &RepoRenderingWidget::cameraChangedSignal,
-			widget, &RepoRenderingWidget::setCamera);
+			this, &Rendering3DWidget::cameraChangedSignal,
+			widget, &Rendering3DWidget::setCamera);
 		// TODO: align all views
 	}
 	else
 	{
 		disconnect(
-			this, &RepoRenderingWidget::cameraChangedSignal,
-			widget, &RepoRenderingWidget::setCamera);
+			this, &Rendering3DWidget::cameraChangedSignal,
+			widget, &Rendering3DWidget::setCamera);
 	}
 }
 
@@ -397,15 +397,15 @@ void RepoRenderingWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
+void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 {
 	
 	connect(
 		renderer, &renderer::AbstractRenderer::modelLoadProgress,
-		this, &RepoRenderingWidget::rendererProgress);
+		this, &Rendering3DWidget::rendererProgress);
 
 	connect(
-		this, &RepoRenderingWidget::cancelRenderingOps,
+		this, &Rendering3DWidget::cancelRenderingOps,
 		renderer, &renderer::AbstractRenderer::cancelOperations);
 	if (repoScene)
 	{
@@ -438,7 +438,7 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 //
 //------------------------------------------------------------------------------
 
-//std::vector<std::string> RepoRenderingWidget::getSelectionList() const
+//std::vector<std::string> Rendering3DWidget::getSelectionList() const
 //{
 //	std::vector<std::string> selectedNames;
 //    QList<GLC_StructOccurrence *> occurrences = glcWorld.selectedOccurrenceList();
@@ -451,7 +451,7 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 //	return selectedNames;
 //}
 //
-//repo::core::model::RepoNode* RepoRenderingWidget::getSelectedNode() const
+//repo::core::model::RepoNode* Rendering3DWidget::getSelectedNode() const
 //{
 //	repo::core::model::RepoNode *node = 0;
 //	if (glcWorld.selectionSize() > 0)
@@ -461,7 +461,7 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 //	return node;
 //}
 //
-//GLC_Mesh* RepoRenderingWidget::getGLCMesh(const QString &name) const
+//GLC_Mesh* Rendering3DWidget::getGLCMesh(const QString &name) const
 //{
 //	GLC_Mesh * glcMesh = 0;
 //	QHash<QString, GLC_Mesh*>::const_iterator it = glcMeshes.find(name);
@@ -470,7 +470,7 @@ void RepoRenderingWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 //	return glcMesh;
 //}
 
-QImage RepoRenderingWidget::renderQImage(int w, int h)
+QImage Rendering3DWidget::renderQImage(int w, int h)
 {
 	// See https://bugreports.qt-project.org/browse/QTBUG-33186
 
@@ -504,7 +504,7 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 //
 ////------------------------------------------------------------------------------
 //// Create GLC_Object to display
-//void RepoRenderingWidget::addBoundingBox(
+//void Rendering3DWidget::addBoundingBox(
 //	const double lx,
 //	const double ly,
 //	const double lz,
@@ -525,7 +525,7 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 //	glcViewCollection.add(box);
 //}
 //
-//void RepoRenderingWidget::clearBoundingBoxes()
+//void Rendering3DWidget::clearBoundingBoxes()
 //{
 //	glcViewCollection.clear();
 //}
@@ -535,7 +535,7 @@ QImage RepoRenderingWidget::renderQImage(int w, int h)
 // User interaction
 //
 //------------------------------------------------------------------------------
-void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
+void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
 {
 	switch (e->key())
 	{
@@ -626,7 +626,7 @@ void RepoRenderingWidget::keyPressEvent(QKeyEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
 }
-void RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
+void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
 {
 	switch (e->button())
 	{
@@ -652,7 +652,7 @@ void RepoRenderingWidget::mousePressEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mousePressEvent(e);
 }
-void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
+void Rendering3DWidget::mouseDoubleClickEvent(QMouseEvent *e)
 {
 	if (Qt::LeftButton == e->button())
 	{
@@ -665,7 +665,7 @@ void RepoRenderingWidget::mouseDoubleClickEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseDoubleClickEvent(e);
 }
-void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
+void Rendering3DWidget::mouseMoveEvent(QMouseEvent * e)
 {
 	
 	if (mousePressed && renderer->move(e->x(), e->y()))
@@ -678,7 +678,7 @@ void RepoRenderingWidget::mouseMoveEvent(QMouseEvent * e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseMoveEvent(e);
 }
-void RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
+void Rendering3DWidget::mouseReleaseEvent(QMouseEvent *e)
 {
 	if (mousePressed)
 	{
@@ -691,7 +691,7 @@ void RepoRenderingWidget::mouseReleaseEvent(QMouseEvent *e)
 	// Pass on the event to parent.
     QOpenGLWidget::mouseReleaseEvent(e);
 }
-void RepoRenderingWidget::wheelEvent(QWheelEvent * e)
+void Rendering3DWidget::wheelEvent(QWheelEvent * e)
 {
 	if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
 	{
@@ -703,7 +703,7 @@ void RepoRenderingWidget::wheelEvent(QWheelEvent * e)
     QOpenGLWidget::wheelEvent(e);
 }
 
-void RepoRenderingWidget::select(int x, int y, bool multiSelection,
+void Rendering3DWidget::select(int x, int y, bool multiSelection,
     QMouseEvent *event)
 {
 	renderer->selectComponent(x, y, multiSelection);
@@ -713,7 +713,7 @@ void RepoRenderingWidget::select(int x, int y, bool multiSelection,
 
 
 /*
-void RepoRenderingWidget::select(
+void Rendering3DWidget::select(
 	const QString &name,
 	bool multiSelection,
 	bool unselectSelected,

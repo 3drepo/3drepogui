@@ -18,14 +18,14 @@
 
 #include "repo_widget_manager_connect.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 using namespace repo::gui;
 
-const QString RepoWidgetManagerConnect::COLUMNS_SETTINGS = "RepoWidgetManagerConnectHeaders";
-const QString RepoWidgetManagerConnect::SELECTION_SETTINGS = "RepoWidgetManagerSelectionSettings";
+const QString ConnectionManagerWidget::COLUMNS_SETTINGS = "ConnectionManagerWidgetHeaders";
+const QString ConnectionManagerWidget::SELECTION_SETTINGS = "RepoWidgetManagerSelectionSettings";
 
-RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
-    : RepoWidgetTreeEditable(parent)
+ConnectionManagerWidget::ConnectionManagerWidget(QWidget *parent)
+    : EditableTreeWidget(parent)
     , controller(nullptr)
 {
     QList<QString> headers = {
@@ -35,20 +35,20 @@ RepoWidgetManagerConnect::RepoWidgetManagerConnect(QWidget *parent)
         tr("SSL"),
         tr("SSH")};
 
-    RepoWidgetTreeFilterable *filterableTree = getFilterableTree();
+    FilterableTreeWidget *filterableTree = getFilterableTree();
     filterableTree->restoreHeaders(headers, COLUMNS_SETTINGS);
     filterableTree->setRootIsDecorated(false);
 
     clear();
 }
 
-RepoWidgetManagerConnect::~RepoWidgetManagerConnect()
+ConnectionManagerWidget::~ConnectionManagerWidget()
 {
     getFilterableTree()->storeHeaders(COLUMNS_SETTINGS);
     getFilterableTree()->storeSelection(SELECTION_SETTINGS);
 }
 
-void RepoWidgetManagerConnect::addItem(const repo::RepoCredentials &credentials)
+void ConnectionManagerWidget::addItem(const repo::RepoCredentials &credentials)
 {
     QList<QStandardItem *> row;
     row.append(makeAliasItem(credentials));
@@ -62,22 +62,22 @@ void RepoWidgetManagerConnect::addItem(const repo::RepoCredentials &credentials)
     getFilterableTree()->addTopLevelRow(row);
 }
 
-void RepoWidgetManagerConnect::edit()
+void ConnectionManagerWidget::edit()
 {
     edit(getFilterableTree()->getCurrentIndex());
 }
 
-void RepoWidgetManagerConnect::edit(const QModelIndex &index)
+void ConnectionManagerWidget::edit(const QModelIndex &index)
 {
     showEditDialog(getConnection(index), index, Action::EDIT);
 }
 
-repo::RepoCredentials RepoWidgetManagerConnect::getConnection()
+repo::RepoCredentials ConnectionManagerWidget::getConnection()
 {
     return getConnection(getFilterableTree()->getCurrentIndex());
 }
 
-repo::RepoCredentials RepoWidgetManagerConnect::getConnection(const QModelIndex &index)
+repo::RepoCredentials ConnectionManagerWidget::getConnection(const QModelIndex &index)
 {
     repo::RepoCredentials credentials;
     if (index.isValid())
@@ -88,7 +88,7 @@ repo::RepoCredentials RepoWidgetManagerConnect::getConnection(const QModelIndex 
     return credentials;
 }
 
-void RepoWidgetManagerConnect::refresh()
+void ConnectionManagerWidget::refresh()
 {
     //    ui->progressBar->show(); // TODO: delete line
     //----------------------------------------------------------------------
@@ -108,7 +108,7 @@ void RepoWidgetManagerConnect::refresh()
     //    ui->progressBar->hide(); // TODO: show
 }
 
-void RepoWidgetManagerConnect::removeItem()
+void ConnectionManagerWidget::removeItem()
 {
     repo::RepoCredentials credentials = getConnection();
     switch(QMessageBox::warning(this,
@@ -128,7 +128,7 @@ void RepoWidgetManagerConnect::removeItem()
     }
 }
 
-void RepoWidgetManagerConnect::showEditDialog(
+void ConnectionManagerWidget::showEditDialog(
         const repo::RepoCredentials &credentials,
         const QModelIndex &index,
         const Action action)
@@ -136,7 +136,7 @@ void RepoWidgetManagerConnect::showEditDialog(
     dialog::ConnectDialog connectionSettingsDialog(
                 controller,
                 credentials,
-                action == RepoWidgetTreeEditable::Action::COPY,
+                action == EditableTreeWidget::Action::COPY,
                 this);
     if (QDialog::Rejected == connectionSettingsDialog.exec())
         repoLog("Connection Settings Dialog cancelled by user.\n");
@@ -163,7 +163,7 @@ void RepoWidgetManagerConnect::showEditDialog(
     }
 }
 
-void RepoWidgetManagerConnect::serialize()
+void ConnectionManagerWidget::serialize()
 {
     // TODO: put into async worker
     QList<repo::RepoCredentials> list;
@@ -179,7 +179,7 @@ void RepoWidgetManagerConnect::serialize()
 }
 
 
-QStandardItem *RepoWidgetManagerConnect::makeAliasItem(
+QStandardItem *ConnectionManagerWidget::makeAliasItem(
         const repo::RepoCredentials &credentials)
 {
     QVariant var;
@@ -191,13 +191,13 @@ QStandardItem *RepoWidgetManagerConnect::makeAliasItem(
     return item;
 }
 
-QStandardItem *RepoWidgetManagerConnect::makeAddressItem(
+QStandardItem *ConnectionManagerWidget::makeAddressItem(
         const repo::RepoCredentials &credentials)
 {
     return new repo::gui::primitive::RepoStandardItem(credentials.getHostAndPort());
 }
 
-QStandardItem *RepoWidgetManagerConnect::makeAuthenticationItem(
+QStandardItem *ConnectionManagerWidget::makeAuthenticationItem(
         const repo::RepoCredentials &credentials)
 {
     QString label;
@@ -217,7 +217,7 @@ QStandardItem *RepoWidgetManagerConnect::makeAuthenticationItem(
     return item;
 }
 
-QStandardItem *RepoWidgetManagerConnect::makeSSLItem(
+QStandardItem *ConnectionManagerWidget::makeSSLItem(
         const repo::RepoCredentials &)
 {
     QStandardItem *item = new repo::gui::primitive::RepoStandardItem();
@@ -227,7 +227,7 @@ QStandardItem *RepoWidgetManagerConnect::makeSSLItem(
     return item;
 }
 
-QStandardItem *RepoWidgetManagerConnect::makeSSHItem(
+QStandardItem *ConnectionManagerWidget::makeSSHItem(
         const repo::RepoCredentials &)
 {
     QStandardItem *item = new repo::gui::primitive::RepoStandardItem();

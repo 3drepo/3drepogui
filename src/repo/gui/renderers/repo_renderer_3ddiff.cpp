@@ -24,8 +24,8 @@ using namespace repo::gui::renderer;
 Repo3DDiffRenderer::Repo3DDiffRenderer(
 	repo::RepoController *controller,
 	const repo::RepoToken *token,
-        widgets::RepoRenderingWidget *widgetA,
-        widgets::RepoRenderingWidget *widgetB)
+        widget::Rendering3DWidget *widgetA,
+        widget::Rendering3DWidget *widgetB)
     : 
 	controller(controller),
 	token(token),
@@ -45,9 +45,9 @@ Repo3DDiffRenderer::Repo3DDiffRenderer(
 
 	
 //	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnA,
-//		widgetA, &widgets::RepoRenderingWidget::setMeshColor);
+//		widgetA, &widget::Rendering3DWidget::setMeshColor);
 //	QObject::connect(worker, &repo::worker::DiffWorker::colorChangeOnB,
-//		widgetB, &widgets::RepoRenderingWidget::setMeshColor);
+//		widgetB, &widget::Rendering3DWidget::setMeshColor);
 
 //	//----------------------------------------------------------------------
 //	// Fire up the asynchronous calculation.

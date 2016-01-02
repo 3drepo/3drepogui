@@ -19,11 +19,11 @@
 #include "repo_widget_tree_unfilterable.h"
 #include "ui_repo_widget_tree_unfilterable.h"
 
-using namespace repo::widgets;
+using namespace repo::gui::widget;
 
-RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
+UnfilterableTreeWidget::UnfilterableTreeWidget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::RepoWidgetTreeUnfilterable)
+    , ui(new Ui::UnfilterableTreeWidget)
     , newRowText({tr("<empty>"), tr("<empty>")})
     , tabWidget(0)
     , tab(0)
@@ -34,7 +34,7 @@ RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
 
     QObject::connect(
                 ui->treeWidget, &QTreeWidget::itemChanged,
-                this, &RepoWidgetTreeUnfilterable::updateDelegate);
+                this, &UnfilterableTreeWidget::updateDelegate);
 
     QObject::connect(
                 ui->addPushButton, SIGNAL(pressed()),
@@ -45,11 +45,11 @@ RepoWidgetTreeUnfilterable::RepoWidgetTreeUnfilterable(QWidget *parent)
                 this, SLOT(removeRow()));
 
     QObject::connect(
-                this, &RepoWidgetTreeUnfilterable::rowCountChanged,
-                this, &RepoWidgetTreeUnfilterable::notifyTabTextChange);
+                this, &UnfilterableTreeWidget::rowCountChanged,
+                this, &UnfilterableTreeWidget::notifyTabTextChange);
 }
 
-RepoWidgetTreeUnfilterable::~RepoWidgetTreeUnfilterable()
+UnfilterableTreeWidget::~UnfilterableTreeWidget()
 {
     delete ui;
 
@@ -63,18 +63,18 @@ RepoWidgetTreeUnfilterable::~RepoWidgetTreeUnfilterable()
     }
 }
 
-void RepoWidgetTreeUnfilterable::setButtonsEnabled(bool enabled)
+void UnfilterableTreeWidget::setButtonsEnabled(bool enabled)
 {
     ui->addPushButton->setEnabled(enabled);
     ui->removePushButton->setEnabled(enabled);
 }
 
-void RepoWidgetTreeUnfilterable::setHeaders(const QStringList &headers)
+void UnfilterableTreeWidget::setHeaders(const QStringList &headers)
 {
     ui->treeWidget->setHeaderLabels(headers);
 }
 
-void RepoWidgetTreeUnfilterable::removeRow()
+void UnfilterableTreeWidget::removeRow()
 {
     int oldRowCount = getRowCount();
     QTreeWidgetItem *item = 0;
@@ -89,7 +89,7 @@ void RepoWidgetTreeUnfilterable::removeRow()
     }
 }
 
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list, bool enabled)
+QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QStringList &list, bool enabled)
 {
     QTreeWidgetItem *item = 0;
     if (list.size() == ui->treeWidget->columnCount())
@@ -119,12 +119,12 @@ QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QStringList &list, boo
     return item;
 }
 
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(const QString &a, const QString &b)
+QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QString &a, const QString &b)
 {
     return addRow({a, b});
 }
 
-QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(
+QTreeWidgetItem *UnfilterableTreeWidget::addRow(
         const std::pair<std::string, std::string> &pair,
         bool enabled)
 {
@@ -133,13 +133,13 @@ QTreeWidgetItem *RepoWidgetTreeUnfilterable::addRow(
         enabled);
 }
 
-void RepoWidgetTreeUnfilterable::addRows(const std::list<std::pair<std::string, std::string> > &list)
+void UnfilterableTreeWidget::addRows(const std::list<std::pair<std::string, std::string> > &list)
 {
     for (auto pair : list)
         addRow(pair);
 }
 
-std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getItemsAsListOfPairsOfStrings() const
+std::list<std::pair<std::string, std::string> > UnfilterableTreeWidget::getItemsAsListOfPairsOfStrings() const
 {
     std::list<std::pair<std::string, std::string> > list;
     if (ui->treeWidget->columnCount() >= 2)
@@ -155,7 +155,7 @@ std::list<std::pair<std::string, std::string> > RepoWidgetTreeUnfilterable::getI
     return list;
 }
 
-std::vector<std::string> RepoWidgetTreeUnfilterable::getItemsAsVectorOfStrings() const
+std::vector<std::string> UnfilterableTreeWidget::getItemsAsVectorOfStrings() const
 {
     std::vector<std::string> vector(ui->treeWidget->topLevelItemCount());
     if (ui->treeWidget->columnCount() > 0)
@@ -169,17 +169,17 @@ std::vector<std::string> RepoWidgetTreeUnfilterable::getItemsAsVectorOfStrings()
     return vector;
 }
 
-int RepoWidgetTreeUnfilterable::getRowCount() const
+int UnfilterableTreeWidget::getRowCount() const
 {
     return ui->treeWidget->topLevelItemCount();
 }
 
-void RepoWidgetTreeUnfilterable::setItemDelegateForRow(const QString &item)
+void UnfilterableTreeWidget::setItemDelegateForRow(const QString &item)
 {
     setItemDelegateForRow(item, ui->treeWidget->topLevelItemCount() - 1);
 }
 
-void RepoWidgetTreeUnfilterable::setItemDelegateForRow(const QString &item, int row)
+void UnfilterableTreeWidget::setItemDelegateForRow(const QString &item, int row)
 {
     if (delegates.contains(item))
     {
@@ -187,7 +187,7 @@ void RepoWidgetTreeUnfilterable::setItemDelegateForRow(const QString &item, int 
     }
 }
 
-void RepoWidgetTreeUnfilterable::setItemDelegateForColumn(const QString &item, int column)
+void UnfilterableTreeWidget::setItemDelegateForColumn(const QString &item, int column)
 {
     if (delegates.contains(item))
     {
@@ -195,7 +195,7 @@ void RepoWidgetTreeUnfilterable::setItemDelegateForColumn(const QString &item, i
     }
 }
 
-void RepoWidgetTreeUnfilterable::updateDelegate(QTreeWidgetItem *current, int column)
+void UnfilterableTreeWidget::updateDelegate(QTreeWidgetItem *current, int column)
 {
     if (delegates.size() > 0 && current && 0 == column)
     {
@@ -212,7 +212,7 @@ void RepoWidgetTreeUnfilterable::updateDelegate(QTreeWidgetItem *current, int co
     }
 }
 
-void RepoWidgetTreeUnfilterable::notifyTabTextChange(int oldRowCount, int newRowCount)
+void UnfilterableTreeWidget::notifyTabTextChange(int oldRowCount, int newRowCount)
 {
     QString text;
     if (tabWidget)
@@ -222,21 +222,21 @@ void RepoWidgetTreeUnfilterable::notifyTabTextChange(int oldRowCount, int newRow
     emit tabTextChanged(tab, text);
 }
 
-void RepoWidgetTreeUnfilterable::registerTabWidget(QTabWidget *tabWidget, int tab)
+void UnfilterableTreeWidget::registerTabWidget(QTabWidget *tabWidget, int tab)
 {
     if (this->tabWidget)
     {
-        QObject::disconnect(this, &RepoWidgetTreeUnfilterable::tabTextChanged,
+        QObject::disconnect(this, &UnfilterableTreeWidget::tabTextChanged,
                             this->tabWidget, &QTabWidget::setTabText);
     }
 
     this->tabWidget = tabWidget;
     this->tab = tab;
-    QObject::connect(this, &RepoWidgetTreeUnfilterable::tabTextChanged,
+    QObject::connect(this, &UnfilterableTreeWidget::tabTextChanged,
                      tabWidget, &QTabWidget::setTabText);
 }
 
-QString RepoWidgetTreeUnfilterable::updateCountString(
+QString UnfilterableTreeWidget::updateCountString(
         QString string,
         int oldCount,
         int newCount)

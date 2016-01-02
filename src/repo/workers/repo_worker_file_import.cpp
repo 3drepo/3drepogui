@@ -26,7 +26,7 @@ using namespace repo::worker;
 
 repo::worker::FileImportWorker::FileImportWorker(const std::string & fullPath,
 	repo::RepoController *controller,
-	const repo::gui::repo_widget_flags* assimpFlagsWidget)
+	const repo::gui::widget::FlagsWidget* assimpFlagsWidget)
 	: fullPath(fullPath)
 	, controller(controller)
 	, settings(assimpFlagsWidget->getSettings())
