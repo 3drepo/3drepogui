@@ -15,8 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef REPOGUI_H
-#define REPOGUI_H
+#pragma once
 
 #include <QMainWindow>
 #include <QGLFormat>
@@ -219,5 +218,3 @@ private:
 } // end namespace gui
 } // end namespace repo
 
-
-#endif // REPOGUI_H
