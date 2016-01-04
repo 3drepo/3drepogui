@@ -97,28 +97,28 @@ void DiffWorker::processResultsByDiff(
 	{
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-            emit colorChangeOnA(node->getUniqueID(), 0.9, Qt::red);
+            emit colorChangeOnA(node->getUniqueID(), 1.0, Qt::red);
 	}
 
 	for (const repoUUID id : aRes.modified)
 	{
 		repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-            emit colorChangeOnA(node->getUniqueID(), 0.9, Qt::cyan);
+			emit colorChangeOnA(node->getUniqueID(), 1.0, Qt::cyan);
 	}
 
 	for (const repoUUID id : bRes.added)
 	{
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-            emit colorChangeOnB(node->getUniqueID(), 0.9, Qt::green);
+			emit colorChangeOnB(node->getUniqueID(), 1.0, Qt::green);
 	}
 
-	for (const repoUUID id : aRes.modified)
+	for (const repoUUID id : bRes.modified)
 	{
 		repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
-            emit colorChangeOnB(node->getUniqueID(), 0.9, Qt::cyan);
+			emit colorChangeOnB(node->getUniqueID(), 1.0, Qt::cyan);
 	}
 
 }
