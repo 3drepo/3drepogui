@@ -56,7 +56,6 @@ HEADERS +=  \
 	src/repo/logger/repo_subscriber_abstract.h \
 	src/repo/settings/repo_settings.h \
 	src/repo/settings/repo_settings_credentials.h \
-	src/repo/widgets/repo_widget_manager_3ddiff.h \
 	src/repo/workers/repo_multithreader.h \
 	src/repo/workers/repo_mutex.h \
 	src/repo/workers/repo_worker_abstract.h \
