@@ -197,47 +197,6 @@ void Rendering3DWidget::resizeGL(int width, int height)
 	
 }
 
-//  ========== Not used at all. commenting them out for now. =========
-//void Rendering3DWidget::reframe(const GLC_BoundingBox& boundingBox)
-//{
-//	const GLC_BoundingBox collectionBox = glcWorld.boundingBox();
-//	if (boundingBox.isEmpty())
-//	{
-//		if (!collectionBox.isEmpty())
-//		{
-//			GLC_Camera savCam(*(glcViewport.cameraHandle()));
-//			glcViewport.reframe(collectionBox);
-//            update();
-//			emit cameraChangedSignal(*glcViewport.cameraHandle());
-//		}
-//	}
-//	else
-//	{
-//		GLC_Camera savCam(*(glcViewport.cameraHandle()));
-//		glcViewport.reframe(boundingBox);
-//		if (savCam == *(glcViewport.cameraHandle()))
-//		{
-//			glcViewport.reframe(collectionBox);
-//		}
-//        update();
-//		emit cameraChangedSignal(*glcViewport.cameraHandle());
-//	}
-//}
-//
-//void Rendering3DWidget::reframeOnSelection()
-//{
-//	GLC_BoundingBox SelectionBox;
-//	PointerViewInstanceHash* pSelections = glcWorld.collection()->selection();
-//	PointerViewInstanceHash::iterator iEntry = pSelections->begin();
-//	while (iEntry != pSelections->constEnd())
-//	{
-//		SelectionBox.combine(iEntry.value()->boundingBox());
-//		++iEntry;
-//	}
-//	reframe(SelectionBox);
-//}
-
-
 //------------------------------------------------------------------------------
 //
 // Public slots
@@ -268,95 +227,6 @@ void Rendering3DWidget::setMeshColor(
 	renderer->setMeshColor(uniqueID, opacity, color);
 	update();
 }
-
-//void Rendering3DWidget::setGLCMeshColors(
-//	const float r,
-//	const float g,
-//	const float b,
-//	const float a)
-//{
-//	QHash<QString, GLC_Mesh*>::iterator it;
-//
-//	for (it = glcMeshes.begin(); it != glcMeshes.end(); ++it)
-//	{
-//		GLC_Mesh *glcMesh = it.value();
-//		// Always [r,g,b,a] hence times 4
-//		QVector<GLfloat> vector(glcMesh->VertexCount() * 4);
-//		for (size_t i = 0; i < vector.size(); i += 4)
-//		{
-//			vector[i + 0] = r;
-//			vector[i + 1] = g;
-//			vector[i + 2] = b;
-//			vector[i + 3] = a;
-//		}
-//		setGLCMeshColors(glcMesh->name(), vector);
-//	}
-//    update();
-//}
-//
-//void Rendering3DWidget::setGLCMeshOpacity(const QString &name, qreal opacity)
-//{
-//	GLC_Mesh* glcMesh = getGLCMesh(name);
-//	if (glcMesh)
-//	{
-//		QSet<GLC_Material*> materials = glcMesh->materialSet();
-//		QSet<GLC_Material*>::iterator it;
-//
-//		for (it = materials.begin(); it != materials.end(); ++it)
-//		{
-//			GLC_Material *mat = *it;
-//			mat->setOpacity(opacity);
-//		}
-//	}
-//}
-//
-//void Rendering3DWidget::setGLCOccurrenceRenderProperties(
-//	const QString &occurrenceName,
-//	const GLC_RenderProperties &properties)
-//{
-//    GLC_StructOccurrence *oc;
-//    QHash<QString, GLC_StructOccurrence *>::iterator it =
-//		glcOccurrences.find(occurrenceName);
-//
-//    QHash<QString, GLC_StructOccurrence *>::iterator itt =
-//		glcMeshOccurences.find(occurrenceName);
-//	if (glcMeshOccurences.end() != itt)
-//		oc = itt.value();
-//	else if (glcOccurrences.end() != it)
-//		oc = it.value();
-//
-//	if (oc)
-//		oc->setRenderProperties(properties);
-//
-//}
-//
-//void Rendering3DWidget::setGLCOccurrenceOpacity(
-//	const QString &occurrenceName, qreal opacity, const QColor &color)
-//{
-//	repoLog("changing occurence properties for " + occurrenceName.toStdString());
-//	GLC_RenderProperties properties;
-//	if (opacity < 1.0)
-//	{
-//		//	properties.setOverwriteTransparency(opacity);
-//		// This does not create memory leak as the overwrite material deletes
-//		// previous one if set and not used.
-//		properties.setOverwriteMaterial(new GLC_Material(color));
-//		properties.setRenderingMode(glc::OverwriteMaterial);
-//	}
-//	else
-//		properties.setRenderingMode(glc::NormalRenderMode);
-//	setGLCOccurrenceRenderProperties(occurrenceName, properties);
-//}
-//
-//void Rendering3DWidget::setGLCOccurenceVisibility(const QString &occurrenceName, bool visible)
-//{
-//    QHash<QString, GLC_StructOccurrence *>::iterator it = glcOccurrences.find(occurrenceName);
-//	if (glcOccurrences.end() != it)
-//	{
-//        GLC_StructOccurrence * oc = it.value();
-//		oc->setVisibility(visible);
-//	}
-//}
 
 void Rendering3DWidget::setInfoVisibility(const bool visible)
 {
@@ -438,98 +308,22 @@ void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 //
 //------------------------------------------------------------------------------
 
-//std::vector<std::string> Rendering3DWidget::getSelectionList() const
-//{
-//	std::vector<std::string> selectedNames;
-//    QList<GLC_StructOccurrence *> occurrences = glcWorld.selectedOccurrenceList();
-//    QList<GLC_StructOccurrence *>::iterator it;
-//	for (it = occurrences.begin(); it != occurrences.end(); ++it)
-//	{
-//        GLC_StructOccurrence *oc = *it;
-//		selectedNames.push_back(oc->name().toStdString());
-//	}
-//	return selectedNames;
-//}
-//
-//repo::core::model::RepoNode* Rendering3DWidget::getSelectedNode() const
-//{
-//	repo::core::model::RepoNode *node = 0;
-//	if (glcWorld.selectionSize() > 0)
-//	{
-//        GLC_StructOccurrence* o = glcWorld.selectedOccurrenceList().first();
-//	}
-//	return node;
-//}
-//
-//GLC_Mesh* Rendering3DWidget::getGLCMesh(const QString &name) const
-//{
-//	GLC_Mesh * glcMesh = 0;
-//	QHash<QString, GLC_Mesh*>::const_iterator it = glcMeshes.find(name);
-//	if (glcMeshes.end() != it)
-//		glcMesh = it.value();
-//	return glcMesh;
-//}
 
 QImage Rendering3DWidget::renderQImage(int w, int h)
 {
-	// See https://bugreports.qt-project.org/browse/QTBUG-33186
-
 	makeCurrent();
 
-	// Set the rendering engine to the size of the image to render
-	// Also set the format so that the depth buffer will work
-	QOpenGLFramebufferObjectFormat format;
-	format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-	QOpenGLFramebufferObject qfb(w, h, format);
-	qfb.bind();
-
-	QImage image;
-	// If the frame buffer does not work then return an empty image
-	if (qfb.isValid())
-	{
-		// Draw the scene to the buffer
-		isInfoVisible = false;
-		resizeGL(w, h); // resize scene
-        update(); // draw to the buffer
-		qfb.release();
-		image = qfb.toImage();
-
-		isInfoVisible = true;
-		resizeGL(width(), height());
-        update();
-	}
-	return(image);
+	isInfoVisible = false;
+	int oldW = width();
+	int oldH = height();
+	resize(w, h); // resize scene
+	update(); // draw to the buffer
+	QImage image = grabFramebuffer();
+	isInfoVisible = true;
+	resize(oldW, oldH);
+	update();
+	return image;
 }
-
-//
-////------------------------------------------------------------------------------
-//// Create GLC_Object to display
-//void Rendering3DWidget::addBoundingBox(
-//	const double lx,
-//	const double ly,
-//	const double lz,
-//	const std::vector<double>& transformationMatrix)
-//{
-//	GLC_Box* pBox = new GLC_Box(lx, ly, lz);
-//	GLC_3DViewInstance box(pBox);
-//
-//	// Rotate and translate the box by the transformation matrix
-//	box.multMatrix(GLC_Matrix4x4(&transformationMatrix[0]));
-//
-//	// Replace GLC_Box default material
-//	GLC_Material * material = new GLC_Material(Qt::gray);
-//	material->setOpacity(0.1);
-//	box.geomAt(0)->replaceMasterMaterial(material);
-//
-//	// Add the box to the collection
-//	glcViewCollection.add(box);
-//}
-//
-//void Rendering3DWidget::clearBoundingBoxes()
-//{
-//	glcViewCollection.clear();
-//}
-//
 //------------------------------------------------------------------------------
 //
 // User interaction
