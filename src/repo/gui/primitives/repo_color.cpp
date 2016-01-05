@@ -19,6 +19,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <repo/lib/repo_log.h>
 
 using namespace repo::gui::primitive;
 

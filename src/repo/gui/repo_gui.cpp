@@ -567,7 +567,7 @@ void repo::gui::RepoGUI::loadFile(const QString &filePath)
     {
         QFileInfo pathInfo(filePath);
         std::string fileName = pathInfo.fileName().toStdString();
-		repoLog("Loading " << fileName << " ...");
+        repoLog("Loading " + fileName + " ...");
 
         ui->mdiArea->addSubWindow(controller, filePath);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());

@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <repo/lib/repo_log.h>
 #include "repo_fontawesome.h"
 
 using namespace repo::gui::primitive;
