@@ -15,6 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <repo/lib/repo_log.h>
 #include "repo_fontawesome.h"
 
 using namespace repo::gui::primitive;
@@ -31,7 +32,7 @@ RepoFontAwesome::RepoFontAwesome(QObject* parent)
 {
     QFile res(":/fontawesome");
 	if(!res.open(QIODevice::ReadOnly)) 
-        std::cerr << "Font Awesome not found." << std::endl;
+		repoLogError("Font Awesome not found.");
 	
 	QByteArray fontData(res.readAll());
 	res.close();

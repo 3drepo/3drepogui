@@ -19,6 +19,7 @@
 #include <iostream>
 #include <cmath>
 #include <sstream>
+#include <repo/lib/repo_log.h>
 
 using namespace repo::gui::primitive;
 
@@ -68,7 +69,7 @@ RepoColor RepoColor::getNext()
     if (colorCounter >= totalColorsCount)
     {
         colorCounter %= totalColorsCount;
-        std::cerr << "Too many colour requests, reusing colours." << std::endl;
+		repoLogError("Too many colour requests, reusing colours.");
     }
 
     color = RepoColor();

@@ -106,13 +106,13 @@ void Repo3DDiffManagerWidget::runDiff()
     repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
-    if (!widgetA)
-        std::cerr << tr("Widget A is null.").toStdString() << std::endl;
+	if (!widgetA)
+		repoLogError(tr("Widget A is null.").toStdString());
     else if(!widgetB)
-        std::cerr << tr("Widget B is null.").toStdString() << std::endl;
+		repoLogError(tr("Widget B is null.").toStdString());
     else
     {
-        std::cout << tr("Starting 3D Diff calculation").toStdString();
+        repoLog(tr("Starting 3D Diff calculation").toStdString());
         bool colorCorrespondence = (getVisualization() == Visualization::CORRESPONDENCE);
         switch (getDiffAlgorithm())
         {

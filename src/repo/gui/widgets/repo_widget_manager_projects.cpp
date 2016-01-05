@@ -134,7 +134,7 @@ void ProjectsManagerWidget::removeItem()
                 refresh(projectSettings, true);
                 break;
             case 1: // no
-                std::cout << tr("Remove project settings warning box cancelled by user.").toStdString() << std::endl;
+                repoLog(tr("Remove project settings warning box cancelled by user.").toStdString());
                 break;
         }
 }
@@ -149,7 +149,7 @@ void ProjectsManagerWidget::showEditDialog(
                 this);
     if (QDialog::Rejected == projectDialog.exec())
     {
-        std::cout << tr("Project dialog cancelled by user.").toStdString() << std::endl;
+        repoLog(tr("Project dialog cancelled by user.").toStdString());
     }
     else // QDialog::Accepted
     {

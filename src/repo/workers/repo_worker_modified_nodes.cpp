@@ -35,7 +35,7 @@ RepoWorkerModifiedNodes::~RepoWorkerModifiedNodes() {}
 
 void RepoWorkerModifiedNodes::run()
 {
-    std::cout << tr("Populating Commit Dialog...").toStdString() << std::endl;
+	repoLog(tr("Populating Commit Dialog...").toStdString());
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
     int jobsDone = skip;

@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("3D Repo");
     QCoreApplication::setOrganizationDomain("3drepo.org");
     QCoreApplication::setApplicationName("3D Repo GUI");
-    QCoreApplication::setApplicationVersion("0.0.1");
+    QCoreApplication::setApplicationVersion("1.0.0a");
 
 	std::vector<repo::lib::RepoAbstractListener*> listeners;
 	listeners.push_back(repo::logger::RepoLogger::getInstance());
@@ -59,8 +59,6 @@ int main(int argc, char *argv[])
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
 	}
-
-	controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
 
 	if (verbose) free(verbose);
 	if (debug)   free(debug);

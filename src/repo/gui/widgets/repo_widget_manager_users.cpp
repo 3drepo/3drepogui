@@ -171,7 +171,7 @@ void UsersManagerWidget::removeItem()
         //FIXME: get a worker to do the work, then signal finish to refresh like db widget.
         break;
     case 1: // no
-        std::cout << "Remove user warning box cancelled by user." << std::endl;
+		repoLog("Remove user warning box cancelled by user.");
         break;
     }
 }
@@ -191,7 +191,7 @@ void UsersManagerWidget::showEditDialog(
     if (QDialog::Rejected == userDialog.exec())
     {
         repoLog("User profile dialog cancelled by user.\n");
-        std::cout << tr("User profile dialog cancelled by user.").toStdString() << std::endl;
+		repoLog(tr("User profile dialog cancelled by user.").toStdString());
     }
     else // QDialog::Accepted
     {

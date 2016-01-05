@@ -123,7 +123,7 @@ void ConnectionManagerWidget::removeItem()
         serialize();
         break;
     case 1: // no
-        std::cout << "Remove connection warning box cancelled by user." << std::endl;
+		repoLog("Remove connection warning box cancelled by user." );
         break;
     }
 }

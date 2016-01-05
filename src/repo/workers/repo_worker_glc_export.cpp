@@ -449,7 +449,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
                 }
                 else
                 {
-                    std::cerr << "NULL geometry in node " << name.toStdString() << std::endl;
+					repoLogError("NULL geometry in node " + name.toStdString());
                     instance = new GLC_StructInstance(new GLC_StructReference(name));
                 }
             }
