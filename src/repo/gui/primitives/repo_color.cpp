@@ -68,7 +68,7 @@ RepoColor RepoColor::getNext()
     if (colorCounter >= totalColorsCount)
     {
         colorCounter %= totalColorsCount;
-        std::cerr << "Too many colour requests, reusing colours." << std::endl;
+		repoLogError("Too many colour requests, reusing colours.");
     }
 
     color = RepoColor();

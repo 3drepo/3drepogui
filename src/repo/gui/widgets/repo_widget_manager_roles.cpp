@@ -199,7 +199,7 @@ void RolesManagerWidget::removeItem()
         //FIXME: get a worker to do the work, then signal finish to refresh like db widget.
         break;
     case 1: // no
-        std::cout << "Remove role warning box cancelled by user." << std::endl;
+		repoLog("Remove role warning box cancelled by user.");
         break;
     }
 }
@@ -219,7 +219,7 @@ void RolesManagerWidget::showEditDialog(
     if (QDialog::Rejected == roleDialog.exec())
     {
         repoLog("Role dialog cancelled by user.\n");
-        std::cout << tr("Role dialog cancelled by user.").toStdString() << std::endl;
+		repoLog(tr("Role dialog cancelled by user.").toStdString());
     }
     else // QDialog::Accepted
     {

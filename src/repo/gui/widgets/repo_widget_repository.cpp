@@ -215,7 +215,7 @@ void RepositoryWidget::fetchDatabases(
 		this->controller = controller;
 		this->token      = token;
 
-        std::cout << "Fetching databases..." << std::endl;
+		repoLog("Fetching databases...");
 				
         //----------------------------------------------------------------------
 		repo::worker::DatabaseWorker * worker = new repo::worker::DatabaseWorker(controller, token);
@@ -278,7 +278,7 @@ void RepositoryWidget::fetchCollection(
 {
 	if (!database.isEmpty() && !collection.isEmpty()) //&& cancelAllThreads())
 	{
-        std::cout << "Fetching collection..." << std::endl;
+		repoLog("Fetching collection...");
 		repo::worker::CollectionWorker* worker = new repo::worker::CollectionWorker
 			(controller, token, database.toStdString(), collection.toStdString());
 		worker->setAutoDelete(true);

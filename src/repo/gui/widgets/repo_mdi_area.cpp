@@ -124,29 +124,6 @@ void RepoMdiArea::maximizeSubWindows(WindowOrder order)
 			break;
 	}
 
-//	qlonglong polyCount = 0;
-//	qlonglong meshesCount = 0;
-//    for (QList<RepoMdiSubWindow *>::iterator it = openWindows.begin();
-//         it != openWindows.end();
-//         ++it)
-//	{
-//        RepoMdiSubWindow *subWindow = *it;
-//        widget::Rendering3DWidget *widget = subWindow->widget<widget::Rendering3DWidget*>();
-//        std::vector<core::RepoNodeAbstract *> meshes = widget->getRepoScene()->getMeshesVector();
-//        for (std::vector<core::RepoNodeAbstract *>::size_type i = 0;
-//             i < meshes.size(); ++i)
-//        {
-//            core::RepoNodeMesh *m = static_cast<core::RepoNodeMesh*>(meshes[i]);
-//            polyCount += m->getFaces()->size();
-//			++meshesCount;
-//		}
-//	}
-
-//    //--------------------------------------------------------------------------
-//	// Polygon count
-//    std::cout << polyCount << " polygons in " << meshesCount << " " ;
-//    std::cout << ((meshesCount == 1) ? "mesh" : "meshes") << std::endl;
-
 	this->update();
 	this->repaint();
 }

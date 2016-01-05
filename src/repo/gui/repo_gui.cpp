@@ -366,7 +366,7 @@ void repo::gui::RepoGUI::commit(
 
 
         if (!commitDialog.exec())
-            std::cout << "Commit dialog cancelled by user" << std::endl;
+			repoLog("Commit dialog cancelled by user");
         else // Clicked "OK"
         {
             //----------------------------------------------------------------------
@@ -399,7 +399,7 @@ void repo::gui::RepoGUI::connectDB()
     dialog::ConnectManagerDialog connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
-        std::cout<< "Connection Manager Dialog cancelled by user" << std::endl;
+		repoLog("Connection Manager Dialog cancelled by user");
     else
     {
         // if not successfully connected
@@ -431,7 +431,7 @@ void repo::gui::RepoGUI::connectDB()
         else
         {
             //connection/authentication failed
-            std::cerr << "Failed to connect/authenticate user: " << errMsg << std::endl;
+			repoLogError("Failed to connect/authenticate user: " + errMsg);
         }
     }
 }
@@ -464,10 +464,10 @@ void repo::gui::RepoGUI::drop()
     QString collection = ui->widgetRepository->getSelectedCollection();
 
 
-    if (database.isNull() || database.isEmpty())
-        std::cout << "A database must be selected." << std::endl;
-    else if ((database == "local" || database == "admin") && collection.isEmpty())
-        std::cout << "You are not allowed to delete 'local' or 'admin' databases." << std::endl;
+	if (database.isNull() || database.isEmpty())
+		repoLog("A database must be selected.");
+	else if ((database == "local" || database == "admin") && collection.isEmpty())
+		repoLog("You are not allowed to delete 'local' or 'admin' databases.");
     else
     {
         QString ns = database + (!collection.isEmpty() ? "." + collection : "");
@@ -527,7 +527,7 @@ repo::gui::widget::Rendering3DWidget* repo::gui::RepoGUI::getActiveWidget() cons
     widget::Rendering3DWidget *widget =
             ui->mdiArea->activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
     if (!widget)
-        std::cerr << tr("A 3D window has to be open.").toStdString() << std::endl;
+		repoLogError(tr("A 3D window has to be open.").toStdString());
     return widget;
 }
 
@@ -547,7 +547,7 @@ void repo::gui::RepoGUI::history()
     dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
-        std::cout << "Revision History dialog cancelled by user." << std::endl;
+		repoLog("Revision History dialog cancelled by user.");
     else
     {
         QList<QUuid> revisions = historyDialog.getSelectedRevisions();
@@ -567,7 +567,7 @@ void repo::gui::RepoGUI::loadFile(const QString &filePath)
     {
         QFileInfo pathInfo(filePath);
         std::string fileName = pathInfo.fileName().toStdString();
-        std::cout << "Loading " << fileName << " ..." << std::endl;
+		repoLog("Loading " << fileName << " ...");
 
         ui->mdiArea->addSubWindow(controller, filePath);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
@@ -607,30 +607,13 @@ void repo::gui::RepoGUI::open3DDiff()
     dockWidget->setWidget(diffWidget);
     this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 
-
-
-
-
-
-
-
     if (ui->mdiArea->subWindowList().count() == 2)
     {
-        //        widget::Rendering3DWidget *widgetA = dynamic_cast<widget::Rendering3DWidget*>(ui->mdiArea->subWindowList().at(0)->widget());
-        //        widget::Rendering3DWidget *widgetB = dynamic_cast<widget::Rendering3DWidget*>(ui->mdiArea->subWindowList().at(1)->widget());
-
-        //        if (widgetA && widgetB)
-        //        {
-
         ui->mdiArea->maximizeSubWindows();
         ui->actionLink->setChecked(true);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
-
-        //			Repo3DDiffRenderer(controller, ui->widgetRepository->getSelectedConnection(), widgetA, widgetB);
-        //        }
     }
-    //    else
-    //        std::cerr << "Exactly 2 windows have to be open." << std::endl;
+
 }
 
 void repo::gui::RepoGUI::openAccessManager()
@@ -770,7 +753,7 @@ void repo::gui::RepoGUI::saveScreenshot()
 
     if (widgets.size() == 0)
     {
-        std::cerr << tr("A window has to be open.").toStdString() << std::endl;
+		repoLogError(tr("A window has to be open.").toStdString());
     }
     else
     {
@@ -790,12 +773,12 @@ void repo::gui::RepoGUI::saveScreenshot()
                 if (!fileInfo.completeSuffix().isEmpty())
                     newPath += "." + fileInfo.completeSuffix();
 
-                std::cout << tr("Exporting image to ").toStdString() + newPath.toStdString() << std::endl;
+				repoLog(tr("Exporting image to ").toStdString() + newPath.toStdString());
                 // See https://bugreports.qt-project.org/browse/QTBUG-33186
                 //QPixmap pixmap = widget->renderPixmap(3840, 2160);
                 QImage image = widget->renderQImage(13440,7560); // HD x 7 res
                 if (!image.save(newPath, 0, 100)) // 100% quality
-                    std::cerr << tr("Export failed.").toStdString() << std::endl;
+                    repoLogError(tr("Export failed.").toStdString());
             }
         }
     }

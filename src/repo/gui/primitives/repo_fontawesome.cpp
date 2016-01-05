@@ -31,7 +31,7 @@ RepoFontAwesome::RepoFontAwesome(QObject* parent)
 {
     QFile res(":/fontawesome");
 	if(!res.open(QIODevice::ReadOnly)) 
-        std::cerr << "Font Awesome not found." << std::endl;
+		repoLogError("Font Awesome not found.");
 	
 	QByteArray fontData(res.readAll());
 	res.close();

@@ -37,7 +37,7 @@ CommitWorker::~CommitWorker() {}
 
 void CommitWorker::run()
 {
-	std::cout << tr("Commiting scene to the database, please wait...").toStdString() << std::endl;
+	repoLog(tr("Commiting scene to the database, please wait...").toStdString());
 	
 	emit progress(0, 0);
 	controller->commitScene(token, scene);

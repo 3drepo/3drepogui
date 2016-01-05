@@ -41,18 +41,18 @@ void GraphRenderer::initialize()
 {
     if (!scene)
     {
-        std::cerr << tr("Attempting to render graph from nullptr scene!").toStdString() << std::endl;
+		repoLogError(tr("Attempting to render graph from nullptr scene!").toStdString());
     }
     else
     {
         repo::core::model::RepoNode *root = scene->getRoot(graphType);
         if (!root)
         {
-            std::cerr << tr("Rendering graph root node returned nullptr.").toStdString() << std::endl;
+			repoLogError(tr("Rendering graph root node returned nullptr.").toStdString());
         }
         else
         {
-            std::cout << tr("Rendering graph for ").toStdString() << root->getName() << std::endl;
+            repoLog(tr("Rendering graph for ").toStdString() + root->getName());
             std::vector<repo::core::model::RepoNode*> nodes(1);
             nodes[0] = root;
             addNodesRecursively(nodes, 0);
@@ -111,13 +111,6 @@ void GraphRenderer::addNodesRecursively(
         {
             painted.insert(uuid, freshlyPainted[uuid]);
         }
-
-        //----------------------------------------------------------------------
-        std::cout << tr("Created").toStdString() << " ";
-        std::cout << counter;
-        std::cout << " " << tr("nodes at level").toStdString() << " " << row;
-        std::cout << std::endl;
-        //----------------------------------------------------------------------
 
         addNodesRecursively(unpainted, row + 1);
     }
