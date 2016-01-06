@@ -30,6 +30,8 @@
 //------------------------------------------------------------------------------
 
 
+#define EXPECTED_BOUNCER_VERSION "1.0a"
+
 namespace Ui
 {
     class RepoGUI;
