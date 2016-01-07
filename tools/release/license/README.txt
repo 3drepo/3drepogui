@@ -7,4 +7,4 @@ licenses can also be found in this folder:
 - Open Asset Import Library (ASSIMP) :  3-clause BSD-License
 - Boost v1.58 : Boost Software License (see http://www.boost.org/users/license.html)
 - Mongo CXX Client Legacy v1.03 : APACHE v2.0
-
+- OpenSSL: OpenSSL License/ SSLeay License

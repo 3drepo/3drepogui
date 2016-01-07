@@ -77,6 +77,8 @@ for boostDll in boostdlls:
 
 os.system("copy \"" + os.environ["REPOBOUNCER_ROOT"] + "\\lib\\" + bouncerdll + "\" \"" + installDir + "\\bin\"")
 
+os.system("copy C:\\Windows\\System32\\libeay32.dll \"" + installDir + "\\bin\"")
+os.system("copy C:\\Windows\\System32\\libssl32.dll \"" + installDir + "\\bin\"")
 #copy README and licensing info
 os.system("copy \"" + rootDir + "\\..\\README.txt\" \"" + installDir + "\\\"")
 os.system("mkdir \"" + installDir +"\\license\"")
