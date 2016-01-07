@@ -30,9 +30,9 @@
 using namespace repo::gui::dialog;
 
 CommitDialog::CommitDialog(QWidget *parent,
-                                              Qt::WindowFlags flags,
-                                              repo::gui::primitive::RepoIDBCache *dbCache,
-                                              repo::core::model::RepoScene * scene)
+                           Qt::WindowFlags flags,
+                           repo::gui::primitive::RepoIDBCache *dbCache,
+                           repo::core::model::RepoScene * scene)
     : QDialog(parent, flags)
     , dbCache(dbCache)
     , scene(scene)
@@ -76,9 +76,14 @@ CommitDialog::CommitDialog(QWidget *parent,
                 proxyModel, &QSortFilterProxyModel::rowsRemoved,
                 this, &CommitDialog::updateCountLabel);
 
+    //    QObject::connect(
+    //                ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
+    //                this, SLOT(editItem(QModelIndex)));
+
+
     QObject::connect(
                 ui->treeView, SIGNAL(doubleClicked(QModelIndex)),
-                this, SLOT(editItem(QModelIndex)));
+                this, SLOT(showBSON(QModelIndex)));
 
     if (scene)
         ui->branchComboBox->addItem(
@@ -148,8 +153,11 @@ void CommitDialog::addNode(repo::core::model::RepoNode *node, const QString &sta
         item->setCheckState(Qt::Checked);
         item->setTristate(false);
         item->setEditable(false);
+
+        //        item->setToolTip(QString::fromStdString(node->toString()));
+
         row.append(item);
-		const repo::core::model::NodeType type = node->getTypeAsEnum();
+        const repo::core::model::NodeType type = node->getTypeAsEnum();
         if (repo::core::model::NodeType::METADATA == type)
             item->setIcon(repo::gui::primitive::RepoFontAwesome::getMetadataIcon());
 
@@ -181,10 +189,10 @@ void CommitDialog::addNode(repo::core::model::RepoNode *node, const QString &sta
         //----------------------------------------------------------------------
         model->appendRow(row);
     }
-	else
-	{
-		repoLogError("Error trying to fetch node information for a node that has a status of " + status.toStdString() + ": nullptr");
-	}
+    else
+    {
+        repoLogError("Error trying to fetch node information for a node that has a status of " + status.toStdString() + ": nullptr");
+    }
 }
 
 void CommitDialog::editItem(const QModelIndex &proxyIndex)
@@ -221,6 +229,44 @@ void CommitDialog::editItem(const QModelIndex &proxyIndex)
             }
         }
     }*/
+}
+
+void CommitDialog::showBSON(const QModelIndex &proxyIndex)
+{
+    QModelIndex modelIndex = proxyModel->mapToSource(proxyIndex);
+    QStandardItem *item = model->item(modelIndex.row(),Columns::NAME);
+
+    if (item)
+    {
+        repo::core::model::RepoNode* node = item->data().value<repo::core::model::RepoNode*>();
+        if (node)
+        {
+            QMessageBox box(QMessageBox::Information,
+                            QString::fromStdString(node->getName()),
+                            QString(),
+                            QMessageBox::Close,
+                            this,
+                            Qt::Window);
+            box.setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+
+            // Cannot make resizable
+            // Known bug: https://bugreports.qt.io/browse/QTBUG-3696
+            // Workaround: https://forum.qt.io/topic/24213/qmessagebox-too-small/12
+            // box.setSizeGripEnabled(true);
+
+            QGridLayout* layout = (QGridLayout*) box.layout();
+            QTextBrowser edit(&box);
+            edit.setText(QString::fromStdString(node->jsonString(mongo::JsonStringFormat::TenGen, 1)));
+            edit.setMinimumWidth(500);
+            edit.setMinimumHeight(250);
+            edit.setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+            edit.setReadOnly(true);
+            layout->addWidget(&edit, 0, 1);
+
+            box.exec();
+        }
+
+    }
 }
 
 //------------------------------------------------------------------------------
