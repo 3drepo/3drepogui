@@ -278,6 +278,11 @@ repo::gui::RepoGUI::RepoGUI(
                 &QTreeView::customContextMenuRequested,
                 this,
                 &RepoGUI::showCollectionContextMenuSlot);
+
+	if (controller->getVersion() != EXPECTED_BOUNCER_VERSION)
+	{
+        repoLogError("Repo GUI expects bouncer library version " + std::string(EXPECTED_BOUNCER_VERSION) + " but it is running with " + controller->getVersion() + ". Unexpected behaviour may occur!");
+	}
 }
 
 repo::gui::RepoGUI::~RepoGUI()
