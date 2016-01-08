@@ -65,6 +65,11 @@ repo::gui::RepoGUI::RepoGUI(
     ui->setupUi(this);
     restoreSettings();
 
+    this->setWindowTitle(
+                QCoreApplication::applicationName() +
+                " v" +
+                QCoreApplication::applicationVersion());
+
     //Subscribe logger to broadcaster who taps into repo bouncer library logs
     repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
 
