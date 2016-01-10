@@ -106,6 +106,15 @@ repo::gui::RepoGUI::RepoGUI(
                      SLOT(saveScreenshot()));
 
 
+    QObject::connect(ui->actionClose, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeActiveSubWindow);
+
+    QObject::connect(ui->actionClose_All, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeAllSubWindows);
+
+    QObject::connect(ui->actionClose_All, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeHiddenSubWindows);
+
     //--------------------------------------------------------------------------
     // Exit
     QObject::connect(ui->actionExit, SIGNAL(triggered()),
