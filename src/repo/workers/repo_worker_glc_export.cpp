@@ -762,10 +762,10 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		GLfloatVector faceVertices;
 		for (auto &face : *faces)
 		{
-			for (uint32_t j = 0; j < face.numIndices; ++j)
+            for (uint32_t j = 0; j < face.size(); ++j)
 			{
 				//FIXME: this is assuming order in assimp's mVertice = vector3d's order
-				repo_vector_t vertex = vector3d->at(face.indices[j]);
+                repo_vector_t vertex = vector3d->at(face[j]);
 				faceVertices << vertex.x << vertex.y << vertex.z;
 			}
 
@@ -815,12 +815,12 @@ QList<GLuint> GLCExportWorker::createGLCFaceList(
 		for (int i = startInd; i < endInd; ++i)
         {
             QList<GLuint> glcFaceIndices;
-            glcFaceIndices.reserve(faces->at(i).numIndices);
+            glcFaceIndices.reserve(faces->at(i).size());
             //---------------------------------------------------------------------
             // Copy all assimp indices of a single face to a QList
             std::copy(
-				faces->at(i).indices,
-				faces->at(i).indices + faces->at(i).numIndices,
+                faces->at(i).data(),
+                faces->at(i).data() + faces->at(i).size(),
                 std::back_inserter(glcFaceIndices));
 
 
