@@ -30,6 +30,8 @@
 #include <QTreeView>
 #include <QScrollBar>
 #include <QMutex>
+#include <QMessageBox>
+#include <QTextBrowser>
 
 //------------------------------------------------------------------------------
 // Repo GUI
@@ -117,7 +119,9 @@ namespace gui {
 
 			void addNode(repo::core::model::RepoNode *node, const QString &status);
 
-			void editItem(const QModelIndex &);
+            void editItem(const QModelIndex &);
+
+            void showBSON(const QModelIndex &);
 
 			/*!
 			 * Shows the dialog as a modal window, blocking until the user closes it.

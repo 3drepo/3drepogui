@@ -43,7 +43,7 @@ AboutDialog::~AboutDialog()
 QString AboutDialog::getVersionInfo(const QString &separator)
 {
     QString info;
-    info += QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion();
+    info += QCoreApplication::applicationName() + " v" + QCoreApplication::applicationVersion();
     info += separator;
     info += QString("Qt ") + QT_VERSION_STR;
     info += separator;

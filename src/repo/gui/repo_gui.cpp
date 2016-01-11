@@ -65,6 +65,11 @@ repo::gui::RepoGUI::RepoGUI(
     ui->setupUi(this);
     restoreSettings();
 
+    this->setWindowTitle(
+                QCoreApplication::applicationName() +
+                " v" +
+                QCoreApplication::applicationVersion());
+
     //Subscribe logger to broadcaster who taps into repo bouncer library logs
     repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
 
@@ -100,6 +105,15 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionSave_Screenshot, SIGNAL(triggered()), this,
                      SLOT(saveScreenshot()));
 
+
+    QObject::connect(ui->actionClose, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeActiveSubWindow);
+
+    QObject::connect(ui->actionClose_All, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeAllSubWindows);
+
+    QObject::connect(ui->actionClose_All, &QAction::triggered,
+                     ui->mdiArea, &widget::RepoMdiArea::closeHiddenSubWindows);
 
     //--------------------------------------------------------------------------
     // Exit
