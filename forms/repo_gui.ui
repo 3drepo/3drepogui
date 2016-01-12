@@ -91,6 +91,7 @@
     <addaction name="actionSceneGraph"/>
     <addaction name="actionHighlights"/>
     <addaction name="actionTextures"/>
+    <addaction name="actionClipping_Plane"/>
     <addaction name="separator"/>
     <addaction name="actionAuto_Camera"/>
    </widget>
@@ -551,6 +552,14 @@
   <action name="actionAccessManager">
    <property name="text">
     <string>Access Manager...</string>
+   </property>
+  </action>
+  <action name="actionClipping_Plane">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Clipping Plane</string>
    </property>
   </action>
  </widget>

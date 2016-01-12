@@ -201,6 +201,10 @@ namespace repo {
 				*/
 				virtual void toggleWireframe() = 0;
 
+                /**
+                 * Toggle between show/hide clipping plane
+                 */
+                virtual void toggleClippingPlane() = 0;
 
 				/**
 				* Zoom/unzoom camera
@@ -225,10 +229,10 @@ namespace repo {
 				void modelLoadProgress(int value, int maximum);
 
 			public slots :				
-				void cancelOperations() { emit killWorker(); };
-				void updateRenderer() { emit repaintNeeded(); };
-				void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera(), false); };
-				void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);};
+                void cancelOperations() { emit killWorker(); }
+                void updateRenderer() { emit repaintNeeded(); }
+                void broadcastCameraChange() { emit cameraChangedSignal(getCurrentCamera(), false); }
+                void workerProgress(int value, int maximum) { emit modelLoadProgress(value, maximum);}
 
 			protected:
 				RepoFPSCounter fpsCounter;

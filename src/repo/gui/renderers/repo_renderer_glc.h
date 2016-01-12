@@ -37,6 +37,8 @@
 #include <GLC_RenderProperties>
 #include <GLC_Material>
 #include <GLC_3DWidgetManager>
+#include <GLC_CuttingPlane>
+#include <GLC_Plane>
 #include <GLC_FlyMover>
 #include "geometry/glc_mesh.h"
 //------------------------------------------------------------------------------
@@ -218,6 +220,13 @@ namespace repo {
 				*/
 				virtual void toggleWireframe();
 
+                /**
+                 * Toggle between show/hide clipping plane
+                 */
+                virtual void toggleClippingPlane();
+
+                void updateClippingPlane();
+
 				/**
 				* Zoom/unzoom camera
 				* @param zoom zoom factor
@@ -260,6 +269,11 @@ namespace repo {
 				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
+
+                //! Globally applied clipping plane ID.
+                GLC_uint clippingPlaneID;
+
+                GLC_Plane* clippingPlane;
 
 				//! Globally applied shader ID.
 				GLuint shaderID;

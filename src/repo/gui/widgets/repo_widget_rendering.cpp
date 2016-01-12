@@ -364,6 +364,13 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
 	//		//glFrontFace(false ? GL_CCW : GL_CW);
 	//	}
 
+    case  Qt::Key_C:
+    {
+        renderer->toggleClippingPlane();
+        update();
+        break;
+    }
+
 	case Qt::Key_W:
 	{
 		renderer->toggleWireframe();
