@@ -52,7 +52,7 @@ namespace widget{
 		//! Destroys the mdi area.
 		~RepoMdiArea();
 
-		public slots :
+    public slots :
 
 		/*!
 			* Chains all subwindows that are of widget::Rendering3DWidget type.
@@ -67,6 +67,8 @@ namespace widget{
 
 		//! Closes all subwindows that are not visible.
 		void closeHiddenSubWindows();
+
+        void setNavigationMode(repo::gui::renderer::NavMode mode, bool allSubwindows);
 
 	public:
 

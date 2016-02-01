@@ -84,15 +84,26 @@
     <property name="title">
      <string>Rendering</string>
     </property>
+    <widget class="QMenu" name="menuNavigation">
+     <property name="title">
+      <string>Navigation</string>
+     </property>
+     <addaction name="actionTrack_Ball"/>
+     <addaction name="actionTurntable"/>
+     <addaction name="actionPan"/>
+     <addaction name="actionFly"/>
+     <addaction name="actionTarget"/>
+    </widget>
     <addaction name="actionLink"/>
-    <addaction name="separator"/>
-    <addaction name="actionWeb_View"/>
+    <addaction name="menuNavigation"/>
     <addaction name="separator"/>
     <addaction name="actionSceneGraph"/>
     <addaction name="actionHighlights"/>
     <addaction name="actionTextures"/>
     <addaction name="separator"/>
     <addaction name="actionAuto_Camera"/>
+    <addaction name="separator"/>
+    <addaction name="actionWeb_View"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -249,6 +260,9 @@
    <property name="text">
     <string>About 3D Repo GUI</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
   <action name="actionReport_Issue">
    <property name="enabled">
@@ -320,6 +334,9 @@
    </property>
    <property name="shortcut">
     <string>Alt+F4</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="actionConnect">
@@ -467,6 +484,9 @@
    <property name="text">
     <string>Settings...</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
   </action>
   <action name="action3D_Diff">
    <property name="enabled">
@@ -551,6 +571,46 @@
   <action name="actionAccessManager">
    <property name="text">
     <string>Access Manager...</string>
+   </property>
+  </action>
+  <action name="actionTrack_Ball">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Track Ball</string>
+   </property>
+  </action>
+  <action name="actionTurntable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Turntable</string>
+   </property>
+  </action>
+  <action name="actionPan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Pan</string>
+   </property>
+  </action>
+  <action name="actionFly">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fly</string>
+   </property>
+  </action>
+  <action name="actionTarget">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Target</string>
    </property>
   </action>
  </widget>

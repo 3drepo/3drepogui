@@ -61,6 +61,7 @@ repo::gui::RepoGUI::RepoGUI(
     , ui(new Ui::RepoGUI)
     , controller(controller)
     , panelsMenu(0)
+    , navigationModeActionGroup(new QActionGroup(this))
 {
     ui->setupUi(this);
     restoreSettings();
@@ -190,6 +191,47 @@ repo::gui::RepoGUI::RepoGUI(
                     primitive::RepoFontAwesome::fa_link,
                     primitive::RepoFontAwesome::fa_chain_broken));
 
+
+
+    //-------------------------------------------------------------------------
+    // View settings
+    ui->openGLToolBar->addAction(ui->menuNavigation->menuAction());
+    QObject::connect(ui->menuNavigation->menuAction(), &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+
+
+    navigationModeActionGroup->addAction(ui->actionTurntable);
+    QObject::connect(ui->actionTurntable, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionTrack_Ball);
+    QObject::connect(ui->actionTrack_Ball, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionTarget);
+    QObject::connect(ui->actionTarget, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionFly);
+    QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionPan);
+    QObject::connect(ui->actionPan, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+
+    ui->actionTurntable->setChecked(true); // TODO: make it a setting
+
+
+    //	connect(actionISO, SIGNAL(triggered()), this, SLOT(cameraISOSlot()));
+    //	actionISO->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_dot_circle_o));
+    //	setMenuCamera(actionISO);
+
+    //	connect(actionTop, SIGNAL(triggered()), this, SLOT(cameraTopSlot()));
+    //	actionTop->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_chevron_circle_up));
+    //	connect(actionBottom, SIGNAL(triggered()), this, SLOT(cameraBottomSlot()));
+    //	actionBottom->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_chevron_circle_down));
+    //	connect(actionLeft, SIGNAL(triggered()), this, SLOT(cameraLeftSlot()));
+    //	actionLeft->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_chevron_circle_left));
+    //	connect(actionRight, SIGNAL(triggered()), this, SLOT(cameraRightSlot()));
+    //	actionRight->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_chevron_circle_right));
+    //	connect(actionFront, SIGNAL(triggered()), this, SLOT(cameraFrontSlot()));
+    //	actionFront->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_circle_o));
+    //	connect(actionBack, SIGNAL(triggered()), this, SLOT(cameraBackSlot()));
+    //	actionBack->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_circle));
+
+
+
     // Scene Graph
     QObject::connect(ui->actionSceneGraph, &QAction::triggered,
                      this, &RepoGUI::openSceneGraph);
@@ -293,15 +335,16 @@ repo::gui::RepoGUI::RepoGUI(
                 this,
                 &RepoGUI::showCollectionContextMenuSlot);
 
-	if (controller->getVersion() != EXPECTED_BOUNCER_VERSION)
-	{
+    if (controller->getVersion() != EXPECTED_BOUNCER_VERSION)
+    {
         repoLogError("Repo GUI expects bouncer library version " + std::string(EXPECTED_BOUNCER_VERSION) + " but it is running with " + controller->getVersion() + ". Unexpected behaviour may occur!");
-	}
+    }
 }
 
 repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
+    delete navigationModeActionGroup;
     if (panelsMenu)
         delete panelsMenu;
 }
@@ -385,7 +428,7 @@ void repo::gui::RepoGUI::commit(
 
 
         if (!commitDialog.exec())
-			repoLog("Commit dialog cancelled by user");
+            repoLog("Commit dialog cancelled by user");
         else // Clicked "OK"
         {
             //----------------------------------------------------------------------
@@ -418,7 +461,7 @@ void repo::gui::RepoGUI::connectDB()
     dialog::ConnectManagerDialog connectManager(controller, (QWidget*)this);
 
     if(! connectManager.exec()) // if not clicked "Connect"
-		repoLog("Connection Manager Dialog cancelled by user");
+        repoLog("Connection Manager Dialog cancelled by user");
     else
     {
         // if not successfully connected
@@ -450,7 +493,7 @@ void repo::gui::RepoGUI::connectDB()
         else
         {
             //connection/authentication failed
-			repoLogError("Failed to connect/authenticate user: " + errMsg);
+            repoLogError("Failed to connect/authenticate user: " + errMsg);
         }
     }
 }
@@ -483,10 +526,10 @@ void repo::gui::RepoGUI::drop()
     QString collection = ui->widgetRepository->getSelectedCollection();
 
 
-	if (database.isNull() || database.isEmpty())
-		repoLog("A database must be selected.");
-	else if ((database == "local" || database == "admin") && collection.isEmpty())
-		repoLog("You are not allowed to delete 'local' or 'admin' databases.");
+    if (database.isNull() || database.isEmpty())
+        repoLog("A database must be selected.");
+    else if ((database == "local" || database == "admin") && collection.isEmpty())
+        repoLog("You are not allowed to delete 'local' or 'admin' databases.");
     else
     {
         QString ns = database + (!collection.isEmpty() ? "." + collection : "");
@@ -546,7 +589,7 @@ repo::gui::widget::Rendering3DWidget* repo::gui::RepoGUI::getActiveWidget() cons
     widget::Rendering3DWidget *widget =
             ui->mdiArea->activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
     if (!widget)
-		repoLogError(tr("A 3D window has to be open.").toStdString());
+        repoLogError(tr("A 3D window has to be open.").toStdString());
     return widget;
 }
 
@@ -566,7 +609,7 @@ void repo::gui::RepoGUI::history()
     dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
-		repoLog("Revision History dialog cancelled by user.");
+        repoLog("Revision History dialog cancelled by user.");
     else
     {
         QList<QUuid> revisions = historyDialog.getSelectedRevisions();
@@ -772,7 +815,7 @@ void repo::gui::RepoGUI::saveScreenshot()
 
     if (widgets.size() == 0)
     {
-		repoLogError(tr("A window has to be open.").toStdString());
+        repoLogError(tr("A window has to be open.").toStdString());
     }
     else
     {
@@ -792,7 +835,7 @@ void repo::gui::RepoGUI::saveScreenshot()
                 if (!fileInfo.completeSuffix().isEmpty())
                     newPath += "." + fileInfo.completeSuffix();
 
-				repoLog(tr("Exporting image to ").toStdString() + newPath.toStdString());
+                repoLog(tr("Exporting image to ").toStdString() + newPath.toStdString());
                 // See https://bugreports.qt-project.org/browse/QTBUG-33186
                 //QPixmap pixmap = widget->renderPixmap(3840, 2160);
                 QImage image = widget->renderQImage(13440,7560); // HD x 7 res
@@ -801,6 +844,29 @@ void repo::gui::RepoGUI::saveScreenshot()
             }
         }
     }
+}
+
+void repo::gui::RepoGUI::toggleNavigationMode()
+{
+    QAction* action = qobject_cast<QAction*>(sender());
+    if (action == ui->menuNavigation->menuAction())
+    {
+
+    }
+    else if (action)
+    {
+        ui->menuNavigation->menuAction()->setText(action->text());
+        if (action == ui->actionTurntable)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TURNTABLE,
+                                           ui->actionLink->isChecked());
+        }
+        else if (action == ui->actionTarget)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TARGET,
+                                           ui->actionLink->isChecked());
+        }
+   }
 }
 
 void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
