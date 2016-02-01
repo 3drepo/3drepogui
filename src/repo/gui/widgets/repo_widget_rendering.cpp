@@ -424,12 +424,12 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
 {
 	switch (e->button())
 	{
-	case (Qt::RightButton) :
+    case (Qt::LeftButton) :
 		this->setCursor(Qt::ClosedHandCursor);
         renderer->startNavigation(renderer::NavMode::TURNTABLE, e->x(), e->y());
         update();
 		break;
-	case (Qt::LeftButton) :
+    case (Qt::RightButton) :
 		this->setCursor(Qt::SizeAllCursor);
         renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
         update();

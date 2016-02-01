@@ -33,7 +33,7 @@ namespace repo {
 
 			//! Standard camera positions type.
 			enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
-			enum class NavMode { TURNTABLE, PAN, FLY };
+            enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET };
 			enum class RenderMode {POINT, WIREFRAME, WIREFRAME_SHADING, SHADING};
 			
 			struct CameraSettings

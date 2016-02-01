@@ -350,6 +350,24 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
 			GLC_UserInput(x, y));
 		break;
 
+    case NavMode::ORBIT:
+        glcMoverController.setActiveMover(
+            GLC_MoverController::TrackBall,
+            GLC_UserInput(x, y));
+        break;
+
+    case NavMode::TSR:
+        glcMoverController.setActiveMover(
+            GLC_MoverController::TSR,
+            GLC_UserInput(x, y));
+        break;
+
+    case NavMode::TARGET:
+        glcMoverController.setActiveMover(
+            GLC_MoverController::Target,
+            GLC_UserInput(x, y));
+        break;
+
 	case NavMode::PAN:
 		glcMoverController.setActiveMover(
 			GLC_MoverController::Pan,
