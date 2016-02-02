@@ -72,6 +72,12 @@
            <property name="decimals">
             <number>9</number>
            </property>
+           <property name="minimum">
+            <double>-360.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>360.000000000000000</double>
+           </property>
           </widget>
          </item>
          <item row="3" column="0">
@@ -92,6 +98,12 @@
           <widget class="QDoubleSpinBox" name="latSpinBox">
            <property name="decimals">
             <number>11</number>
+           </property>
+           <property name="minimum">
+            <double>-360.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>360.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -189,6 +201,12 @@
            <property name="decimals">
             <number>12</number>
            </property>
+           <property name="minimum">
+            <double>-9999999.999989999458194</double>
+           </property>
+           <property name="maximum">
+            <double>9999999.999989999458194</double>
+           </property>
           </widget>
          </item>
          <item row="3" column="0">
@@ -203,6 +221,12 @@
            <property name="decimals">
             <number>11</number>
            </property>
+           <property name="minimum">
+            <double>-9999999.999989999458194</double>
+           </property>
+           <property name="maximum">
+            <double>9999999.999989999458194</double>
+           </property>
           </widget>
          </item>
          <item row="4" column="0">
@@ -216,6 +240,12 @@
           <widget class="QDoubleSpinBox" name="zSpinBox">
            <property name="decimals">
             <number>11</number>
+           </property>
+           <property name="minimum">
+            <double>-9999999.999989999458194</double>
+           </property>
+           <property name="maximum">
+            <double>9999999.999989999458194</double>
            </property>
           </widget>
          </item>
