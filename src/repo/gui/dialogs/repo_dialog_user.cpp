@@ -47,7 +47,6 @@ UserDialog::UserDialog(
         ui->avatarPushButton, &QPushButton::pressed,
         this, &UserDialog::openImageFileDialog);
 
-    ui->projectsUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::PROJECTS);
     ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::ROLES);
     ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::API_KEYS);
 
@@ -115,9 +114,6 @@ UserDialog::UserDialog(
 
     // Projects
     QStringList defaultRow = {tr("admin"), tr("<empty>")};
-    ui->projectsUnfilterableTreeWidget->setHeaders({tr("Database"), tr("Project")});
-    ui->projectsUnfilterableTreeWidget->setNewRowText(defaultRow);
-    ui->projectsUnfilterableTreeWidget->setDelegates(projectsDelegates);
 
     // Roles
     ui->rolesUnfilterableTreeWidget->setHeaders({tr("Database"), tr("Role")});
@@ -150,7 +146,6 @@ UserDialog::UserDialog(
 
         //----------------------------------------------------------------------
         // Acess Rights
-        ui->projectsUnfilterableTreeWidget->addRows(user.getProjectsList());
         ui->rolesUnfilterableTreeWidget->addRows(user.getRolesList());
         ui->apiKeysUnfilterableTreeWidget->addRows(user.getAPIKeysList());
     }
@@ -204,11 +199,6 @@ std::string UserDialog::getPassword() const
 {
     std::string currentPassword = ui->passwordLineEdit->text().toStdString();
     return currentPassword != user.getPassword() ? currentPassword : "";
-}
-
-std::list<std::pair<std::string, std::string> > UserDialog::getProjects() const
-{
-    return ui->projectsUnfilterableTreeWidget->getItemsAsListOfPairsOfStrings();
 }
 
 std::list<std::pair<std::string, std::string> > UserDialog::getRoles() const
@@ -268,9 +258,7 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
                 getFirstName(),
                 getLastName(),
                 getEmail(),
-                getProjects(),
                 getRoles(),
-                std::list<std::pair<std::string, std::string> >(),
                 getAPIKeys(),
                 avatar);
 }
