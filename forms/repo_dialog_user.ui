@@ -252,25 +252,6 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="projectsTab">
-      <attribute name="title">
-       <string>Projects (0)</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
-       <item>
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Projects:</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_12">
-          <item>
-           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="projectsUnfilterableTreeWidget" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
        <string>Roles (0)</string>
