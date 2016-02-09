@@ -19,7 +19,7 @@ before_install:
     - echo ============ MONGO  INSTALL =============
     - mkdir mongo
     - cd mongo
-    - git clone https://github.com/mongodb/mongo-cxx-driver.git
+    - git clone --branch=legacy-1.1.0 https://github.com/mongodb/mongo-cxx-driver.git
     - cd mongo-cxx-driver
     - scons -j2 --64 --mute --sharedclient --prefix=$HOME/mongo-cxx install
     - ls $HOME/mongo-cxx
