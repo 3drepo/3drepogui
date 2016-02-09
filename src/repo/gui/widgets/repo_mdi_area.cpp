@@ -141,14 +141,13 @@ void RepoMdiArea::closeHiddenSubWindows()
 
 void RepoMdiArea::setNavigationMode(repo::gui::renderer::NavMode mode, bool allSubwindows)
 {
-    if (!allSubwindows)
-    {
+
         widget::Rendering3DWidget *widget = activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
         if (widget)
         {
-//            widget->
+            widget->setNavigationMode(mode);
         }
-    }
+
 }
 
 //------------------------------------------------------------------------------

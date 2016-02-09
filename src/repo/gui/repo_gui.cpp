@@ -193,7 +193,7 @@ repo::gui::RepoGUI::RepoGUI(
 
 
 
-    //-------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // View settings
     ui->openGLToolBar->addAction(ui->menuNavigation->menuAction());
     QObject::connect(ui->menuNavigation->menuAction(), &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
@@ -209,8 +209,13 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     navigationModeActionGroup->addAction(ui->actionPan);
     QObject::connect(ui->actionPan, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionZoom);
+    QObject::connect(ui->actionZoom, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    navigationModeActionGroup->addAction(ui->actionTSR);
+    QObject::connect(ui->actionTSR, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
 
-    ui->actionTurntable->setChecked(true); // TODO: make it a setting
+    ui->actionTurntable->trigger(); // TODO: make it a setting
+
 
 
     //	connect(actionISO, SIGNAL(triggered()), this, SLOT(cameraISOSlot()));
@@ -851,7 +856,7 @@ void repo::gui::RepoGUI::toggleNavigationMode()
     QAction* action = qobject_cast<QAction*>(sender());
     if (action == ui->menuNavigation->menuAction())
     {
-
+        // TODO: apply select navigation
     }
     else if (action)
     {
@@ -864,6 +869,31 @@ void repo::gui::RepoGUI::toggleNavigationMode()
         else if (action == ui->actionTarget)
         {
             ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TARGET,
+                                           ui->actionLink->isChecked());
+        }        
+        else if (action == ui->actionFly)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::FLY,
+                                           ui->actionLink->isChecked());
+        }
+        else if (action == ui->actionTrack_Ball)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::ORBIT,
+                                           ui->actionLink->isChecked());
+        }
+        else if (action == ui->actionTSR)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TSR,
+                                           ui->actionLink->isChecked());
+        }
+        else if (action == ui->actionPan)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::PAN,
+                                           ui->actionLink->isChecked());
+        }
+        else if (action == ui->actionZoom)
+        {
+            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::ZOOM,
                                            ui->actionLink->isChecked());
         }
    }

@@ -45,6 +45,7 @@ HEADERS +=  \
 	src/repo/gui/widgets/repo_widget_manager_users.h \
 	src/repo/gui/widgets/repo_widget_rendering.h \
 	src/repo/gui/widgets/repo_widget_rendering_2d.h \
+	src/repo/gui/widgets/repo_widget_rendering_abstract.h \
 	src/repo/gui/widgets/repo_widget_repository.h \
 	src/repo/gui/widgets/repo_widget_tree_clickable.h \
 	src/repo/gui/widgets/repo_widget_tree_dock.h \
@@ -117,6 +118,7 @@ SOURCES +=  \
 	src/repo/gui/widgets/repo_widget_manager_users.cpp \
 	src/repo/gui/widgets/repo_widget_rendering.cpp \
 	src/repo/gui/widgets/repo_widget_rendering_2d.cpp \
+	src/repo/gui/widgets/repo_widget_rendering_abstract.cpp \
 	src/repo/gui/widgets/repo_widget_repository.cpp \
 	src/repo/gui/widgets/repo_widget_tree_clickable.cpp \
 	src/repo/gui/widgets/repo_widget_tree_dock.cpp \

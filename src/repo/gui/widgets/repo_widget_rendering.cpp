@@ -68,8 +68,13 @@ const double Rendering3DWidget::ZOOM_FACTOR = 1.2;
 
 //QList<GLC_Shader*> Rendering3DWidget::shaders;
 
-Rendering3DWidget::Rendering3DWidget(QWidget* parent, Renderer rType, const QString& windowTitle)
+Rendering3DWidget::Rendering3DWidget(
+        QWidget* parent,
+        Renderer rType,
+        repo::gui::renderer::NavMode navMode,
+        const QString& windowTitle)
     : QOpenGLWidget(parent)
+    , RenderingAbstractWidget(navMode)
 	, isWireframe(false)
 	, isInfoVisible(true)
     , repoScene(0)
@@ -426,7 +431,7 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
 	{
     case (Qt::LeftButton) :
 		this->setCursor(Qt::ClosedHandCursor);
-        renderer->startNavigation(renderer::NavMode::TURNTABLE, e->x(), e->y());
+        renderer->startNavigation(navMode, e->x(), e->y());
         update();
 		break;
     case (Qt::RightButton) :

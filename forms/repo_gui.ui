@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>913</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -88,11 +88,13 @@
      <property name="title">
       <string>Navigation</string>
      </property>
-     <addaction name="actionTrack_Ball"/>
-     <addaction name="actionTurntable"/>
-     <addaction name="actionPan"/>
      <addaction name="actionFly"/>
+     <addaction name="actionPan"/>
      <addaction name="actionTarget"/>
+     <addaction name="actionTrack_Ball"/>
+     <addaction name="actionTSR"/>
+     <addaction name="actionTurntable"/>
+     <addaction name="actionZoom"/>
     </widget>
     <addaction name="actionLink"/>
     <addaction name="menuNavigation"/>
@@ -611,6 +613,22 @@
    </property>
    <property name="text">
     <string>Target</string>
+   </property>
+  </action>
+  <action name="actionTSR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TSR</string>
+   </property>
+  </action>
+  <action name="actionZoom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Zoom</string>
    </property>
   </action>
  </widget>

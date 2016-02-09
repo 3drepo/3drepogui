@@ -341,7 +341,6 @@ void GLCRenderer::setMeshColor(
 
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
 {
-
 	switch (mode)
 	{
 	case NavMode::TURNTABLE:
@@ -379,6 +378,13 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
 			GLC_MoverController::Fly,
 			GLC_UserInput(x, y));
 		break;
+
+    case NavMode::ZOOM :
+        glcMoverController.setActiveMover(
+            GLC_MoverController::Zoom,
+            GLC_UserInput(x, y));
+        break;
+
 	default:
 		repoLogError("Unrecognised mode: " + std::to_string((int)mode));
 	}
