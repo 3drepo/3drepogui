@@ -503,14 +503,15 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             occurrence->setName(name);
 
             break;
-        }
+        }            
         case repoModel::NodeType::REFERENCE:
-        	//FIXME: references in stash? need to think about this.
+
             repo::core::model::RepoScene *refScene = scene->getSceneFromReference(scene->getViewGraph(),
         		node->getSharedID());
             repoLog("loading reference scene : " + ((repo::core::model::ReferenceNode*)node)->getProjectName());
-            if (refScene &&( (refScene->getAllMeshes().size() > 0 || refScene->getAllReferences().size() > 0)
-				|| (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0 
+            if (refScene &&( (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::DEFAULT).size() > 0
+                || refScene->getAllReferences(repo::core::model::RepoScene::GraphType::DEFAULT).size() > 0)
+                || (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0
 				|| refScene->getAllReferences(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0)))
         	{
                 //There is nothing to visualise if there are no meshes
