@@ -24,6 +24,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "../renderers/repo_renderer_abstract.h"
+#include "repo_widget_rendering_abstract.h"
 
 //------------------------------------------------------------------------------
 #include <QGLWidget>
@@ -37,7 +38,7 @@ namespace repo {
 
 			enum class Renderer { GLC };
 
-			class Rendering3DWidget : public QOpenGLWidget, QOpenGLFunctions
+            class Rendering3DWidget : public QOpenGLWidget, public QOpenGLFunctions, public RenderingAbstractWidget
 			{
 				Q_OBJECT
 
@@ -59,7 +60,11 @@ namespace repo {
 				//--------------------------------------------------------------------------
 
 				//! Default constructor
-				Rendering3DWidget(QWidget *p_parent, Renderer rendererType, const QString &windowTitle = "");
+                Rendering3DWidget(
+                        QWidget *p_parent,
+                        Renderer rendererType,
+                        renderer::NavMode navMode,
+                        const QString &windowTitle = "");
 
 				//! Destructor
 				~Rendering3DWidget();
