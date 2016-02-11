@@ -203,16 +203,8 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionTurntable, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     navigationModeActionGroup->addAction(ui->actionTrack_Ball);
     QObject::connect(ui->actionTrack_Ball, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
-    navigationModeActionGroup->addAction(ui->actionTarget);
-    QObject::connect(ui->actionTarget, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     navigationModeActionGroup->addAction(ui->actionFly);
     QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
-    navigationModeActionGroup->addAction(ui->actionPan);
-    QObject::connect(ui->actionPan, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
-    navigationModeActionGroup->addAction(ui->actionZoom);
-    QObject::connect(ui->actionZoom, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
-    navigationModeActionGroup->addAction(ui->actionTSR);
-    QObject::connect(ui->actionTSR, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
 
     ui->actionTurntable->trigger(); // TODO: make it a setting
 
@@ -854,49 +846,29 @@ void repo::gui::RepoGUI::saveScreenshot()
 void repo::gui::RepoGUI::toggleNavigationMode()
 {
     QAction* action = qobject_cast<QAction*>(sender());
-    if (action == ui->menuNavigation->menuAction())
-    {
-        // TODO: apply select navigation
-    }
-    else if (action)
+    if (action != ui->menuNavigation->menuAction())
     {
         ui->menuNavigation->menuAction()->setText(action->text());
-        if (action == ui->actionTurntable)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TURNTABLE,
-                                           ui->actionLink->isChecked());
-        }
-        else if (action == ui->actionTarget)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TARGET,
-                                           ui->actionLink->isChecked());
-        }        
-        else if (action == ui->actionFly)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::FLY,
-                                           ui->actionLink->isChecked());
-        }
-        else if (action == ui->actionTrack_Ball)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::ORBIT,
-                                           ui->actionLink->isChecked());
-        }
-        else if (action == ui->actionTSR)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TSR,
-                                           ui->actionLink->isChecked());
-        }
-        else if (action == ui->actionPan)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::PAN,
-                                           ui->actionLink->isChecked());
-        }
-        else if (action == ui->actionZoom)
-        {
-            ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::ZOOM,
-                                           ui->actionLink->isChecked());
-        }
-   }
+    }
+
+    //--------------------------------------------------------------------------
+
+    if (action == ui->actionTurntable ||
+        ui->menuNavigation->menuAction()->text() == ui->actionTurntable->text())
+    {
+        ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::TURNTABLE);
+    }
+    else if (action == ui->actionTrack_Ball ||
+             ui->menuNavigation->menuAction()->text() == ui->actionTrack_Ball->text())
+    {
+        ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::ORBIT);
+    }
+    else if (action == ui->actionFly ||
+              ui->menuNavigation->menuAction()->text() == ui->actionFly->text())
+    {
+        ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::FLY);
+    }
+
 }
 
 void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)

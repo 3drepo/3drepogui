@@ -432,19 +432,18 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
     case (Qt::LeftButton) :
 		this->setCursor(Qt::ClosedHandCursor);
         renderer->startNavigation(navMode, e->x(), e->y());
-        update();
 		break;
     case (Qt::RightButton) :
 		this->setCursor(Qt::SizeAllCursor);
         renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
-        update();
 		break;
 	case (Qt::MidButton) :
 		this->setCursor(Qt::CrossCursor);
         renderer->startNavigation(renderer::NavMode::FLY, e->x(), e->y());
-        update();
+
 		break;
-	}
+	}    
+    update();
 
 	mousePressed = true;
 

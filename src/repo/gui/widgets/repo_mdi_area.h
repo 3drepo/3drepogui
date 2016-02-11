@@ -68,7 +68,7 @@ namespace widget{
 		//! Closes all subwindows that are not visible.
 		void closeHiddenSubWindows();
 
-        void setNavigationMode(repo::gui::renderer::NavMode mode, bool allSubwindows);
+        void setNavigationMode(repo::gui::renderer::NavMode navMode);
 
 	public:
 
@@ -179,6 +179,9 @@ namespace widget{
 
 		//! FPS timer
 		QTimer fpsTimer;
+
+        //! Nav mode for all open windows.
+        repo::gui::renderer::NavMode navMode;
 
 	};
 }

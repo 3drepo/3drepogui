@@ -139,15 +139,13 @@ void RepoMdiArea::closeHiddenSubWindows()
     }
 }
 
-void RepoMdiArea::setNavigationMode(repo::gui::renderer::NavMode mode, bool allSubwindows)
+void RepoMdiArea::setNavigationMode(repo::gui::renderer::NavMode navMode)
 {
-
-        widget::Rendering3DWidget *widget = activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
-        if (widget)
-        {
-            widget->setNavigationMode(mode);
-        }
-
+    this->navMode = navMode;
+    for (RenderingAbstractWidget *widget : getWidgets<RenderingAbstractWidget*>())
+    {
+        widget->setNavigationMode(navMode);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -178,7 +176,7 @@ repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWindow(
     const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidgetFromFile(fullPath, controller);
+    repoSubWindow->setWidgetFromFile(fullPath, controller, navMode);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
@@ -201,7 +199,7 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	bool headRevision)
 {
     RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
-    repoSubWindow->setWidget3D(database + "." +project);// + " " + id.toString());
+    repoSubWindow->setWidget3D(database + "." +project, navMode);// + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
