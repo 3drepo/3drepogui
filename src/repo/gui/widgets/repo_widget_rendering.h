@@ -237,6 +237,7 @@ namespace repo {
 				//
 				//--------------------------------------------------------------------------
 				void keyPressEvent(QKeyEvent*);
+                void keyReleaseEvent(QKeyEvent*);
 				void mousePressEvent(QMouseEvent*);
 				void mouseDoubleClickEvent(QMouseEvent*);
 				void mouseMoveEvent(QMouseEvent*);
