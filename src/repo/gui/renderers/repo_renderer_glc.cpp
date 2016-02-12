@@ -426,7 +426,7 @@ void GLCRenderer::paintInfo(QPainter *painter,
 	const int &screenHeight,
 	const int &screenWidth)
 {
-	fpsCounter.increment();
+    fpsCounter.increment();
 	if (painter)
 	{
 		static QLocale locale;
@@ -493,12 +493,12 @@ void GLCRenderer::paintInfo(QPainter *painter,
 
 		glcUICollection.render(0, glc::ShadingFlag);
 
-		//--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Restore 3D state
 		glPopAttrib();
 		glPopMatrix(); // restore model-view matrix
 
-		//--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Display stats
 		painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
@@ -507,19 +507,17 @@ void GLCRenderer::paintInfo(QPainter *painter,
 		if (glcWorld.selectionSize() > 0)
 			selectionName = glcWorld.selectedOccurrenceList().first()->name();
 
-		painter->drawText(9, 14, QString() +
-			QChar(0x25B2) + " " +
-			locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()) +
-			tr(" in ") +
-			locale.toString((uint)GLC_RenderStatistics::bodyCount()) +
-			tr(" objects"));
+        painter->drawText(9, 14, QString() +
+            tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
+        painter->drawText(9, 30, QString() +
+            tr("Objs") + ": " + locale.toString((uint)GLC_RenderStatistics::bodyCount()));
+
 		painter->drawText(screenWidth - 50, 14, fpsCounter.getFPSString());
 
-		//--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 		// Display selection
 		if (glcWorld.selectionSize() > 0)
 			painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
-
 
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -617,10 +615,16 @@ void GLCRenderer::render(QPainter *painter,
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
-		glcMoverController.drawActiveMoverRep();
 
-		if (painter)
-			paintInfo(painter, screenHeight, screenWidth);
+        glcMoverController.drawActiveMoverRep();
+
+
+
+
+        glDisable(GL_DEPTH_TEST);
+        GLC_ContextManager::instance()->currentContext()->glcMatrixMode(GL_MODELVIEW);
+        paintInfo(painter, screenHeight, screenWidth);
+
 		// So that models look nice
 		glDisable(GL_CULL_FACE);
 		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);

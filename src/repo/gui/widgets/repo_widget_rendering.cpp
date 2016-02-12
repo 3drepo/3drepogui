@@ -83,6 +83,7 @@ Rendering3DWidget::Rendering3DWidget(
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
     format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setSwapInterval(1); // V sync
     setFormat(format); // must be called before the widget or its parent window gets shown
 
     //--------------------------------------------------------------------------
@@ -192,6 +193,13 @@ void Rendering3DWidget::paintGL()
     }
     else
         renderer->render(nullptr);
+
+
+    // Enable constant repaint for FLY navigation mode only
+    if (navMode == renderer::NavMode::FLY)
+    {
+        QTimer::singleShot(0, this, SLOT(update()));
+    }
 }
 
 
@@ -240,10 +248,10 @@ void Rendering3DWidget::setInfoVisibility(const bool visible)
 
 void Rendering3DWidget::setBackgroundColor(
         const QColor &color,
-        const bool isupdate)
+        const bool isUpdate)
 {
     renderer->setBackgroundColor(color);
-    if (isupdate)
+    if (isUpdate)
         update();
 }
 
