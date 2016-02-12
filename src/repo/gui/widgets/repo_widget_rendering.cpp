@@ -347,6 +347,8 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
     switch (e->key())
     {
     case Qt::Key_Shift :
+        this->setCursor(Qt::SizeAllCursor);
+        break;
     case Qt::Key_Control :
         this->setCursor(Qt::PointingHandCursor);
         break;
@@ -443,11 +445,15 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
     {
     case (Qt::LeftButton) :
     {
-        if (e->modifiers() == Qt::ControlModifier ||
-                e->modifiers() == Qt::ShiftModifier)
+        if (e->modifiers() == Qt::ControlModifier)
         {
             this->setCursor(Qt::PointingHandCursor);
             renderer->startNavigation(renderer::NavMode::TARGET, e->x(), e->y());
+        }
+        else if (e->modifiers() == Qt::ShiftModifier)
+        {
+            this->setCursor(Qt::SizeAllCursor);
+            renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
         }
         else
         {
