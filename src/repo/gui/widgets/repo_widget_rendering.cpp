@@ -99,24 +99,6 @@ Rendering3DWidget::Rendering3DWidget(
     this->setMouseTracking(true);
 
     instantiateRenderer(rType);
-
-    //--------------------------------------------------------------------------
-    QObject::connect(
-                renderer, &renderer::AbstractRenderer::repaintNeeded,
-                this, &Rendering3DWidget::repaintCurrent);
-
-    QObject::connect(
-                renderer, &renderer::AbstractRenderer::cameraChangedSignal,
-                this, &Rendering3DWidget::broadcastCameraChange);
-
-
-}
-
-void Rendering3DWidget::repaintCurrent()
-{
-    makeCurrent();
-    paintGL();
-    doneCurrent();
 }
 
 Rendering3DWidget::~Rendering3DWidget()
@@ -146,7 +128,6 @@ void Rendering3DWidget::initializeGL()
 
     initializeShaders();
 
-
     renderer->setActivationFlag(true);
 }
 
@@ -155,6 +136,9 @@ void Rendering3DWidget::instantiateRenderer(Renderer rendType)
     if (rendType == Renderer::GLC)
     {
         renderer = new renderer::GLCRenderer();
+        //----------------------------------------------------------------------
+        QObject::connect(renderer, SIGNAL(repaintNeeded()),
+                    this, SLOT(update()));
     }
     else
     {
@@ -194,12 +178,8 @@ void Rendering3DWidget::paintGL()
     else
         renderer->render(nullptr);
 
-
-    // Enable constant repaint for FLY navigation mode only
-    if (navMode == renderer::NavMode::FLY)
-    {
-        QTimer::singleShot(0, this, SLOT(update()));
-    }
+    // Continuous rendering
+//    QTimer::singleShot(0, this, SLOT(update()));
 }
 
 
@@ -207,7 +187,6 @@ void Rendering3DWidget::resizeGL(int width, int height)
 {
     makeCurrent();
     renderer->resizeWindow(width, height);
-
 }
 
 //------------------------------------------------------------------------------
@@ -216,14 +195,9 @@ void Rendering3DWidget::resizeGL(int width, int height)
 //
 //------------------------------------------------------------------------------
 
-void Rendering3DWidget::broadcastCameraChange(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
+void Rendering3DWidget::setCamera(const repo::gui::renderer::CameraSettings &camera)
 {
-    emit cameraChangedSignal(camera, emitSignal);
-}
-
-void Rendering3DWidget::setCamera(const repo::gui::renderer::CameraSettings &camera, const bool &emitSignal)
-{
-    renderer->setCamera(camera, emitSignal);
+    renderer->setCamera(camera);
     update();
 }
 void Rendering3DWidget::setPredefinedCamera(const repo::gui::renderer::CameraView& view)
@@ -261,15 +235,17 @@ void Rendering3DWidget::linkCameras(
 {
     if (on)
     {
-        connect(
-                    this, &Rendering3DWidget::cameraChangedSignal,
-                    widget, &Rendering3DWidget::setCamera);
+        QObject::connect(renderer, &repo::gui::renderer::AbstractRenderer::cameraChanged,
+                widget, &Rendering3DWidget::setCamera);
+
+//        QObject::connect(renderer, SIGNAL(repaintNeeded()),
+//                    widget, SLOT(update()));
+
         // TODO: align all views
     }
     else
     {
-        disconnect(
-                    this, &Rendering3DWidget::cameraChangedSignal,
+        QObject::disconnect(renderer, &repo::gui::renderer::AbstractRenderer::cameraChanged,
                     widget, &Rendering3DWidget::setCamera);
     }
 }
@@ -283,12 +259,10 @@ void Rendering3DWidget::linkCameras(
 void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 {
 
-    connect(
-                renderer, &renderer::AbstractRenderer::modelLoadProgress,
+    connect(renderer, &renderer::AbstractRenderer::modelLoadProgress,
                 this, &Rendering3DWidget::rendererProgress);
 
-    connect(
-                this, &Rendering3DWidget::cancelRenderingOps,
+    connect(this, &Rendering3DWidget::cancelRenderingOps,
                 renderer, &renderer::AbstractRenderer::cancelOperations);
     if (repoScene)
     {
@@ -310,8 +284,6 @@ void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
     {
         repoLogError("Failed to load repoScene!");
     }
-
-
 }
 
 
@@ -395,9 +367,7 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_Q:
     {
-        QColor color = QColorDialog::getColor(Qt::white,
-                                              this,
-                                              "Color picker");
+        QColor color = QColorDialog::getColor(Qt::white, this, "Color picker");
         if (color.isValid())
         {
             setBackgroundColor(color);
@@ -412,26 +382,25 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_F1: // Points
     {
-
-        renderer->renderingMode(renderer::RenderMode::POINT);
+        renderer->setRenderingMode(renderer::RenderMode::POINT);
         update();
         break;
     }
     case Qt::Key_F2: // Triangle wireframe
     {
-        renderer->renderingMode(renderer::RenderMode::WIREFRAME);
+        renderer->setRenderingMode(renderer::RenderMode::WIREFRAME);
         update();
         break;
     }
     case Qt::Key_F3: // Shading with polygon wireframe
     {
-        renderer->renderingMode(renderer::RenderMode::WIREFRAME_SHADING);
+        renderer->setRenderingMode(renderer::RenderMode::WIREFRAME_SHADING);
         update();
         break;
     }
     case Qt::Key_F4: // Shading
     {
-        renderer->renderingMode(renderer::RenderMode::SHADING);
+        renderer->setRenderingMode(renderer::RenderMode::SHADING);
         update();
         break;
     }
@@ -466,12 +435,12 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
         break;
     }
     case (Qt::RightButton) :
-        this->setCursor(Qt::SizeVerCursor);
-        renderer->startNavigation(renderer::NavMode::ZOOM, e->x(), e->y());
-        break;
-    case (Qt::MidButton) :
         this->setCursor(Qt::SizeAllCursor);
         renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
+        break;
+    case (Qt::MidButton) :
+        this->setCursor(Qt::SizeVerCursor);
+        renderer->startNavigation(renderer::NavMode::ZOOM, e->x(), e->y());
         break;
     }
     update();
@@ -503,12 +472,11 @@ void Rendering3DWidget::mouseDoubleClickEvent(QMouseEvent *e)
 }
 void Rendering3DWidget::mouseMoveEvent(QMouseEvent * e)
 {
-
-    if (mousePressed && renderer->move(e->x(), e->y()))
+    if (mousePressed)
     {
         //in Navigation mode
+        renderer->move(e->x(), e->y());
         update();
-        emit cameraChangedSignal(renderer->getCurrentCamera(), false);
     }
 
     // Pass on the event to parent.

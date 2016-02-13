@@ -82,7 +82,7 @@ void RepoMdiArea::chainSubWindows(bool checked)
 		for(i = 0; i != visited.size(); ++i)
 		{
 			widget->linkCameras(visited.at(i), checked);
-			visited.at(i)->linkCameras(widget, checked);
+            visited.at(i)->linkCameras(widget, checked);
 		}
 		visited.push_back(widget); // store current window
 	}

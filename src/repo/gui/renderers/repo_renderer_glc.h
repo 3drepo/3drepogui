@@ -104,7 +104,7 @@ namespace repo {
 				* Change rendering mode
 				* @param mode to render in.
 				*/
-				virtual void renderingMode(const RenderMode &mode);
+                virtual void setRenderingMode(const RenderMode &mode);
 
 				/**
 				* Set the colour of the mesh given its name
@@ -177,7 +177,7 @@ namespace repo {
 				* Set camera settings of the current camera
 				* @param camera camera settings to convert to
 				*/
-				virtual void setCamera(const CameraSettings &camera, const bool &emitSignal = true);
+                virtual void setCamera(const CameraSettings &camera);
 
 				/**
 				*Sets a camera view from a pre-defined set of possibilities
