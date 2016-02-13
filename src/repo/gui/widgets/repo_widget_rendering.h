@@ -107,7 +107,7 @@ public slots :
     //--------------------------------------------------------------------------
 
     //! Sets the camera of the view.
-    void setCamera(const repo::gui::renderer::CameraSettings& settings);
+    void setCamera(const renderer::CameraSettings& camera);
 
     //! Sets a camera view from a pre-defined set of possibilities.
     void setPredefinedCamera(const repo::gui::renderer::CameraView&);
@@ -140,8 +140,6 @@ public slots :
     void setBackgroundColor(const QColor &color, const bool repaint = true);
 
 signals:
-
-    void cameraChangedSignal(const renderer::CameraSettings &camera);
 
     void cancelRenderingOps();
 

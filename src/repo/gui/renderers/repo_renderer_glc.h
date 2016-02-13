@@ -223,7 +223,7 @@ namespace repo {
 				* @param zoom zoom factor
 				*/
 
-				virtual void zoom(const float &zoom);
+				virtual void zoom(const float &zoom);                              
 
 			protected:				
 

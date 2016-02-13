@@ -68,6 +68,10 @@ GLCRenderer::GLCRenderer() :
                 &glcMoverController, &GLC_MoverController::repaintNeeded,
                 this, &AbstractRenderer::repaintNeeded);
 
+    QObject::connect(
+                &glcMoverController, &GLC_MoverController::repaintNeeded,
+                this, &AbstractRenderer::notifyCameraChange);
+
     QObject::connect(&glcViewport, &GLC_Viewport::updateOpenGL,
                      this, &AbstractRenderer::repaintNeeded);
 }

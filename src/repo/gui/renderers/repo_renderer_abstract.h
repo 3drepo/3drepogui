@@ -229,6 +229,9 @@ public slots :
     void workerProgress(int value, int maximum)
     { emit modelLoadProgress(value, maximum); }
 
+    void notifyCameraChange()
+    { emit cameraChanged(getCurrentCamera()); }
+
 protected:
 
     RepoFPSCounter fpsCounter;

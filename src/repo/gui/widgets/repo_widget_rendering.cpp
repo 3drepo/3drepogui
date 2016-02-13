@@ -235,17 +235,15 @@ void Rendering3DWidget::linkCameras(
 {
     if (on)
     {
-        QObject::connect(renderer, &repo::gui::renderer::AbstractRenderer::cameraChanged,
+        QObject::connect(renderer, &renderer::AbstractRenderer::cameraChanged,
                 widget, &Rendering3DWidget::setCamera);
 
-//        QObject::connect(renderer, SIGNAL(repaintNeeded()),
-//                    widget, SLOT(update()));
-
         // TODO: align all views
+//        renderer->notifyCameraChange();
     }
     else
     {
-        QObject::disconnect(renderer, &repo::gui::renderer::AbstractRenderer::cameraChanged,
+        QObject::disconnect(renderer, &renderer::AbstractRenderer::cameraChanged,
                     widget, &Rendering3DWidget::setCamera);
     }
 }
