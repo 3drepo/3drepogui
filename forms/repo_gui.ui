@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>913</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -503,6 +503,9 @@
    </property>
   </action>
   <action name="actionSelection_Tree">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Selection Tree</string>
    </property>
