@@ -815,7 +815,6 @@ void GLCRenderer::toggleWireframe()
 {
     isWireframe = !isWireframe;
     glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, isWireframe ? GL_LINE : GL_FILL);
-<<<<<<< HEAD
 }
 
 void GLCRenderer::toggleClippingPlane()
