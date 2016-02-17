@@ -61,7 +61,7 @@ namespace dialog {
 	{
 		Q_OBJECT
 
-		enum class Tab { PROJECTS, ROLES, API_KEYS };
+        enum class Tab { ROLES, API_KEYS };
 
 	public:
 
@@ -70,7 +70,7 @@ namespace dialog {
 			const repo::RepoToken *token,
 			repo::RepoController *controller,
 			const repo::core::model::RepoUser &user,
-			const std::map<std::string, std::list<std::string> > &databasesWithProjects,
+            const std::map<std::string, std::list<std::string> > &databasesWithProjects,
 			const std::list<std::string> &customRolesList,
 			const bool isCopy = false,
 			QWidget *parent = 0);
@@ -113,9 +113,6 @@ namespace dialog {
 			* empty string otherwise.
 			*/
 		std::string getPassword() const;
-
-		//! Returns a list of projects as db, role pairs.
-		std::list<std::pair<std::string, std::string> > getProjects() const;
 
 		//! Returns a list of roles as db, role pairs.
 		std::list<std::pair<std::string, std::string> > getRoles() const;

@@ -251,7 +251,8 @@ void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex
 
             ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
 
-			for (repoUUID uuid : revision->getAddedIDs())
+            // TODO: submit only diffed "added", "modified" and "deleted" fields rather than "current"
+            for (repoUUID uuid : revision->getCurrentIDs())
             {
 				QList<QStandardItem *> row;
 
@@ -260,45 +261,45 @@ void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex
 				row.append(createItem(uid));
 
 				// Action
-				QVariant action(QVariant(tr("Added")));
+                QVariant action(QVariant(tr("Current")));
 				row.append(createItem(action));
 
 				//--------------------------------------------------------------------------
 				revisionModel->invisibleRootItem()->appendRow(row);
             }
 
-			for (repoUUID uuid : revision->getDeletedIDs())
-			{
-				QList<QStandardItem *> row;
+//			for (repoUUID uuid : revision->getDeletedIDs())
+//			{
+//				QList<QStandardItem *> row;
 
-				// UID // TODO: make SID
-				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
-				row.append(createItem(uid));
+//				// UID // TODO: make SID
+//				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+//				row.append(createItem(uid));
 
-				// Action
-				QVariant action(tr("Deleted"));
-				row.append(createItem(action));
+//				// Action
+//				QVariant action(tr("Deleted"));
+//				row.append(createItem(action));
 
-				//--------------------------------------------------------------------------
-				revisionModel->invisibleRootItem()->appendRow(row);
-			}
+//				//--------------------------------------------------------------------------
+//				revisionModel->invisibleRootItem()->appendRow(row);
+//			}
 
 
-			for (repoUUID uuid : revision->getModifiedIDs())
-			{
-				QList<QStandardItem *> row;
+//			for (repoUUID uuid : revision->getModifiedIDs())
+//			{
+//				QList<QStandardItem *> row;
 
-				// UID // TODO: make SID
-				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
-				row.append(createItem(uid));
+//				// UID // TODO: make SID
+//				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+//				row.append(createItem(uid));
 
-				// Action
-				QVariant action(tr("Modified"));
-				row.append(createItem(action));
+//				// Action
+//				QVariant action(tr("Modified"));
+//				row.append(createItem(action));
 
-				//--------------------------------------------------------------------------
-				revisionModel->invisibleRootItem()->appendRow(row);
-			}
+//				//--------------------------------------------------------------------------
+//				revisionModel->invisibleRootItem()->appendRow(row);
+//			}
         }
     }
 }

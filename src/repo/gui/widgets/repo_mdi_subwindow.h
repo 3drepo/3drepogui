@@ -35,116 +35,120 @@
 #include <QProgressBar>
 //------------------------------------------------------------------------------
 
+#include "repo_widget_rendering.h"
 
 namespace repo {
 namespace gui {
 namespace widget{
 
-	/*!
-		* Custom extension of the QMdiSubWindow for internal windowing mechanism that
-		* enables progress bar and other custom features for smooth asynchronous GUI
-		* within the main application window.
-		*/
-	class RepoMdiSubWindow : public QMdiSubWindow
-	{
-		Q_OBJECT
+/*!
+        * Custom extension of the QMdiSubWindow for internal windowing mechanism that
+        * enables progress bar and other custom features for smooth asynchronous GUI
+        * within the main application window.
+        */
+class RepoMdiSubWindow : public QMdiSubWindow
+{
+    Q_OBJECT
 
-	public:
+public:
 
-		//! Default constructor.
-		RepoMdiSubWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
+    //! Default constructor.
+    RepoMdiSubWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
 
-		//! Destructor.
-		~RepoMdiSubWindow();
+    //! Destructor.
+    ~RepoMdiSubWindow();
 
-	signals:
+signals:
 
-		//! Emitted when deleting this object.
-		void aboutToDelete();
+    //! Emitted when deleting this object.
+    void aboutToDelete();
 
-	public:
+public:
 
-		//--------------------------------------------------------------------------
-		//
-		// Setters
-		//
-		//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //
+    // Setters
+    //
+    //--------------------------------------------------------------------------
 
-		void setWidget3D(const QString& windowTitle);
+    void setWidget3D(const QString& windowTitle, repo::gui::renderer::NavMode navMode);
 
-		void setWidget2D(const core::model::RepoScene *scene, const QString &windowTitle);
+    void setWidget2D(const core::model::RepoScene *scene, const QString &windowTitle);
 
-		//! Asynchronously loads 3D file into a RepoGCLWidget.
-		/*!
-			* Loads a 3D file from the given file path using Assimp via a separate
-			* thread. During the loading a progress bar is visible counting the
-			* progress of individual processes and format conversions
-			* from Assimp aiScene to GLC_World and RepoGraphScene.
-			*/
-		void setWidgetFromFile(const QString& fullFilePath, repo::RepoController *controller);
+    //! Asynchronously loads 3D file into a RepoGCLWidget.
+    /*!
+            * Loads a 3D file from the given file path using Assimp via a separate
+            * thread. During the loading a progress bar is visible counting the
+            * progress of individual processes and format conversions
+            * from Assimp aiScene to GLC_World and RepoGraphScene.
+            */
+    void setWidgetFromFile(const QString& fullFilePath,
+                           repo::RepoController *controller,
+                           repo::gui::renderer::NavMode navMode);
 
-		/*!
-			* Sets the widget as the internal widget of this subwindow. The internal
-			* widget is displayed in the center of the subwindow beneath the title
-			* bar and above the progress bar.
-			*
-			* RepoMdiSubWindow takes temporary ownership of the widget; you do not
-			* need to delete it.
-			*/
-		void setWidget(QWidget* widget);
+    /*!
+            * Sets the widget as the internal widget of this subwindow. The internal
+            * widget is displayed in the center of the subwindow beneath the title
+            * bar and above the progress bar.
+            *
+            * RepoMdiSubWindow takes temporary ownership of the widget; you do not
+            * need to delete it.
+            */
+    void setWidget(QWidget* widget);
 
-		//! Deletes the internal widget if any.
-		void removeWidget();
+    //! Deletes the internal widget if any.
+    void removeWidget();
 
-		//--------------------------------------------------------------------------
-		//
-		// Getters 
-		//
-		//--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    //
+    // Getters
+    //
+    //--------------------------------------------------------------------------
 
-		//! Returns the current internal widget.
-		QWidget * widget() const;
+    //! Returns the current internal widget.
+    QWidget * widget() const;
 
-		/*!
-			* Returns the current internal widget cast to the requested type,
-			* potentially NULL (if not set or not of the desired type).
-			*/
-		template <class T>
-		T widget() const
-		{
-			return dynamic_cast<T>(widget());
-		}
+    /*!
+            * Returns the current internal widget cast to the requested type,
+            * potentially NULL (if not set or not of the desired type).
+            */
+    template <class T>
+    T widget() const
+    {
+        return dynamic_cast<T>(widget());
+    }
 
 
-		public slots :
+public slots :
 
-		//! Sets the two scene representations on the widget.
-		void finishedLoadingScene(repo::core::model::RepoScene *);
+    //! Sets the two scene representations on the widget.
+    void finishedLoadingScene(repo::core::model::RepoScene *);
 
-		/*!
-			* Updates the current state of the progress bar with the values specified.
-			* This method makes the progress bar visible unless the value is non-zero
-			* and equals the maximum in which case the progress bar is hidden.
-			*/
-		void progress(int value, int maximum);
+    /*!
+            * Updates the current state of the progress bar with the values specified.
+            * This method makes the progress bar visible unless the value is non-zero
+            * and equals the maximum in which case the progress bar is hidden.
+            */
+    void progress(int value, int maximum);
 
-	protected:
-		void closeEvent(QCloseEvent *closeEvent);
+protected:
 
-	private:
+    void closeEvent(QCloseEvent *closeEvent);
 
-		//--------------------------------------------------------------------------
-		//
-		// Private variables
-		//
-		//--------------------------------------------------------------------------
+private:
 
-		QBoxLayout * boxLayout; //!< Box layout of the window.
+    //--------------------------------------------------------------------------
+    //
+    // Private variables
+    //
+    //--------------------------------------------------------------------------
 
-		QProgressBar * progressBar; //!< Progress bar
+    QBoxLayout * boxLayout; //!< Box layout of the window.
 
-		bool awaitingClose;
-	};
+    QProgressBar * progressBar; //!< Progress bar
+
+    bool awaitingClose;
+};
 }
 } // end namespace gui
 } // end namespace repo

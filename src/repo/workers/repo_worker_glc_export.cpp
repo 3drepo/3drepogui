@@ -503,14 +503,15 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             occurrence->setName(name);
 
             break;
-        }
+        }            
         case repoModel::NodeType::REFERENCE:
-        	//FIXME: references in stash? need to think about this.
+
             repo::core::model::RepoScene *refScene = scene->getSceneFromReference(scene->getViewGraph(),
         		node->getSharedID());
             repoLog("loading reference scene : " + ((repo::core::model::ReferenceNode*)node)->getProjectName());
-            if (refScene &&( (refScene->getAllMeshes().size() > 0 || refScene->getAllReferences().size() > 0)
-				|| (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0 
+            if (refScene &&( (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::DEFAULT).size() > 0
+                || refScene->getAllReferences(repo::core::model::RepoScene::GraphType::DEFAULT).size() > 0)
+                || (refScene->getAllMeshes(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0
 				|| refScene->getAllReferences(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0)))
         	{
                 //There is nothing to visualise if there are no meshes
@@ -674,7 +675,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		std::string name = mesh->getName();
 		glcMesh->setName(QString::fromStdString(UUIDtoString(mesh->getUniqueID())));
 
-		std::vector<repo_vector_t> *vector3d;
+        std::vector<repo_vector_t> vector3d;
 		//Vertices
 		vector3d = mesh->getVertices();
 		QVector<GLfloat> glcVec = createGLCVector(vector3d);
@@ -682,16 +683,13 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			glcMesh->addVertice(glcVec);
 
 		//Normals
-		std::vector<repo_vector_t> * normal3d = mesh->getNormals();
+        std::vector<repo_vector_t> normal3d = mesh->getNormals();
 		QVector<GLfloat> glcNorm = createGLCVector(normal3d);
 		if (glcNorm.size() > 0)
 			glcMesh->addNormals(glcNorm);
 
-		if (normal3d)
-			delete normal3d;
-
 		//Colors
-		std::vector<repo_color4d_t> *colors;
+        std::vector<repo_color4d_t> colors;
 		colors = mesh->getColors();
 		QVector<GLfloat> glcCol = createGLCVector(colors);
 		if (glcCol.size() > 0)
@@ -700,11 +698,8 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			glcMesh->addColors(glcCol);
 		}
 
-		if (colors)
-			delete colors;
-
 		//faces
-		std::vector<repo_face_t> *faces;
+        std::vector<repo_face_t> faces;
 		faces = mesh->getFaces();
 
 		auto mapping = mesh->getMeshMapping();
@@ -760,12 +755,12 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		// Since GLC_Lib renders only triangles, the wireframe for polygon
 		// faces has to be created separately.
 		GLfloatVector faceVertices;
-		for (auto &face : *faces)
+        for (auto &face : faces)
 		{
             for (uint32_t j = 0; j < face.size(); ++j)
 			{
 				//FIXME: this is assuming order in assimp's mVertice = vector3d's order
-                repo_vector_t vertex = vector3d->at(face[j]);
+                repo_vector_t vertex = vector3d[face[j]];
 				faceVertices << vertex.x << vertex.y << vertex.z;
 			}
 
@@ -774,21 +769,13 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		}
 		
 
-		std::vector<repo_vector2d_t>* uvVectors = mesh->getUVChannels();
+        std::vector<repo_vector2d_t> uvVectors = mesh->getUVChannels();
 		QVector<GLfloat> glcUVVec = createGLCVector(uvVectors);
 
 		if (glcUVVec.size() > 0)
 		{
 			glcMesh->addTexels(glcUVVec);
 		}
-
-		if (uvVectors)
-			delete uvVectors;
-
-		if (vector3d)
-			delete vector3d;
-		if (faces)
-			delete faces;
 
 		glcMesh->finish();
 
@@ -802,25 +789,25 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 
 QList<GLuint> GLCExportWorker::createGLCFaceList(
-    const std::vector<repo_face_t> *faces,
+    const std::vector<repo_face_t> &faces,
     const QVector<GLfloat>         &vertices,
 	const int32_t &start,
 	const int32_t &end)
 {
     QList<GLuint> glcList;
-    if (faces)
+    if (faces.size())
     {
 		int32_t startInd = start == -1 ? 0 : start;
-		int32_t endInd = end == -1 ? faces->size() : end;
+        int32_t endInd = end == -1 ? faces.size() : end;
 		for (int i = startInd; i < endInd; ++i)
         {
             QList<GLuint> glcFaceIndices;
-            glcFaceIndices.reserve(faces->at(i).size());
+            glcFaceIndices.reserve(faces[i].size());
             //---------------------------------------------------------------------
             // Copy all assimp indices of a single face to a QList
             std::copy(
-                faces->at(i).data(),
-                faces->at(i).data() + faces->at(i).size(),
+                faces[i].data(),
+                faces[i].data() + faces[i].size(),
                 std::back_inserter(glcFaceIndices));
 
 
@@ -845,11 +832,11 @@ GLC_Texture* GLCExportWorker::convertGLCTexture(
 
     if (texture)
     {
-        std::vector<char> *data = texture->getRawData();
+        std::vector<char> data = texture->getRawData();
 
-        if (data)
+        if (data.size())
         {
-            QImage image = QImage::fromData((uchar*)&data->at(0), data->size()*sizeof(char));
+            QImage image = QImage::fromData((uchar*)data.data(), data.size()*sizeof(char));
             glcTexture = new GLC_Texture(image, QString(texture->getName().c_str()));
         }
     }
@@ -858,16 +845,16 @@ GLC_Texture* GLCExportWorker::convertGLCTexture(
 }
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_color4d_t> *col
+    const std::vector<repo_color4d_t> &col
     )
 {
     QVector<GLfloat> glcVector;
 
-    if (col)
+    if (col.size())
     {
-        glcVector.resize(col->size() * 4); //repo_color_t always have 4 values
+        glcVector.resize(col.size() * 4); //repo_color_t always have 4 values
         int ind = 0;
-        for (auto &mem : *col)
+        for (auto &mem : col)
         {
             glcVector[ind++] = (GLfloat)mem.r;
             glcVector[ind++] = (GLfloat)mem.g;
@@ -880,18 +867,18 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 }
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector_t> *vec
+    const std::vector<repo_vector_t> &vec
     )
 {
     QVector<GLfloat> glcVector;
 
-    if (vec)
+    if (vec.size())
     {
 		
 		//FIXME: since repo_vector_t is a struct, can't we just memcpy?
-        glcVector.resize(vec->size() * 3); //repo_vector_t always have 3 values
+        glcVector.resize(vec.size() * 3); //repo_vector_t always have 3 values
         int ind = 0;
-		for (const auto &v : *vec)
+        for (const auto &v : vec)
         {
             glcVector[ind++] = (GLfloat)v.x;
 			glcVector[ind++] = (GLfloat)v.y;
@@ -904,16 +891,16 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-	const std::vector<repo_vector2d_t> *vec
+    const std::vector<repo_vector2d_t> &vec
     )
 {
     QVector<GLfloat> glcVector;
 
-    if (vec)
+    if (vec.size())
     {
-        glcVector.resize(vec->size() * 2); //repo_vector_t always have 3 values
+        glcVector.resize(vec.size() * 2); //repo_vector_t always have 3 values
         int ind = 0;
-		for (const auto &v : *vec)
+        for (const auto &v : vec)
         {
 			glcVector[ind++] = (GLfloat)v.x;
 			glcVector[ind++] = (GLfloat)v.y;

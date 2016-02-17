@@ -39,6 +39,8 @@ void RepoWorkerModifiedNodes::run()
     emit progressRangeChanged(0, 0); // undetermined (moving) progress bar
 
     int jobsDone = skip;
+    const repo::core::model::RepoScene::GraphType gType
+            = repo::core::model::RepoScene::GraphType::DEFAULT;
 
     if (scene && !cancelled)
     {
@@ -56,7 +58,7 @@ void RepoWorkerModifiedNodes::run()
 			i < (skip + limit);
 		++i)
 		{
-			emit modifiedNode(scene->getNodeBySharedID(addedNodes[i-base]), QString("added"));
+            emit modifiedNode(scene->getNodeBySharedID(gType, addedNodes[i-base]), QString("added"));
 			emit progressValueChanged(++jobsDone);
 		}
 		base = i;
@@ -66,7 +68,7 @@ void RepoWorkerModifiedNodes::run()
              i < (skip + limit);
              ++i)
         {                       
-			emit modifiedNode(scene->getNodeBySharedID(modifiedNodes[i - base]), QString("modified"));
+            emit modifiedNode(scene->getNodeBySharedID(gType, modifiedNodes[i - base]), QString("modified"));
             emit progressValueChanged(++jobsDone);
         }
 		base = i;

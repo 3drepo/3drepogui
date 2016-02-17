@@ -29,6 +29,7 @@
 
 using namespace repo::gui::renderer;
 
+
 GLCRenderer::GLCRenderer()
     : AbstractRenderer()
     , glcLight()
@@ -40,19 +41,12 @@ GLCRenderer::GLCRenderer()
     , shaderID(0)
     , isWireframe(false)
 {
-    QObject::connect(&glcViewport, &GLC_Viewport::updateOpenGL,
-                     this, &AbstractRenderer::updateRenderer);
-
-
     //--------------------------------------------------------------------------
     // GLC settings
     QColor repColor;
     repColor.setRgbF(1.0, 0.11372, 0.11372, 1.0); // Red colour
     glcMoverController = GLC_Factory::instance()->createDefaultMoverController(
                 repColor, &glcViewport);
-    QObject::connect(
-                &glcMoverController, &GLC_MoverController::repaintNeeded,
-                this, &AbstractRenderer::updateRenderer);
 
     glcViewport.setBackgroundColor(Qt::white);
     glcLight.setPosition(1.0, 1.0, 1.0);
@@ -69,10 +63,18 @@ GLCRenderer::GLCRenderer()
     line.geomAt(0)->setWireColor(Qt::blue);
     glcUICollection.add(line);
 
-    QObject::connect(&glcMoverController,
-                     &GLC_MoverController::repaintNeeded,
-                     this,
-                     &AbstractRenderer::broadcastCameraChange);
+    //--------------------------------------------------------------------------
+
+    QObject::connect(
+                &glcMoverController, &GLC_MoverController::repaintNeeded,
+                this, &AbstractRenderer::repaintNeeded);
+
+    QObject::connect(
+                &glcMoverController, &GLC_MoverController::repaintNeeded,
+                this, &AbstractRenderer::notifyCameraChange);
+
+    QObject::connect(&glcViewport, &GLC_Viewport::updateOpenGL,
+                     this, &AbstractRenderer::repaintNeeded);
 }
 
 GLCRenderer::~GLCRenderer()
@@ -98,7 +100,6 @@ CameraSettings GLCRenderer::convertToCameraSettings(GLC_Camera *cam)
     res.up.x = up.x();
     res.up.y = up.y();
     res.up.z = up.z();
-
 
     return res;
 }
@@ -162,8 +163,6 @@ void GLCRenderer::extractMeshes(GLC_StructOccurrence * occurrence)
         }
     }
 }
-
-
 
 CameraSettings GLCRenderer::getCurrentCamera()
 {
@@ -254,19 +253,13 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 
 bool GLCRenderer::move(const int &x, const int &y)
 {
-
-    // TODO: fix me!
-    bool needUpdate= (glc3DWidgetManager.moveEvent(clippingPlaneID, GLC_Point3d(0,0,0)) != glc::IgnoreEvent);
-    if (needUpdate)
-    {
-        emit repaintNeeded();
-    }
-    return 	glcMoverController.hasActiveMover() &&
-            glcMoverController.move(GLC_UserInput(x, y));
-
+    bool done = glcMoverController.hasActiveMover() &&
+        glcMoverController.move(GLC_UserInput(x, y));
+    emit cameraChanged(getCurrentCamera());
+    return done;
 }
 
-void GLCRenderer::renderingMode(const RenderMode &mode)
+void GLCRenderer::setRenderingMode(const RenderMode &mode)
 {
     switch (mode)
     {
@@ -350,12 +343,29 @@ void GLCRenderer::setMeshColor(
 
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
 {
-
     switch (mode)
     {
     case NavMode::TURNTABLE:
         glcMoverController.setActiveMover(
                     GLC_MoverController::TurnTable,
+                    GLC_UserInput(x, y));
+        break;
+
+    case NavMode::ORBIT:
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::TrackBall,
+                    GLC_UserInput(x, y));
+        break;
+
+    case NavMode::TSR:
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::TSR,
+                    GLC_UserInput(x, y));
+        break;
+
+    case NavMode::TARGET:
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::Target,
                     GLC_UserInput(x, y));
         break;
 
@@ -370,10 +380,16 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
                     GLC_MoverController::Fly,
                     GLC_UserInput(x, y));
         break;
+
+    case NavMode::ZOOM :
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::Zoom,
+                    GLC_UserInput(x, y));
+        break;
+
     default:
         repoLogError("Unrecognised mode: " + std::to_string((int)mode));
     }
-
 }
 
 void GLCRenderer::stopNavigation()
@@ -386,7 +402,6 @@ void GLCRenderer::stopNavigation()
 
 void GLCRenderer::setGLCWorld(GLC_World &world)
 {
-
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
     repoLog("\tGLC World size: " + std::to_string(world.size()));
@@ -479,11 +494,13 @@ void GLCRenderer::paintInfo(QPainter *painter,
         glcUICollection.render(0, glc::ShadingFlag);
 
         //--------------------------------------------------------------------------
+
         // Restore 3D state
         glPopAttrib();
         glPopMatrix(); // restore model-view matrix
 
         //--------------------------------------------------------------------------
+
         // Display stats
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
@@ -493,18 +510,16 @@ void GLCRenderer::paintInfo(QPainter *painter,
             selectionName = glcWorld.selectedOccurrenceList().first()->name();
 
         painter->drawText(9, 14, QString() +
-                          QChar(0x25B2) + " " +
-                          locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()) +
-                          tr(" in ") +
-                          locale.toString((uint)GLC_RenderStatistics::bodyCount()) +
-                          tr(" objects"));
-        painter->drawText(screenWidth - 50, 14, fpsCounter.getFPSString());
+                          tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
+        painter->drawText(9, 30, QString() +
+                          tr("Objs") + ": " + locale.toString((uint)GLC_RenderStatistics::bodyCount()));
 
-        //--------------------------------------------------------------------------
+        painter->drawText(screenWidth - 60, 14, fpsCounter.getFPSString());
+
+        //----------------------------------------------------------------------
         // Display selection
         if (glcWorld.selectionSize() > 0)
             painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
-
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -599,15 +614,22 @@ void GLCRenderer::render(QPainter *painter,
 
         glc3DWidgetManager.render();
 
+
         //----------------------------------------------------------------------
         // Display UI Info (orbit circle)
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
         glEnable(GL_DEPTH_TEST);
-        glcMoverController.drawActiveMoverRep();
 
         if (painter)
+        {
+            glcMoverController.drawActiveMoverRep();
+
+            glDisable(GL_DEPTH_TEST);
+            GLC_ContextManager::instance()->currentContext()->glcMatrixMode(GL_MODELVIEW);
             paintInfo(painter, screenHeight, screenWidth);
+        }
+
         // So that models look nice
         glDisable(GL_CULL_FACE);
         glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -711,16 +733,12 @@ void GLCRenderer::setBackgroundColor(const QColor &color)
     glcViewport.setBackgroundColor(color);
 }
 
-void GLCRenderer::setCamera(const CameraSettings &camera, const bool &emitSignal)
+void GLCRenderer::setCamera(const CameraSettings &camera)
 {
     const GLC_Camera cam(GLC_Point3d(camera.eye.x, camera.eye.y, camera.eye.z),
                          GLC_Point3d(camera.target.x, camera.target.y, camera.target.z),
                          GLC_Point3d(camera.up.x, camera.up.y, camera.up.z));
-
     glcViewport.cameraHandle()->setCam(cam);
-
-    if (emitSignal)
-        emit cameraChangedSignal(camera, false);
 }
 
 void GLCRenderer::setCamera(const CameraView& view)
@@ -756,8 +774,6 @@ void GLCRenderer::setCamera(const CameraView& view)
     {
         repoLogError("GLC world is empty or bounding box is empty!");
     }
-
-    emit cameraChangedSignal(getCurrentCamera(), false);
 }
 
 void GLCRenderer::toggleOctree()
@@ -799,6 +815,7 @@ void GLCRenderer::toggleWireframe()
 {
     isWireframe = !isWireframe;
     glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, isWireframe ? GL_LINE : GL_FILL);
+<<<<<<< HEAD
 }
 
 void GLCRenderer::toggleClippingPlane()
@@ -845,6 +862,6 @@ void GLCRenderer::updateClippingPlane()
 void GLCRenderer::zoom(const float &zoom)
 {
     glcViewport.cameraHandle()->zoom(zoom);
-    emit cameraChangedSignal(getCurrentCamera(), false);
+    emit cameraChanged(getCurrentCamera());
 }
 

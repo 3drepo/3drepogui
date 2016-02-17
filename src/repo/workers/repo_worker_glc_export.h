@@ -103,7 +103,7 @@ namespace repo {
 				const repo::core::model::TextureNode *texture);
 
 			QList<GLuint> createGLCFaceList(
-				const std::vector<repo_face_t> *faces,
+                const std::vector<repo_face_t> &faces,
 				const QVector<GLfloat>         &vertices,
 				const int32_t &start = -1,
 				const int32_t &end = -1);
@@ -113,15 +113,15 @@ namespace repo {
 				const repo::core::model::MeshNode   *node);
 
 			QVector<GLfloat> createGLCVector(
-				const std::vector<repo_vector_t> *vec
+                const std::vector<repo_vector_t> &vec
 				);
 
 			QVector<GLfloat> createGLCVector(
-				const std::vector<repo_vector2d_t> *vec
+                const std::vector<repo_vector2d_t> &vec
 				);
 
 			QVector<GLfloat> createGLCVector(
-				const std::vector<repo_color4d_t> *col
+                const std::vector<repo_color4d_t> &col
 				);
 
 			QColor toQColor(const std::vector<float> &c, float scale = 1.f);

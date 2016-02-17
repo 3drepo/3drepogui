@@ -19,6 +19,7 @@
 
 #include <QMainWindow>
 #include <QGLFormat>
+#include <QActionGroup>
 
 // CORE
 #include <repo/repo_controller.h>
@@ -93,7 +94,7 @@ public slots:
     void connectDB();
 
     //! Returns a menu with currently available panels.
-    QMenu* createPanelsMenu();
+    QMenu* createPanelsMenu();   
 
     //! Disconnects DB connection and disables repository buttons.
     void disconnectDB();
@@ -160,6 +161,9 @@ public slots:
     //! Saves open 3D window as an image file (screenshot).
     void saveScreenshot();
 
+    //! Sets the navigation of the 3D view.
+    void toggleNavigationMode();
+
     //! Displays the popup context menu on the repositories widget collection view.
     void showCollectionContextMenuSlot(const QPoint &pos);
 
@@ -205,6 +209,9 @@ private:
 	
     //! Panels menu (dockable widgets and toolbars)
     QMenu *panelsMenu;
+
+    //! Navigation mode action group (so that only one mode can be active at any given time)
+    QActionGroup *navigationModeActionGroup;
 
     //! Settings geometry label.
     static const QString REPO_SETTINGS_GUI_GEOMETRY;

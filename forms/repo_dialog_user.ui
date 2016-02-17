@@ -250,27 +250,8 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
-     <widget class="QWidget" name="projectsTab">
-      <attribute name="title">
-       <string>Projects (0)</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
-       <item>
-        <widget class="QGroupBox" name="groupBox_4">
-         <property name="title">
-          <string>Projects:</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_12">
-          <item>
-           <widget class="repo::gui::widget::UnfilterableTreeWidget" name="projectsUnfilterableTreeWidget" native="true"/>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
        <string>Roles (0)</string>
@@ -313,6 +294,18 @@
           <string>API Keys:</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="leftMargin">
+           <number>9</number>
+          </property>
+          <property name="topMargin">
+           <number>9</number>
+          </property>
+          <property name="rightMargin">
+           <number>9</number>
+          </property>
+          <property name="bottomMargin">
+           <number>9</number>
+          </property>
           <item>
            <widget class="repo::gui::widget::UnfilterableTreeWidget" name="apiKeysUnfilterableTreeWidget" native="true"/>
           </item>

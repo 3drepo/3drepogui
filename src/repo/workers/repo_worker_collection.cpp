@@ -131,31 +131,29 @@ void CollectionWorker::decodeRecords(const repoModel::RepoBSON& bson, uint32_t d
 					repoModel::MeshNode mesh = (repoModel::MeshNode) bson;
 					if (REPO_NODE_MESH_LABEL_VERTICES == key)
 					{
-						std::vector<repo_vector_t> * vec = mesh.getVertices();
-						value = QString(vectorToString(*vec).c_str());
+                        std::vector<repo_vector_t> vec = mesh.getVertices();
+                        value = QString(vectorToString(vec).c_str());
 						type = QString("BSONBinDataGeneral");
-						delete vec;
 					}
 					else if (REPO_NODE_MESH_LABEL_NORMALS == key)
 					{
-						std::vector<repo_vector_t> * vec = mesh.getNormals();
-						value = QString(vectorToString(*vec).c_str());
-						type = QString("BSONBinDataGeneral");
-						delete vec;
+                        std::vector<repo_vector_t> vec = mesh.getNormals();
+                        value = QString(vectorToString(vec).c_str());
+						type = QString("BSONBinDataGeneral");					
 					}
 					else if (REPO_NODE_MESH_LABEL_UV_CHANNELS == key)
 					{
-						std::vector<repo_vector2d_t> * vec = mesh.getUVChannels();
-						value = QString(vectorToString(*vec).c_str());
+                        std::vector<repo_vector2d_t> vec = mesh.getUVChannels();
+                        value = QString(vectorToString(vec).c_str());
 						type = QString("BSONBinDataGeneral");
-						delete vec;
+
 					}
 					else if (REPO_NODE_MESH_LABEL_FACES == key)
 					{
-						std::vector<repo_face_t> * vec = mesh.getFaces();
-						value = QString(vectorToString(*vec).c_str());
+                        std::vector<repo_face_t> vec = mesh.getFaces();
+                        value = QString(vectorToString(vec).c_str());
 						type = QString("BSONBinDataGeneral");
-						delete vec;
+
 					}
 					else
 					{

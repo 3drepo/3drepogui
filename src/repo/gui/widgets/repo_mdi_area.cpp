@@ -82,7 +82,7 @@ void RepoMdiArea::chainSubWindows(bool checked)
 		for(i = 0; i != visited.size(); ++i)
 		{
 			widget->linkCameras(visited.at(i), checked);
-			visited.at(i)->linkCameras(widget, checked);
+            visited.at(i)->linkCameras(widget, checked);
 		}
 		visited.push_back(widget); // store current window
 	}
@@ -139,6 +139,15 @@ void RepoMdiArea::closeHiddenSubWindows()
     }
 }
 
+void RepoMdiArea::setNavigationMode(repo::gui::renderer::NavMode navMode)
+{
+    this->navMode = navMode;
+    for (RenderingAbstractWidget *widget : getWidgets<RenderingAbstractWidget*>())
+    {
+        widget->setNavigationMode(navMode);
+    }
+}
+
 //------------------------------------------------------------------------------
 //
 // SubWindow management
@@ -167,7 +176,7 @@ repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWindow(
     const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidgetFromFile(fullPath, controller);
+    repoSubWindow->setWidgetFromFile(fullPath, controller, navMode);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
@@ -190,7 +199,7 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	bool headRevision)
 {
     RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
-    repoSubWindow->setWidget3D(database + "." +project);// + " " + id.toString());
+    repoSubWindow->setWidget3D(database + "." +project, navMode);// + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 

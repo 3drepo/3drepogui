@@ -49,6 +49,7 @@ repo::core::model::MapNode MapDialog::getMap(){
 				ui->longSpinBox->value(),
 				ui->latSpinBox->value(),
 				centrePoint,
+                ui->apiKeyLineEdit->text().toStdString(),
 				ui->nameLineEdit->text().toStdString()
 				);
 

@@ -17,7 +17,6 @@
 
 #include "repo_mdi_subwindow.h"
 #include "repo_widget_flags.h"
-#include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"
 #include "../primitives/repo_fontawesome.h"
 
@@ -95,9 +94,9 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 
 }
 
-void RepoMdiSubWindow::setWidget3D(const QString& windowTitle)
+void RepoMdiSubWindow::setWidget3D(const QString& windowTitle, repo::gui::renderer::NavMode navMode)
 {
-    setWidget(new widget::Rendering3DWidget(0, widget::Renderer::GLC, windowTitle));
+    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -110,10 +109,11 @@ void RepoMdiSubWindow::setWidget2D(
 }
 
 void RepoMdiSubWindow::setWidgetFromFile(
-    const QString& filePath, repo::RepoController *controller)
+    const QString& filePath, repo::RepoController *controller,
+        repo::gui::renderer::NavMode navMode)
 {
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new widget::Rendering3DWidget(0, widget::Renderer::GLC, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
