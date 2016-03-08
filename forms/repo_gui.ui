@@ -394,7 +394,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Drop</string>
+    <string>Remove Collection</string>
    </property>
   </action>
   <action name="actionFull_Screen">
