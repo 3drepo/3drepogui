@@ -47,7 +47,9 @@ int main(int argc, char *argv[])
 	char* debug = getenv("REPO_DEBUG");
 	char* verbose = getenv("REPO_VERBOSE");
 
-	if (verbose)
+    controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
+
+    /*if (verbose)
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
 	}
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
-	}
+    }*/
 
 	if (verbose) free(verbose);
 	if (debug)   free(debug);
