@@ -174,6 +174,7 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionRemoveProject, SIGNAL(triggered()), this, SLOT(removeProject()));
+    ui->actionRemoveProject->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
 
