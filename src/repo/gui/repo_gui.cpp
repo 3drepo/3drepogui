@@ -173,6 +173,7 @@ repo::gui::RepoGUI::RepoGUI(
 
     //--------------------------------------------------------------------------
     // Drop
+    QObject::connect(ui->actionRemoveProject, SIGNAL(triggered()), this, SLOT(removeProject()));
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
     ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
 
@@ -766,6 +767,41 @@ void repo::gui::RepoGUI::refresh()
 {
     ui->widgetRepository->refresh();
 }
+
+void repo::gui::RepoGUI::removeProject()
+{
+    QString database = ui->widgetRepository->getSelectedDatabase();
+    QString project = ui->widgetRepository->getSelectedProject();
+
+
+    if (database.isNull() || database.isEmpty())
+        repoLog("A database must be selected.");
+    else if (database == "admin")
+        repoLog("You are not allowed to delete projects from 'admin' databases.");
+    else if (project.isNull() || project.isEmpty())
+        repoLog("A project must be selected.");
+    else
+    {
+        QString ns = database +  "." + project;
+        if (!QMessageBox::warning(this,
+                                  "Drop?",
+                                  "Are you sure you want to remove '" + ns + "'?",
+                                  "&Yes",
+                                  "&No",
+                                  QString::null, 1, 1))
+        {
+
+            bool success;
+            std::string errMsg;
+            const RepoToken *token = ui->widgetRepository->getSelectedConnection();
+            // TODO: create a DB manager separate from repositories widget.
+           success = controller->removeProject(token, database.toStdString(), project.toStdString(), errMsg);
+
+            refresh();
+        }
+    }
+}
+
 
 void repo::gui::RepoGUI::reportIssue() const
 {

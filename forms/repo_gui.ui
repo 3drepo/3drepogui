@@ -59,6 +59,7 @@
     <addaction name="actionAccessManager"/>
     <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
+    <addaction name="actionRemoveProject"/>
     <addaction name="actionDrop"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -605,6 +606,14 @@
    </property>
    <property name="shortcut">
     <string>1</string>
+   </property>
+  </action>
+  <action name="actionRemoveProject">
+   <property name="text">
+    <string>Remove Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove project from database</string>
    </property>
   </action>
  </widget>
