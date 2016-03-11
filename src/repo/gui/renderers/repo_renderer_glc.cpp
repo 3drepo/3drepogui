@@ -29,7 +29,6 @@
 
 using namespace repo::gui::renderer;
 
-
 GLCRenderer::GLCRenderer()
     : AbstractRenderer()
     , glcLight()
@@ -442,7 +441,6 @@ void GLCRenderer::paintInfo(QPainter *painter,
         if (screenHeight < 400)
             scaleFactor *= (double)400 / (double)screenHeight;
 
-
         //--------------------------------------------------------------------------
         // Display info area
         glMatrixMode(GL_PROJECTION);
@@ -484,16 +482,16 @@ void GLCRenderer::paintInfo(QPainter *painter,
         glScaled(scaleFactor * displayRatio, scaleFactor, scaleFactor);
         glMultMatrixd(uiMatrix.getData());
 
-        //    painter->setPen(Qt::red);
-        //    painter->drawText(QPointF(1.0f, 0.0f, 0.0f), "x");
-        //    painter->setPen(Qt::darkGreen);
-        //    painter->drawText(QPointF(0.0f, 1.0f, 0.0f), "y");
-        //    painter->setPen(Qt::blue);
-        //    painter->drawText(QPointF(0.0f, 0.0f, 1.0f), "z");
+        //            painter->setPen(Qt::red);
+        //            painter->drawText(QPointF(1.0f, 0.0f, 0.0f), "x");
+        //            painter->setPen(Qt::darkGreen);
+        //            painter->drawText(QPointF(0.0f, 1.0f, 0.0f), "y");
+        //            painter->setPen(Qt::blue);
+        //            painter->drawText(QPointF(0.0f, 0.0f, 1.0f), "z");
 
         glcUICollection.render(0, glc::ShadingFlag);
 
-        //--------------------------------------------------------------------------
+        //----------------------------------------------------------------------
 
         // Restore 3D state
         glPopAttrib();
@@ -614,21 +612,17 @@ void GLCRenderer::render(QPainter *painter,
 
         glc3DWidgetManager.render();
 
-
         //----------------------------------------------------------------------
         // Display UI Info (orbit circle)
         glDisable(GL_BLEND);
         glDepthMask(GL_TRUE);
         glEnable(GL_DEPTH_TEST);
 
-        if (painter)
-        {
-            glcMoverController.drawActiveMoverRep();
+        glcMoverController.drawActiveMoverRep();
 
-            glDisable(GL_DEPTH_TEST);
-            GLC_ContextManager::instance()->currentContext()->glcMatrixMode(GL_MODELVIEW);
-            paintInfo(painter, screenHeight, screenWidth);
-        }
+        glDisable(GL_DEPTH_TEST);
+        GLC_ContextManager::instance()->currentContext()->glcMatrixMode(GL_MODELVIEW);
+        paintInfo(painter, screenHeight, screenWidth);
 
         // So that models look nice
         glDisable(GL_CULL_FACE);

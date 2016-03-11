@@ -125,9 +125,7 @@ void Rendering3DWidget::initializeGL()
     //--------------------------------------------------------------------------
     // Renderer initialisation
     renderer->initialize();
-
     initializeShaders();
-
     renderer->setActivationFlag(true);
 }
 

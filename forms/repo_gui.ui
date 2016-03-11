@@ -23,7 +23,7 @@
      <x>0</x>
      <y>0</y>
      <width>913</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -59,6 +59,7 @@
     <addaction name="actionAccessManager"/>
     <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
+    <addaction name="actionRemoveProject"/>
     <addaction name="actionDrop"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
@@ -394,7 +395,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Drop</string>
+    <string>Remove Entry</string>
    </property>
   </action>
   <action name="actionFull_Screen">
@@ -606,6 +607,14 @@
    </property>
    <property name="shortcut">
     <string>1</string>
+   </property>
+  </action>
+  <action name="actionRemoveProject">
+   <property name="text">
+    <string>Remove Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove project from database</string>
    </property>
   </action>
   <action name="actionClipping_Plane">

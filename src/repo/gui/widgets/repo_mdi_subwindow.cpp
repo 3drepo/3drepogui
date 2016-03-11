@@ -117,7 +117,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-	repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller, new FlagsWidget());
+    repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller);
 	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
 		this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));

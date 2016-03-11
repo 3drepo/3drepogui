@@ -53,8 +53,7 @@ namespace repo {
 			* \sa ~FileImportWorker(), process()
 			*/
 			FileImportWorker(const std::string& fullPath,
-				repo::RepoController *controller,
-				const repo::gui::widget::FlagsWidget *assimpFlagsWidget);
+                repo::RepoController *controller);
 
 			//! Default empty destructor.
 			~FileImportWorker();
@@ -78,9 +77,7 @@ namespace repo {
 			//! Full canonical path of the 3D file to be loaded.
 			const std::string fullPath;
 
-			repo::RepoController *controller;
-
-                        repo::settings::RepoSettings *settings;
+			repo::RepoController *controller;                        
 
 		}; // end class
 

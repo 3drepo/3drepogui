@@ -152,6 +152,9 @@ public slots:
     //! Refreshes currently connected database.
     void refresh();
 
+    //! Remove a project from the database
+    void removeProject();
+
     //! Opens a GitHub issues webpage in the default web browser.
     void reportIssue() const;
 
