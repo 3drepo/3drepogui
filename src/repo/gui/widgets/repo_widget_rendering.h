@@ -222,6 +222,8 @@ public:
     //! See https://bugreports.qt-project.org/browse/QTBUG-33186
     QImage renderQImage(int w, int h);
 
+    QImage renderFrameBufferQImage(int w, int h, GLvoid *data);
+
 protected:
 
     //--------------------------------------------------------------------------

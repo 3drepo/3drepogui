@@ -79,9 +79,11 @@ Rendering3DWidget::Rendering3DWidget(
     , isInfoVisible(true)
     , repoScene(0)
 {
+    // TODO: add to GUI settings
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     format.setStencilBufferSize(8);
+    format.setSamples(4); // antialiasing/multisampling
     format.setProfile(QSurfaceFormat::CoreProfile);
     format.setSwapInterval(1); // V sync
     setFormat(format); // must be called before the widget or its parent window gets shown
@@ -292,19 +294,64 @@ void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 
 QImage Rendering3DWidget::renderQImage(int w, int h)
 {
+// This does not work with antialiasing (format.setSamples) on
+//------------------------------------------------------------------------------
+//    makeCurrent();
+//    isInfoVisible = false;
+//    int oldW = width();
+//    int oldH = height();
+//    resize(w, h); // resize scene
+//    update(); // draw to the buffer
+//    QImage image = grabFramebuffer();
+//    isInfoVisible = true;
+//    resize(oldW, oldH);
+//    update();
+//    return image;
+
+    return renderFrameBufferQImage(w, h, nullptr);
+}
+
+
+QImage Rendering3DWidget::renderFrameBufferQImage(int w, int h, GLvoid *data)
+{
+    // THIS IS IMPORTANT
+    // http://stackoverflow.com/questions/31323749/easiest-way-for-offscreen-rendering-with-qopenglwidget
+
+    // See https://bugreports.qt-project.org/browse/QTBUG-33186
+    // See http://doc.qt.io/qt-5/qtquick-scenegraph-textureinthread-threadrenderer-cpp.html
+    //    QOffscreenSurface surface;
+    //    surface.create();
+    //    context()->makeCurrent(&surface);
+
     makeCurrent();
 
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    // Note that it is not possible to set more samples, aka antialiasing, here
+    // as that will not produce any rendering!
+    QOpenGLFramebufferObject m_fbo(w, h, format);
+    resizeGL(w, h);
+
+    m_fbo.bind();
     isInfoVisible = false;
-    int oldW = width();
-    int oldH = height();
-    resize(w, h); // resize scene
-    update(); // draw to the buffer
-    QImage image = grabFramebuffer();
+    paintGL();
     isInfoVisible = true;
-    resize(oldW, oldH);
-    update();
+
+    // https://www.opengl.org/sdk/docs/man2/xhtml/glReadPixels.xml
+    if (data)
+    context()->functions()->glReadPixels(0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, data);
+
+    m_fbo.release();
+    QImage image = m_fbo.toImage();
+    m_fbo.bindDefault();
+    doneCurrent();
+
+    resizeGL(width(), height());
+    //    surface.destroy();
     return image;
 }
+
+
 //------------------------------------------------------------------------------
 //
 // User interaction
