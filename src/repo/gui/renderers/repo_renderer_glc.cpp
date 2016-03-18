@@ -253,7 +253,7 @@ void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
 bool GLCRenderer::move(const int &x, const int &y)
 {
     bool done = glcMoverController.hasActiveMover() &&
-        glcMoverController.move(GLC_UserInput(x, y));
+            glcMoverController.move(GLC_UserInput(x, y));
     emit cameraChanged(getCurrentCamera());
     return done;
 }
@@ -823,20 +823,21 @@ void GLCRenderer::toggleClippingPlane()
     {
         GLC_Point3d center = glcWorld.boundingBox().center();
         const GLC_Vector3d normal(-glc::Z_AXIS);
-        const double l1= 1.1 * glcWorld.boundingBox().xLength();
-        const double l2= 1.1 * glcWorld.boundingBox().yLength();
+        const double l1 = 1.1 * glcWorld.boundingBox().xLength();
+        const double l2 = 1.1 * glcWorld.boundingBox().yLength();
         GLC_CuttingPlane* cuttingPlane = new GLC_CuttingPlane(center, normal, l1, l2);
+
         clippingPlaneID = cuttingPlane->id();
 
-        QObject::connect(
-                    cuttingPlane,
-                    &GLC_CuttingPlane::asChanged,
-                    this,
-                    &GLCRenderer::updateClippingPlane);
+        //        QObject::connect(
+        //                    cuttingPlane,
+        //                    &GLC_CuttingPlane::asChanged,
+        //                    this,
+        //                    &GLCRenderer::updateClippingPlane);
 
         glc3DWidgetManager.add3DWidget(cuttingPlane);
         clippingPlane = new GLC_Plane(normal, center);
-        cuttingPlane->setColor(QColor(Qt::green));
+        //        cuttingPlane->setColor(QColor(Qt::green));
         glcViewport.addClipPlane(GL_CLIP_PLANE0, clippingPlane);
 
         glc3DWidgetManager.setWidgetVisible(clippingPlaneID, true);
@@ -850,6 +851,37 @@ void GLCRenderer::updateClippingPlane()
     {
         clippingPlane->setPlane(cuttingPlane->normal(), cuttingPlane->center());
     }
+}
+
+void GLCRenderer::updateClippingPlane(Axis axis, double value)
+{
+    if (!clippingPlaneID)
+    {
+        clippingPlane = new GLC_Plane();
+        glcViewport.addClipPlane(GL_CLIP_PLANE0, clippingPlane);
+        clippingPlaneID = 1;
+    }
+
+    GLC_Vector3d normal;
+    GLC_BoundingBox bbox = glcWorld.boundingBox();
+    GLC_Point3d point = bbox.lowerCorner();
+
+    switch (axis)
+    {
+    case Axis::X:
+        normal = GLC_Vector3d(glc::X_AXIS);
+        point.setX(point.x() + (bbox.xLength() * value));
+        break;
+    case Axis::Y:
+        normal = GLC_Vector3d(glc::Y_AXIS);
+        point.setY(point.y() + (bbox.yLength() * value));
+        break;
+    case Axis::Z:
+        normal = GLC_Vector3d(glc::Z_AXIS);
+        point.setZ(point.z() + (bbox.zLength() * value));
+        break;
+    }
+    clippingPlane->setPlane(normal, point);
 }
 
 void GLCRenderer::zoom(const float &zoom)

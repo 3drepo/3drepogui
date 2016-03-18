@@ -229,6 +229,12 @@ void Rendering3DWidget::setBackgroundColor(
         update();
 }
 
+void Rendering3DWidget::updateClippingPlane(repo::gui::renderer::Axis axis, double value)
+{
+    renderer->updateClippingPlane(axis, value);
+    update();
+}
+
 void Rendering3DWidget::linkCameras(
         const Rendering3DWidget *widget,
         const bool & on) const

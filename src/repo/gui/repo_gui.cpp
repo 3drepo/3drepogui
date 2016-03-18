@@ -35,6 +35,7 @@
 #include "widgets/repo_widget_flags.h"
 #include "widgets/repo_widget_tree_dock.h"
 #include "widgets/repo_widget_manager_3ddiff.h"
+#include "widgets/repo_widget_manager_clipping_plane.h"
 #include "../workers/repo_worker_commit.h"
 #include "../workers/repo_worker_file_export.h"
 #include "../workers/repo_worker_optimize.h"
@@ -230,6 +231,11 @@ repo::gui::RepoGUI::RepoGUI(
     //	actionBack->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_circle));
 
 
+    // Clipping Plane
+    QObject::connect(ui->actionClipping_Plane, &QAction::triggered,
+                     this, &RepoGUI::openClippingPlane);
+
+
 
     // Scene Graph
     QObject::connect(ui->actionSceneGraph, &QAction::triggered,
@@ -374,6 +380,9 @@ void repo::gui::RepoGUI::addMapTiles()
     }
 }
 
+void repo::gui::RepoGUI::addSelectionTree()
+{  addSelectionTree(ui->mdiArea->getActiveWidget()); }
+
 void repo::gui::RepoGUI::addSelectionTree(widget::Rendering3DWidget* widget, Qt::DockWidgetArea area)
 {
     widget::TreeDockWidget* dock = new  widget::TreeDockWidget(widget, this);
@@ -388,7 +397,7 @@ void repo::gui::RepoGUI::addSelectionTree(widget::Rendering3DWidget* widget, Qt:
 void repo::gui::RepoGUI::commit()
 {
     widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
-    const widget::Rendering3DWidget *widget = getActiveWidget();
+    const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget();
 
     QString database = ui->widgetRepository->getSelectedDatabase();
     QString project = ui->widgetRepository->getSelectedProject();
@@ -501,6 +510,13 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
 {
     QMenu* panelsMenu = QMainWindow::createPopupMenu();
     panelsMenu->setTitle(tr("Dock Widgets"));
+
+    if (panelsMenu->actions().size() >= 2)
+    {
+        panelsMenu->actions()[0]->setShortcut(QKeySequence(Qt::Key_R));
+        panelsMenu->actions()[1]->setShortcut(QKeySequence(Qt::Key_L));
+    }
+
     panelsMenu->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_columns));
     return panelsMenu;
 }
@@ -583,19 +599,12 @@ void repo::gui::RepoGUI::fetchHead()
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
 }
 
-repo::gui::widget::Rendering3DWidget* repo::gui::RepoGUI::getActiveWidget() const
-{
-    widget::Rendering3DWidget *widget =
-            ui->mdiArea->activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
-    if (!widget)
-        repoLogError(tr("A 3D window has to be open.").toStdString());
-    return widget;
-}
+
 
 const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene() const
 {
     const repo::core::model::RepoScene *scene = 0;
-    if (const widget::Rendering3DWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget())
         scene = widget->getRepoScene();
     return scene;
 }
@@ -674,7 +683,16 @@ void repo::gui::RepoGUI::open3DDiff()
         ui->actionLink->setChecked(true);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
+}
 
+void repo::gui::RepoGUI::openClippingPlane()
+{
+    repo::gui::widget::RepoClippingPlaneWidget *clippingPlaneWidget =
+            new repo::gui::widget::RepoClippingPlaneWidget(ui->mdiArea, this);
+
+    QDockWidget *dockWidget = new QDockWidget(tr("Clipping Plane"), this);
+    dockWidget->setWidget(clippingPlaneWidget);
+    this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 }
 
 void repo::gui::RepoGUI::openAccessManager()
@@ -698,7 +716,7 @@ void repo::gui::RepoGUI::openFile()
 
 void repo::gui::RepoGUI::openMetadataManager()
 {
-    if (const widget::Rendering3DWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget())
     {
         QString filePath = QFileDialog::getOpenFileName(
                     this,
@@ -721,7 +739,7 @@ void repo::gui::RepoGUI::openMetadataManager()
 
 void repo::gui::RepoGUI::optimizeGraph()
 {
-    if (const widget::Rendering3DWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget())
     {
         widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
@@ -750,7 +768,7 @@ void repo::gui::RepoGUI::openSceneGraph() const
 {
     if (const repo::core::model::RepoScene *scene = getActiveScene())
     {
-        ui->mdiArea->addSceneGraphSubWindow(scene, getActiveWidget()->windowTitle());
+        ui->mdiArea->addSceneGraphSubWindow(scene, ui->mdiArea->getActiveWidget()->windowTitle());
     }
 }
 
@@ -811,7 +829,7 @@ void repo::gui::RepoGUI::reportIssue() const
 
 void repo::gui::RepoGUI::saveAs()
 {
-    if (const widget::Rendering3DWidget *widget = getActiveWidget())
+    if (const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget())
     {
         // TODO: create export worker
         QString path = QFileDialog::getSaveFileName(
@@ -844,7 +862,7 @@ void repo::gui::RepoGUI::saveAs()
 
 void repo::gui::RepoGUI::saveScreenshot()
 {
-    const repo::gui::widget::Rendering3DWidget * widget = getActiveWidget();
+    const repo::gui::widget::Rendering3DWidget * widget = ui->mdiArea->getActiveWidget();
     std::vector<repo::gui::widget::Rendering3DWidget *> widgets = ui->mdiArea->getWidgets<repo::gui::widget::Rendering3DWidget*>();
 
     if (widgets.size() == 0)

@@ -285,9 +285,18 @@ QList<repo::gui::widget::RepoMdiSubWindow *> RepoMdiArea::subWindowList(
 	return subWindowList;
 }
 
-repo::gui::widget::RepoMdiSubWindow *RepoMdiArea::activeSubWindow() const
+RepoMdiSubWindow *RepoMdiArea::activeSubWindow() const
 {
     return dynamic_cast<RepoMdiSubWindow*>(QMdiArea::activeSubWindow());
+}
+
+Rendering3DWidget* RepoMdiArea::getActiveWidget() const
+{
+    widget::Rendering3DWidget *widget =
+            activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
+    if (!widget)
+        repoLogError(tr("A 3D window has to be open.").toStdString());
+    return widget;
 }
 
 void RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)

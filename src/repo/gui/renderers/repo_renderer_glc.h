@@ -227,6 +227,8 @@ namespace repo {
 
                 void updateClippingPlane();
 
+                void updateClippingPlane(Axis axis, double value);
+
 				/**
 				* Zoom/unzoom camera
 				* @param zoom zoom factor

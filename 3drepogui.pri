@@ -39,6 +39,7 @@ HEADERS +=  \
 	src/repo/gui/widgets/repo_text_browser.h \
 	src/repo/gui/widgets/repo_widget_flags.h \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.h \
+	src/repo/gui/widgets/repo_widget_manager_clipping_plane.h \
 	src/repo/gui/widgets/repo_widget_manager_connect.h \
 	src/repo/gui/widgets/repo_widget_manager_projects.h \
 	src/repo/gui/widgets/repo_widget_manager_roles.h \
@@ -112,6 +113,7 @@ SOURCES +=  \
 	src/repo/gui/widgets/repo_text_browser.cpp \
 	src/repo/gui/widgets/repo_widget_flags.cpp \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.cpp \
+	src/repo/gui/widgets/repo_widget_manager_clipping_plane.cpp \
 	src/repo/gui/widgets/repo_widget_manager_connect.cpp \
 	src/repo/gui/widgets/repo_widget_manager_projects.cpp \
 	src/repo/gui/widgets/repo_widget_manager_roles.cpp \
@@ -168,6 +170,7 @@ FORMS +=  \
 	forms/repo_webview.ui \
 	forms/repo_widget_flags.ui \
 	forms/repo_widget_manager_3ddiff.ui \
+	forms/repo_widget_manager_clipping_plane.ui \
 	forms/repo_widget_repository.ui \
 	forms/repo_widget_tree_dock.ui \
 	forms/repo_widget_tree_editable.ui \

@@ -167,6 +167,8 @@ namespace widget{
 		//! Returns active subwindow.
 		RepoMdiSubWindow *activeSubWindow() const;
 
+        repo::gui::widget::Rendering3DWidget* getActiveWidget() const;
+
 	protected:
 
 		//! Updates the position of the background image on resize.

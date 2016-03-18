@@ -75,8 +75,7 @@ public slots:
     void addMapTiles();
 
     //! Adds a selection tree for a currently active widget.
-    void addSelectionTree()
-    {  addSelectionTree(getActiveWidget()); }
+    void addSelectionTree();
 
     //! Adds a selection tree for a given widget.
     void addSelectionTree(
@@ -108,9 +107,6 @@ public slots:
     //! Fetches head revision from selected DB and branch.
     void fetchHead();
 
-    //! Returns active 3D window, returns null if none and writes to cout.
-    widget::Rendering3DWidget *getActiveWidget() const;
-
     //! Returns the scene graph of the active 3D window if any.
     const repo::core::model::RepoScene *getActiveScene() const;
 
@@ -128,6 +124,9 @@ public slots:
 
     //! Opens a 3D Diff dialog.
     void open3DDiff();
+
+    //! Opens a Clipping Plane dialog.
+    void openClippingPlane();
 
     //! Opens Access Manager dialog.
     void openAccessManager();
