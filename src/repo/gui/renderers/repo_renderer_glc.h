@@ -199,6 +199,7 @@ namespace repo {
 				*/
 				void setGLCWorld(GLC_World &world);
 
+public slots :
 
 				/**
 				* Toggle between show/hide octree
@@ -228,6 +229,8 @@ namespace repo {
                 void updateClippingPlane();
 
                 void updateClippingPlane(Axis axis, double value);
+
+                virtual void setClippingPlaneVisibility(bool on);
 
 				/**
 				* Zoom/unzoom camera
@@ -272,10 +275,14 @@ namespace repo {
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
 
-                //! Globally applied clipping plane ID.
-                GLC_uint clippingPlaneID;
+                //! Globally applied clipping plane IDs
+                std::vector<GLC_CuttingPlane *> clippingPlaneWidgets;
 
+                //! Clipping plane
                 GLC_Plane* clippingPlane;
+
+                bool clippingOn;
+
 
 				//! Globally applied shader ID.
 				GLuint shaderID;

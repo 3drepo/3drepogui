@@ -40,17 +40,26 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(
 
     QObject::connect(ui->doubleSpinBox,
                      static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-                     this, &RepoClippingPlaneWidget::setClipping);
+                     this, &RepoClippingPlaneWidget::setClippingPlane);
 
+    QObject::connect(ui->xRadioButton, &QRadioButton::toggled,
+                     this, &RepoClippingPlaneWidget::setClippingPlane);
 
+    QObject::connect(ui->yRadioButton, &QRadioButton::toggled,
+                     this, &RepoClippingPlaneWidget::setClippingPlane);
+
+    QObject::connect(ui->zRadioButton, &QRadioButton::toggled,
+                     this, &RepoClippingPlaneWidget::setClippingPlane);
 }
 
 RepoClippingPlaneWidget::~RepoClippingPlaneWidget()
 {
-    delete ui;
+
+
+    delete ui;    
 }
 
-void RepoClippingPlaneWidget::setClipping()
+void RepoClippingPlaneWidget::setClippingPlane()
 {
     Rendering3DWidget* widget = mdiArea->getActiveWidget();
     if (widget)
@@ -66,7 +75,7 @@ repo::gui::renderer::Axis RepoClippingPlaneWidget::getAxis()
         axis = Axis::X;
     else if (ui->yRadioButton->isChecked())
         axis = Axis::Y;
-    else
+    else if (ui->zRadioButton->isChecked())
         axis = Axis::Z;
     return axis;
 }

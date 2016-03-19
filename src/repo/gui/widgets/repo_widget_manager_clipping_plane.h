@@ -44,7 +44,7 @@ public:
 
 public slots:
 
-    void setClipping();
+    void setClippingPlane();
 
     repo::gui::renderer::Axis getAxis();
 

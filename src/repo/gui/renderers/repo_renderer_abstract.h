@@ -35,7 +35,7 @@ namespace renderer {
 enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
 enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET };
 enum class RenderMode {POINT, WIREFRAME, WIREFRAME_SHADING, SHADING};
-enum class Axis {X, Y, Z};
+enum class Axis {X = 0, Y = 1, Z = 2};
 
 struct CameraSettings
 {
@@ -216,6 +216,14 @@ public:
      * @param value
      */
     virtual void updateClippingPlane(Axis axis, double value) = 0;
+
+    /**
+     * Sets clipping plane visibility to true or false.
+     *
+     * @brief setClippingPlaneVisible
+     * @param on
+     */
+    virtual void setClippingPlaneVisibility(bool on) = 0;
 
     /**
     * Zoom/unzoom camera
