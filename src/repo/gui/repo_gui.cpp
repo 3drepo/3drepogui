@@ -265,9 +265,9 @@ repo::gui::RepoGUI::RepoGUI(
 
 
     // 3D Diff...
-    QObject::connect(ui->action3D_Diff, SIGNAL(triggered()), this, SLOT(open3DDiff()));
-    ui->action3D_Diff->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(
-                                   primitive::RepoFontAwesome::fa_wrench));
+    ui->diffManagerWidget->initialize(ui->mdiArea,
+                                      this->controller,
+                                      ui->widgetRepository->getSelectedConnection());
 
     // Options
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -520,6 +520,13 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
         panelsMenu->actions()[0]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_R));
         panelsMenu->actions()[1]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_L));
         panelsMenu->actions()[2]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_C));
+        panelsMenu->actions()[3]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_D));
+
+        panelsMenu->actions()[3]->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(
+                                       primitive::RepoFontAwesome::fa_wrench));
+
+        ui->diffDockWidget->setWindowIcon(primitive::RepoFontAwesome::getInstance().getIcon(
+                                        primitive::RepoFontAwesome::fa_wrench));
     }
     return panelsMenu;
 }
@@ -665,26 +672,6 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
         QUrl url = *it;
         loadFile(url.toLocalFile());
         ++it;
-    }
-}
-
-void repo::gui::RepoGUI::open3DDiff()
-{
-    ui->mdiArea->closeHiddenSubWindows();
-
-    repo::gui::widget::Repo3DDiffManagerWidget *diffWidget =
-            new repo::gui::widget::Repo3DDiffManagerWidget(
-                ui->mdiArea, controller,
-                ui->widgetRepository->getSelectedConnection());
-    QDockWidget *dockWidget = new QDockWidget(tr("3D Diff"), this);
-    dockWidget->setWidget(diffWidget);
-    this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
-
-    if (ui->mdiArea->subWindowList().count() == 2)
-    {
-        ui->mdiArea->maximizeSubWindows();
-        ui->actionLink->setChecked(true);
-        ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
 }
 

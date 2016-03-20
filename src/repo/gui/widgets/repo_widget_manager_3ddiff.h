@@ -46,15 +46,15 @@ namespace repo {
 
 			public:
 
-				explicit Repo3DDiffManagerWidget(
-					repo::gui::widget::RepoMdiArea *mdiArea,
-					repo::RepoController *controller,
-					const repo::RepoToken *token,
-					QWidget *parent = 0);
+                explicit Repo3DDiffManagerWidget(QWidget *parent = 0);
 
 				~Repo3DDiffManagerWidget();
 
-				public slots :
+public slots :
+
+                void initialize(repo::gui::widget::RepoMdiArea *mdiArea,
+                                        repo::RepoController *controller,
+                                        const repo::RepoToken *token);
 
 				//! Populates selection combo boxes with available models.
 				void populateModelComboBoxes();

@@ -118,8 +118,6 @@
     <addaction name="menuMetadata"/>
     <addaction name="actionOptimize_Graph"/>
     <addaction name="separator"/>
-    <addaction name="action3D_Diff"/>
-    <addaction name="separator"/>
     <addaction name="actionOptions"/>
    </widget>
    <addaction name="menuFile"/>
@@ -163,6 +161,9 @@
    <addaction name="actionCommit"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetRepositories">
+   <property name="toolTip">
+    <string>Repositories</string>
+   </property>
    <property name="windowTitle">
     <string>Repositories</string>
    </property>
@@ -220,6 +221,9 @@
    <addaction name="actionLink"/>
   </widget>
   <widget class="QDockWidget" name="dockWidgetLog">
+   <property name="toolTip">
+    <string>Log</string>
+   </property>
    <property name="windowTitle">
     <string>Log</string>
    </property>
@@ -253,6 +257,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="clippingPlaneDockWidget">
+   <property name="toolTip">
+    <string>Clipping Plane</string>
+   </property>
    <property name="features">
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
@@ -264,6 +271,36 @@
    </attribute>
    <widget class="repo::gui::widget::RepoClippingPlaneWidget" name="clippingPlaneWidget">
     <layout class="QVBoxLayout" name="verticalLayout_3"/>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="diffDockWidget">
+   <property name="toolTip">
+    <string>3D Diff</string>
+   </property>
+   <property name="windowTitle">
+    <string>3D Diff</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="repo::gui::widget::Repo3DDiffManagerWidget" name="diffManagerWidget" native="true"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <action name="actionAbout">
@@ -668,6 +705,12 @@
    <class>repo::gui::widget::RepoClippingPlaneWidget</class>
    <extends>QWidget</extends>
    <header>src/repo/gui/widgets/repo_widget_manager_clipping_plane.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::widget::Repo3DDiffManagerWidget</class>
+   <extends>QWidget</extends>
+   <header>src/repo/gui/widgets/repo_widget_manager_3ddiff.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

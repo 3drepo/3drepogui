@@ -24,23 +24,14 @@ using namespace repo::gui::widget;
 using namespace repo::gui;
 
 Repo3DDiffManagerWidget::Repo3DDiffManagerWidget(
-        repo::gui::widget::RepoMdiArea *mdiArea,
-        repo::RepoController *controller,
-        const repo::RepoToken *token,
         QWidget *parent)
     : QWidget(parent)
-    , mdiArea(mdiArea)
-    , controller(controller)
-    , token(token)
+    , mdiArea(nullptr)
+    , controller(nullptr)
+    , token(nullptr)
     , ui(new Ui::Repo3DDiffManagerWidget)
 {
     ui->setupUi(this);
-    populateModelComboBoxes();
-
-    // Connecting mdiArea signal which is emmitted whenever a new window is created
-    // or an existing window is removed
-    QObject::connect(mdiArea, &repo::gui::widget::RepoMdiArea::subWindowActivated,
-                     this, &Repo3DDiffManagerWidget::populateModelComboBoxes);
 
     QObject::connect(ui->diffPushButton, &QPushButton::pressed,
                      this, &Repo3DDiffManagerWidget::runDiff);
@@ -52,6 +43,22 @@ Repo3DDiffManagerWidget::Repo3DDiffManagerWidget(
 Repo3DDiffManagerWidget::~Repo3DDiffManagerWidget()
 {
     delete ui;
+}
+
+void Repo3DDiffManagerWidget::initialize(repo::gui::widget::RepoMdiArea *mdiArea,
+                                         repo::RepoController *controller,
+                                         const repo::RepoToken *token)
+{
+    this->mdiArea = mdiArea;
+
+    // Connecting mdiArea signal which is emmitted whenever a new window is created
+    // or an existing window is removed
+    QObject::connect(mdiArea, &repo::gui::widget::RepoMdiArea::subWindowActivated,
+                     this, &Repo3DDiffManagerWidget::populateModelComboBoxes);
+
+    this->controller = controller;
+    this->token = token;
+    populateModelComboBoxes();
 }
 
 void Repo3DDiffManagerWidget::populateModelComboBoxes()
@@ -197,7 +204,10 @@ int Repo3DDiffManagerWidget::getSelectedModelBIndex() const
 
 QList<repo::gui::widget::RepoMdiSubWindow*> Repo3DDiffManagerWidget::getSubWindows() const
 {
-    return mdiArea->subWindowList(true, repo::gui::widget::RepoMdiArea::WindowOrder::CreationOrder);
+    QList<repo::gui::widget::RepoMdiSubWindow*> list;
+    if (mdiArea)
+        list = mdiArea->subWindowList(true, repo::gui::widget::RepoMdiArea::WindowOrder::CreationOrder);
+    return list;
 }
 
 Repo3DDiffManagerWidget::Visualization Repo3DDiffManagerWidget::getVisualization() const

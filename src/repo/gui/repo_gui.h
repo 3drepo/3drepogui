@@ -122,9 +122,6 @@ public slots:
     //! Loads files from a list of full file paths.
     void loadFiles(const QStringList &filePaths);
 
-    //! Opens a 3D Diff dialog.
-    void open3DDiff();
-
     //! Opens Access Manager dialog.
     void openAccessManager();
 
