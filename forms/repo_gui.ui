@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>913</width>
-    <height>608</height>
+    <width>1086</width>
+    <height>643</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -22,8 +22,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>913</width>
-     <height>21</height>
+     <width>1086</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -95,7 +95,6 @@
     </widget>
     <addaction name="actionLink"/>
     <addaction name="menuNavigation"/>
-    <addaction name="actionClipping_Plane"/>
     <addaction name="separator"/>
     <addaction name="actionSceneGraph"/>
     <addaction name="actionHighlights"/>
@@ -251,6 +250,20 @@
       <widget class="repo::gui::widget::RepoTextBrowser" name="logTextBrowser"/>
      </item>
     </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="clippingPlaneDockWidget">
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Clipping Plane</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="repo::gui::widget::RepoClippingPlaneWidget" name="clippingPlaneWidget">
+    <layout class="QVBoxLayout" name="verticalLayout_3"/>
    </widget>
   </widget>
   <action name="actionAbout">
@@ -466,7 +479,7 @@
     <string>Link</string>
    </property>
    <property name="shortcut">
-    <string>Alt+L</string>
+    <string>Ctrl+L</string>
    </property>
   </action>
   <action name="actionOculus">
@@ -644,6 +657,12 @@
    <class>repo::gui::widget::RepoTextBrowser</class>
    <extends>QTextBrowser</extends>
    <header>src/repo/gui/widgets/repo_text_browser.h</header>
+  </customwidget>
+  <customwidget>
+   <class>repo::gui::widget::RepoClippingPlaneWidget</class>
+   <extends>QWidget</extends>
+   <header>src/repo/gui/widgets/repo_widget_manager_clipping_plane.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

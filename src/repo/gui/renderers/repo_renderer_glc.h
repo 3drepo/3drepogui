@@ -221,25 +221,23 @@ public slots :
 				*/
 				virtual void toggleWireframe();
 
-                /**
-                 * Toggle between show/hide clipping plane
-                 */
-                virtual void toggleClippingPlane();
-
                 void updateClippingPlane();
 
                 void updateClippingPlane(Axis axis, double value);
 
-                virtual void setClippingPlaneVisibility(bool on);
+                void setClippingPlaneVisibility(bool on);
 
 				/**
 				* Zoom/unzoom camera
 				* @param zoom zoom factor
 				*/
 
-				virtual void zoom(const float &zoom);                              
+                virtual void zoom(const float &zoom);
 
 			protected:				
+
+
+                GLC_CuttingPlane * createCuttingPlane(const GLC_Point3d &centroid, const GLC_Point3d &normal, double l1, double l2);
 
 				/**
 				* Given a pointer to GLC_Camera, convert it into a CameraSettings.
@@ -280,9 +278,6 @@ public slots :
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;
-
-                bool clippingOn;
-
 
 				//! Globally applied shader ID.
 				GLuint shaderID;

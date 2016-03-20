@@ -38,7 +38,6 @@ GLCRenderer::GLCRenderer()
     , renderingFlag(glc::ShadingFlag)
     , clippingPlaneWidgets({nullptr, nullptr, nullptr})
     , shaderID(0)
-    , clippingPlane(new GLC_Plane())
     , isWireframe(false)
 {
     //--------------------------------------------------------------------------
@@ -50,7 +49,6 @@ GLCRenderer::GLCRenderer()
 
     glcViewport.setBackgroundColor(Qt::white);
     glcLight.setPosition(1.0, 1.0, 1.0);
-    glcViewport.addClipPlane(GL_CLIP_PLANE0, clippingPlane);
 
     //--------------------------------------------------------------------------
     // Create XYZ axes overlay
@@ -813,132 +811,95 @@ void GLCRenderer::toggleWireframe()
     glcWorld.collection()->setPolygonModeForAll(GL_FRONT_AND_BACK, isWireframe ? GL_LINE : GL_FILL);
 }
 
-void GLCRenderer::toggleClippingPlane()
-{
-    clippingOn = !clippingOn;
-    setClippingPlaneVisibility(clippingOn);
-
-
-
-
-//    if (clippingPlaneID)
-//    {
-//        glc3DWidgetManager.remove3DWidget(clippingPlaneID);
-//        glcViewport.removeClipPlane(GL_CLIP_PLANE0);
-//        clippingPlaneID = 0;
-//    }
-//    else
-//    {
-//        GLC_Point3d center = glcWorld.boundingBox().center();
-//        const GLC_Vector3d normal(-glc::Z_AXIS);
-//        const double l1 = 1.1 * glcWorld.boundingBox().xLength();
-//        const double l2 = 1.1 * glcWorld.boundingBox().yLength();
-//        GLC_CuttingPlane* cuttingPlane = new GLC_CuttingPlane(center, normal, l1, l2);
-
-//        clippingPlaneID = cuttingPlane->id();
-
-//        //        QObject::connect(
-//        //                    cuttingPlane,
-//        //                    &GLC_CuttingPlane::asChanged,
-//        //                    this,
-//        //                    &GLCRenderer::updateClippingPlane);
-
-//        glc3DWidgetManager.add3DWidget(cuttingPlane);
-//        clippingPlane = new GLC_Plane(normal, center);
-//        //        cuttingPlane->setColor(QColor(Qt::green));
-//        glcViewport.addClipPlane(GL_CLIP_PLANE0, clippingPlane);
-
-//        glc3DWidgetManager.setWidgetVisible(clippingPlaneID, true);
-//    }
-}
-
 void GLCRenderer::updateClippingPlane()
 {
     GLC_CuttingPlane* cuttingPlane= dynamic_cast<GLC_CuttingPlane*>(sender());
     if (cuttingPlane)
     {
-        clippingPlane->setPlane(cuttingPlane->normal(), cuttingPlane->center());
+        clippingPlane->setPlane(cuttingPlane->normal(), cuttingPlane->center());        
     }
 }
 
 void GLCRenderer::setClippingPlaneVisibility(bool on)
 {
+    // Clipping plane has two components:
+    // 1) openGL clippingPlane
+    // 2) three clippingPlaneWidgets (visual rectangles), one per axis
+
     if (on)
     {
+        clippingPlane = new GLC_Plane();
         glcViewport.addClipPlane(GL_CLIP_PLANE0, clippingPlane);
+
+        if (!clippingPlaneWidgets[0] && !clippingPlaneWidgets[1] && !clippingPlaneWidgets[2])
+        {
+            GLC_BoundingBox bbox = glcWorld.boundingBox();
+            double margin = bbox.xLength() * 0.2;
+            double x = bbox.xLength() + margin;
+            double y = bbox.yLength() + margin;
+            double z = bbox.zLength() + margin;
+            clippingPlaneWidgets[(int)Axis::X] = createCuttingPlane(bbox.center(), GLC_Vector3d(-glc::X_AXIS), z, y);
+            clippingPlaneWidgets[(int)Axis::Y] = createCuttingPlane(bbox.center(), GLC_Vector3d(-glc::Y_AXIS), x, z);
+            clippingPlaneWidgets[(int)Axis::Z] = createCuttingPlane(bbox.center(), GLC_Vector3d(-glc::Z_AXIS), x, y);
+        }
     }
     else
     {
           glcViewport.removeClipPlane(GL_CLIP_PLANE0);
+          for (auto w : clippingPlaneWidgets)
+          {
+              if (w)
+                  w->setVisible(false);
+          }
     }
+}
+
+GLC_CuttingPlane* GLCRenderer::createCuttingPlane(const GLC_Point3d &centroid, const GLC_Point3d &normal, double l1, double l2)
+{
+    GLC_CuttingPlane* cuttingPlane = new GLC_CuttingPlane(centroid, normal, l1, l2);
+    cuttingPlane->setOpacity(0);
+    connect(cuttingPlane, SIGNAL(asChanged()), this, SLOT(updateClippingPlane()));
+    glc3DWidgetManager.add3DWidget(cuttingPlane);
+    cuttingPlane->setVisible(false);
+    return cuttingPlane;
 }
 
 void GLCRenderer::updateClippingPlane(Axis axis, double value)
 {    
-    GLC_Vector3d normal;
-    GLC_BoundingBox bbox = glcWorld.boundingBox();
-    GLC_Point3d point = bbox.lowerCorner();
-    GLC_Point3d centroid = bbox.center();
-
-    double l1, l2;
-    double margin = bbox.xLength() * 0.2;
-
-    switch (axis)
-    {
-    case Axis::X:
-        normal = GLC_Vector3d(-glc::X_AXIS);
-        point.setX(point.x() + (bbox.xLength() * (1 - value)));
-        centroid.setX(point.x());
-        l1 = bbox.zLength() + margin;
-        l2 = bbox.yLength() + margin;
-        break;
-    case Axis::Y:
-        normal = GLC_Vector3d(-glc::Y_AXIS);
-        point.setY(point.y() + (bbox.yLength() * (1 - value)));
-        centroid.setY(point.y());
-        l1 = bbox.xLength() + margin;
-        l2 = bbox.zLength() + margin;
-        break;
-    case Axis::Z:
-        normal = GLC_Vector3d(-glc::Z_AXIS);
-        point.setZ(point.z() + (bbox.zLength() * (1 - value)));
-        centroid.setZ(point.z());
-        l1 = bbox.xLength() + margin;
-        l2 = bbox.yLength() + margin;
-        break;
-    }
-
+    // Hide any previously visible clipping plane widgets
     for (auto w : clippingPlaneWidgets)
     {
         if (w)
             w->setVisible(false);
     }
+    // Enable clipping plane if necessary
+    setClippingPlaneVisibility(true);
 
     //--------------------------------------------------------------------------
-    // Check if suitable clipping plane widget has already been created
-    GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
-    // If not, create one
-    if (clippingPlaneWidget == nullptr)
+    // Calculate clipping plane position
+    GLC_BoundingBox bbox = glcWorld.boundingBox();
+    GLC_Point3d point = bbox.lowerCorner();
+    GLC_Point3d centroid = bbox.center();
+
+    switch (axis)
     {
-        clippingPlaneWidget = new GLC_CuttingPlane(centroid, normal, l1, l2);
-        clippingPlaneWidgets[(int) axis] = clippingPlaneWidget;
-        clippingPlaneWidget->setOpacity(0);
-        connect(clippingPlaneWidget, SIGNAL(asChanged()), this, SLOT(updateClippingPlane()));
-        glc3DWidgetManager.add3DWidget(clippingPlaneWidget);
+    case Axis::X:
+        centroid.setX(point.x() + (bbox.xLength() * (1 - value)));
+        break;
+    case Axis::Y:
+        centroid.setY(point.y() + (bbox.yLength() * (1 - value)));
+        break;
+    case Axis::Z:
+        centroid.setZ(point.z() + (bbox.zLength() * (1 - value)));
+        break;
     }
 
     //--------------------------------------------------------------------------
     // Update position of the clipping plane widget and make sure it is set visible
-//    clippingPlane->setPlane(normal, point);
-//    glcViewport.useClipPlane(true);
-
+    GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
     clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
-    clippingPlaneWidget->pressed(clippingPlaneWidget->center(), clippingPlaneWidget->id());
     clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
-    clippingPlaneWidget->unselect(centroid, clippingPlaneWidget->id());
-
     clippingPlaneWidget->setVisible(true);
-    clippingPlaneWidget->updateWidgetRep();
 }
 
 void GLCRenderer::zoom(const float &zoom)

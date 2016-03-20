@@ -294,8 +294,6 @@ Rendering3DWidget* RepoMdiArea::getActiveWidget() const
 {
     widget::Rendering3DWidget *widget =
             activeSubWidget<repo::gui::widget::Rendering3DWidget *>();
-    if (!widget)
-        repoLogError(tr("A 3D window has to be open.").toStdString());
     return widget;
 }
 

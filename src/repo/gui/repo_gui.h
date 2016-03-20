@@ -209,9 +209,6 @@ private:
     //! UI var.
     Ui::RepoGUI *ui;
 	
-    //! Panels menu (dockable widgets and toolbars)
-    QMenu *panelsMenu;
-
     //! Navigation mode action group (so that only one mode can be active at any given time)
     QActionGroup *navigationModeActionGroup;
 

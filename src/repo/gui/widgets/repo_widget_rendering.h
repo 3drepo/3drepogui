@@ -139,6 +139,8 @@ public slots :
     //! Sets the background color of the 3D view and repaints.
     void setBackgroundColor(const QColor &color, const bool repaint = true);
 
+    void setClippingPlaneVisibility(bool on);
+
     void updateClippingPlane(repo::gui::renderer::Axis axis, double value);
 
 signals:

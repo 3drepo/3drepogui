@@ -61,7 +61,6 @@ repo::gui::RepoGUI::RepoGUI(
     : QMainWindow(parent)
     , ui(new Ui::RepoGUI)
     , controller(controller)
-    , panelsMenu(0)
     , navigationModeActionGroup(new QActionGroup(this))
 {
     ui->setupUi(this);
@@ -232,8 +231,13 @@ repo::gui::RepoGUI::RepoGUI(
 
 
     // Clipping Plane
-    QObject::connect(ui->actionClipping_Plane, &QAction::triggered,
-                     this, &RepoGUI::openClippingPlane);
+    ui->clippingPlaneWidget->setMdiArea(ui->mdiArea);
+
+
+
+
+
+
 
 
 
@@ -300,8 +304,8 @@ repo::gui::RepoGUI::RepoGUI(
                      this, SLOT(addSelectionTree()));
 
     // Panels
-    panelsMenu = createPanelsMenu();
-    ui->menuWindow->addMenu(panelsMenu);
+    createPanelsMenu();
+
 
 
     //--------------------------------------------------------------------------
@@ -350,8 +354,6 @@ repo::gui::RepoGUI::~RepoGUI()
 {
     delete ui;
     delete navigationModeActionGroup;
-    if (panelsMenu)
-        delete panelsMenu;
 }
 
 
@@ -380,17 +382,19 @@ void repo::gui::RepoGUI::addMapTiles()
     }
 }
 
+// TODO: fix me
 void repo::gui::RepoGUI::addSelectionTree()
-{  addSelectionTree(ui->mdiArea->getActiveWidget()); }
+{
+    addSelectionTree(ui->mdiArea->getActiveWidget());
+}
 
+// TODO: selection tree needs to be permanent dock, not dynamic one as done now!
+// Speak to Jozef if not sure.
 void repo::gui::RepoGUI::addSelectionTree(widget::Rendering3DWidget* widget, Qt::DockWidgetArea area)
 {
+    // This whole thing is wrong
     widget::TreeDockWidget* dock = new  widget::TreeDockWidget(widget, this);
     this->addDockWidget(area, dock);
-    if (panelsMenu)
-        delete panelsMenu;
-    panelsMenu = createPanelsMenu();
-    ui->menuWindow->addMenu(panelsMenu);
     dock->show();
 }
 
@@ -509,15 +513,17 @@ void repo::gui::RepoGUI::connectDB()
 QMenu* repo::gui::RepoGUI::createPanelsMenu()
 {
     QMenu* panelsMenu = QMainWindow::createPopupMenu();
-    panelsMenu->setTitle(tr("Dock Widgets"));
-
-    if (panelsMenu->actions().size() >= 2)
+    for (auto a : panelsMenu->actions())
     {
-        panelsMenu->actions()[0]->setShortcut(QKeySequence(Qt::Key_R));
-        panelsMenu->actions()[1]->setShortcut(QKeySequence(Qt::Key_L));
+        ui->menuWindow->addAction(a);
     }
 
-    panelsMenu->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_columns));
+    if (panelsMenu->actions().size() >= 3)
+    {
+        panelsMenu->actions()[0]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_R));
+        panelsMenu->actions()[1]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_L));
+        panelsMenu->actions()[2]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_C));
+    }
     return panelsMenu;
 }
 
@@ -691,6 +697,7 @@ void repo::gui::RepoGUI::openClippingPlane()
             new repo::gui::widget::RepoClippingPlaneWidget(ui->mdiArea, this);
 
     QDockWidget *dockWidget = new QDockWidget(tr("Clipping Plane"), this);
+    dockWidget->setAttribute(Qt::WA_DeleteOnClose);
     dockWidget->setWidget(clippingPlaneWidget);
     this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 }

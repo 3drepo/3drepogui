@@ -203,11 +203,6 @@ public:
     virtual void toggleWireframe() = 0;
 
     /**
-     * Toggle between show/hide clipping plane
-     */
-    virtual void toggleClippingPlane() = 0;
-
-    /**
      * Updates the position of the clipping plane based on the axis and
      * percentage value from 0 to 1.
      *

@@ -18,6 +18,8 @@
 #include "repo_widget_manager_clipping_plane.h"
 #include "ui_repo_widget_manager_clipping_plane.h"
 
+#include "../primitives/repo_fontawesome.h"
+
 using namespace repo::gui;
 using namespace repo::gui::widget;
 using namespace repo::gui::renderer;
@@ -30,6 +32,8 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(
     ui(new Ui::RepoClippingPlaneWidget)
 {
     ui->setupUi(this);
+
+    ui->reversePushButton->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_exchange));
 
     QObject::connect(ui->horizontalSlider, &QSlider::valueChanged,
                      ui->doubleSpinBox, &QDoubleSpinBox::setValue);
@@ -50,21 +54,41 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(
 
     QObject::connect(ui->zRadioButton, &QRadioButton::toggled,
                      this, &RepoClippingPlaneWidget::setClippingPlane);
+
+    QObject::connect(ui->visibilityGroupBox, &QGroupBox::clicked,
+                     this, &RepoClippingPlaneWidget::setClippingPlaneEnabled);
 }
 
 RepoClippingPlaneWidget::~RepoClippingPlaneWidget()
 {
-
-
+    setClippingPlaneEnabled(false);
     delete ui;    
+}
+
+void RepoClippingPlaneWidget::setClippingPlaneEnabled(bool on)
+{
+    if (on)
+    {
+        setClippingPlane();
+    }
+    else if (mdiArea)
+    {
+        for (auto w : mdiArea->getWidgets<Rendering3DWidget*>())
+        {
+            w->setClippingPlaneVisibility(false);
+        }
+    }
 }
 
 void RepoClippingPlaneWidget::setClippingPlane()
 {
-    Rendering3DWidget* widget = mdiArea->getActiveWidget();
-    if (widget)
+    if (mdiArea)
     {
-        widget->updateClippingPlane(getAxis(), ui->doubleSpinBox->value()/100.00);
+        Rendering3DWidget* widget = mdiArea->getActiveWidget();
+        if (widget)
+        {
+            widget->updateClippingPlane(getAxis(), ui->doubleSpinBox->value()/100.00);
+        }
     }
 }
 

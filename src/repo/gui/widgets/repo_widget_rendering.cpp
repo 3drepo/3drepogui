@@ -229,6 +229,12 @@ void Rendering3DWidget::setBackgroundColor(
         update();
 }
 
+void Rendering3DWidget::setClippingPlaneVisibility(bool on)
+{
+    renderer->setClippingPlaneVisibility(on);
+    update();
+}
+
 void Rendering3DWidget::updateClippingPlane(repo::gui::renderer::Axis axis, double value)
 {
     renderer->updateClippingPlane(axis, value);
@@ -403,14 +409,6 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
 	//		glEnable(GL_CULL_FACE);
 	//		//glFrontFace(false ? GL_CCW : GL_CW);
 	//	}
-
-    case  Qt::Key_C:
-    {
-        renderer->toggleClippingPlane();
-        update();
-        break;
-    }
-
 	case Qt::Key_W:
 	{
 		renderer->toggleWireframe();

@@ -37,16 +37,21 @@ class RepoClippingPlaneWidget : public QWidget
 
 public:
     explicit RepoClippingPlaneWidget(
-            repo::gui::widget::RepoMdiArea *mdiArea,
+            repo::gui::widget::RepoMdiArea *mdiArea = 0,
             QWidget *parent = 0);
     ~RepoClippingPlaneWidget();
 
 
 public slots:
 
+    void setClippingPlaneEnabled(bool on);
+
     void setClippingPlane();
 
     repo::gui::renderer::Axis getAxis();
+
+    void setMdiArea(repo::gui::widget::RepoMdiArea *mdiArea)
+    { this->mdiArea = mdiArea; }
 
 
 private:
