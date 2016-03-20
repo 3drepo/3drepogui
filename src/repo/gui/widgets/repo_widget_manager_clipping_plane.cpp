@@ -36,9 +36,6 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(QWidget *parent)
     QObject::connect(ui->reverseToolButton, &QPushButton::toggled,
                      this, &RepoClippingPlaneWidget::setClippingPlane);
 
-    QObject::connect(ui->linkToolButton, &QPushButton::toggled,
-                     this, &RepoClippingPlaneWidget::setClippingPlane);
-
     QObject::connect(ui->horizontalSlider, &QSlider::valueChanged,
                      ui->doubleSpinBox, &QDoubleSpinBox::setValue);
 
@@ -84,11 +81,17 @@ repo::gui::renderer::Axis RepoClippingPlaneWidget::getAxis()
 void RepoClippingPlaneWidget::setClippingPlaneEnabled(bool on)
 {
     if (on)
-    {
+    {        
+        QObject::connect(ui->linkToolButton, &QPushButton::toggled,
+                         this, &RepoClippingPlaneWidget::setClippingPlane);
+
         setClippingPlane();
     }
     else if (mdiArea)
-    {
+    {        
+        QObject::disconnect(ui->linkToolButton, &QPushButton::toggled,
+                         this, &RepoClippingPlaneWidget::setClippingPlane);
+
         for (auto w : mdiArea->getWidgets<Rendering3DWidget*>())
         {
             w->setClippingPlaneVisibility(false);
@@ -125,7 +128,9 @@ void RepoClippingPlaneWidget::setClippingPlane()
 }
 
 void RepoClippingPlaneWidget::setLinkAction(QAction* actionLink)
-{
+{    
+    QObject::connect(ui->linkToolButton, &QPushButton::toggled,
+                     this, &RepoClippingPlaneWidget::setClippingPlane);
     ui->linkToolButton->setDefaultAction(actionLink);
 }
 
