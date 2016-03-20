@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>288</width>
+    <width>297</width>
     <height>471</height>
    </rect>
   </property>
@@ -70,27 +70,15 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="reversePushButton">
-           <property name="toolTip">
-            <string>Reverse direction</string>
-           </property>
-           <property name="whatsThis">
-            <string>Reverse direction</string>
-           </property>
+          <widget class="QToolButton" name="reverseToolButton">
            <property name="text">
-            <string/>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
+            <string>Reverse</string>
            </property>
            <property name="checkable">
             <bool>true</bool>
            </property>
-           <property name="flat">
-            <bool>false</bool>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonIconOnly</enum>
            </property>
           </widget>
          </item>
@@ -147,6 +135,19 @@
            </property>
            <property name="maximum">
             <double>100.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="linkToolButton">
+           <property name="text">
+            <string>Link</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonIconOnly</enum>
            </property>
           </widget>
          </item>

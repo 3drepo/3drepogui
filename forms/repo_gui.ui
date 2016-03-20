@@ -473,10 +473,16 @@
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>Link</string>
+   </property>
+   <property name="toolTip">
+    <string>Link 3D windows</string>
+   </property>
+   <property name="whatsThis">
+    <string>Link 3D windows</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>

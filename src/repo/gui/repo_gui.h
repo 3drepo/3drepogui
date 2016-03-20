@@ -125,9 +125,6 @@ public slots:
     //! Opens a 3D Diff dialog.
     void open3DDiff();
 
-    //! Opens a Clipping Plane dialog.
-    void openClippingPlane();
-
     //! Opens Access Manager dialog.
     void openAccessManager();
 

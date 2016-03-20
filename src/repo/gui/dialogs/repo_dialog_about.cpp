@@ -19,6 +19,8 @@
 
 #include "repo_dialog_about.h"
 #include "ui_repo_dialog_about.h"
+#include "../renderers/repo_renderer_glc.h"
+#include <GLC_State>
 
 using namespace repo::gui::dialog;
 
@@ -47,7 +49,7 @@ QString AboutDialog::getVersionInfo(const QString &separator)
     info += separator;
     info += QString("Qt ") + QT_VERSION_STR;
     info += separator;
-    info += "OpenGL " + QString::number(QGLFormat::defaultFormat().majorVersion());
-    info += "." + QString::number(QGLFormat::defaultFormat().minorVersion());
+    info += "OpenGL " + GLC_State::version();/* QString::number(QGLFormat::defaultFormat().majorVersion());
+    info += "." + QString::number(QGLFormat::defaultFormat().minorVersion());*/
     return info;
 }

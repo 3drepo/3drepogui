@@ -146,6 +146,8 @@ namespace repo {
 				*/
 				virtual void resetColors();
 
+                virtual void resetView();
+
 				/**
 				* Resize the viewing window
 				* @param width new width
@@ -223,7 +225,7 @@ public slots :
 
                 void updateClippingPlane();
 
-                void updateClippingPlane(Axis axis, double value);
+                void updateClippingPlane(Axis axis, double value, bool reverse = false);
 
                 void setClippingPlaneVisibility(bool on);
 
@@ -278,6 +280,8 @@ public slots :
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;
+
+                bool clippingPlaneReverse;
 
 				//! Globally applied shader ID.
 				GLuint shaderID;

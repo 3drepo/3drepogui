@@ -37,6 +37,7 @@ GLCRenderer::GLCRenderer()
     , glc3DWidgetManager(&glcViewport)
     , renderingFlag(glc::ShadingFlag)
     , clippingPlaneWidgets({nullptr, nullptr, nullptr})
+    , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
 {
@@ -643,6 +644,16 @@ void GLCRenderer::resetColors()
     changedMats.clear();
 }
 
+void GLCRenderer::resetView()
+{
+    const GLC_BoundingBox bbox = glcWorld.boundingBox();
+    if (!bbox.isEmpty())
+    {
+        glcViewport.reframe(bbox);
+        emit cameraChanged(getCurrentCamera());
+    }
+}
+
 void GLCRenderer::resizeWindow(const int &width, const int &height)
 {
     glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
@@ -816,7 +827,8 @@ void GLCRenderer::updateClippingPlane()
     GLC_CuttingPlane* cuttingPlane= dynamic_cast<GLC_CuttingPlane*>(sender());
     if (cuttingPlane)
     {
-        clippingPlane->setPlane(cuttingPlane->normal(), cuttingPlane->center());        
+        double reverse = clippingPlaneReverse ? -1.0 : 1.0;
+        clippingPlane->setPlane(reverse * cuttingPlane->normal(), cuttingPlane->center());
     }
 }
 
@@ -834,7 +846,7 @@ void GLCRenderer::setClippingPlaneVisibility(bool on)
         if (!clippingPlaneWidgets[0] && !clippingPlaneWidgets[1] && !clippingPlaneWidgets[2])
         {
             GLC_BoundingBox bbox = glcWorld.boundingBox();
-            double margin = bbox.xLength() * 0.2;
+            double margin = 0.2 * std::max<double>(std::max<double>(bbox.xLength(), bbox.yLength()), bbox.zLength());
             double x = bbox.xLength() + margin;
             double y = bbox.yLength() + margin;
             double z = bbox.zLength() + margin;
@@ -864,8 +876,10 @@ GLC_CuttingPlane* GLCRenderer::createCuttingPlane(const GLC_Point3d &centroid, c
     return cuttingPlane;
 }
 
-void GLCRenderer::updateClippingPlane(Axis axis, double value)
+void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 {    
+    clippingPlaneReverse = reverse;
+
     // Hide any previously visible clipping plane widgets
     for (auto w : clippingPlaneWidgets)
     {
@@ -878,27 +892,39 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value)
     //--------------------------------------------------------------------------
     // Calculate clipping plane position
     GLC_BoundingBox bbox = glcWorld.boundingBox();
-    GLC_Point3d point = bbox.lowerCorner();
     GLC_Point3d centroid = bbox.center();
 
+    double pos;
     switch (axis)
     {
     case Axis::X:
-        centroid.setX(point.x() + (bbox.xLength() * (1 - value)));
+        pos = centroid.x() - bbox.xLength()/2 + (bbox.xLength() * (value));
+        centroid.setX(pos);
         break;
     case Axis::Y:
-        centroid.setY(point.y() + (bbox.yLength() * (1 - value)));
+        pos = centroid.y() - bbox.yLength()/2 + (bbox.yLength() * (value));
+        centroid.setY(pos);
         break;
     case Axis::Z:
-        centroid.setZ(point.z() + (bbox.zLength() * (1 - value)));
+        pos = centroid.z() - bbox.zLength()/2 + (bbox.zLength() * (value));
+        centroid.setZ(pos);
         break;
     }
 
     //--------------------------------------------------------------------------
     // Update position of the clipping plane widget and make sure it is set visible
     GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
-    clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
-    clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
+    // The move action does not get to the desired position on the first shot
+    // therefore iterate multiple times until reached. Stop at some fixed
+    // large number just in case to prevent accidental infinite looping.
+    int i = 0;
+    do {
+        clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
+        clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
+        ++i;
+    }
+    while (clippingPlaneWidget->center() != centroid && i < 1000);
+
     clippingPlaneWidget->setVisible(true);
 }
 

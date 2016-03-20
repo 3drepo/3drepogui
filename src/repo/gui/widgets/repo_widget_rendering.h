@@ -141,7 +141,7 @@ public slots :
 
     void setClippingPlaneVisibility(bool on);
 
-    void updateClippingPlane(repo::gui::renderer::Axis axis, double value);
+    void updateClippingPlane(repo::gui::renderer::Axis axis, double value, bool reverse = false);
 
 signals:
 

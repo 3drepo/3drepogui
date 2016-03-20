@@ -232,10 +232,7 @@ repo::gui::RepoGUI::RepoGUI(
 
     // Clipping Plane
     ui->clippingPlaneWidget->setMdiArea(ui->mdiArea);
-
-
-
-
+    ui->clippingPlaneWidget->setLinkAction(ui->actionLink);
 
 
 
@@ -689,17 +686,6 @@ void repo::gui::RepoGUI::open3DDiff()
         ui->actionLink->setChecked(true);
         ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
     }
-}
-
-void repo::gui::RepoGUI::openClippingPlane()
-{
-    repo::gui::widget::RepoClippingPlaneWidget *clippingPlaneWidget =
-            new repo::gui::widget::RepoClippingPlaneWidget(ui->mdiArea, this);
-
-    QDockWidget *dockWidget = new QDockWidget(tr("Clipping Plane"), this);
-    dockWidget->setAttribute(Qt::WA_DeleteOnClose);
-    dockWidget->setWidget(clippingPlaneWidget);
-    this->addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 }
 
 void repo::gui::RepoGUI::openAccessManager()

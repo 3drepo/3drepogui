@@ -102,6 +102,12 @@ public:
     */
     virtual void resetColors() = 0;
 
+    /**
+     * Resets the view so that the entire bounding box is visible within frustrum.
+     * @brief resetView
+     */
+    virtual void resetView() = 0;
+
 
     /**
     * Select a component given the position
@@ -210,7 +216,7 @@ public:
      * @param axis
      * @param value
      */
-    virtual void updateClippingPlane(Axis axis, double value) = 0;
+    virtual void updateClippingPlane(Axis axis, double value, bool reverse = false) = 0;
 
     /**
      * Sets clipping plane visibility to true or false.

@@ -235,9 +235,9 @@ void Rendering3DWidget::setClippingPlaneVisibility(bool on)
     update();
 }
 
-void Rendering3DWidget::updateClippingPlane(repo::gui::renderer::Axis axis, double value)
+void Rendering3DWidget::updateClippingPlane(repo::gui::renderer::Axis axis, double value, bool reverse)
 {
-    renderer->updateClippingPlane(axis, value);
+    renderer->updateClippingPlane(axis, value, reverse);
     update();
 }
 
@@ -409,6 +409,12 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
 	//		glEnable(GL_CULL_FACE);
 	//		//glFrontFace(false ? GL_CCW : GL_CW);
 	//	}
+    case Qt::Key_R:
+    {
+        renderer->resetView();
+        update();
+        break;
+    }
 	case Qt::Key_W:
 	{
 		renderer->toggleWireframe();
