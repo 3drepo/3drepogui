@@ -192,7 +192,8 @@ namespace widget{
         //! Nav mode for all open windows.
         repo::gui::renderer::NavMode navMode;
 
-        uint32_t windowCount; //count number of 3D view windows
+        QAtomicInt windowCount; //count number of 3D view windows
+        QMutex offsetMutex; //mutex lock for updating of offsetVector
         std::vector<double> offsetVector; //world coordinates offset
 
 	};

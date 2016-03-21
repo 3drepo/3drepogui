@@ -27,7 +27,6 @@ using namespace repo::gui::widget;
 RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
     , logo(":/images/3drepo-bg.png")
-    , windowCount(0)
 {
 
 
@@ -182,7 +181,7 @@ repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWindow(
     repoSubWindow->setWidgetFromFile(fullPath, controller, navMode, offsetVector);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
-    ++windowCount;
+    windowCount.ref();
 
 
     connect(repoSubWindow, &RepoMdiSubWindow::updateOffsetVector,
@@ -214,7 +213,7 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
 
-    ++windowCount;
+    windowCount.ref();
 
    connect(repoSubWindow, &RepoMdiSubWindow::updateOffsetVector,
            this, &RepoMdiArea::updateOffsetVector);
@@ -317,21 +316,17 @@ Rendering3DWidget* RepoMdiArea::getActiveWidget() const
 
 void RepoMdiArea::decreaseWindowCount()
 {
-    if(windowCount)
-        --windowCount;
-    else
-    {
-        //Window count is already 0 and we're trying to decrease it
-        //something doesn't add up. This is unexpected.
 
-       repoLogError("trying to decrease window count when window count is already 0!");
-    }
-
-    if(!windowCount)
+    //Ensure no one is trying to set a offsetVector whilst we are resetting it
+    offsetMutex.lock();
+    if(!windowCount.deref())
     {
         //window count is 0, reset the offset
+        repoLogDebug("No 3D Rendering window exists, clearing the offset vector");
         offsetVector.clear();
     }
+
+    offsetMutex.unlock();
 }
 
 void RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
@@ -359,7 +354,8 @@ void RepoMdiArea::updateOffsetVector(
         RepoMdiSubWindow          *subWindow)
 {
 
-    //FIXME: this (and all the windows count) needs to be atomic
+    offsetMutex.lock();
+
     if(offsetVector.size())
     {
         repoLogDebug("Global offset vector is already set, updating subwindow's offset...");
@@ -375,4 +371,6 @@ void RepoMdiArea::updateOffsetVector(
         //no offset vector yet, update the record
         offsetVector = offset;
     }
+
+    offsetMutex.unlock();
 }
