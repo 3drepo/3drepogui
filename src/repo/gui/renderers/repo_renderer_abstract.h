@@ -79,7 +79,8 @@ public:
     * Load model into renderer
     * @param scene Scene to load
     */
-    virtual void loadModel(repo::core::model::RepoScene *scene) = 0;
+    virtual void loadModel(repo::core::model::RepoScene *scene,
+                           const std::vector<double>    &offsetVector) = 0;
 
 
     /**

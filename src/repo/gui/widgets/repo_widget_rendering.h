@@ -163,7 +163,8 @@ public:
     //--------------------------------------------------------------------------
 
     //! Sets the 3D Repo scene for this widget.
-    void setRepoScene(repo::core::model::RepoScene *repoScene);
+    void setRepoScene(repo::core::model::RepoScene *repoScene,
+                      const std::vector<double> &offsetVector);
 
     //! Sets the GLC World for this widget which is used for rendering purposes.
     /*void setGLCWorld(GLC_World);*/

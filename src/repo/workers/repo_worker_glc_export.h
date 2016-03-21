@@ -40,7 +40,8 @@ namespace repo {
 			it to GLC world.
 			*/
 			GLCExportWorker(
-				repo::core::model::RepoScene* scene);
+                repo::core::model::RepoScene* scene,
+                const std::vector<double> &offsetVector);
 
 			//! Default empty destructor.
 			~GLCExportWorker();
@@ -75,7 +76,8 @@ namespace repo {
 			* Convert a repo scene to a GLC occurance structure of nodes.
 			*/
             GLC_StructOccurrence* convertSceneToOccurance(
-				repo::core::model::RepoScene *scene);
+                repo::core::model::RepoScene *scene,
+                    const std::vector<double> &offsetVector = std::vector<double>());
 
 		signals:
 
@@ -84,6 +86,7 @@ namespace repo {
 
 		private:
 			repo::core::model::RepoScene* scene;
+            const std::vector<double> offsetVector;
 
             GLC_World* createGLCWorld(
 				repo::core::model::RepoScene *scene);

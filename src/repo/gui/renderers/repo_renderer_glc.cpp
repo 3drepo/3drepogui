@@ -231,13 +231,15 @@ void GLCRenderer::initialize()
 
 }
 
-void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
+void GLCRenderer::loadModel(
+        repo::core::model::RepoScene *scene,
+        const std::vector<double> &offsetVector)
 {
     //We have a scene, fire up the GLC worker to get a GLC World representation
     //--------------------------------------------------------------------------
     // Establish and connect the new worker.
     repo::worker::GLCExportWorker* worker =
-            new repo::worker::GLCExportWorker(scene);
+            new repo::worker::GLCExportWorker(scene, offsetVector);
     connect(worker, &repo::worker::GLCExportWorker::finished,
             this, &GLCRenderer::setGLCWorld);
     connect(worker, &repo::worker::GLCExportWorker::progress, this, &GLCRenderer::workerProgress);
@@ -918,12 +920,14 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
     // therefore iterate multiple times until reached. Stop at some fixed
     // large number just in case to prevent accidental infinite looping.
     int i = 0;
+	glc::WidgetEventFlag result;
+	clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
     do {
-        clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
-        clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
+
+        result = clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
         ++i;
     }
-    while (clippingPlaneWidget->center() != centroid && i < 1000);
+	while (clippingPlaneWidget->center() != centroid && i < 1000);
 
     clippingPlaneWidget->setVisible(true);
 }

@@ -159,8 +159,10 @@ private:
 };
 
 GLCExportWorker::GLCExportWorker(
-    repo::core::model::RepoScene* scene):
-    scene(scene)
+    repo::core::model::RepoScene* scene,
+        const std::vector<double> &offsetVector):
+    scene(scene),
+    offsetVector(offsetVector)
 {
     //use stashGraph if available, otherwise use default
     if (scene && scene->getRoot(repo::core::model::RepoScene::GraphType::OPTIMIZED))
@@ -234,7 +236,7 @@ GLC_World* GLCExportWorker::createGLCWorld(
     //-----
     GLC_World* glcWorld = nullptr;
     if (!cancelled && scene && scene->hasRoot(scene->getViewGraph())){
-        auto occ = convertSceneToOccurance(scene);
+        auto occ = convertSceneToOccurance(scene, offsetVector);
         if (occ)
             glcWorld = new GLC_World(occ);
 		else
@@ -248,7 +250,8 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 
 GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
-    repo::core::model::RepoScene *scene)
+    repo::core::model::RepoScene *scene,
+    const std::vector<double> &offsetVector)
 {
 
     repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
@@ -377,7 +380,31 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
   //      }
   //  }
 
-    return createOccurrenceFromNode(scene, scene->getRoot(repoViewGraph), parentToGLCMeshes, parentToGLCCameras);
+    auto rootNode = scene->getRoot(repoViewGraph);
+    if(rootNode && offsetVector.size())
+    {
+        //need to offset the model by the current world coordinates
+
+        auto sceneOffset = scene->getWorldOffset();
+        std::vector<double> dOffset = {sceneOffset[0] - offsetVector[0],
+                                       sceneOffset[1] - offsetVector[1], sceneOffset[2] - offsetVector[2]};
+
+        std::vector<float> transMat = { 1, 0, 0, (float)dOffset[0],
+                                        0, 1, 0, (float)dOffset[1],
+                                        0, 0, 1, (float)dOffset[2],
+                                        0, 0, 0, 1};
+        auto transFormedRoot = rootNode->cloneAndApplyTransformation(transMat);
+
+        repoLogDebug("offsetVector present, shifting the model by "
+                 + std::to_string(dOffset[0]) + ", "
+                                + std::to_string(dOffset[1]) + ", "
+                                + std::to_string(dOffset[2]));
+
+        return createOccurrenceFromNode(scene, &transFormedRoot, parentToGLCMeshes, parentToGLCCameras);
+
+    }
+    else
+        return createOccurrenceFromNode(scene, rootNode, parentToGLCMeshes, parentToGLCCameras);
 }
 
 GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
