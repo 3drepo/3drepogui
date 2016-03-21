@@ -27,7 +27,10 @@ using namespace repo::gui::widget;
 RepoMdiArea::RepoMdiArea(QWidget * parent)
 	: QMdiArea(parent)
     , logo(":/images/3drepo-bg.png")
+    , windowCount(0)
 {
+
+
 	setTabsMovable(true);
 	setAcceptDrops(true);
 	setTabsClosable(true);
@@ -176,9 +179,17 @@ repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSubWindow(
     const QString& fullPath)
 {
     RepoMdiSubWindow *repoSubWindow = new RepoMdiSubWindow();
-    repoSubWindow->setWidgetFromFile(fullPath, controller, navMode);
+    repoSubWindow->setWidgetFromFile(fullPath, controller, navMode, offsetVector);
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
+    ++windowCount;
+
+
+    connect(repoSubWindow, &RepoMdiSubWindow::updateOffsetVector,
+            this, &RepoMdiArea::updateOffsetVector);
+
+    QObject::connect(repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
+                     this, &RepoMdiArea::decreaseWindowCount);
 
     // FIXME: timer timeout
 //	QObject::connect(
@@ -199,9 +210,17 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	bool headRevision)
 {
     RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
-    repoSubWindow->setWidget3D(database + "." +project, navMode);// + " " + id.toString());
+    repoSubWindow->setWidget3D(database + "." +project, navMode, offsetVector);// + " " + id.toString());
 	QMdiArea::addSubWindow(repoSubWindow);
 	repoSubWindow->show();
+
+    ++windowCount;
+
+   connect(repoSubWindow, &RepoMdiSubWindow::updateOffsetVector,
+           this, &RepoMdiArea::updateOffsetVector);
+
+   connect(repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
+                    this, &RepoMdiArea::decreaseWindowCount);
 
     // FIXME
 //	QObject::connect(
@@ -216,8 +235,7 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 		repoSubWindow, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), repoSubWindow, SLOT(progress(int, int)));
 
-	QObject::connect(
-		repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
+    connect(repoSubWindow, &RepoMdiSubWindow::aboutToDelete,
 		worker, &repo::worker::SceneGraphWorker::cancel, Qt::DirectConnection);
 
     //--------------------------------------------------------------------------
@@ -297,6 +315,25 @@ Rendering3DWidget* RepoMdiArea::getActiveWidget() const
     return widget;
 }
 
+void RepoMdiArea::decreaseWindowCount()
+{
+    if(windowCount)
+        --windowCount;
+    else
+    {
+        //Window count is already 0 and we're trying to decrease it
+        //something doesn't add up. This is unexpected.
+
+       repoLogError("trying to decrease window count when window count is already 0!");
+    }
+
+    if(!windowCount)
+    {
+        //window count is 0, reset the offset
+        offsetVector.clear();
+    }
+}
+
 void RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
 {
 	//this->maximizeSubWindows();
@@ -315,4 +352,28 @@ void RepoMdiArea::resizeEvent(QResizeEvent *resizeEvent)
     //--------------------------------------------------------------------------
 	// Pass the event to the super class.
 	QMdiArea::resizeEvent(resizeEvent);
+}
+
+void RepoMdiArea::updateOffsetVector(
+        const std::vector<double> &offset,
+        RepoMdiSubWindow          *subWindow)
+{
+
+    repoLog("Offset vector update being called... ");
+    //FIXME: this (and all the windows count) needs to be atomic
+    if(offsetVector.size())
+    {
+        repoLog("offsetVector is already set, updating subwindow's offset...");
+        //there is already a offset vector.
+        //tell subwindow to shift its own model
+        subWindow->setOffsetVector(offsetVector);
+    }
+    else
+    {
+        repoLog("offset vector is now set to " + std::to_string(offset[0]) + ", "
+                + std::to_string(offset[1]) + ", "
+                + std::to_string(offset[2]));
+        //no offset vector yet, update the record
+        offsetVector = offset;
+    }
 }

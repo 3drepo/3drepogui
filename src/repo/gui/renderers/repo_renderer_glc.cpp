@@ -231,13 +231,15 @@ void GLCRenderer::initialize()
 
 }
 
-void GLCRenderer::loadModel(repo::core::model::RepoScene *scene)
+void GLCRenderer::loadModel(
+        repo::core::model::RepoScene *scene,
+        const std::vector<double> &offsetVector)
 {
     //We have a scene, fire up the GLC worker to get a GLC World representation
     //--------------------------------------------------------------------------
     // Establish and connect the new worker.
     repo::worker::GLCExportWorker* worker =
-            new repo::worker::GLCExportWorker(scene);
+            new repo::worker::GLCExportWorker(scene, offsetVector);
     connect(worker, &repo::worker::GLCExportWorker::finished,
             this, &GLCRenderer::setGLCWorld);
     connect(worker, &repo::worker::GLCExportWorker::progress, this, &GLCRenderer::workerProgress);

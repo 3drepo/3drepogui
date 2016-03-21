@@ -94,8 +94,12 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 
 }
 
-void RepoMdiSubWindow::setWidget3D(const QString& windowTitle, repo::gui::renderer::NavMode navMode)
+void RepoMdiSubWindow::setWidget3D(
+        const QString& windowTitle,
+        repo::gui::renderer::NavMode navMode,
+        const std::vector<double> &offsetVector)
 {
+    this->offsetVector = offsetVector;
     setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
@@ -109,17 +113,21 @@ void RepoMdiSubWindow::setWidget2D(
 }
 
 void RepoMdiSubWindow::setWidgetFromFile(
-    const QString& filePath, repo::RepoController *controller,
-        repo::gui::renderer::NavMode navMode)
+    const QString& filePath,
+    repo::RepoController *controller,
+    repo::gui::renderer::NavMode navMode,
+    const std::vector<double>    &offsetVector)
 {
+    this->offsetVector = offsetVector;
 	boost::filesystem::path filePathPath(filePath.toStdString());
     setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.
-    repo::worker::FileImportWorker *worker = new repo::worker::FileImportWorker(filePath.toStdString(), controller);
-	connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
-		this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
+    repo::worker::FileImportWorker *worker =
+            new repo::worker::FileImportWorker(filePath.toStdString(), controller);
+    connect(worker, SIGNAL(finished(repo::core::model::RepoScene *)),
+        this, SLOT(finishedLoadingScene(repo::core::model::RepoScene *)));
 	connect(worker, SIGNAL(progress(int, int)), this, SLOT(progress(int, int)));
 	//connect(worker, SIGNAL(error(QString)), this, SLOT(errorString(QString)));
 
@@ -177,8 +185,17 @@ void RepoMdiSubWindow::finishedLoadingScene(
 		 this, &RepoMdiSubWindow::aboutToDelete,
 		 widget, &widget::Rendering3DWidget::cancelOperations, Qt::DirectConnection);
 
-		if (repoScene)
-			widget->setRepoScene(repoScene);
+
+        if (repoScene)
+        {
+            if(!offsetVector.size())
+            {
+                //this is the first scene being loaded, set the global offset vector
+                repoLog("OffsetVector not found, emitting signal to set current scene as world scale");
+                emit updateOffsetVector(repoScene->getWorldOffset(), this);
+            }
+            widget->setRepoScene(repoScene, offsetVector);
+        }
 		
 	}
 
