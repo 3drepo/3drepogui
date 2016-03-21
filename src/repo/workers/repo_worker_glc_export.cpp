@@ -395,7 +395,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                                         0, 0, 0, 1};
         auto transFormedRoot = rootNode->cloneAndApplyTransformation(transMat);
 
-        repoLog("glcWorker: offsetVector present, shifting the model by "
+        repoLogDebug("offsetVector present, shifting the model by "
                  + std::to_string(dOffset[0]) + ", "
                                 + std::to_string(dOffset[1]) + ", "
                                 + std::to_string(dOffset[2]));

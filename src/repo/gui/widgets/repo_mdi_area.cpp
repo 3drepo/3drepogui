@@ -359,18 +359,17 @@ void RepoMdiArea::updateOffsetVector(
         RepoMdiSubWindow          *subWindow)
 {
 
-    repoLog("Offset vector update being called... ");
     //FIXME: this (and all the windows count) needs to be atomic
     if(offsetVector.size())
     {
-        repoLog("offsetVector is already set, updating subwindow's offset...");
+        repoLogDebug("Global offset vector is already set, updating subwindow's offset...");
         //there is already a offset vector.
         //tell subwindow to shift its own model
         subWindow->setOffsetVector(offsetVector);
     }
     else
     {
-        repoLog("offset vector is now set to " + std::to_string(offset[0]) + ", "
+        repoLogDebug("Global offset vector is now set to " + std::to_string(offset[0]) + ", "
                 + std::to_string(offset[1]) + ", "
                 + std::to_string(offset[2]));
         //no offset vector yet, update the record

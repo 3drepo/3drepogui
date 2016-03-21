@@ -76,7 +76,7 @@ public:
 
     void setOffsetVector(
             const std::vector<double> &offsetVector) {
-        repoLog("Subwindow: offset vector is now being set to"
+        repoLogDebug("Subwindow offset vector is now being set to"
                 + std::to_string(offsetVector[0]) + ", "
                 + std::to_string(offsetVector[1]) + ", "
                 + std::to_string(offsetVector[2]));

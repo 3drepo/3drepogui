@@ -191,7 +191,7 @@ void RepoMdiSubWindow::finishedLoadingScene(
             if(!offsetVector.size())
             {
                 //this is the first scene being loaded, set the global offset vector
-                repoLog("OffsetVector not found, emitting signal to set current scene as world scale");
+                repoLogDebug("OffsetVector not found, emitting signal to set current scene as world scale");
                 emit updateOffsetVector(repoScene->getWorldOffset(), this);
             }
             widget->setRepoScene(repoScene, offsetVector);
