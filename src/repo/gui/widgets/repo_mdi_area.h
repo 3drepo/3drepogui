@@ -70,6 +70,10 @@ namespace widget{
 
         void setNavigationMode(repo::gui::renderer::NavMode navMode);
 
+        void updateOffsetVector(
+                const std::vector<double> &offset,
+                RepoMdiSubWindow          *subWindow);
+
 	public:
 
 		//! Adds a widget into a sub window.
@@ -171,6 +175,9 @@ namespace widget{
 
 	protected:
 
+        //! decrease the count for 3D sub windows
+        void decreaseWindowCount();
+
 		//! Updates the position of the background image on resize.
 		virtual void resizeEvent(QResizeEvent * resizeEvent);
 
@@ -184,6 +191,10 @@ namespace widget{
 
         //! Nav mode for all open windows.
         repo::gui::renderer::NavMode navMode;
+
+        QAtomicInt windowCount; //count number of 3D view windows
+        QMutex offsetMutex; //mutex lock for updating of offsetVector
+        std::vector<double> offsetVector; //world coordinates offset
 
 	};
 }

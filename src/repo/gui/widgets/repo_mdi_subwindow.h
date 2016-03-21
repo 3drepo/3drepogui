@@ -62,6 +62,9 @@ signals:
 
     //! Emitted when deleting this object.
     void aboutToDelete();
+    void updateOffsetVector(
+            const std::vector<double>&,
+            RepoMdiSubWindow*);
 
 public:
 
@@ -71,7 +74,18 @@ public:
     //
     //--------------------------------------------------------------------------
 
-    void setWidget3D(const QString& windowTitle, repo::gui::renderer::NavMode navMode);
+    void setOffsetVector(
+            const std::vector<double> &offsetVector) {
+        repoLogDebug("Subwindow offset vector is now being set to"
+                + std::to_string(offsetVector[0]) + ", "
+                + std::to_string(offsetVector[1]) + ", "
+                + std::to_string(offsetVector[2]));
+        this->offsetVector = offsetVector;}
+
+    void setWidget3D(
+            const QString& windowTitle,
+            repo::gui::renderer::NavMode navMode,
+            const std::vector<double> &offsetVector);
 
     void setWidget2D(const core::model::RepoScene *scene, const QString &windowTitle);
 
@@ -84,7 +98,8 @@ public:
             */
     void setWidgetFromFile(const QString& fullFilePath,
                            repo::RepoController *controller,
-                           repo::gui::renderer::NavMode navMode);
+                           repo::gui::renderer::NavMode navMode,
+                           const std::vector<double>   &offsetVector);
 
     /*!
             * Sets the widget as the internal widget of this subwindow. The internal
@@ -133,7 +148,7 @@ public slots :
 
 protected:
 
-    void closeEvent(QCloseEvent *closeEvent);
+    void closeEvent(QCloseEvent *closeEvent);    
 
 private:
 
@@ -142,6 +157,8 @@ private:
     // Private variables
     //
     //--------------------------------------------------------------------------
+
+     std::vector<double>    offsetVector;
 
     QBoxLayout * boxLayout; //!< Box layout of the window.
 

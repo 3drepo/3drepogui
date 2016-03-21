@@ -266,7 +266,9 @@ void Rendering3DWidget::linkCameras(
 //
 //------------------------------------------------------------------------------
 
-void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
+void Rendering3DWidget::setRepoScene(
+        repo::core::model::RepoScene *repoScene,
+        const std::vector<double>    &offsetVector)
 {
 
     connect(renderer, &renderer::AbstractRenderer::modelLoadProgress,
@@ -283,7 +285,7 @@ void Rendering3DWidget::setRepoScene(repo::core::model::RepoScene *repoScene)
 
         if (renderer)
         {
-            renderer->loadModel(repoScene);
+            renderer->loadModel(repoScene, offsetVector);
         }
         else
         {

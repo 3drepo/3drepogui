@@ -93,7 +93,8 @@ namespace repo {
 				* Load model into renderer
 				* @param scene Scene to load
 				*/
-				virtual void loadModel(repo::core::model::RepoScene *scene);
+                virtual void loadModel(repo::core::model::RepoScene *scene,
+                                       const std::vector<double> &offsetVector);
 
 				/**
 				* Navigate around the model
