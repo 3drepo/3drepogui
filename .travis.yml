@@ -27,7 +27,7 @@ before_install:
     - echo ============ ASSIMP INSTALL =============
     - mkdir assimp
     - cd assimp
-    - git clone --branch=ISSUE_1 https://github.com/3drepo/assimp.git      
+    - git clone --branch=ISSUE_4 https://github.com/3drepo/assimp.git      
     - CXXFLAGS+=-std=c++11 cmake -DASSIMP_BUILD_TESTS=OFF assimp
     - sudo make -j2 install
     - cd ../
