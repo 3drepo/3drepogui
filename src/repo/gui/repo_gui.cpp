@@ -176,7 +176,7 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionRemoveProject, SIGNAL(triggered()), this, SLOT(removeProject()));
     ui->actionRemoveProject->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
-    ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
+//    ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
 
 
 
@@ -948,6 +948,8 @@ void repo::gui::RepoGUI::toggleFullScreen()
         ui->menuBar->hide();
         ui->dockWidgetRepositories->hide();
         ui->dockWidgetLog->hide();
+        ui->clippingPlaneDockWidget->hide();
+        ui->diffDockWidget->hide();
         ui->repositoriesToolBar->hide();
         ui->openGLToolBar->hide();
         showFullScreen();
@@ -957,6 +959,8 @@ void repo::gui::RepoGUI::toggleFullScreen()
         ui->menuBar->show();
         ui->dockWidgetRepositories->show();
         ui->dockWidgetLog->show();
+        ui->clippingPlaneDockWidget->show();
+        ui->diffDockWidget->show();
         ui->repositoriesToolBar->show();
         ui->openGLToolBar->show();
         showNormal();

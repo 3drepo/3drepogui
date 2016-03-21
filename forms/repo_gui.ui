@@ -116,6 +116,7 @@
      <addaction name="actionMetadataManager"/>
     </widget>
     <addaction name="menuMetadata"/>
+    <addaction name="separator"/>
     <addaction name="actionOptimize_Graph"/>
     <addaction name="separator"/>
     <addaction name="actionOptions"/>
