@@ -22,8 +22,9 @@ before_install:
     - tar -zxvf 3drepobouncer/tools/ext_libs/assimp-install.tgz
     - export MONGO_ROOT=$PWD/mongo-cxx-1.1.0 
     - export ASSIMP_ROOT=$PWD/assimp-install 
+    - ls
     - cd 3drepobouncer
-    - MONGO_ROOT=$HOME/mongo-cxx cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
+    - cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
     - sudo make -j2 install
     - cd ../
     - echo =============== QT INSTALL ===============
