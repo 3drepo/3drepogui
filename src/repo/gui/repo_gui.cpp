@@ -51,6 +51,8 @@
 #include "dialogs/repo_dialog_manager_connect.h"
 //------------------------------------------------------------------------------
 
+using namespace repo::gui::widget;
+
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
@@ -233,6 +235,9 @@ repo::gui::RepoGUI::RepoGUI(
     // Clipping Plane
     ui->clippingPlaneWidget->setMdiArea(ui->mdiArea);
     ui->clippingPlaneWidget->setLinkAction(ui->actionLink);
+
+    QObject::connect(ui->clippingPlaneDockWidget, &QDockWidget::visibilityChanged,
+                     ui->clippingPlaneWidget, &RepoClippingPlaneWidget::setClippingPlaneEnabled);
 
 
 

@@ -80,7 +80,7 @@ repo::gui::renderer::Axis RepoClippingPlaneWidget::getAxis()
 
 void RepoClippingPlaneWidget::setClippingPlaneEnabled(bool on)
 {
-    if (on)
+    if (on && ui->visibilityGroupBox->isChecked())
     {        
         QObject::connect(ui->linkToolButton, &QPushButton::toggled,
                          this, &RepoClippingPlaneWidget::setClippingPlane);
