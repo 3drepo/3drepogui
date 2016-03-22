@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
     controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
 
-    /*if (verbose)
+    if (verbose)
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
 	}
@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 	else
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
-    }*/
+    }
 
 	if (verbose) free(verbose);
 	if (debug)   free(debug);
