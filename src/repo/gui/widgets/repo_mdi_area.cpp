@@ -102,7 +102,13 @@ void RepoMdiArea::maximizeSubWindows(WindowOrder order)
 	int widthThird = (size.width() / 3);
 	int widthTwoThirds = (2 * size.width() / 3);
 
-	switch (openWindows.size())
+
+    for (auto w : openWindows)
+    {
+        w->showNormal();
+    }
+
+    switch (openWindows.size())
 	{
 		case 1 :
 			openWindows[0]->showMaximized();
@@ -269,11 +275,22 @@ repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addWebViewSubWindow()
     return addSubWidget(new renderer::RepoWebView());
 }
 
+repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSceneGraphSubWindow()
+{
+    const repo::core::model::RepoScene *scene = nullptr;
+    QString title = tr("Empty scene");
+    if (const widget::Rendering3DWidget *widget = getActiveWidget())
+    {
+        scene = widget->getRepoScene();
+        title = widget->windowTitle();
+    }
+    return addSceneGraphSubWindow(scene, title);
+}
+
 repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSceneGraphSubWindow(
         const repo::core::model::RepoScene *scene,
         const QString &windowTitle)
 {
-
     RepoMdiSubWindow* repoSubWindow = new RepoMdiSubWindow(this);
     repoSubWindow->setWidget2D(scene, windowTitle);
     QMdiArea::addSubWindow(repoSubWindow);

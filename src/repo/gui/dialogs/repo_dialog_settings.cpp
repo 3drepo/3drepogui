@@ -60,13 +60,13 @@ SettingsDialog::SettingsDialog(QWidget *parent) :
                       repo::gui::primitive::RepoFontAwesome::fa_upload, QColor(Qt::darkGreen)));
     options.append(item);
 
-    //--------------------------------------------------------------------------
-    // Oculus VR
-    item = new QStandardItem(tr("Oculus VR"));
-    item->setEditable(false);
-    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
-                      repo::gui::primitive::RepoFontAwesome::fa_eye, QColor(Qt::black)));
-    options.append(item);
+//    //--------------------------------------------------------------------------
+//    // Oculus VR
+//    item = new QStandardItem(tr("Oculus VR"));
+//    item->setEditable(false);
+//    item->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
+//                      repo::gui::primitive::RepoFontAwesome::fa_eye, QColor(Qt::black)));
+//    options.append(item);
 
     optionsModel->appendColumn(options);
 

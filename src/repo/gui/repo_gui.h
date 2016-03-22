@@ -107,9 +107,6 @@ public slots:
     //! Fetches head revision from selected DB and branch.
     void fetchHead();
 
-    //! Returns the scene graph of the active 3D window if any.
-    const repo::core::model::RepoScene *getActiveScene() const;
-
     //! Shows a history dialog for selected repository.
     void history();
 
@@ -133,9 +130,6 @@ public slots:
 
     //! Opens settings dialog.
     void openSettings() const;
-
-    //! Opens scene graph view.
-    void openSceneGraph() const;
 
     //! Opens local email client with support email address predefined.
     void openSupportEmail() const;
@@ -214,6 +208,12 @@ private:
 
     //! Settings link windows label.
     static const QString REPO_SETTINGS_LINK_WINDOWS;
+
+    static const QString REPO_SETTINGS_GUI_FLY_NAVIGATION;
+
+    static const QString REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION;
+
+    static const QString REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION;
 
 }; // end class
 

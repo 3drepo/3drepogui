@@ -64,7 +64,7 @@ void GraphRenderer::addNodesRecursively(
         const std::vector<repo::core::model::RepoNode*> nodes,
         int row)
 {
-    if (nodes.size()) // base case
+    if (scene && nodes.size()) // base case
     {
         int counter = 0;
 
@@ -111,7 +111,6 @@ void GraphRenderer::addNodesRecursively(
         {
             painted.insert(uuid, freshlyPainted[uuid]);
         }
-
         addNodesRecursively(unpainted, row + 1);
     }
 }

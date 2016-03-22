@@ -74,8 +74,6 @@ namespace widget{
                 const std::vector<double> &offset,
                 RepoMdiSubWindow          *subWindow);
 
-	public:
-
 		//! Adds a widget into a sub window.
 		RepoMdiSubWindow* addSubWidget(QWidget* widget);
 
@@ -114,9 +112,12 @@ namespace widget{
 		//! Adds a web view subwindow.
 		RepoMdiSubWindow* addWebViewSubWindow();
 
+        //! Adds a scene graph subwindow for active window, if any.
+        RepoMdiSubWindow* addSceneGraphSubWindow();
+
 		//! Adds a scene graph subwindow.
 		RepoMdiSubWindow* addSceneGraphSubWindow(
-			const core::model::RepoScene *scene = 0,
+            const core::model::RepoScene *scene,
 			const QString &windowTitle = QString());
 
 		/*!
@@ -132,6 +133,8 @@ namespace widget{
 		QList<RepoMdiSubWindow *> subWindowList(
 			bool onlyVisible = false,
 			WindowOrder order = CreationOrder) const; //ActivationHistoryOrder) const;
+
+public :
 
 		/*!
 			* Returns a vector of currently opened widgets that are of the specified

@@ -41,7 +41,7 @@ namespace widget {
 	public:
 
 		Rendering2DWidget(
-			const repo::core::model::RepoScene *scene,
+            const repo::core::model::RepoScene *scene,
 			const QString &windowTitle = QString(),
 			QWidget *parent = 0);
 
