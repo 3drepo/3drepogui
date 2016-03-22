@@ -22,7 +22,6 @@ before_install:
     - tar -zxvf 3drepobouncer/tools/ext_libs/assimp-install.tgz
     - export MONGO_ROOT=$PWD/mongo-cxx-1.1.0 
     - export ASSIMP_ROOT=$PWD/assimp-install 
-    - ls
     - cd 3drepobouncer
     - cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
     - sudo make -j2 install
@@ -34,16 +33,11 @@ before_install:
     - sudo cp g++-base.conf /opt/qt55/mkspecs/common
     - export QTDIR=/opt/qt55
     - export PATH=$QTDIR/bin:$PATH
-    - echo =========== GLC_LIB INSTALL =============
-    - git clone --branch=Branch_Version_3_0_0 https://github.com/3drepo/GLC_lib.git
-    - cd GLC_lib
-    - qmake -recursive
-    - make -j2
-    - sudo make install
-    - cd ../
+    - tar -zxvf tools/ext_libs/GLC_LIB_install.tgz
+    - ls
+    - export GLC_ROOT=$PWD/GLC_lib_install    
 before_script:
     - export BOOST_ROOT=/usr/local
-    - export GLC_ROOT=/usr/local/GLC_lib-3.0
     - export REPOBOUNCER_ROOT=/usr/local
 script:
     - qmake -recursive
