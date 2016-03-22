@@ -37,7 +37,7 @@ namespace renderer {
 		Q_OBJECT
 
 	public:
-		explicit RepoWebView(const QUrl& url = QUrl("https://3drepo.io"),
+        explicit RepoWebView(const QUrl& url = QUrl("https://www.3drepo.io"),
 			QWidget *parent = 0);
 		~RepoWebView();
 
