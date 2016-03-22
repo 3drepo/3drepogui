@@ -36,6 +36,7 @@ before_install:
     - tar -zxvf tools/ext_libs/GLC_LIB_install.tgz
     - ls
     - export GLC_ROOT=$PWD/GLC_lib_install    
+    - ls $GLC_ROOT/include
 before_script:
     - export BOOST_ROOT=/usr/local
     - export REPOBOUNCER_ROOT=/usr/local
