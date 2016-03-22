@@ -51,9 +51,14 @@
 #include "dialogs/repo_dialog_manager_connect.h"
 //------------------------------------------------------------------------------
 
+using namespace repo::gui::widget;
+
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geometry";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_FLY_NAVIGATION = "RepoGUI/fly";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION = "RepoGUI/trackball";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION = "RepoGUI/turntable";
 
 repo::gui::RepoGUI::RepoGUI(
         repo::RepoController *controller,
@@ -164,8 +169,10 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionFederate, SIGNAL(triggered()),
                      this, SLOT(federate()));
 
+    // Access Manager
     QObject::connect(ui->actionAccessManager, SIGNAL(triggered()),
                      this, SLOT(openAccessManager()));
+     ui->actionAccessManager->setIcon(primitive::RepoFontAwesome::getAccessManagerIcon());
 
     // Add Map Tiles...
     QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
@@ -177,8 +184,6 @@ repo::gui::RepoGUI::RepoGUI(
     ui->actionRemoveProject->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
     QObject::connect(ui->actionDrop, SIGNAL(triggered()), this, SLOT(drop()));
 //    ui->actionDrop->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_trash_o));
-
-
 
 
     //--------------------------------------------------------------------------
@@ -200,17 +205,22 @@ repo::gui::RepoGUI::RepoGUI(
     ui->openGLToolBar->addAction(ui->menuNavigation->menuAction());
     QObject::connect(ui->menuNavigation->menuAction(), &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
 
-
     navigationModeActionGroup->addAction(ui->actionTurntable);
     QObject::connect(ui->actionTurntable, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    ui->actionTurntable->setIcon(primitive::RepoFontAwesome::getTurntableIcon());
     navigationModeActionGroup->addAction(ui->actionTrack_Ball);
     QObject::connect(ui->actionTrack_Ball, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    ui->actionTrack_Ball->setIcon(primitive::RepoFontAwesome::getTrackBallIcon());
     navigationModeActionGroup->addAction(ui->actionFly);
     QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    ui->actionFly->setIcon(primitive::RepoFontAwesome::getFlyIcon());
 
-    ui->actionTurntable->trigger(); // TODO: make it a setting
-
-
+    if (ui->actionTurntable->isChecked())
+        ui->actionTurntable->trigger();
+    else if (ui->actionTrack_Ball->isChecked())
+        ui->actionTrack_Ball->trigger();
+    else if (ui->actionFly->isChecked())
+        ui->actionFly->trigger();
 
     //	connect(actionISO, SIGNAL(triggered()), this, SLOT(cameraISOSlot()));
     //	actionISO->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_dot_circle_o));
@@ -234,13 +244,16 @@ repo::gui::RepoGUI::RepoGUI(
     ui->clippingPlaneWidget->setMdiArea(ui->mdiArea);
     ui->clippingPlaneWidget->setLinkAction(ui->actionLink);
 
+    QObject::connect(ui->clippingPlaneDockWidget, &QDockWidget::visibilityChanged,
+                     ui->clippingPlaneWidget, &RepoClippingPlaneWidget::setClippingPlaneEnabled);
+
 
 
 
 
     // Scene Graph
-    QObject::connect(ui->actionSceneGraph, &QAction::triggered,
-                     this, &RepoGUI::openSceneGraph);
+    QObject::connect(ui->actionSceneGraph, SIGNAL(triggered()),
+                     ui->mdiArea, SLOT(addSceneGraphSubWindow()));
     ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
     // Web View
@@ -260,8 +273,13 @@ repo::gui::RepoGUI::RepoGUI(
     // Metadata Management...
     QObject::connect(ui->actionMetadataManager, SIGNAL(triggered()), this, SLOT(openMetadataManager()));
 
-    // Metadata Management...
+    // Optimize Scene Graph
     QObject::connect(ui->actionOptimize_Graph, SIGNAL(triggered()), this, SLOT(optimizeGraph()));
+    ui->actionOptimize_Graph->setIcon(primitive::RepoFontAwesome::getSceneGraphOptimizeIcon());
+
+
+
+
 
 
     // 3D Diff...
@@ -326,6 +344,10 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionAbout, SIGNAL(triggered()),
                      this, SLOT(about()));
 
+    ui->actionAbout->setIcon(primitive::RepoFontAwesome::getAboutIcon());
+
+
+
 
     //--------------------------------------------------------------------------
     // Context menus
@@ -340,6 +362,14 @@ repo::gui::RepoGUI::RepoGUI(
                 &QTreeView::customContextMenuRequested,
                 this,
                 &RepoGUI::showCollectionContextMenuSlot);
+
+
+    //--------------------------------------------------------------------------
+    //
+    // Restore previous GUI user settings
+    //
+    //--------------------------------------------------------------------------
+
 
     if (controller->getVersion() != EXPECTED_BOUNCER_VERSION)
     {
@@ -498,6 +528,10 @@ void repo::gui::RepoGUI::connectDB()
             ui->actionCommit->setEnabled(true);
             ui->actionDrop->setEnabled(true);
             ui->actionDisconnect->setEnabled(true);
+            ui->actionAccessManager->setEnabled(true);
+            ui->actionFederate->setEnabled(true);
+            ui->actionAddMapTiles->setEnabled(true);
+            ui->actionRemoveProject->setEnabled(true);
         }
         else
         {
@@ -509,25 +543,33 @@ void repo::gui::RepoGUI::connectDB()
 
 QMenu* repo::gui::RepoGUI::createPanelsMenu()
 {
+    int dockWidgetsCount = this->findChildren<QDockWidget *>().size();
     QMenu* panelsMenu = QMainWindow::createPopupMenu();
+    int i = 0;
     for (auto a : panelsMenu->actions())
     {
-        ui->menuWindow->addAction(a);
+        ui->menuWindow->addAction(a);        
+        if (i < dockWidgetsCount)
+        {
+            ui->panelsToolBar->addAction(a);
+        }
+        ++i;
     }
-
-    if (panelsMenu->actions().size() >= 3)
+    if (panelsMenu->actions().size() >= dockWidgetsCount)
     {
         panelsMenu->actions()[0]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_R));
+        panelsMenu->actions()[0]->setIcon(primitive::RepoFontAwesome::getRepositoriesIcon());
+
         panelsMenu->actions()[1]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_L));
+        panelsMenu->actions()[1]->setIcon(primitive::RepoFontAwesome::getLogIcon());
+
         panelsMenu->actions()[2]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_C));
+        panelsMenu->actions()[2]->setIcon(primitive::RepoFontAwesome::getClippingPlaneIcon());
+
         panelsMenu->actions()[3]->setShortcut(QKeySequence(Qt::AltModifier + Qt::Key_D));
-
-        panelsMenu->actions()[3]->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(
-                                       primitive::RepoFontAwesome::fa_wrench));
-
-        ui->diffDockWidget->setWindowIcon(primitive::RepoFontAwesome::getInstance().getIcon(
-                                        primitive::RepoFontAwesome::fa_wrench));
+        panelsMenu->actions()[3]->setIcon(primitive::RepoFontAwesome::get3DDiffIcon());
     }
+
     return panelsMenu;
 }
 
@@ -542,6 +584,10 @@ void repo::gui::RepoGUI::disconnectDB()
         ui->actionCommit->setEnabled(false);
         ui->actionDrop->setEnabled(false);
         ui->actionDisconnect->setEnabled(false);
+        ui->actionAccessManager->setEnabled(false);
+        ui->actionFederate->setEnabled(false);
+        ui->actionAddMapTiles->setEnabled(false);
+        ui->actionRemoveProject->setEnabled(false);
     }
 }
 
@@ -611,13 +657,6 @@ void repo::gui::RepoGUI::fetchHead()
 
 
 
-const repo::core::model::RepoScene* repo::gui::RepoGUI::getActiveScene() const
-{
-    const repo::core::model::RepoScene *scene = 0;
-    if (const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget())
-        scene = widget->getRepoScene();
-    return scene;
-}
 
 void repo::gui::RepoGUI::history()
 {
@@ -742,14 +781,6 @@ void repo::gui::RepoGUI::openSettings() const
 {
     dialog::SettingsDialog settingsDialog((QWidget*) this);
     settingsDialog.exec();
-}
-
-void repo::gui::RepoGUI::openSceneGraph() const
-{
-    if (const repo::core::model::RepoScene *scene = getActiveScene())
-    {
-        ui->mdiArea->addSceneGraphSubWindow(scene, ui->mdiArea->getActiveWidget()->windowTitle());
-    }
 }
 
 void repo::gui::RepoGUI::openSupportEmail() const
@@ -884,6 +915,7 @@ void repo::gui::RepoGUI::toggleNavigationMode()
     if (action != ui->menuNavigation->menuAction())
     {
         ui->menuNavigation->menuAction()->setText(action->text());
+        ui->menuNavigation->menuAction()->setIcon(action->icon());
     }
 
     //--------------------------------------------------------------------------
@@ -945,6 +977,7 @@ void repo::gui::RepoGUI::toggleFullScreen()
 {
     if (ui->actionFull_Screen->isChecked())
     {
+        storeSettings();
         ui->menuBar->hide();
         ui->dockWidgetRepositories->hide();
         ui->dockWidgetLog->hide();
@@ -952,18 +985,15 @@ void repo::gui::RepoGUI::toggleFullScreen()
         ui->diffDockWidget->hide();
         ui->repositoriesToolBar->hide();
         ui->openGLToolBar->hide();
+        ui->panelsToolBar->hide();
         showFullScreen();
+        this->repaint();
     }
     else
     {
         ui->menuBar->show();
-        ui->dockWidgetRepositories->show();
-        ui->dockWidgetLog->show();
-        ui->clippingPlaneDockWidget->show();
-        ui->diffDockWidget->show();
-        ui->repositoriesToolBar->show();
-        ui->openGLToolBar->show();
         showNormal();
+        restoreSettings();
     }
 }
 
@@ -1015,7 +1045,10 @@ void repo::gui::RepoGUI::restoreSettings()
     QSettings settings;
     restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
     restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
-    ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, false).toBool());
+    ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, true).toBool());
+    ui->actionFly->setChecked(settings.value(REPO_SETTINGS_GUI_FLY_NAVIGATION, false).toBool());
+    ui->actionTrack_Ball->setChecked(settings.value(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, false).toBool());
+    ui->actionTurntable->setChecked(settings.value(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, true).toBool());
 }
 
 void repo::gui::RepoGUI::storeSettings()
@@ -1024,4 +1057,7 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_GUI_GEOMETRY, saveGeometry());
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
+    settings.setValue(REPO_SETTINGS_GUI_FLY_NAVIGATION, ui->actionFly->isChecked());
+    settings.setValue(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, ui->actionTrack_Ball->isChecked());
+    settings.setValue(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, ui->actionTurntable->isChecked());
 }

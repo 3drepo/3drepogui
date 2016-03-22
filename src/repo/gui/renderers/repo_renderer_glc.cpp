@@ -544,7 +544,11 @@ void GLCRenderer::render(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Clear screen
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        QColor bc = glcViewport.backgroundColor();
+        glClearColor(bc.redF(), bc.greenF(), bc.blueF(), 1.0f);
+
+
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
