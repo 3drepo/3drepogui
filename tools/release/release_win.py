@@ -12,13 +12,13 @@
 githubRepo = "https://github.com/3drepo/3drepogui"
 
 #Release tag (Also used to name the folder)
-releaseTag = "v1.0a"
+releaseTag = "v1.0b"
 
 #name
 projName = "3drepogui"
 #where 3drepogui is
 guiPath = "C:\\Users\\Carmen\\3D Repo\\Repo\\build-3drepogui-Desktop_Qt_5_5_1_MSVC2013_64bit-Release\\release\\"
-bouncerdll = "3drepobouncer_1_0a.dll"
+bouncerdll = "3drepobouncer_1_0b.dll"
 
 
 #Specification required for qmake

@@ -45,9 +45,9 @@ void repo::worker::FileImportWorker::run()
         = controller->loadSceneFromFile(fullPath, true, &settings);
 
 
-//    QFileInfo pathInfo(QString::fromStdString(fullPath));
-//    if ("fbx" == pathInfo.suffix())
-//        repoGraphScene->reorientateDirectXModel();
+    QFileInfo pathInfo(QString::fromStdString(fullPath));
+    if ("fbx" == pathInfo.suffix())
+        repoGraphScene->reorientateDirectXModel();
 
 
 	emit progress(jobsCount, jobsCount);

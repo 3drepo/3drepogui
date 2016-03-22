@@ -135,12 +135,12 @@ unix|macx:MOC_DIR = ./moc/ui
 #=============================== GLC LIB =======================================
 !isEmpty(GLCLIBDIR) {
     win32:GLC_INC_DIR = $${GLCLIBDIR}/include
-    unix|macx:GLC_INC_DIR = /usr/local/include/GLC_lib-3.0
-
+    unix|macx:GLC_INC_DIR = $${GLCLIBDIR}/include/GLC_lib-3.0
 
     win32:CONFIG(release, debug|release):GLC_LIB_DIR = $${GLCLIBDIR}/lib/Release/
     else:win32:CONFIG(debug, debug|release):GLC_LIB_DIR = $${GLCLIBDIR}/lib/Debug/
     else:unix|macx:GLC_LIB_DIR = $${GLCLIBDIR}/lib
+
 
     win32:CONFIG(release, debug|release):GLCLIB = -lGLC_lib3
     else:win32:CONFIG(debug, debug|release):GLCLIB = -lGLC_lib3
