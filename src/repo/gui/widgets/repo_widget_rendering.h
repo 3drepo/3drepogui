@@ -109,6 +109,8 @@ public slots :
     //! Sets the camera of the view.
     void setCamera(const renderer::CameraSettings& camera);
 
+    void setCameraFromWidget(const Rendering3DWidget* other, bool repaint = true);
+
     //! Sets a camera view from a pre-defined set of possibilities.
     void setPredefinedCamera(const repo::gui::renderer::CameraView&);
 
@@ -208,6 +210,10 @@ public:
     //GLC_World getGLCWorld() const { return glcWorld; }
 
     int heightForWidth(int w) const { return w; }
+
+    //! Returns renderer of this widget.
+    renderer::AbstractRenderer* getRenderer() const
+    { return renderer; }
 
     //! Returns the list of names of selected meshes if any.
     std::vector<std::string> getSelectionList() const;

@@ -29,7 +29,9 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(QWidget *parent)
     , mdiArea(nullptr)
     , ui(new Ui::RepoClippingPlaneWidget)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);    
+
+    qRegisterMetaType<repo::gui::renderer::Axis>("repo::gui::renderer::Axis");
 
     ui->reverseToolButton->setIcon(primitive::RepoFontAwesome::getInstance().getIcon(primitive::RepoFontAwesome::fa_exchange));
 
@@ -113,15 +115,17 @@ void RepoClippingPlaneWidget::setClippingPlane()
         {
             for (auto w : mdiArea->getWidgets<Rendering3DWidget*>())
             {
-                w->updateClippingPlane(axis, value, reverse);
+//                w->updateClippingPlane(axis, value, reverse);
+                QMetaObject::invokeMethod(w, "updateClippingPlane", Q_ARG(repo::gui::renderer::Axis, axis), Q_ARG(double, value), Q_ARG(bool, reverse));
             }
         }
         else // otherwise update only active widget
         {
-            Rendering3DWidget* widget = mdiArea->getActiveWidget();
-            if (widget)
+            Rendering3DWidget* w = mdiArea->getActiveWidget();
+            if (w)
             {
-                widget->updateClippingPlane(axis, value, reverse);
+//                w->updateClippingPlane(axis, value, reverse);
+                QMetaObject::invokeMethod(w, "updateClippingPlane", Q_ARG(repo::gui::renderer::Axis, axis), Q_ARG(double, value), Q_ARG(bool, reverse));
             }
         }
     }

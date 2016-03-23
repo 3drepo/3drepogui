@@ -200,6 +200,14 @@ void Rendering3DWidget::setCamera(const repo::gui::renderer::CameraSettings &cam
     renderer->setCamera(camera);
     update();
 }
+
+void Rendering3DWidget::setCameraFromWidget(const Rendering3DWidget* other, bool repaint)
+{
+    renderer->setCamera(other->getRenderer()->getCurrentCamera());
+    if (repaint)
+        update();
+}
+
 void Rendering3DWidget::setPredefinedCamera(const repo::gui::renderer::CameraView& view)
 {
     renderer->setCamera(view);
@@ -250,6 +258,9 @@ void Rendering3DWidget::linkCameras(
         QObject::connect(renderer, &renderer::AbstractRenderer::cameraChanged,
                 widget, &Rendering3DWidget::setCamera);
 
+        QObject::connect(renderer, SIGNAL(repaintNeeded()),
+                         widget, SLOT(update()));
+
         // TODO: align all views
 //        renderer->notifyCameraChange();
     }
@@ -257,6 +268,9 @@ void Rendering3DWidget::linkCameras(
     {
         QObject::disconnect(renderer, &renderer::AbstractRenderer::cameraChanged,
                     widget, &Rendering3DWidget::setCamera);
+
+        QObject::disconnect(renderer, SIGNAL(repaintNeeded()),
+                         widget, SLOT(update()));
     }
 }
 

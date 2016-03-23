@@ -617,7 +617,10 @@ void GLCRenderer::render(QPainter *painter,
 
         glcViewport.useClipPlane(false);
 
-        glc3DWidgetManager.render();
+        //----------------------------------------------------------------------
+        // Do not display clipping plane outline when UI controls are also disabled
+        if (painter)
+            glc3DWidgetManager.render();
 
         //----------------------------------------------------------------------
         // Display UI Info (orbit circle)
@@ -870,6 +873,7 @@ void GLCRenderer::setClippingPlaneVisibility(bool on)
                   w->setVisible(false);
           }
     }
+    emit repaintNeeded();
 }
 
 GLC_CuttingPlane* GLCRenderer::createCuttingPlane(const GLC_Point3d &centroid, const GLC_Point3d &normal, double l1, double l2)
@@ -934,6 +938,7 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 	while (clippingPlaneWidget->center() != centroid && i < 1000);
 
     clippingPlaneWidget->setVisible(true);
+    emit repaintNeeded();
 }
 
 void GLCRenderer::zoom(const float &zoom)
