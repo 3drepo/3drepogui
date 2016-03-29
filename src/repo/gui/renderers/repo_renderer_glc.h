@@ -19,7 +19,6 @@
 #pragma once
 
 #include "repo_renderer_abstract.h"
-
 //------------------------------------------------------------------------------
 #ifdef __APPLE_CC__
 #include <OpenGL/OpenGL.h>
@@ -204,6 +203,14 @@ namespace repo {
 
 public slots :
 
+                /**
+                * Toggle between show/hide genericSpatialPartitioning
+                */
+                virtual void toggleGenericPartitioning(
+                        const std::vector<repo_vector_t> &sceneBbox,
+                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree);
+
+
 				/**
 				* Toggle between show/hide octree
 				*/
@@ -241,6 +248,14 @@ public slots :
 
 
                 GLC_CuttingPlane * createCuttingPlane(const GLC_Point3d &centroid, const GLC_Point3d &normal, double l1, double l2);
+
+                void createSPBoxes(
+                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
+                        const std::vector<std::vector<float>>   &currentBbox,
+                         GLC_Material                      *mat/*,
+                        const size_t                              &vCurrent,
+                        const size_t                              &vLimit*/
+                        );
 
 				/**
 				* Given a pointer to GLC_Camera, convert it into a CameraSettings.

@@ -19,6 +19,8 @@
 
 //------------------------------------------------------------------------------
 // Core
+
+#include <repo/repo_controller.h>
 #include <repo/core/model/collection/repo_scene.h>
 
 //------------------------------------------------------------------------------
@@ -64,6 +66,7 @@ public:
             QWidget *p_parent,
             Renderer rendererType,
             renderer::NavMode navMode,
+            repo::RepoController *controller,
             const QString &windowTitle = "");
 
     //! Destructor
@@ -272,6 +275,7 @@ protected:
 
     //! 3D scene, the scene graph representation to store in the DB.
     repo::core::model::RepoScene *repoScene;
+    repo::RepoController *controller;
 
     //! Renderer for this instance of rendering widget
     renderer::AbstractRenderer* renderer;
@@ -294,6 +298,8 @@ protected:
     bool isInfoVisible;
 
     bool mousePressed;
+
+    std::vector<repo_vector_t> sceneBbox;
 
 }; // end
 

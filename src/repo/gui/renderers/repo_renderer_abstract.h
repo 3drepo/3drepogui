@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <repo/core/model/collection/repo_scene.h>
 #include <repo/core/model/repo_node_utils.h>
+#include <repo/manipulator/modelutility/spatialpartitioning/repo_spatial_partitioner_abstract.h>
 
 #include "repo_fpscounter.h"
 
@@ -188,6 +189,10 @@ public:
     * @param color colour to change to
     */
     virtual void setBackgroundColor(const QColor &color) = 0;
+
+    virtual void toggleGenericPartitioning(
+            const std::vector<repo_vector_t> &sceneBbox,
+            const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree) = 0;
 
     /**
     * Toggle between show/hide octree

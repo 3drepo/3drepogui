@@ -97,10 +97,11 @@ void RepoMdiSubWindow::closeEvent(QCloseEvent *closeEvent)
 void RepoMdiSubWindow::setWidget3D(
         const QString& windowTitle,
         repo::gui::renderer::NavMode navMode,
+        repo::RepoController *controller,
         const std::vector<double> &offsetVector)
 {
     this->offsetVector = offsetVector;
-    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, windowTitle));
+    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, controller, windowTitle));
     setWindowIcon(this->widget()->windowIcon());
 }
 
@@ -120,7 +121,7 @@ void RepoMdiSubWindow::setWidgetFromFile(
 {
     this->offsetVector = offsetVector;
 	boost::filesystem::path filePathPath(filePath.toStdString());
-    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, QString(filePathPath.filename().string().c_str())));
+    setWidget(new widget::Rendering3DWidget(this, widget::Renderer::GLC, navMode, controller, QString(filePathPath.filename().string().c_str())));
 
     //--------------------------------------------------------------------------
 	// Establish and connect the new worker.

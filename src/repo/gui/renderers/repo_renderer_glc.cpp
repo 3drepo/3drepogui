@@ -19,6 +19,7 @@
 #include "repo_renderer_glc.h"
 #include "../../workers/repo_worker_glc_export.h"
 #include <repo/core/model/bson/repo_bson_factory.h>
+
 //------------------------------------------------------------------------------
 #include <GLC_UserInput>
 #include <GLC_Context>
@@ -787,10 +788,74 @@ void GLCRenderer::setCamera(const CameraView& view)
     }
 }
 
+void GLCRenderer::createSPBoxes(
+        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
+        const std::vector<std::vector<float>>   &currentBox,
+         GLC_Material                      *mat/*,
+        const size_t                              &vCurrent,
+        const size_t                              &vLimit*/
+        )
+{
+    if(tree /*&& vCurrent < vLimit*/)
+    {
+        //visualise this box
+        GLC_Point3d lower (currentBox[0][0], currentBox[0][1], currentBox[0][2]);
+        GLC_Point3d higher(currentBox[1][0], currentBox[1][1], currentBox[1][2]);
+
+        GLC_BoundingBox glcBbox(lower, higher);
+        auto box = GLC_Factory::instance()->createBox(glcBbox);
+        box.geomAt(0)->replaceMasterMaterial(mat);
+        glcViewCollection.add(box);
+
+        //recursively call this function for children
+
+        if(tree->type != repo::manipulator::modelutility::PartitioningTreeType::LEAF_NODE)
+        {
+            auto median = tree->pValue;
+            auto rightBox = currentBox;
+            auto leftBox = currentBox;
+            int axis = tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_X? 0 :
+                                        (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
+            rightBox[0][axis] = median;
+            leftBox[1][axis] = median;
+            createSPBoxes(tree->left, leftBox, mat/*, vCurrent+1, vLimit*/);
+            createSPBoxes(tree->right, rightBox, mat/*, vCurrent+1, vLimit*/);
+        }
+
+    }
+
+}
+
+void GLCRenderer::toggleGenericPartitioning(
+                       const std::vector<repo_vector_t> &sceneBbox,
+                       const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree)
+{
+    if (glcViewCollection.isEmpty())
+    {
+//        static int i = 0;
+        if(tree)
+        {
+            static GLC_Material* mat = new GLC_Material(Qt::blue);
+            mat->setOpacity(0.1);
+
+            std::vector<std::vector<float>> bbox = {
+                {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
+                {sceneBbox[1].x, sceneBbox[1].y, sceneBbox[1].z}
+            };
+            createSPBoxes(tree, bbox, mat/*, 0, ++i*/);
+        }
+
+    }
+    else
+        glcViewCollection.clear();
+
+}
+
 void GLCRenderer::toggleOctree()
 {
     if (glcViewCollection.isEmpty())
     {
+        //FIXME: this is a memory leak
         GLC_Material* mat = new GLC_Material(Qt::red);
         mat->setOpacity(0.1);
         GLC_SpacePartitioning* spacePartitioning = glcWorld.collection()->spacePartitioningHandle();
