@@ -210,7 +210,11 @@ public slots :
                         const std::vector<repo_vector_t> &sceneBbox,
                         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree);
 
-
+                /**
+                * Toggle between show/hide mesh bounding boxes
+                */
+                virtual void toggleMeshBoundingBoxes(
+                                     const repo::core::model::RepoScene *scene);
 				/**
 				* Toggle between show/hide octree
 				*/
@@ -248,6 +252,13 @@ public slots :
 
 
                 GLC_CuttingPlane * createCuttingPlane(const GLC_Point3d &centroid, const GLC_Point3d &normal, double l1, double l2);
+
+                void createMeshBBoxes(
+                        const repo::core::model::RepoScene            *scene,
+                        const repo::core::model::RepoScene::GraphType &gType,
+                        const repo::core::model::RepoNode             *node,
+                        const std::vector<float>                      &matrix,
+                         GLC_Material                            *mat);
 
                 void createSPBoxes(
                         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,

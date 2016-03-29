@@ -195,6 +195,12 @@ public:
             const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree) = 0;
 
     /**
+    * Toggle between show/hide mesh bounding boxes
+    */
+    virtual void toggleMeshBoundingBoxes(
+                         const repo::core::model::RepoScene *scene) = 0;
+
+    /**
     * Toggle between show/hide octree
     */
     virtual void toggleOctree() = 0;

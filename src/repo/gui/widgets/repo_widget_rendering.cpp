@@ -447,11 +447,20 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
 
     case  Qt::Key_K:
     {
-        if(!sceneBbox.size())
-            sceneBbox = repoScene->getSceneBoundingBox();
-        repoLog("Rendering partitioning...");
-        renderer->toggleGenericPartitioning(sceneBbox, controller->getScenePartitioning(repoScene));
-        update();
+        if ((e->modifiers() == Qt::ControlModifier))
+        {
+
+            renderer->toggleMeshBoundingBoxes(repoScene);
+            update();
+        }
+        else
+        {
+            if(!sceneBbox.size())
+                sceneBbox = repoScene->getSceneBoundingBox();
+            renderer->toggleGenericPartitioning(sceneBbox, controller->getScenePartitioning(repoScene));
+            update();
+        }
+
         break;
     }
     case Qt::Key_F1: // Points

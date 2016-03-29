@@ -851,6 +851,106 @@ void GLCRenderer::toggleGenericPartitioning(
 
 }
 
+void GLCRenderer::createMeshBBoxes(
+        const repo::core::model::RepoScene            *scene,
+        const repo::core::model::RepoScene::GraphType &gType,
+        const repo::core::model::RepoNode             *node,
+        const std::vector<float>                      &matrix,
+              GLC_Material                            *mat)
+{
+    switch(node->getTypeAsEnum())
+    {
+        case repo::core::model::NodeType::MESH:
+        {
+            auto meshPtr = dynamic_cast<const repo::core::model::MeshNode*>(node);
+            if(meshPtr)
+            {
+                auto mappings = meshPtr->getMeshMapping();
+                if(mappings.size()>1)
+                {
+                    for(const auto &map : mappings)
+                    {
+                        auto min = multiplyMatVec(matrix,  map.min);
+                        auto max = multiplyMatVec(matrix,  map.max);
+
+                        GLC_Point3d lower (min.x, min.y, min.z);
+                        GLC_Point3d higher(max.x, max.y, max.z);
+
+                        GLC_BoundingBox glcBbox(lower, higher);
+                        auto box = GLC_Factory::instance()->createBox(glcBbox);
+                        box.geomAt(0)->replaceMasterMaterial(mat);
+                        glcViewCollection.add(box);
+                    }
+                }
+                else
+                {
+                    //single mesh, visualise this mesh's bounding box
+                    auto currentBox = meshPtr->getBoundingBox();
+                    for(auto &entry : currentBox)
+                    {
+                        multiplyMatVec(matrix, entry);
+                    }
+                    GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
+                    GLC_Point3d higher(currentBox[1].x, currentBox[1].y, currentBox[1].z);
+
+                    GLC_BoundingBox glcBbox(lower, higher);
+                    auto box = GLC_Factory::instance()->createBox(glcBbox);
+                    box.geomAt(0)->replaceMasterMaterial(mat);
+                    glcViewCollection.add(box);
+                }
+
+            }
+
+        }
+        break;
+        case repo::core::model::NodeType::TRANSFORMATION:
+        {
+            auto transPtr = dynamic_cast<const repo::core::model::TransformationNode*>(node);
+            auto newTrans = matMult(matrix, transPtr->getTransMatrix(false));
+            auto children = scene->getChildrenAsNodes(gType, transPtr->getSharedID());
+            for(const auto &child : children)
+            {
+                createMeshBBoxes(scene, gType, child, newTrans, mat);
+            }
+
+        }
+        break;
+    }
+
+
+
+}
+
+void GLCRenderer::toggleMeshBoundingBoxes(
+                     const repo::core::model::RepoScene *scene)
+{
+    if (glcViewCollection.isEmpty())
+    {
+        if(scene)
+        {
+            GLC_Material* meshBboxMat = new GLC_Material(Qt::cyan);
+            meshBboxMat->setOpacity(0.1);
+
+            std::vector<float> identity = {
+                                           1,0,0,0,
+                                           0,1,0,0,
+                                           0,0,1,0,
+                                           0,0,0,1
+                                          };
+
+            auto gType = scene->getViewGraph();
+            createMeshBBoxes(scene, gType, scene->getRoot(gType), identity, meshBboxMat);
+        }
+
+    }
+    else
+    {
+        glcViewCollection.clear();
+    }
+
+}
+
+
 void GLCRenderer::toggleOctree()
 {
     if (glcViewCollection.isEmpty())
