@@ -263,9 +263,9 @@ public slots :
                 void createSPBoxes(
                         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
                         const std::vector<std::vector<float>>   &currentBbox,
-                         GLC_Material                      *mat/*,
+                         GLC_Material                      *mat,
                         const size_t                              &vCurrent,
-                        const size_t                              &vLimit*/
+                        const size_t                              &vLimit
                         );
 
 				/**

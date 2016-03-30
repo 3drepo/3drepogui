@@ -457,7 +457,8 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         {
             if(!sceneBbox.size())
                 sceneBbox = repoScene->getSceneBoundingBox();
-            renderer->toggleGenericPartitioning(sceneBbox, controller->getScenePartitioning(repoScene));
+            static auto partition = controller->getScenePartitioning(repoScene);
+            renderer->toggleGenericPartitioning(sceneBbox, partition);
             update();
         }
 

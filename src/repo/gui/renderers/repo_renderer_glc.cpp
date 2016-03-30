@@ -791,12 +791,12 @@ void GLCRenderer::setCamera(const CameraView& view)
 void GLCRenderer::createSPBoxes(
         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
         const std::vector<std::vector<float>>   &currentBox,
-         GLC_Material                      *mat/*,
+         GLC_Material                      *mat,
         const size_t                              &vCurrent,
-        const size_t                              &vLimit*/
+        const size_t                              &vLimit
         )
 {
-    if(tree /*&& vCurrent < vLimit*/)
+    if(tree && vCurrent < vLimit)
     {
         //visualise this box
         GLC_Point3d lower (currentBox[0][0], currentBox[0][1], currentBox[0][2]);
@@ -818,8 +818,8 @@ void GLCRenderer::createSPBoxes(
                                         (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
             rightBox[0][axis] = median;
             leftBox[1][axis] = median;
-            createSPBoxes(tree->left, leftBox, mat/*, vCurrent+1, vLimit*/);
-            createSPBoxes(tree->right, rightBox, mat/*, vCurrent+1, vLimit*/);
+            createSPBoxes(tree->left, leftBox, mat, vCurrent+1, vLimit);
+            createSPBoxes(tree->right, rightBox, mat, vCurrent+1, vLimit);
         }
 
     }
@@ -830,24 +830,25 @@ void GLCRenderer::toggleGenericPartitioning(
                        const std::vector<repo_vector_t> &sceneBbox,
                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree)
 {
-    if (glcViewCollection.isEmpty())
-    {
-//        static int i = 0;
+    //FIXME: revive the toggle after debugging
+//    if (glcViewCollection.isEmpty())
+//    {
+        static int i = 0;
         if(tree)
         {
-            static GLC_Material* mat = new GLC_Material(Qt::blue);
+            static GLC_Material* mat = new GLC_Material(Qt::yellow);
             mat->setOpacity(0.1);
 
             std::vector<std::vector<float>> bbox = {
                 {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
                 {sceneBbox[1].x, sceneBbox[1].y, sceneBbox[1].z}
             };
-            createSPBoxes(tree, bbox, mat/*, 0, ++i*/);
+            createSPBoxes(tree, bbox, mat, 0, ++i);
         }
 
-    }
-    else
-        glcViewCollection.clear();
+//    }
+//    else
+//        glcViewCollection.clear();
 
 }
 
