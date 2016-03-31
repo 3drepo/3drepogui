@@ -843,6 +843,10 @@ void GLCRenderer::toggleGenericPartitioning(
                 {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
                 {sceneBbox[1].x, sceneBbox[1].y, sceneBbox[1].z}
             };
+
+            repoLog("Bounding box: ["+std::to_string(sceneBbox[0].x)+","+std::to_string(sceneBbox[0].y)+","+std::to_string(sceneBbox[0].z)
+                    +"]["+std::to_string(sceneBbox[1].x)+","+std::to_string(sceneBbox[1].y)+","+std::to_string(sceneBbox[1].z)
+                    +"]");
             createSPBoxes(tree, bbox, mat, 0, ++i);
         }
 
@@ -889,8 +893,21 @@ void GLCRenderer::createMeshBBoxes(
                     auto currentBox = meshPtr->getBoundingBox();
                     for(auto &entry : currentBox)
                     {
-                        multiplyMatVec(matrix, entry);
+                        entry = multiplyMatVec(matrix, entry);
                     }
+
+                    std::stringstream ss;
+                    ss << "Current Matrix: \n";
+                    for(int i = 0; i < 16; ++i)
+                    {
+                        ss << matrix[i];
+                        ss << (i%4 == 3? "\n" : ",") ;
+                    }
+                    repoLog(ss.str());
+
+                    repoLog("adding box: ["+std::to_string(currentBox[0].x)+","+std::to_string(currentBox[0].y)+","+std::to_string(currentBox[0].z)
+                            +"]["+std::to_string(currentBox[1].x)+","+std::to_string(currentBox[1].y)+","+std::to_string(currentBox[1].z)
+                            +"]");
                     GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
                     GLC_Point3d higher(currentBox[1].x, currentBox[1].y, currentBox[1].z);
 
