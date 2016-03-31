@@ -896,18 +896,7 @@ void GLCRenderer::createMeshBBoxes(
                         entry = multiplyMatVec(matrix, entry);
                     }
 
-                    std::stringstream ss;
-                    ss << "Current Matrix: \n";
-                    for(int i = 0; i < 16; ++i)
-                    {
-                        ss << matrix[i];
-                        ss << (i%4 == 3? "\n" : ",") ;
-                    }
-                    repoLog(ss.str());
 
-                    repoLog("adding box: ["+std::to_string(currentBox[0].x)+","+std::to_string(currentBox[0].y)+","+std::to_string(currentBox[0].z)
-                            +"]["+std::to_string(currentBox[1].x)+","+std::to_string(currentBox[1].y)+","+std::to_string(currentBox[1].z)
-                            +"]");
                     GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
                     GLC_Point3d higher(currentBox[1].x, currentBox[1].y, currentBox[1].z);
 
