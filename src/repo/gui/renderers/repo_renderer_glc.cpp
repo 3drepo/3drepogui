@@ -252,6 +252,16 @@ void GLCRenderer::loadModel(
     //--------------------------------------------------------------------------
     // Fire up the asynchronous calculation.
     QThreadPool::globalInstance()->start(worker);
+
+	if (offsetVector.size())
+	{
+		auto sceneOffset = scene->getWorldOffset();
+		std::vector<double> dOffset = { sceneOffset[0] - offsetVector[0],
+			sceneOffset[1] - offsetVector[1], sceneOffset[2] - offsetVector[2] };
+
+		offset = dOffset;
+	}
+    
 }
 
 bool GLCRenderer::move(const int &x, const int &y)
@@ -791,12 +801,10 @@ void GLCRenderer::setCamera(const CameraView& view)
 void GLCRenderer::createSPBoxes(
         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
         const std::vector<std::vector<float>>   &currentBox,
-         GLC_Material                      *mat,
-        const size_t                              &vCurrent,
-        const size_t                              &vLimit
+         GLC_Material                      *mat
         )
 {
-    if(tree && vCurrent < vLimit)
+    if(tree)
     {
         //visualise this box
         GLC_Point3d lower (currentBox[0][0], currentBox[0][1], currentBox[0][2]);
@@ -816,10 +824,10 @@ void GLCRenderer::createSPBoxes(
             auto leftBox = currentBox;
             int axis = tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_X? 0 :
                                         (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
-            rightBox[0][axis] = median;
-            leftBox[1][axis] = median;
-            createSPBoxes(tree->left, leftBox, mat, vCurrent+1, vLimit);
-            createSPBoxes(tree->right, rightBox, mat, vCurrent+1, vLimit);
+            rightBox[0][axis] = median + offset[axis];
+            leftBox[1][axis] = median + offset[axis];
+            createSPBoxes(tree->left, leftBox, mat);
+            createSPBoxes(tree->right, rightBox, mat);
         }
 
     }
@@ -830,10 +838,9 @@ void GLCRenderer::toggleGenericPartitioning(
                        const std::vector<repo_vector_t> &sceneBbox,
                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree)
 {
-    //FIXME: revive the toggle after debugging
-//    if (glcViewCollection.isEmpty())
-//    {
-        static int i = 0;
+
+    if (glcViewCollection.isEmpty())
+    {
         if(tree)
         {
             static GLC_Material* mat = new GLC_Material(Qt::yellow);
@@ -844,15 +851,24 @@ void GLCRenderer::toggleGenericPartitioning(
                 {sceneBbox[1].x, sceneBbox[1].y, sceneBbox[1].z}
             };
 
+            if(offset.size())
+            {
+                for(int i = 0; i < offset.size(); ++i)
+                {
+                    bbox[0][i] += offset[i];
+                    bbox[1][i] += offset[i];
+                }
+            }
+
             repoLog("Bounding box: ["+std::to_string(sceneBbox[0].x)+","+std::to_string(sceneBbox[0].y)+","+std::to_string(sceneBbox[0].z)
                     +"]["+std::to_string(sceneBbox[1].x)+","+std::to_string(sceneBbox[1].y)+","+std::to_string(sceneBbox[1].z)
                     +"]");
-            createSPBoxes(tree, bbox, mat, 0, ++i);
+            createSPBoxes(tree, bbox, mat);
         }
 
-//    }
-//    else
-//        glcViewCollection.clear();
+    }
+    else
+        glcViewCollection.clear();
 
 }
 
@@ -895,7 +911,6 @@ void GLCRenderer::createMeshBBoxes(
                     {
                         entry = multiplyMatVec(matrix, entry);
                     }
-
 
                     GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
                     GLC_Point3d higher(currentBox[1].x, currentBox[1].y, currentBox[1].z);
@@ -944,6 +959,13 @@ void GLCRenderer::toggleMeshBoundingBoxes(
                                            0,0,1,0,
                                            0,0,0,1
                                           };
+
+            if(offset.size())
+            {
+                identity[3] += offset[0];
+                identity[7] += offset[1];
+                identity[11] += offset[2];
+            }
 
             auto gType = scene->getViewGraph();
             createMeshBBoxes(scene, gType, scene->getRoot(gType), identity, meshBboxMat);

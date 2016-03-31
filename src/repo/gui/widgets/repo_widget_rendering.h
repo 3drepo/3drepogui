@@ -300,7 +300,7 @@ protected:
     bool mousePressed;
 
     std::vector<repo_vector_t> sceneBbox;
-
+    std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> partition;
 }; // end
 
 

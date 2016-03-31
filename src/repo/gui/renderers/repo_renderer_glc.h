@@ -263,9 +263,7 @@ public slots :
                 void createSPBoxes(
                         const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
                         const std::vector<std::vector<float>>   &currentBbox,
-                         GLC_Material                      *mat,
-                        const size_t                              &vCurrent,
-                        const size_t                              &vLimit
+                         GLC_Material                      *mat
                         );
 
 				/**
@@ -312,6 +310,8 @@ public slots :
 
 				//! Globally applied shader ID.
 				GLuint shaderID;
+
+                std::vector<double> offset;
 				
 
 			}; // end class
