@@ -513,7 +513,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             //-------------------------------------------------------------------------
             // Transformation
             auto trans = (repoModel::TransformationNode*) node;
-            auto mat = trans->getTransMatrix();
+            auto mat = trans->getTransMatrix(true);
 
 			if (mat.size() != 16)
 			{
