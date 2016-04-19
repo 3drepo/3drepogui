@@ -824,8 +824,9 @@ void GLCRenderer::createSPBoxes(
             auto leftBox = currentBox;
             int axis = tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_X? 0 :
                                         (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
-            rightBox[0][axis] = median + offset[axis];
-            leftBox[1][axis] = median + offset[axis];
+			double offsetAxis = offset.size() ? offset[axis] : 0;
+			rightBox[0][axis] = median + offsetAxis;
+			leftBox[1][axis] = median + offsetAxis;
             createSPBoxes(tree->left, leftBox, mat);
             createSPBoxes(tree->right, rightBox, mat);
         }
