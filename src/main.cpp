@@ -37,7 +37,7 @@ static std::string getTimeAsString()
   time (&rawtime);
   timeinfo = localtime(&rawtime);
 
-  strftime(buffer,80,"%d-%m-%Y_%I:%M:%S",timeinfo);
+  strftime(buffer,80,"%d-%m-%Y_%Ih%Mm%S",timeinfo);
   return std::string(buffer);
 
 }
@@ -53,11 +53,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("3D Repo GUI");
     QCoreApplication::setApplicationVersion("1.0.0b2");
 
-	std::vector<repo::lib::RepoAbstractListener*> listeners;
-	listeners.push_back(repo::logger::RepoLogger::getInstance());
+    std::vector<repo::lib::RepoAbstractListener*> listeners;
+    listeners.push_back(repo::logger::RepoLogger::getInstance());
 
-	repo::RepoController *controller = new repo::RepoController(listeners);
-    controller->logToFile( getTimeAsString() + ".log");
+    repo::RepoController *controller = new repo::RepoController(listeners);
+    controller->logToFile(getTimeAsString()+".log");
 
 	//check env var to see whether a debug level is set
 	char* debug = getenv("REPO_DEBUG");
@@ -85,9 +85,6 @@ int main(int argc, char *argv[])
 
     w.show();
     w.startup();
-
-    repoLog(getTimeAsString());
-
     return a.exec();
 }
 
