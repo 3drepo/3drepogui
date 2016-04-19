@@ -632,12 +632,6 @@ void repo::gui::RepoGUI::federate()
     if (fed.exec())
     {
         repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
-
-        repoLog("federated scene...");
-        std::stringstream sstream;
-        scene->printStatistics(sstream);
-        repoLog(sstream.str());
-        repoLog("Committing scene...");
         commit(scene);
     }
 }
@@ -748,9 +742,6 @@ void repo::gui::RepoGUI::openMetadataManager()
 
         scene->addMetadata(nodeSet, false);
 
-        std::stringstream ss;
-        scene->printStatistics(ss);
-        repoLog("Scene statistics: \n" + ss.str());
         commit(scene);
 
     }

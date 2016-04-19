@@ -19,6 +19,7 @@
 #include "repo_renderer_glc.h"
 #include "../../workers/repo_worker_glc_export.h"
 #include <repo/core/model/bson/repo_bson_factory.h>
+
 //------------------------------------------------------------------------------
 #include <GLC_UserInput>
 #include <GLC_Context>
@@ -251,6 +252,16 @@ void GLCRenderer::loadModel(
     //--------------------------------------------------------------------------
     // Fire up the asynchronous calculation.
     QThreadPool::globalInstance()->start(worker);
+
+	if (offsetVector.size())
+	{
+		auto sceneOffset = scene->getWorldOffset();
+		std::vector<double> dOffset = { sceneOffset[0] - offsetVector[0],
+			sceneOffset[1] - offsetVector[1], sceneOffset[2] - offsetVector[2] };
+
+		offset = dOffset;
+	}
+    
 }
 
 bool GLCRenderer::move(const int &x, const int &y)
@@ -787,10 +798,194 @@ void GLCRenderer::setCamera(const CameraView& view)
     }
 }
 
+void GLCRenderer::createSPBoxes(
+        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
+        const std::vector<std::vector<float>>   &currentBox,
+         GLC_Material                      *mat
+        )
+{
+    if(tree)
+    {
+        //visualise this box
+        GLC_Point3d lower (currentBox[0][0], currentBox[0][1], currentBox[0][2]);
+        GLC_Point3d higher(currentBox[1][0], currentBox[1][1], currentBox[1][2]);
+
+        GLC_BoundingBox glcBbox(lower, higher);
+        auto box = GLC_Factory::instance()->createBox(glcBbox);
+        box.geomAt(0)->replaceMasterMaterial(mat);
+        glcViewCollection.add(box);
+
+        //recursively call this function for children
+
+        if(tree->type != repo::manipulator::modelutility::PartitioningTreeType::LEAF_NODE)
+        {
+            auto median = tree->pValue;
+            auto rightBox = currentBox;
+            auto leftBox = currentBox;
+            int axis = tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_X? 0 :
+                                        (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
+			double offsetAxis = offset.size() ? offset[axis] : 0;
+			rightBox[0][axis] = median + offsetAxis;
+			leftBox[1][axis] = median + offsetAxis;
+            createSPBoxes(tree->left, leftBox, mat);
+            createSPBoxes(tree->right, rightBox, mat);
+        }
+
+    }
+
+}
+
+void GLCRenderer::toggleGenericPartitioning(
+                       const std::vector<repo_vector_t> &sceneBbox,
+                       const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree)
+{
+
+    if (glcViewCollection.isEmpty())
+    {
+        if(tree)
+        {
+            static GLC_Material* mat = new GLC_Material(Qt::yellow);
+            mat->setOpacity(0.1);
+
+            std::vector<std::vector<float>> bbox = {
+                {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
+                {sceneBbox[1].x, sceneBbox[1].y, sceneBbox[1].z}
+            };
+
+            if(offset.size())
+            {
+                for(int i = 0; i < offset.size(); ++i)
+                {
+                    bbox[0][i] += offset[i];
+                    bbox[1][i] += offset[i];
+                }
+            }
+
+            repoLog("Bounding box: ["+std::to_string(sceneBbox[0].x)+","+std::to_string(sceneBbox[0].y)+","+std::to_string(sceneBbox[0].z)
+                    +"]["+std::to_string(sceneBbox[1].x)+","+std::to_string(sceneBbox[1].y)+","+std::to_string(sceneBbox[1].z)
+                    +"]");
+            createSPBoxes(tree, bbox, mat);
+        }
+
+    }
+    else
+        glcViewCollection.clear();
+
+}
+
+void GLCRenderer::createMeshBBoxes(
+        const repo::core::model::RepoScene            *scene,
+        const repo::core::model::RepoScene::GraphType &gType,
+        const repo::core::model::RepoNode             *node,
+        const std::vector<float>                      &matrix,
+              GLC_Material                            *mat)
+{
+    switch(node->getTypeAsEnum())
+    {
+        case repo::core::model::NodeType::MESH:
+        {
+            auto meshPtr = dynamic_cast<const repo::core::model::MeshNode*>(node);
+            if(meshPtr)
+            {
+                auto mappings = meshPtr->getMeshMapping();
+                if(mappings.size()>1)
+                {
+                    for(const auto &map : mappings)
+                    {
+                        auto min = multiplyMatVec(matrix,  map.min);
+                        auto max = multiplyMatVec(matrix,  map.max);
+
+                        GLC_Point3d lower (min.x, min.y, min.z);
+                        GLC_Point3d higher(max.x, max.y, max.z);
+
+                        GLC_BoundingBox glcBbox(lower, higher);
+                        auto box = GLC_Factory::instance()->createBox(glcBbox);
+                        box.geomAt(0)->replaceMasterMaterial(mat);
+                        glcViewCollection.add(box);
+                    }
+                }
+                else
+                {
+                    //single mesh, visualise this mesh's bounding box
+                    auto currentBox = meshPtr->getBoundingBox();
+                    for(auto &entry : currentBox)
+                    {
+                        entry = multiplyMatVec(matrix, entry);
+                    }
+
+                    GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
+                    GLC_Point3d higher(currentBox[1].x, currentBox[1].y, currentBox[1].z);
+
+                    GLC_BoundingBox glcBbox(lower, higher);
+                    auto box = GLC_Factory::instance()->createBox(glcBbox);
+                    box.geomAt(0)->replaceMasterMaterial(mat);
+                    glcViewCollection.add(box);
+                }
+
+            }
+
+        }
+        break;
+        case repo::core::model::NodeType::TRANSFORMATION:
+        {
+            auto transPtr = dynamic_cast<const repo::core::model::TransformationNode*>(node);
+            auto newTrans = matMult(matrix, transPtr->getTransMatrix(false));
+            auto children = scene->getChildrenAsNodes(gType, transPtr->getSharedID());
+            for(const auto &child : children)
+            {
+                createMeshBBoxes(scene, gType, child, newTrans, mat);
+            }
+
+        }
+        break;
+    }
+
+
+
+}
+
+void GLCRenderer::toggleMeshBoundingBoxes(
+                     const repo::core::model::RepoScene *scene)
+{
+    if (glcViewCollection.isEmpty())
+    {
+        if(scene)
+        {
+            GLC_Material* meshBboxMat = new GLC_Material(Qt::cyan);
+            meshBboxMat->setOpacity(0.1);
+
+            std::vector<float> identity = {
+                                           1,0,0,0,
+                                           0,1,0,0,
+                                           0,0,1,0,
+                                           0,0,0,1
+                                          };
+
+            if(offset.size())
+            {
+                identity[3] += offset[0];
+                identity[7] += offset[1];
+                identity[11] += offset[2];
+            }
+
+            auto gType = scene->getViewGraph();
+            createMeshBBoxes(scene, gType, scene->getRoot(gType), identity, meshBboxMat);
+        }
+
+    }
+    else
+    {
+        glcViewCollection.clear();
+    }
+
+}
+
+
 void GLCRenderer::toggleOctree()
 {
     if (glcViewCollection.isEmpty())
     {
+        //FIXME: this is a memory leak
         GLC_Material* mat = new GLC_Material(Qt::red);
         mat->setOpacity(0.1);
         GLC_SpacePartitioning* spacePartitioning = glcWorld.collection()->spacePartitioningHandle();

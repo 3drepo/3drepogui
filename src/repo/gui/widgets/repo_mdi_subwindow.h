@@ -85,6 +85,7 @@ public:
     void setWidget3D(
             const QString& windowTitle,
             repo::gui::renderer::NavMode navMode,
+            repo::RepoController *controller,
             const std::vector<double> &offsetVector);
 
     void setWidget2D(const core::model::RepoScene *scene, const QString &windowTitle);

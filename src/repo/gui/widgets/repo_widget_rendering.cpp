@@ -72,12 +72,16 @@ Rendering3DWidget::Rendering3DWidget(
         QWidget* parent,
         Renderer rType,
         repo::gui::renderer::NavMode navMode,
+        repo::RepoController *controller,
         const QString& windowTitle)
     : QOpenGLWidget(parent)
     , RenderingAbstractWidget(navMode)
     , isWireframe(false)
     , isInfoVisible(true)
     , repoScene(0)
+     , controller(controller)
+    , partition(std::shared_ptr<repo::manipulator::modelutility::PartitioningTree>(nullptr))
+
 {
     // TODO: add to GUI settings
     QSurfaceFormat format;
@@ -440,6 +444,27 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
     {
         renderer->toggleOctree();
         update();
+        break;
+    }
+
+    case  Qt::Key_K:
+    {
+        if ((e->modifiers() == Qt::ControlModifier))
+        {
+
+            renderer->toggleMeshBoundingBoxes(repoScene);
+            update();
+        }
+        else
+        {
+            if(!sceneBbox.size())
+                sceneBbox = repoScene->getSceneBoundingBox();
+            if(!partition)
+                partition = controller->getScenePartitioning(repoScene);
+            renderer->toggleGenericPartitioning(sceneBbox, partition);
+            update();
+        }
+
         break;
     }
     case Qt::Key_F1: // Points
