@@ -19,13 +19,28 @@
 
 #include <QApplication>
 #include <QResource>
-
+#include <ctime>
 #include <repo/repo_controller.h>
 #include <repo/lib/repo_listener_abstract.h>
 
 #include "repo/gui/repo_gui.h"
 #include "repo/logger/repo_logger.h"
 
+
+
+static std::string getTimeAsString()
+{
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer[80];
+
+  time (&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer,80,"%d-%m-%Y_%I:%M:%S",timeinfo);
+  return std::string(buffer);
+
+}
 
 int main(int argc, char *argv[])
 {
@@ -42,6 +57,7 @@ int main(int argc, char *argv[])
 	listeners.push_back(repo::logger::RepoLogger::getInstance());
 
 	repo::RepoController *controller = new repo::RepoController(listeners);
+    controller->logToFile( getTimeAsString() + ".log");
 
 	//check env var to see whether a debug level is set
 	char* debug = getenv("REPO_DEBUG");
@@ -67,9 +83,11 @@ int main(int argc, char *argv[])
 	
     repo::gui::RepoGUI w(controller);
 
-
     w.show();
     w.startup();
 
+    repoLog(getTimeAsString());
+
     return a.exec();
 }
+
