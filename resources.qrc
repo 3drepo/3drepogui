@@ -7,6 +7,14 @@
     <qresource prefix="/shaders">
         <file alias="select.vert">resources/select.vert</file>
         <file alias="select.frag">resources/select.frag</file>
+        <file alias="default.frag">resources/default.frag</file>
+        <file alias="default.vert">resources/default.vert</file>
+        <file alias="goochShading.frag">resources/goochShading.frag</file>
+        <file alias="goochShading.vert">resources/goochShading.vert</file>
+        <file alias="minnaert.frag">resources/minnaert.frag</file>
+        <file alias="minnaert.vert">resources/minnaert.vert</file>
+        <file alias="toon.frag">resources/toon.frag</file>
+        <file alias="toon.vert">resources/toon.vert</file>
     </qresource>
     <qresource prefix="/">
         <file alias="fontawesome">submodules/Font-Awesome/fonts/fontawesome-webfont.ttf</file>

@@ -546,9 +546,6 @@ void GLCRenderer::render(QPainter *painter,
         // Clear screen
         QColor bc = glcViewport.backgroundColor();
         glClearColor(bc.redF(), bc.greenF(), bc.blueF(), 1.0f);
-
-
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -723,21 +720,36 @@ void GLCRenderer::setActivationFlag(const bool &flag)
     GLC_RenderStatistics::setActivationFlag(true);
 }
 
-void GLCRenderer::setAndInitShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context)
+void GLCRenderer::setAndInitSelectionShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context)
 {
     if (GLC_State::glslUsed()) // && !GLC_State::selectionShaderUsed())
     {
         GLC_State::setSelectionShaderUsage(true);
-
-
-        GLC_SelectionMaterial::setShaders(
-                    vertexFile,
-                    fragmentFile,
-                    context);
-
+        GLC_SelectionMaterial::setShaders(vertexFile,fragmentFile,context);
         GLC_SelectionMaterial::initShader(context);
     }
 }
+
+int GLCRenderer::appendAndInitRenderingShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context)
+{
+    GLC_Shader* shader= new GLC_Shader();
+    shader->setVertexAndFragmentShader(vertexFile, fragmentFile);
+    shader->createAndCompileProgrammShader();
+    shaders.append(shader);
+    return shaders.size() - 1;
+}
+
+bool GLCRenderer::setRenderingShaders(int index)
+{
+    bool success = false;
+    if (index < shaders.size())
+    {
+        shaderID = shaders[index]->id();
+        success = true;
+    }
+    return success;
+}
+
 
 void GLCRenderer::setBackgroundColor(const QColor &color)
 {
