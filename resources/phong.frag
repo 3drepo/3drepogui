@@ -29,7 +29,7 @@ void main (void)
 
 	// calculate Specular Term:
 	vec4 Ispec = gl_FrontLightProduct[0].specular 
-                * pow(max(dot(R,E),0.0),0.3*gl_FrontMaterial.shininess);
+                * pow(max(dot(R,E),0.0), gl_FrontMaterial.shininess);
 	Ispec = clamp(Ispec, 0.0, 1.0); 
 
 
