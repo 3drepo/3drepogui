@@ -154,7 +154,6 @@ void Rendering3DWidget::initializeShaders()
 
     QFile selectVertexShaderFile(":/shaders/select.vert");
     QFile selectFragmentShaderFile(":/shaders/select.frag");
-
     //--------------------------------------------------------------------------
     QFile defaultVertexShaderFile(":/shaders/default.vert");
     QFile defaultFragmentShaderFile(":/shaders/default.frag");

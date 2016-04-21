@@ -15,16 +15,16 @@ void main (void)
 	vec4 Iamb = gl_FrontLightProduct[0].ambient;       
  
 	//calculate Diffuse Term:  
-	vec4 color;
+	vec3 color;
 	if (useTexture)
 	{
-		color = vec4(vec3(texture2D(tex, gl_TexCoord[0].xy)), gl_FrontMaterial.diffuse.a);
+		color = vec3(texture2D(tex, gl_TexCoord[0].xy));
 	}
 	else
 	{
-		color = gl_FrontLightProduct[0].diffuse;
+		color = vec3(gl_FrontLightProduct[0].diffuse);
 	}
-	vec4 Idiff = color * max(dot(N,L), 0.0);
+	vec4 Idiff = vec4(color * max(dot(N,L), 0.0), gl_FrontMaterial.diffuse.a);
 	Idiff = clamp(Idiff, 0.0, 1.0);  
 
 	// calculate Specular Term:
