@@ -741,13 +741,18 @@ int GLCRenderer::appendAndInitRenderingShaders(QFile &vertexFile, QFile &fragmen
 
 bool GLCRenderer::setRenderingShaders(int index)
 {
-    bool success = false;
-    if (index < shaders.size())
+    bool shaderSet = false;
+    if (index < 0)
+    {
+        shaderID = 0;
+    }
+    else if (index >= 0 && index < shaders.size())
     {
         shaderID = shaders[index]->id();
-        success = true;
+        shaderSet = true;
     }
-    return success;
+
+    return shaderSet;
 }
 
 

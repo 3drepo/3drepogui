@@ -129,6 +129,8 @@ void Rendering3DWidget::initializeGL()
     renderer->initialize();
     initializeShaders();
     renderer->setActivationFlag(true);
+
+
 }
 
 void Rendering3DWidget::instantiateRenderer(Renderer rendType)
@@ -153,22 +155,34 @@ void Rendering3DWidget::initializeShaders()
     QFile selectVertexShaderFile(":/shaders/select.vert");
     QFile selectFragmentShaderFile(":/shaders/select.frag");
 
-    QFile toonVertexShaderFile(":/shaders/toon.vert");
-    QFile toonFragmentShaderFile(":/shaders/toon.frag");
-
+    //--------------------------------------------------------------------------
+    QFile defaultVertexShaderFile(":/shaders/default.vert");
+    QFile defaultFragmentShaderFile(":/shaders/default.frag");
 
     QFile goochVertexShaderFile(":/shaders/goochShading.vert");
     QFile goochFragmentShaderFile(":/shaders/goochShading.frag");
+
+    QFile minnaertVertexShaderFile(":/shaders/minnaert.vert");
+    QFile minnaertFragmentShaderFile(":/shaders/minnaert.frag");
+
+    QFile toonVertexShaderFile(":/shaders/toon.vert");
+    QFile toonFragmentShaderFile(":/shaders/toon.frag");
+
+    QFile phongVertexShaderFile(":/shaders/phong.vert");
+    QFile phongFragmentShaderFile(":/shaders/phong.frag");
+
 
     if (selectVertexShaderFile.exists() && selectFragmentShaderFile.exists())
     {
         try
         {
             renderer->setAndInitSelectionShaders(selectVertexShaderFile, selectFragmentShaderFile, context());
+            //------------------------------------------------------------------
+            renderer->appendAndInitRenderingShaders(defaultVertexShaderFile, defaultFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(goochVertexShaderFile, goochFragmentShaderFile, context());
+            renderer->appendAndInitRenderingShaders(minnaertVertexShaderFile, minnaertFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(toonVertexShaderFile, toonFragmentShaderFile, context());
-
-            //            renderer->setRenderingShaders(0);
+            renderer->appendAndInitRenderingShaders(phongVertexShaderFile, phongFragmentShaderFile, context());
         }
         catch (GLC_Exception e)
         {
@@ -477,17 +491,42 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         update();
         break;
     }
-    case Qt::Key_F9 :
+    case Qt::Key_5 :
     {
         renderer->setRenderingShaders(0);
         update();
         break;
     }
-    case Qt::Key_F10:
+    case Qt::Key_6:
+    {
         renderer->setRenderingShaders(1);
         update();
         break;
     }
+    case Qt::Key_7:
+    {
+        renderer->setRenderingShaders(2);
+        update();
+        break;
+    }
+    case Qt::Key_8:
+    {
+        renderer->setRenderingShaders(3);
+        update();
+        break;
+    }
+    case Qt::Key_9:
+    {
+        renderer->setRenderingShaders(4);
+        update();
+        break;
+    }
+    case Qt::Key_0:
+        renderer->setRenderingShaders(-1);
+        update();
+        break;
+    }
+
 
     // Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
