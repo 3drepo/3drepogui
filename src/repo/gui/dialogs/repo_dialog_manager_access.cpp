@@ -146,7 +146,7 @@ void AccessManagerDialog::keyPressEvent(QKeyEvent* e)
     QWidget::keyPressEvent(e);
 }
 
-repo::RepoToken* AccessManagerDialog::getToken() const
+repo::RepoController::RepoToken* AccessManagerDialog::getToken() const
 {
     return dbCache ? dbCache->getConnection(ui->hostComboBox->currentText()) : 0;
 }

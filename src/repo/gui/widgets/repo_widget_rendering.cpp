@@ -80,7 +80,7 @@ Rendering3DWidget::Rendering3DWidget(
     , isInfoVisible(true)
     , repoScene(0)
      , controller(controller)
-    , partition(std::shared_ptr<repo::manipulator::modelutility::PartitioningTree>(nullptr))
+    , partition(std::shared_ptr<repo_partitioning_tree_t>(nullptr))
 
 {
     // TODO: add to GUI settings

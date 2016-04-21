@@ -38,7 +38,7 @@ namespace repo {
 			//! Default worker constructor.
 			HistoryWorker(
 				repo::RepoController  *controller,
-				const repo::RepoToken *token,
+				const repo::RepoController::RepoToken *token,
 				const QString &database,
 				const QString& project);
 
@@ -57,7 +57,7 @@ namespace repo {
 
 			//! Database connector.
 			repo::RepoController  *controller;
-			const repo::RepoToken *token;
+			const repo::RepoController::RepoToken *token;
 
 			std::string database;
 

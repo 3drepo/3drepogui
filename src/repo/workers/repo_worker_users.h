@@ -47,7 +47,7 @@ public:
             * @param isUpdate true - update/insert user, false - delete user
             */
     UsersWorker(
-            const repo::RepoToken *token,
+            const repo::RepoController::RepoToken *token,
             repo::RepoController  *controller,
             const std::string &database,
             const repo::core::model::RepoUser &user = repo::core::model::RepoUser(),
@@ -71,7 +71,7 @@ public slots :
 private:
 
     //! Database connector.
-    const repo::RepoToken *token;
+    const repo::RepoController::RepoToken *token;
     repo::RepoController *controller;
 
     //! Database name.

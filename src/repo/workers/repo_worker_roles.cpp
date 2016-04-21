@@ -20,7 +20,7 @@
 
 using namespace repo::worker;
 
-RepoWorkerRoles::RepoWorkerRoles(const repo::RepoToken *token,
+RepoWorkerRoles::RepoWorkerRoles(const repo::RepoController::RepoToken *token,
         repo::RepoController *controller,
         const std::string &database,
         const repo::core::model::RepoRole &role,

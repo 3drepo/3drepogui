@@ -56,7 +56,7 @@ namespace dialog{
 		//! Constuctor
 		HistoryDialog(
 			repo::RepoController  *controller,
-			const repo::RepoToken *token,
+			const repo::RepoController::RepoToken *token,
 			const QString &database,
 			const QString& project,
 			QWidget *parent = 0,
@@ -122,7 +122,7 @@ namespace dialog{
 
 		////! Client connection.
 		repo::RepoController *controller;
-		const repo::RepoToken      *token;
+		const repo::RepoController::RepoToken      *token;
 
 		//! Database to retrieve revision history from.
 		QString database;

@@ -26,7 +26,7 @@ using namespace repo::gui::dialog;
 
 HistoryDialog::HistoryDialog(
 	repo::RepoController  *controller,
-	const repo::RepoToken *token,
+	const repo::RepoController::RepoToken *token,
 	const QString &database,
     const QString &project,
     QWidget *parent,

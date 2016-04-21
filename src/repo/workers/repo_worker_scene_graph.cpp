@@ -24,7 +24,7 @@ using namespace repo::worker;
 
 SceneGraphWorker::SceneGraphWorker(
 	repo::RepoController *controller,
-	const repo::RepoToken      * token,
+	const repo::RepoController::RepoToken      * token,
 	const QString& database,
 	const QString &project,
 	const QUuid& id,

@@ -25,7 +25,7 @@ using namespace repo::worker;
 
 RepoWorkerProjects::RepoWorkerProjects(
         repo::RepoController *controller,
-        const repo::RepoToken *token)
+        const repo::RepoController::RepoToken *token)
     : RepoAbstractWorker(),
       controller(controller),
       token(token)

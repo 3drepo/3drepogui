@@ -47,7 +47,7 @@ Repo3DDiffManagerWidget::~Repo3DDiffManagerWidget()
 
 void Repo3DDiffManagerWidget::initialize(repo::gui::widget::RepoMdiArea *mdiArea,
                                          repo::RepoController *controller,
-                                         const repo::RepoToken *token)
+                                         const repo::RepoController::RepoToken *token)
 {
     this->mdiArea = mdiArea;
 
@@ -126,13 +126,13 @@ void Repo3DDiffManagerWidget::runDiff()
         case Algorithm::BASIC :
             runBouncerDiff(widgetA,
                            widgetB,
-                           repo::manipulator::diff::Mode::DIFF_BY_NAME,
+                           repo::DiffMode::DIFF_BY_NAME,
                            colorCorrespondence);
             break;
         case Algorithm::STATISTICAL :
             runBouncerDiff(widgetA,
                            widgetB,
-                           repo::manipulator::diff::Mode::DIFF_BY_ID,
+                           repo::DiffMode::DIFF_BY_ID,
                            colorCorrespondence);
             break;
         case Algorithm::VISUAL :
@@ -145,7 +145,7 @@ void Repo3DDiffManagerWidget::runDiff()
 void Repo3DDiffManagerWidget::runBouncerDiff(
         repo::gui::widget::Rendering3DWidget* widgetA,
         repo::gui::widget::Rendering3DWidget* widgetB,
-        repo::manipulator::diff::Mode diffMode,
+        repo::DiffMode diffMode,
         bool colourCorrespondence)
 {
     if (isReady())

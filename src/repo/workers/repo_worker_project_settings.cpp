@@ -26,7 +26,7 @@
 using namespace repo::worker;
 
 ProjectSettingsWorker::ProjectSettingsWorker(
-	const repo::RepoToken                              *token,
+	const repo::RepoController::RepoToken                              *token,
 	repo::RepoController                               *controller,
 	const std::string                                  &database,
 	const repo::core::model::RepoProjectSettings &settings,
@@ -79,8 +79,6 @@ void ProjectSettingsWorker::run()
 
 	//------------------------------------------------------------------
 	// Get project settings
-	std::auto_ptr<mongo::DBClientCursor> cursor;
-	std::list<std::string> fields; // projection, empty at the moment
 	uint64_t retrieved = 0;
 
 	while (!cancelled && nSettings > retrieved)

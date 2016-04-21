@@ -192,7 +192,7 @@ public:
 
     virtual void toggleGenericPartitioning(
             const std::vector<repo_vector_t> &sceneBbox,
-            const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree) = 0;
+            const std::shared_ptr<repo_partitioning_tree_t> &tree) = 0;
 
     /**
     * Toggle between show/hide mesh bounding boxes

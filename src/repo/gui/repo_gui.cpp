@@ -446,7 +446,7 @@ void repo::gui::RepoGUI::commit()
             repoScene->setDatabaseAndProjectName(database.toStdString(), project.toStdString());
         }
 
-        repo::RepoToken *token = ui->widgetRepository->getSelectedConnection();
+        repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
     }
 
     commit(repoScene, activeWindow);
@@ -507,7 +507,7 @@ void repo::gui::RepoGUI::connectDB()
         std::string errMsg;
 
         repo::RepoCredentials credentials = connectManager.getConnection();
-        repo::RepoToken* connectionToken =
+        repo::RepoController::RepoToken* connectionToken =
                 controller->authenticateMongo(
                     errMsg,
                     credentials.getHost(),
@@ -614,7 +614,7 @@ void repo::gui::RepoGUI::drop()
 
             bool success;
             std::string errMsg;
-            const RepoToken *token = ui->widgetRepository->getSelectedConnection();
+            const repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
             // TODO: create a DB manager separate from repositories widget.
             if (collection.isEmpty())
                 success = controller->removeDatabase(token, database.toStdString(), errMsg);
@@ -656,7 +656,7 @@ void repo::gui::RepoGUI::history()
 {
     QString          database = ui->widgetRepository->getSelectedDatabase();
     QString          project  = ui->widgetRepository->getSelectedProject();
-    repo::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
+    repo::RepoController::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
     dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
@@ -814,7 +814,7 @@ void repo::gui::RepoGUI::removeProject()
 
             bool success;
             std::string errMsg;
-            const RepoToken *token = ui->widgetRepository->getSelectedConnection();
+            const repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
             // TODO: create a DB manager separate from repositories widget.
            success = controller->removeProject(token, database.toStdString(), project.toStdString(), errMsg);
 
