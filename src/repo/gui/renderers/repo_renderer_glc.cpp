@@ -419,9 +419,13 @@ void GLCRenderer::setGLCWorld(GLC_World &world)
     this->glcWorld.collection()->updateSpacePartitionning();
     this->glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
 
-    glcViewport.setDistMinAndMax(this->glcWorld.boundingBox());
+    GLC_BoundingBox bbox = this->glcWorld.boundingBox();
+    glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
     extractMeshes(this->glcWorld.rootOccurrence());
+
+
+    glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
 }
 
 void GLCRenderer::paintInfo(QPainter *painter,
