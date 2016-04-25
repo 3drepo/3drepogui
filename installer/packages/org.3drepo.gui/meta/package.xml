@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>3D Repo GUI</DisplayName>
+    <Description>3D Repo desktop admin application</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2016-04-03</ReleaseDate>
+    <Name>org.3drepo.gui</Name>
+    <SortingPriority>3</SortingPriority>
+    <Licenses>
+        <License name="License Agreement" file="license.txt" />
+    </Licenses>
+    <Default>true</Default>
+    <Essential>true</Essential>
+    <ForcedInstallation>true</ForcedInstallation>
+</Package>
