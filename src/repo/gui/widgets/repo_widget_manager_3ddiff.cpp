@@ -99,6 +99,11 @@ void Repo3DDiffManagerWidget::populateModelComboBoxes()
 
 void Repo3DDiffManagerWidget::reset()
 {
+    resetModels();
+}
+
+void Repo3DDiffManagerWidget::resetModels()
+{
     repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
@@ -112,7 +117,7 @@ void Repo3DDiffManagerWidget::reset()
 void Repo3DDiffManagerWidget::runDiff()
 {
     //Make sure the widgets are at its original state before starting
-    reset();
+    resetModels();
     repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
