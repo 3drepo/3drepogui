@@ -60,7 +60,7 @@ public slots :
 				void populateModelComboBoxes();
 
 				//! Reset the models within the widgets to its original states
-				void resetModels();
+                void reset();
 
 				//! Run the selected diff algorithm.
 				void runDiff();

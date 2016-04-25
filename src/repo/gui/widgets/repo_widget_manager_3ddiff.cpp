@@ -37,7 +37,7 @@ Repo3DDiffManagerWidget::Repo3DDiffManagerWidget(
                      this, &Repo3DDiffManagerWidget::runDiff);
 
     QObject::connect(ui->resetPushButton, &QPushButton::pressed,
-                     this, &Repo3DDiffManagerWidget::resetModels);
+                     this, &Repo3DDiffManagerWidget::reset);
 }
 
 Repo3DDiffManagerWidget::~Repo3DDiffManagerWidget()
@@ -97,19 +97,22 @@ void Repo3DDiffManagerWidget::populateModelComboBoxes()
 
 }
 
-void Repo3DDiffManagerWidget::resetModels()
+void Repo3DDiffManagerWidget::reset()
 {
     repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
-    widgetA->resetColors();
-    widgetB->resetColors();
+    if (widgetA)
+        widgetA->resetColors();
+
+    if (widgetB)
+        widgetB->resetColors();
 }
 
 void Repo3DDiffManagerWidget::runDiff()
 {
     //Make sure the widgets are at its original state before starting
-    resetModels();
+    reset();
     repo::gui::widget::Rendering3DWidget* widgetA = getSelectedModelAWidget();
     repo::gui::widget::Rendering3DWidget* widgetB = getSelectedModelBWidget();
 
