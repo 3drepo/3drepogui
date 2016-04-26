@@ -11,7 +11,6 @@
 	    <License name="Assimp License Agreement" file="ASSIMP License.txt" />
 	    <License name="Boost Software License" file="BOOST Software License v3.txt" />
 	    <License name="Mongo Cxx Driver License Agreement" file="APACHE-2.0.txt" />    	  
-	    <License name="OpenSSL License" file="OpenSSL License.txt" />
     </Licenses>
     <Default>true</Default>
     <Essential>true</Essential>
