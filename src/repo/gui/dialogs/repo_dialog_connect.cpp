@@ -28,6 +28,7 @@ ConnectDialog::ConnectDialog(
 	Qt::WindowFlags flags)
 	: QDialog(parent, flags)
 	, ui(new Ui::ConnectDialog)
+	, credentials(credentials)
 	, controller(controller)
 {
 	ui->setupUi(this);
@@ -59,8 +60,6 @@ ConnectDialog::ConnectDialog(
 
 	// TODO: save encrypted binary version of the password,
 	// see http://qt-project.org/wiki/Simple_encryption
-	//FIXME: since this is always hidden, is there much point in retreiving the digested password?
-	ui->passwordLineEdit->setText(QString::fromStdString("123456789012"));
 
 	if (token)
 		delete token;
@@ -99,7 +98,6 @@ void ConnectDialog::validate()
 	// TODO: make asynchronous
 	repo::RepoController::RepoToken *token = getConnectionSettings();
 
-	repoLog("@validate");
 	controller->testConnection(token);
 
 	//    ui->validateProgressBar->hide();
@@ -107,11 +105,31 @@ void ConnectDialog::validate()
 
 repo::RepoController::RepoToken* ConnectDialog::getConnectionSettings() const
 {
-	return controller->createToken(
-		ui->aliasLineEdit->text().toStdString(),
-		ui->hostLineEdit->text().toStdString(),
-		ui->portLineEdit->text().toInt(),
-		ui->authenticationDatabaseLineEdit->text().toStdString(),
-		ui->usernameLineEdit->text().toStdString(),
-		ui->passwordLineEdit->text().toStdString());
+	const auto oldToken = controller->createTokenFromSerialised(credentials);
+	repo::RepoController::RepoToken *res;
+	if (!oldToken ||
+		!ui->passwordLineEdit->text().toStdString().empty() ||
+		(ui->passwordLineEdit->text().toStdString().empty() && ui->usernameLineEdit->text().toStdString().empty()))
+	{
+		//password unchanged
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			ui->usernameLineEdit->text().toStdString(),
+			ui->passwordLineEdit->text().toStdString());
+	}
+	else
+	{
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			oldToken);
+	}
+
+	if (oldToken) delete oldToken;
+	return res;
 }

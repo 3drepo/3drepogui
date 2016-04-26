@@ -76,6 +76,7 @@ namespace repo{
 
 				//! Ui var
 				Ui::ConnectDialog *ui;
+				std::string credentials;
 
 				//! Completer for databases line edit.
 				QCompleter *databasesCompleter;
