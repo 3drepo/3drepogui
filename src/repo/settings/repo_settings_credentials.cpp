@@ -46,7 +46,6 @@ void RepoSettingsCredentials::writeCredentials(QList<std::string> &serialisedTok
 		{
 			ss << c;
 		}
-		repoLog("writing token of size: " + std::to_string(serialisedToken.size()));
 		auto tokenStr = QString::fromStdString(ss.str());
 		setArrayIndex(i);
 		QVariant var;
@@ -66,7 +65,6 @@ QList<std::string> RepoSettingsCredentials::readCredentials()
 		setArrayIndex(i);
 		QString strToken = value(CREDENTIALS).value<QString>();
 		std::string token = strToken.toStdString();
-		repoLog("reading token of size: " + std::to_string(token.size()));
 		credentialsList.append(token);
 		emit credentialsAt(i, token);
 	}
