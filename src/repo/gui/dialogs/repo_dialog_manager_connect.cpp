@@ -15,63 +15,62 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "repo_dialog_manager_connect.h"
 #include "ui_repo_dialog_manager_connect.h"
 
 using namespace repo::gui::dialog;
 
 ConnectManagerDialog::ConnectManagerDialog(
-        repo::RepoController *controller,
-        QWidget *parent)
-    : QDialog(parent)
-    , controller(controller)
-    , ui(new Ui::ConnectManagerDialog)
+	repo::RepoController *controller,
+	QWidget *parent)
+	: QDialog(parent)
+	, controller(controller)
+	, ui(new Ui::ConnectManagerDialog)
 {
-    ui->setupUi(this);
-    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
+	ui->setupUi(this);
+	setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
-//    ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
+	//    ui->buttonBox->addButton(tr("Connect"), QDialogButtonBox::AcceptRole);
 
-    QPushButton *connectPushButton = ui->buttonBox->button(QDialogButtonBox::Open);
-    connectPushButton->setText(tr("Connect"));
+	QPushButton *connectPushButton = ui->buttonBox->button(QDialogButtonBox::Open);
+	connectPushButton->setText(tr("Connect"));
 
-    //--------------------------------------------------------------------------
-    // Connect double click to accept action for convenient UI
-    QTreeView *treeView = ui->connectionManagerWidget->getFilterableTree()->getTreeView();
-    QObject::disconnect(treeView, SIGNAL(doubleClicked(const QModelIndex &)),
-                      ui->connectionManagerWidget, SLOT(edit(const QModelIndex &)));
+	//--------------------------------------------------------------------------
+	// Connect double click to accept action for convenient UI
+	QTreeView *treeView = ui->connectionManagerWidget->getFilterableTree()->getTreeView();
+	QObject::disconnect(treeView, SIGNAL(doubleClicked(const QModelIndex &)),
+		ui->connectionManagerWidget, SLOT(edit(const QModelIndex &)));
 
-    QObject::connect(treeView,
-                     &QTreeView::doubleClicked,
-                     this,
-                     &QDialog::accept);
+	QObject::connect(treeView,
+		&QTreeView::doubleClicked,
+		this,
+		&QDialog::accept);
 
-    QObject::connect(ui->connectionManagerWidget,
-                     &repo::gui::widget::EditableTreeWidget::editButtonsEnabledChanged,
-                     connectPushButton,
-                     &QPushButton::setEnabled);
+	QObject::connect(ui->connectionManagerWidget,
+		&repo::gui::widget::EditableTreeWidget::editButtonsEnabledChanged,
+		connectPushButton,
+		&QPushButton::setEnabled);
 
-    ui->connectionManagerWidget->setController(controller);
+	ui->connectionManagerWidget->setController(controller);
 }
 
 ConnectManagerDialog::~ConnectManagerDialog()
 {
-    delete ui;
+	delete ui;
 }
 
 int ConnectManagerDialog::exec()
 {
-    refresh();
-    return QDialog::exec();
+	refresh();
+	return QDialog::exec();
 }
 
 void ConnectManagerDialog::refresh()
 {
-    ui->connectionManagerWidget->refresh();
+	ui->connectionManagerWidget->refresh();
 }
 
-std::vector<char> ConnectManagerDialog::getConnection()
+std::string ConnectManagerDialog::getConnection()
 {
-    return ui->connectionManagerWidget->getConnection();
+	return ui->connectionManagerWidget->getConnection();
 }
