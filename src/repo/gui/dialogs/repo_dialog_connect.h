@@ -28,7 +28,6 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -57,7 +56,7 @@ namespace dialog {
 
 		//! Creates a connection dialog. To show, run exec().
 		ConnectDialog(repo::RepoController *controller,
-			const repo::RepoCredentials &credentials,
+            const std::vector<char> &credentials,
 			const bool isCopy = false,
 			QWidget *parent = 0,
 			Qt::WindowFlags flags = 0);
@@ -71,8 +70,8 @@ namespace dialog {
 
 	public:
 
-		//! Returns current connection settings
-		repo::RepoCredentials getConnectionSettings() const;
+        //! Returns current connection settings
+        repo::RepoController::RepoToken* getConnectionSettings() const;
 
 	private:
 

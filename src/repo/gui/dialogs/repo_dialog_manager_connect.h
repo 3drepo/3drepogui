@@ -23,7 +23,6 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -54,7 +53,7 @@ public slots :
 
     void refresh();
 
-    repo::RepoCredentials getConnection();
+    std::vector<char> getConnection();
 
 private:
     Ui::ConnectManagerDialog *ui;

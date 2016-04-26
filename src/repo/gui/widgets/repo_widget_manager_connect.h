@@ -33,7 +33,7 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
+
 
 //------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ namespace repo {
 namespace gui{
 namespace widget {
 
-	Q_DECLARE_METATYPE(repo::RepoCredentials)
+        Q_DECLARE_METATYPE(std::vector<char>)
 
     class ConnectionManagerWidget : public EditableTreeWidget
 	{
@@ -63,7 +63,7 @@ namespace widget {
 		public slots :
 
 		//! Adds credentials as an item into the table.
-		void addItem(const repo::RepoCredentials &credentials);
+                void addItem(const std::vector<char> &credentials);
 
 		//! Updates selected item.
 		virtual void edit();
@@ -71,11 +71,11 @@ namespace widget {
 		//! Updates item based on model index.
 		virtual void edit(const QModelIndex &index);
 
-		//! Returns currectly selected connection.
-		repo::RepoCredentials getConnection();
+		//! Returns currectly selected connection.                
+                std::vector<char> getConnection();
 
-		//! Returns connection for given model index.
-		repo::RepoCredentials getConnection(const QModelIndex &index);
+		//! Returns connection for given model index.                
+                std::vector<char> getConnection(const QModelIndex &index);
 
 		//! Refreshes the current list
 		virtual void refresh();
@@ -92,12 +92,13 @@ namespace widget {
 		//! Shows edit dialog.
 		virtual void showEditDialog()
 		{
-			showEditDialog(repo::RepoCredentials(), QModelIndex(), Action::ADD);
+                        showEditDialog(
+                                    std::vector<char>(), QModelIndex(), Action::ADD);
 		}
 
 		//! Shows edit dialog populated with given credentials.
 		void showEditDialog(
-			const repo::RepoCredentials &credentials,
+                        const std::vector<char> &credentials,
 			const QModelIndex &index,
 			const Action action);
 
@@ -115,19 +116,25 @@ namespace widget {
 		void serialize();
 
 		//! Returns alias tree item from given credentials
-		static QStandardItem *makeAliasItem(const repo::RepoCredentials &credentials);
+                static QStandardItem *makeAliasItem(
+                        const std::vector<char> &credentials,
+                        const std::string &value);
 
 		//! Returns address tree item from given credentials
-		static QStandardItem *makeAddressItem(const repo::RepoCredentials &credentials);
+                static QStandardItem *makeAddressItem(const std::vector<char> &credentials,
+                                                      const std::string &value);
 
 		//! Returns authentication tree item from given credentials
-		static QStandardItem *makeAuthenticationItem(const repo::RepoCredentials &credentials);
+                static QStandardItem *makeAuthenticationItem(
+                        const std::vector<char> &credentials,
+                        const std::string &authDB,
+                        const std::string &username);
 
 		//! Returns ssl tree item from given credentials
-		static QStandardItem *makeSSLItem(const repo::RepoCredentials &);
+                static QStandardItem *makeSSLItem(const std::vector<char> &);
 
 		//! Returns ssh tree item from given credentials
-		static QStandardItem *makeSSHItem(const repo::RepoCredentials &);
+                static QStandardItem *makeSSHItem(const std::vector<char> &);
 
 	private:
 

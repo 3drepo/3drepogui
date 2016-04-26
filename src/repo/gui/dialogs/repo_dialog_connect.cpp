@@ -22,7 +22,7 @@ using namespace repo::gui::dialog;
 //------------------------------------------------------------------------------
 ConnectDialog::ConnectDialog(
         repo::RepoController *controller,
-        const repo::RepoCredentials &credentials,
+        const std::vector<char> &credentials,
         const bool isCopy,
         QWidget *parent,
         Qt::WindowFlags flags)
@@ -33,23 +33,39 @@ ConnectDialog::ConnectDialog(
     ui->setupUi(this);
     setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
+    std::string aliasStr, host, authDB, username;
+    uint32_t port = 27017;
+
+
+     repo::RepoController::RepoToken *token = nullptr;
+    if(credentials.size())
+    {
+        token = controller->createTokenFromSerialised((credentials));
+        controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
+    }
+
+
     // Alias
-    QString alias = QString::fromStdString(credentials.getAlias());
+    QString alias = QString::fromStdString(aliasStr);
     if (isCopy)
     {
         alias += " " + tr("(Copy)");
     }
     ui->aliasLineEdit->setText(alias);
 
-    ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
-    ui->portLineEdit->setText(QString::number(credentials.getPort()));
-    ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
+    ui->hostLineEdit->setText(QString::fromStdString(host));
+    ui->portLineEdit->setText(QString::number(port));
+    ui->usernameLineEdit->setText(QString::fromStdString(username));
     ui->authenticationDatabaseLineEdit->setText(
-                QString::fromStdString(credentials.getAuthenticationDatabase()));
+                QString::fromStdString(authDB));
 
     // TODO: save encrypted binary version of the password,
     // see http://qt-project.org/wiki/Simple_encryption
-    ui->passwordLineEdit->setText(QString::fromStdString(credentials.getPassword()));
+    //FIXME: since this is always hidden, is there much point in retreiving the digested password?
+    ui->passwordLineEdit->setText(QString::fromStdString("123456789012"));
+
+    if(token)
+        delete token;
 
     //--------------------------------------------------------------------------
 
@@ -83,21 +99,22 @@ void ConnectDialog::validate()
 //    ui->validateProgressBar->show();
 
     // TODO: make asynchronous
-    repo::RepoCredentials credentials = getConnectionSettings();
+    repo::RepoController::RepoToken *token = getConnectionSettings();
 
-    controller->testConnection(credentials);
+    repoLog("@validate");
+    controller->testConnection(token);
+
+
 
 //    ui->validateProgressBar->hide();
 }
 
-repo::RepoCredentials ConnectDialog::getConnectionSettings() const
+repo::RepoController::RepoToken* ConnectDialog::getConnectionSettings() const
 {
-    repo::RepoCredentials credentials(
-                ui->aliasLineEdit->text().toStdString(),
-                ui->hostLineEdit->text().toStdString(),
-                ui->portLineEdit->text().toInt(),
-                ui->authenticationDatabaseLineEdit->text().toStdString(),
-                ui->usernameLineEdit->text().toStdString(),
-                ui->passwordLineEdit->text().toStdString());
-    return credentials;
+
+    return controller->createToken(ui->hostLineEdit->text().toStdString(),
+                                   ui->portLineEdit->text().toInt(),
+                                   ui->authenticationDatabaseLineEdit->text().toStdString(),
+                                   ui->usernameLineEdit->text().toStdString(),
+                                   ui->passwordLineEdit->text().toStdString());
 }

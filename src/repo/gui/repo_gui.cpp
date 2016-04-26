@@ -506,17 +506,10 @@ void repo::gui::RepoGUI::connectDB()
         // if not successfully connected
         std::string errMsg;
 
-        repo::RepoCredentials credentials = connectManager.getConnection();
-        repo::RepoController::RepoToken* connectionToken =
-                controller->authenticateMongo(
-                    errMsg,
-                    credentials.getHost(),
-                    credentials.getPort(),
-                    credentials.getAuthenticationDatabase(),
-                    credentials.getUsername(),
-                    credentials.getPassword());
+        auto credentials = connectManager.getConnection();
+        repo::RepoController::RepoToken*  connectionToken = controller->createTokenFromSerialised(credentials);
 
-        if (connectionToken)
+        if (connectionToken && controller->authenticateMongo(errMsg, connectionToken))
         {
             //connection/authentication success
             ui->widgetRepository->fetchDatabases(controller, connectionToken);
