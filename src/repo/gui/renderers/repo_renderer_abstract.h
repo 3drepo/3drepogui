@@ -170,7 +170,30 @@ public:
     * @param vertexFile vertex shader file
     * @param fragmentFile fragment shader file
     */
-    virtual void setAndInitShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context) = 0;
+    virtual void setAndInitSelectionShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context) = 0;
+
+    /**
+     * Appends and compiles given vertex and fragments shaders which can then
+     * be selected based on their assigned number in the shaders list.
+     * Returns the assigned selection number
+     *
+     * @brief appendAndInitRenderingShaders
+     * @param vertexFile
+     * @param fragmentFile
+     * @param context
+     * @return
+     */
+    virtual int appendAndInitRenderingShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context) = 0;
+
+    /**
+     * Selects the given rendering shaders from the list of available compiled
+     * shaders. Returns true if the requested id exists, false otherwise.
+     *
+     * @brief selectRenderingShaders
+     * @param id
+     * @return
+     */
+    virtual bool setRenderingShaders(int id) = 0;
 
     /**
     * Set camera settings of the current camera
@@ -276,4 +299,3 @@ protected:
 } //end namespace renderer
 } // end namespace gui
 } // end namespace repo
-

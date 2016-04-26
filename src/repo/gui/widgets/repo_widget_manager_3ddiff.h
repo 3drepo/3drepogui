@@ -59,6 +59,8 @@ public slots :
 				//! Populates selection combo boxes with available models.
 				void populateModelComboBoxes();
 
+                //! Reset the whole diff setup
+                void reset();
 				//! Reset the models within the widgets to its original states
 				void resetModels();
 

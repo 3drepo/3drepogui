@@ -133,6 +133,8 @@ void Rendering3DWidget::initializeGL()
     renderer->initialize();
     initializeShaders();
     renderer->setActivationFlag(true);
+
+
 }
 
 void Rendering3DWidget::instantiateRenderer(Renderer rendType)
@@ -142,7 +144,7 @@ void Rendering3DWidget::instantiateRenderer(Renderer rendType)
         renderer = new renderer::GLCRenderer();
         //----------------------------------------------------------------------
         QObject::connect(renderer, SIGNAL(repaintNeeded()),
-                    this, SLOT(update()));
+                         this, SLOT(update()));
     }
     else
     {
@@ -154,17 +156,39 @@ void Rendering3DWidget::initializeShaders()
 {
     makeCurrent();
 
-    QFile vertexShaderFile(":/shaders/select.vert");
-    QFile fragmentShaderFile(":/shaders/select.frag");
+    QFile selectVertexShaderFile(":/shaders/select.vert");
+    QFile selectFragmentShaderFile(":/shaders/select.frag");
+    //--------------------------------------------------------------------------
+    QFile defaultVertexShaderFile(":/shaders/default.vert");
+    QFile defaultFragmentShaderFile(":/shaders/default.frag");
 
-    if (vertexShaderFile.exists() && fragmentShaderFile.exists())
+    QFile goochVertexShaderFile(":/shaders/goochShading.vert");
+    QFile goochFragmentShaderFile(":/shaders/goochShading.frag");
+
+    QFile minnaertVertexShaderFile(":/shaders/minnaert.vert");
+    QFile minnaertFragmentShaderFile(":/shaders/minnaert.frag");
+
+    QFile toonVertexShaderFile(":/shaders/toon.vert");
+    QFile toonFragmentShaderFile(":/shaders/toon.frag");
+
+    QFile phongVertexShaderFile(":/shaders/phong.vert");
+    QFile phongFragmentShaderFile(":/shaders/phong.frag");
+
+
+    if (selectVertexShaderFile.exists() && selectFragmentShaderFile.exists())
     {
         try
         {
-            renderer->setAndInitShaders(vertexShaderFile, fragmentShaderFile, context());
-
+            renderer->setAndInitSelectionShaders(selectVertexShaderFile, selectFragmentShaderFile, context());
+            //------------------------------------------------------------------
+            renderer->appendAndInitRenderingShaders(defaultVertexShaderFile, defaultFragmentShaderFile, context());
+            renderer->appendAndInitRenderingShaders(goochVertexShaderFile, goochFragmentShaderFile, context());
+            renderer->appendAndInitRenderingShaders(minnaertVertexShaderFile, minnaertFragmentShaderFile, context());
+            renderer->appendAndInitRenderingShaders(toonVertexShaderFile, toonFragmentShaderFile, context());
+            renderer->appendAndInitRenderingShaders(phongVertexShaderFile, phongFragmentShaderFile, context());
         }
-        catch (GLC_Exception e){
+        catch (GLC_Exception e)
+        {
             repoLogError("Init shader failed " + std::string(e.what()));
         }
     }
@@ -183,7 +207,7 @@ void Rendering3DWidget::paintGL()
         renderer->render(nullptr);
 
     // Continuous rendering
-//    QTimer::singleShot(0, this, SLOT(update()));
+    //    QTimer::singleShot(0, this, SLOT(update()));
 }
 
 
@@ -252,15 +276,15 @@ void Rendering3DWidget::linkCameras(
     if (on)
     {
         QObject::connect(renderer, &renderer::AbstractRenderer::cameraChanged,
-                widget, &Rendering3DWidget::setCamera);
+                         widget, &Rendering3DWidget::setCamera);
 
         // TODO: align all views
-//        renderer->notifyCameraChange();
+        //        renderer->notifyCameraChange();
     }
     else
     {
         QObject::disconnect(renderer, &renderer::AbstractRenderer::cameraChanged,
-                    widget, &Rendering3DWidget::setCamera);
+                            widget, &Rendering3DWidget::setCamera);
     }
 }
 
@@ -276,10 +300,10 @@ void Rendering3DWidget::setRepoScene(
 {
 
     connect(renderer, &renderer::AbstractRenderer::modelLoadProgress,
-                this, &Rendering3DWidget::rendererProgress);
+            this, &Rendering3DWidget::rendererProgress);
 
     connect(this, &Rendering3DWidget::cancelRenderingOps,
-                renderer, &renderer::AbstractRenderer::cancelOperations);
+            renderer, &renderer::AbstractRenderer::cancelOperations);
     if (repoScene)
     {
         if (this->repoScene)
@@ -312,19 +336,19 @@ void Rendering3DWidget::setRepoScene(
 
 QImage Rendering3DWidget::renderQImage(int w, int h)
 {
-// This does not work with antialiasing (format.setSamples) on
-//------------------------------------------------------------------------------
-//    makeCurrent();
-//    isInfoVisible = false;
-//    int oldW = width();
-//    int oldH = height();
-//    resize(w, h); // resize scene
-//    update(); // draw to the buffer
-//    QImage image = grabFramebuffer();
-//    isInfoVisible = true;
-//    resize(oldW, oldH);
-//    update();
-//    return image;
+    // This does not work with antialiasing (format.setSamples) on
+    //------------------------------------------------------------------------------
+    //    makeCurrent();
+    //    isInfoVisible = false;
+    //    int oldW = width();
+    //    int oldH = height();
+    //    resize(w, h); // resize scene
+    //    update(); // draw to the buffer
+    //    QImage image = grabFramebuffer();
+    //    isInfoVisible = true;
+    //    resize(oldW, oldH);
+    //    update();
+    //    return image;
 
     return renderFrameBufferQImage(w, h, nullptr);
 }
@@ -357,7 +381,7 @@ QImage Rendering3DWidget::renderFrameBufferQImage(int w, int h, GLvoid *data)
 
     // https://www.opengl.org/sdk/docs/man2/xhtml/glReadPixels.xml
     if (data)
-    context()->functions()->glReadPixels(0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, data);
+        context()->functions()->glReadPixels(0, 0, w, h, GL_DEPTH_COMPONENT, GL_FLOAT, data);
 
     m_fbo.release();
     QImage image = m_fbo.toImage();
@@ -400,30 +424,30 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         {
             renderer->toggleSelectAll();
             update();
-			break;
-		}	
-	//case Qt::Key_C:
-		//TODO:
-	//	if (glIsEnabled(GL_CULL_FACE))
-	//	{
-	//		glDisable(GL_CULL_FACE);
-	//		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-	//	}
-	//	else
-	//	{
-	//		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-	//		glEnable(GL_CULL_FACE);
-	//		//glFrontFace(false ? GL_CCW : GL_CW);
-	//	}
+            break;
+        }
+        //case Qt::Key_C:
+        //TODO:
+        //	if (glIsEnabled(GL_CULL_FACE))
+        //	{
+        //		glDisable(GL_CULL_FACE);
+        //		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+        //	}
+        //	else
+        //	{
+        //		glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+        //		glEnable(GL_CULL_FACE);
+        //		//glFrontFace(false ? GL_CCW : GL_CW);
+        //	}
     case Qt::Key_R:
     {
         renderer->resetView();
         update();
         break;
     }
-	case Qt::Key_W:
-	{
-		renderer->toggleWireframe();
+    case Qt::Key_W:
+    {
+        renderer->toggleWireframe();
         update();
         break;
     }
@@ -491,7 +515,43 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         update();
         break;
     }
+    case Qt::Key_5 :
+    {
+        renderer->setRenderingShaders(0);
+        update();
+        break;
     }
+    case Qt::Key_6:
+    {
+        renderer->setRenderingShaders(1);
+        update();
+        break;
+    }
+    case Qt::Key_7:
+    {
+        renderer->setRenderingShaders(2);
+        update();
+        break;
+    }
+    case Qt::Key_8:
+    {
+        renderer->setRenderingShaders(3);
+        update();
+        break;
+    }
+    case Qt::Key_9:
+    {
+        renderer->setRenderingShaders(4);
+        update();
+        break;
+    }
+    case Qt::Key_0:
+        renderer->setRenderingShaders(-1);
+        update();
+        break;
+    }
+
+
     // Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
 }
