@@ -7,7 +7,7 @@
     <Name>org.3drepo.gui</Name>
     <SortingPriority>3</SortingPriority>
     <Licenses>
-        <License name="License Agreement" file="license.txt" />
+        <License name="3D Repo GUI License Agreement" file="GNU AGPL v3.txt" />
     </Licenses>
     <Default>true</Default>
     <Essential>true</Essential>
