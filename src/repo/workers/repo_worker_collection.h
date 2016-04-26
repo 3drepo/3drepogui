@@ -46,7 +46,7 @@ namespace repo {
 			*/
 			CollectionWorker(
 				repo::RepoController *controller, 
-				repo::RepoToken      *token,
+				repo::RepoController::RepoToken      *token,
 				const std::string    &database,
 				const std::string    &collection);
 
@@ -70,7 +70,7 @@ namespace repo {
 			void decodeRecords(const repo::core::model::RepoBSON &bson, unsigned int depth);
 
 			repo::RepoController *controller;
-			repo::RepoToken      *token;
+			repo::RepoController::RepoToken      *token;
 
 			//! Database in Mongo to fetch data from.
 			std::string database;

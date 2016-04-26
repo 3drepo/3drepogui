@@ -127,7 +127,7 @@ QList<QString> RepositoryWidget::getDatabases(const QString& host) const
     return databases;
 }
 
-repo::RepoToken*  RepositoryWidget::getConnection(
+repo::RepoController::RepoToken*  RepositoryWidget::getConnection(
         const QString &host) const
 {
     // TODO: implement multiple host connections.
@@ -179,7 +179,7 @@ bool RepositoryWidget::disconnectDB()
     if (token)
     {
         controller->disconnectFromDatabase(token);
-        delete token;
+		controller->destroyToken(token);
         token = nullptr;
         clearDatabaseModel();
         clearCollectionModel();
@@ -206,7 +206,7 @@ bool RepositoryWidget::cancelAllThreads()
 //------------------------------------------------------------------------------
 
 void RepositoryWidget::fetchDatabases(
-        repo::RepoController *controller, repo::RepoToken *token)
+        repo::RepoController *controller, repo::RepoController::RepoToken *token)
 {
     //--------------------------------------------------------------------------
 	// Cancel any previously running threads.

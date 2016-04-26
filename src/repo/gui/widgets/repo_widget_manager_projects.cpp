@@ -160,7 +160,7 @@ void ProjectsManagerWidget::showEditDialog(
 
 void ProjectsManagerWidget::setDBConnection(
         repo::RepoController *controller,
-        const repo::RepoToken* token,
+        const repo::RepoController::RepoToken* token,
         const std::string& database)
 {
     this->controller = controller;

@@ -215,7 +215,7 @@ void UsersManagerWidget::setDatabasesWithProjects(
 
 void  UsersManagerWidget::setDBConnection(
         repo::RepoController *controller,
-        const repo::RepoToken* token,
+        const repo::RepoController::RepoToken* token,
         const std::string& database)
 {
     this->controller = controller;

@@ -118,12 +118,12 @@ namespace widget {
 	public:
 
 		void setDBConnection(repo::RepoController *controller,
-			const repo::RepoToken* token,
+			const repo::RepoController::RepoToken* token,
 			const std::string& database);
 
 	private:
 
-		const repo::RepoToken* token;
+		const repo::RepoController::RepoToken* token;
 
 		std::string database;
 

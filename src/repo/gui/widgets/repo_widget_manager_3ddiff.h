@@ -54,16 +54,15 @@ public slots :
 
                 void initialize(repo::gui::widget::RepoMdiArea *mdiArea,
                                         repo::RepoController *controller,
-                                        const repo::RepoToken *token);
+                                        const repo::RepoController::RepoToken *token);
 
 				//! Populates selection combo boxes with available models.
 				void populateModelComboBoxes();
 
                 //! Reset the whole diff setup
                 void reset();
-
 				//! Reset the models within the widgets to its original states
-                void resetModels();
+				void resetModels();
 
 				//! Run the selected diff algorithm.
 				void runDiff();
@@ -72,7 +71,7 @@ public slots :
 
 				void runBouncerDiff(gui::widget::Rendering3DWidget *widgetA,
 					gui::widget::Rendering3DWidget *widgetB,
-					manipulator::diff::Mode diffMode,
+                    repo::DiffMode diffMode,
 					bool colourCorrespondence);
 
 			public:
@@ -113,7 +112,7 @@ public slots :
 
 				RepoController *controller;
 
-				const RepoToken *token;
+                const repo::RepoController::RepoToken *token;
 
 			};
 

@@ -44,7 +44,7 @@ namespace repo {
 			*/
 			SceneGraphWorker(
 				repo::RepoController *controller,
-				const repo::RepoToken      * token,
+				const repo::RepoController::RepoToken      * token,
 				const QString& database,
 				const QString& project,
 				const QUuid& id = QUuid(),
@@ -70,7 +70,7 @@ namespace repo {
 
 			//! Client connection
 			repo::RepoController *controller;
-			const repo::RepoToken      * token;
+			const repo::RepoController::RepoToken      * token;
 
 			//! Database to fetch the revision from.
 			std::string database;

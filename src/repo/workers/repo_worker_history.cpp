@@ -23,7 +23,7 @@ using namespace repo::worker;
 //------------------------------------------------------------------------------
 HistoryWorker::HistoryWorker(
 	repo::RepoController  *controller,
-	const repo::RepoToken *token,
+	const repo::RepoController::RepoToken *token,
 	const QString &database,
 	const QString &project)
 	: controller(controller)

@@ -48,7 +48,7 @@ namespace repo {
 			* @param isUpdate true - update/insert user, false - delete user
 			*/
 			ProjectSettingsWorker(
-				const repo::RepoToken *token,
+				const repo::RepoController::RepoToken *token,
 				repo::RepoController  *controller,
 				const std::string &database,
 				const repo::core::model::RepoProjectSettings &settings = repo::core::model::RepoProjectSettings(),
@@ -67,7 +67,7 @@ namespace repo {
 		private:
 
 			//! Database connector.
-			const repo::RepoToken *token;
+			const repo::RepoController::RepoToken *token;
 			repo::RepoController *controller;
 
 			//! Database name.

@@ -38,7 +38,7 @@ public:
 
     RepoWorkerProjects(
             repo::RepoController *controller,
-            const repo::RepoToken *token);
+            const repo::RepoController::RepoToken *token);
 
     //! Default empty destructor.
     ~RepoWorkerProjects();
@@ -58,7 +58,7 @@ public slots :
 private:
 
     //! Database connector.
-    const repo::RepoToken *token;
+    const repo::RepoController::RepoToken *token;
 
     //! Controller
     repo::RepoController *controller;

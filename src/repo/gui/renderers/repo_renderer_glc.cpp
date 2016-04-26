@@ -820,7 +820,7 @@ void GLCRenderer::setCamera(const CameraView& view)
 }
 
 void GLCRenderer::createSPBoxes(
-        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
+        const std::shared_ptr<repo_partitioning_tree_t> &tree,
         const std::vector<std::vector<float>>   &currentBox,
          GLC_Material                      *mat
         )
@@ -838,13 +838,13 @@ void GLCRenderer::createSPBoxes(
 
         //recursively call this function for children
 
-        if(tree->type != repo::manipulator::modelutility::PartitioningTreeType::LEAF_NODE)
+        if(tree->type != repo::PartitioningTreeType::LEAF_NODE)
         {
             auto median = tree->pValue;
             auto rightBox = currentBox;
             auto leftBox = currentBox;
-            int axis = tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_X? 0 :
-                                        (tree->type == repo::manipulator::modelutility::PartitioningTreeType::PARTITION_Y? 1 : 2);
+            int axis = tree->type == repo::PartitioningTreeType::PARTITION_X? 0 :
+                                        (tree->type == repo::PartitioningTreeType::PARTITION_Y? 1 : 2);
 			double offsetAxis = offset.size() ? offset[axis] : 0;
 			rightBox[0][axis] = median + offsetAxis;
 			leftBox[1][axis] = median + offsetAxis;
@@ -858,7 +858,7 @@ void GLCRenderer::createSPBoxes(
 
 void GLCRenderer::toggleGenericPartitioning(
                        const std::vector<repo_vector_t> &sceneBbox,
-                       const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree)
+                       const std::shared_ptr<repo_partitioning_tree_t> &tree)
 {
 
     if (glcViewCollection.isEmpty())

@@ -25,7 +25,7 @@ using namespace repo::worker;
 
 OptimizeWorker::OptimizeWorker(
 	repo::RepoController *controller, 
-	const repo::RepoToken *token,
+	const repo::RepoController::RepoToken *token,
 	repo::core::model::RepoScene *scene)
 	: RepoAbstractWorker(),
 	controller(controller),

@@ -73,7 +73,7 @@ namespace dialog {
 
 		void keyPressEvent(QKeyEvent*);
 
-		repo::RepoToken* getToken() const;
+		repo::RepoController::RepoToken* getToken() const;
 
 		std::string getDatabase() const;
 

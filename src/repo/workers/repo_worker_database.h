@@ -41,7 +41,7 @@ namespace repo {
 		public:
 
 			//! Default worker constructor.
-			DatabaseWorker(repo::RepoController *controller, repo::RepoToken *token);
+			DatabaseWorker(repo::RepoController *controller, repo::RepoController::RepoToken *token);
 
 			//! Default empty destructor.
 			~DatabaseWorker();
@@ -69,7 +69,7 @@ namespace repo {
 
 		private:
 			repo::RepoController *controller;
-			repo::RepoToken      *token;
+			repo::RepoController::RepoToken      *token;
 
 		}; // end class
 

@@ -48,18 +48,36 @@ ConnectionManagerWidget::~ConnectionManagerWidget()
     getFilterableTree()->storeSelection(SELECTION_SETTINGS);
 }
 
-void ConnectionManagerWidget::addItem(const repo::RepoCredentials &credentials)
+void ConnectionManagerWidget::addItem(const std::vector<char> &credentials)
 {
-    QList<QStandardItem *> row;
-    row.append(makeAliasItem(credentials));
-    row.append(makeAddressItem(credentials));
-    row.append(makeAuthenticationItem(credentials));
+    repo::RepoController::RepoToken* token=nullptr;
+    if(credentials.size())
+    {
+        token = controller->createTokenFromSerialised((credentials));
+    }
 
-    // TODO: add support for SSL and SSH
-    row.append(makeSSLItem(credentials));
-    row.append(makeSSHItem(credentials));
+    if(token)
+    {
+        std::string aliasStr, host, username, authDB;
+        uint32_t port;
+        controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
+        QList<QStandardItem *> row;
+        row.append(makeAliasItem(credentials, aliasStr));
+        row.append(makeAddressItem(credentials, host + std::to_string(port)));
+        row.append(makeAuthenticationItem(credentials, authDB, username));
 
-    getFilterableTree()->addTopLevelRow(row);
+        // TODO: add support for SSL and SSH
+        row.append(makeSSLItem(credentials));
+        row.append(makeSSHItem(credentials));
+
+        getFilterableTree()->addTopLevelRow(row);
+    }
+    else
+    {
+        repoLogError("Failed to add item");
+    }
+
+
 }
 
 void ConnectionManagerWidget::edit()
@@ -72,20 +90,20 @@ void ConnectionManagerWidget::edit(const QModelIndex &index)
     showEditDialog(getConnection(index), index, Action::EDIT);
 }
 
-repo::RepoCredentials ConnectionManagerWidget::getConnection()
+std::vector<char> ConnectionManagerWidget::getConnection()
 {
     return getConnection(getFilterableTree()->getCurrentIndex());
 }
 
-repo::RepoCredentials ConnectionManagerWidget::getConnection(const QModelIndex &index)
+std::vector<char> ConnectionManagerWidget::getConnection(const QModelIndex &index)
 {
-    repo::RepoCredentials credentials;
+    std::vector<char> serialisedToken;
     if (index.isValid())
     {
         QModelIndex credentialsIndex = index.sibling(index.row(), (int) Columns::ALIAS);
-        credentials = credentialsIndex.data(Qt::UserRole + 1).value<repo::RepoCredentials>();
+        serialisedToken = credentialsIndex.data(Qt::UserRole + 1).value<std::vector<char>>();
     }
-    return credentials;
+    return serialisedToken;
 }
 
 void ConnectionManagerWidget::refresh()
@@ -97,7 +115,7 @@ void ConnectionManagerWidget::refresh()
 
     // TODO: new worker here
     repo::settings::RepoSettingsCredentials settings;
-    for (repo::RepoCredentials credentials : settings.readCredentials())
+    for (std::vector<char> credentials : settings.readCredentials())
     {
         addItem(credentials);
     }
@@ -110,10 +128,9 @@ void ConnectionManagerWidget::refresh()
 
 void ConnectionManagerWidget::removeItem()
 {
-    repo::RepoCredentials credentials = getConnection();
     switch(QMessageBox::warning(this,
                                 tr("Remove connection?"),
-                                tr("Are you sure you want to remove '") + QString::fromStdString(credentials.getAlias()) + "'?",
+                                tr("Are you sure you want to remove this entry?"),
                                 tr("&Yes"),
                                 tr("&No"),
                                 QString::null, 1, 1))
@@ -129,7 +146,7 @@ void ConnectionManagerWidget::removeItem()
 }
 
 void ConnectionManagerWidget::showEditDialog(
-        const repo::RepoCredentials &credentials,
+        const std::vector<char> &credentials,
         const QModelIndex &index,
         const Action action)
 {
@@ -144,20 +161,36 @@ void ConnectionManagerWidget::showEditDialog(
     {
         repoLog("Create or update connection settings...\n");
 
-        RepoCredentials credentials = connectionSettingsDialog.getConnectionSettings();
+        repo::RepoController::RepoToken* token = connectionSettingsDialog.getConnectionSettings();
+        auto credentials = controller->serialiseToken(token);
         if (!index.isValid())
         {
             addItem(credentials);
         }
         else
         {
-            int row = getFilterableTree()->getProxyModel()->mapToSource(index).row();
-            QStandardItemModel *model = getFilterableTree()->getModel();
-            model->setItem(row, (int) Columns::ALIAS, makeAliasItem(credentials));
-            model->setItem(row, (int) Columns::HOST_PORT, makeAddressItem(credentials));
-            model->setItem(row, (int) Columns::AUTHENTICATION, makeAuthenticationItem(credentials));
-            model->setItem(row, (int) Columns::SSL, makeSSLItem(credentials));
-            model->setItem(row, (int) Columns::SSH, makeSSHItem(credentials));
+            std::string aliasStr, host, authDB, username;
+            uint32_t port;
+
+
+            if(token)
+            {
+                controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
+                int row = getFilterableTree()->getProxyModel()->mapToSource(index).row();
+                QStandardItemModel *model = getFilterableTree()->getModel();
+                model->setItem(row, (int) Columns::ALIAS, makeAliasItem(credentials, aliasStr));
+                model->setItem(row, (int) Columns::HOST_PORT, makeAddressItem(credentials, host + std::to_string(port)));
+                model->setItem(row, (int) Columns::AUTHENTICATION, makeAuthenticationItem(credentials, authDB, username));
+                model->setItem(row, (int) Columns::SSL, makeSSLItem(credentials));
+                model->setItem(row, (int) Columns::SSH, makeSSHItem(credentials));
+
+                delete token;
+            }
+            else
+            {
+                repoLogError("Cannot convert serialised data to a RepoToken!");
+            }
+
         }
         serialize();
     }
@@ -166,13 +199,13 @@ void ConnectionManagerWidget::showEditDialog(
 void ConnectionManagerWidget::serialize()
 {
     // TODO: put into async worker
-    QList<repo::RepoCredentials> list;
+    QList<std::vector<char>> list;
     QStandardItemModel *model = getFilterableTree()->getModel();
     for (int i = 0; i < model->invisibleRootItem()->rowCount(); ++i)
     {
         QModelIndex index = model->indexFromItem(
                     model->invisibleRootItem()->child(i, (int) Columns::ALIAS));
-        list.append(index.data(Qt::UserRole + 1).value<repo::RepoCredentials>());
+        list.append(index.data(Qt::UserRole + 1).value<std::vector<char>>());
     }
     settings::RepoSettingsCredentials credentialsSettings;
     credentialsSettings.writeCredentials(list);
@@ -180,11 +213,12 @@ void ConnectionManagerWidget::serialize()
 
 
 QStandardItem *ConnectionManagerWidget::makeAliasItem(
-        const repo::RepoCredentials &credentials)
+        const std::vector<char> &cred,
+        const std::string &alias)
 {
     QVariant var;
-    var.setValue(credentials);
-    QStandardItem *item = new repo::gui::primitive::RepoStandardItem(credentials.getAlias());
+    var.setValue(cred);
+    QStandardItem *item = new repo::gui::primitive::RepoStandardItem(alias);
     item->setData(var);
     item->setEnabled(true);
     item->setIcon(repo::gui::primitive::RepoFontAwesome::getHostIcon());
@@ -192,23 +226,24 @@ QStandardItem *ConnectionManagerWidget::makeAliasItem(
 }
 
 QStandardItem *ConnectionManagerWidget::makeAddressItem(
-        const repo::RepoCredentials &credentials)
+        const std::vector<char> &cred,
+        const std::string       &value)
 {
-    return new repo::gui::primitive::RepoStandardItem(credentials.getHostAndPort());
+    return new repo::gui::primitive::RepoStandardItem(value);
 }
 
 QStandardItem *ConnectionManagerWidget::makeAuthenticationItem(
-        const repo::RepoCredentials &credentials)
+        const std::vector<char> &cred,
+        const std::string       &authDB,
+        const std::string       &username)
 {
     QString label;
     QStandardItem *item = 0;
-    if (!credentials.getAuthenticationDatabase().empty() &&
-            !credentials.getUsername().empty())
+    if (!authDB.empty() &&
+            !username.empty())
     {
         label = QString::fromStdString(
-                    credentials.getAuthenticationDatabase() +
-                    " / " +
-                    credentials.getUsername());
+                   authDB + " / " + username);
         item = new repo::gui::primitive::RepoStandardItem(label);
         item->setIcon(repo::gui::primitive::RepoFontAwesome::getDatabaseIcon());
     }
@@ -218,7 +253,7 @@ QStandardItem *ConnectionManagerWidget::makeAuthenticationItem(
 }
 
 QStandardItem *ConnectionManagerWidget::makeSSLItem(
-        const repo::RepoCredentials &)
+       const std::vector<char> &)
 {
     QStandardItem *item = new repo::gui::primitive::RepoStandardItem();
     item->setEnabled(true);
@@ -228,7 +263,7 @@ QStandardItem *ConnectionManagerWidget::makeSSLItem(
 }
 
 QStandardItem *ConnectionManagerWidget::makeSSHItem(
-        const repo::RepoCredentials &)
+        const std::vector<char> &)
 {
     QStandardItem *item = new repo::gui::primitive::RepoStandardItem();
     item->setEnabled(true);

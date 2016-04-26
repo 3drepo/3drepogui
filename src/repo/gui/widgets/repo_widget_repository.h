@@ -90,7 +90,7 @@ namespace widget{
 		}
 
 		////! Returns connection corresponding to given host.
-		virtual repo::RepoToken* getConnection(const QString &host) const;
+		virtual repo::RepoController::RepoToken* getConnection(const QString &host) const;
 
 		//! Returns a list of available hosts.
 		virtual QList<QString> getHosts() const;
@@ -102,7 +102,7 @@ namespace widget{
 			* Returns a copy of a selected connection. It is necessary to reconnect
 			* and reauthenticate.
 			*/
-		repo::RepoToken* getSelectedConnection() const { return token; }
+		repo::RepoController::RepoToken* getSelectedConnection() const { return token; }
 
 		//! Returns a list of available databases.
 		QList<QString> getDatabases(const QString& host) const;
@@ -127,7 +127,7 @@ namespace widget{
 		bool cancelAllThreads();
 
 		//! Fetches databases from the server.
-		void fetchDatabases(repo::RepoController *controller, repo::RepoToken * token);
+		void fetchDatabases(repo::RepoController *controller, repo::RepoController::RepoToken * token);
 
 		//! Fetches currently selected collection (if any) from the server.
 		void fetchCollection();
@@ -292,7 +292,7 @@ namespace widget{
 		repo::RepoController *controller;
 
 		//! Connection token
-		repo::RepoToken *token;
+		repo::RepoController::RepoToken *token;
 
 		//! Counter of database rows
 		int databaseRowCounter;

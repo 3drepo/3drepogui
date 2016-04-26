@@ -20,70 +20,10 @@
 #include <QDataStream>
 #include <QMetaType>
 
-//------------------------------------------------------------------------------
-// CORE
-#include <repo/repo_credentials.h>
+
 
 #include <iostream>
 
-namespace repo {
-namespace settings {
-
-
-//! Wrapper class to enable serialization of RepoCredentials via Qt.
-class RepoCredentialsStreamable
-{
-
-public :
-    RepoCredentialsStreamable(
-            const repo::RepoCredentials &credentials = repo::RepoCredentials())
-        : credentials(credentials)
-    {}
-
-    friend QDataStream &operator<<(QDataStream &out, const RepoCredentialsStreamable &cs)
-    {
-        out << QString::fromStdString(cs.credentials.getAlias())
-        << QString::fromStdString(cs.credentials.getAuthenticationDatabase())
-        << QString::fromStdString(cs.credentials.getHost())
-        << QString::fromStdString(cs.credentials.getPassword())
-        << QString::number(cs.credentials.getPort())
-        << QString::fromStdString(cs.credentials.getUsername());
-        return out;
-    }
-
-    friend QDataStream &operator>>(QDataStream &in, RepoCredentialsStreamable &cs)
-    {
-       QString alias;
-       in >>  alias;
-       QString authenticationDatabase;
-       in >> authenticationDatabase;
-       QString host;
-       in >> host;
-       QString password;
-       in >> password;
-       QString port;
-       in >> port;
-       QString username;
-       in >> username;
-
-       cs = RepoCredentialsStreamable(
-                   repo::RepoCredentials(alias.toStdString(),
-                                 host.toStdString(),
-                                 port.toInt(),
-                                 authenticationDatabase.toStdString(),
-                                 username.toStdString(),
-                                 password.toStdString()));
-
-       return in;
-    }
-
-    repo::RepoCredentials credentials;
-};
-
-} // end namespace settings
-} // end namespace repo
-
-Q_DECLARE_METATYPE(repo::settings::RepoCredentialsStreamable)
 
 namespace repo {
 namespace settings {
@@ -104,15 +44,15 @@ public:
 
 signals :
 
-    void credentialsAt(int i, repo::RepoCredentials &credentials);
+    void credentialsAt(int i, std::vector<char> &credentials);
 
 public :
 
     //! Stores given credentials in settings
-    void writeCredentials(QList<repo::RepoCredentials> &credentialsList);
+    void writeCredentials(QList<std::vector<char>> &credentialsList);
 
     //! Emits a singal upon each stored credentials and returns them in a list.
-    QList<RepoCredentials> readCredentials();
+    QList<std::vector<char>> readCredentials();
 };
 
 

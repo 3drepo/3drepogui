@@ -40,7 +40,7 @@ public:
     enum class Command { DROP, INSERT, UPDATE };
 
     RepoWorkerRoles(
-            const repo::RepoToken *token,
+            const repo::RepoController::RepoToken *token,
             repo::RepoController *controller,
             const std::string &database,
             const repo::core::model::RepoRole &role = repo::core::model::RepoRole(),
@@ -63,7 +63,7 @@ public slots :
 private:
 
     //! Database connector.
-    const repo::RepoToken *token;
+    const repo::RepoController::RepoToken *token;
 
     //! Connection controller.
     repo::RepoController *controller;

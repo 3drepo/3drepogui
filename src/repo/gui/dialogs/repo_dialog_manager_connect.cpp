@@ -71,7 +71,7 @@ void ConnectManagerDialog::refresh()
     ui->connectionManagerWidget->refresh();
 }
 
-repo::RepoCredentials ConnectManagerDialog::getConnection()
+std::vector<char> ConnectManagerDialog::getConnection()
 {
     return ui->connectionManagerWidget->getConnection();
 }

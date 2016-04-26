@@ -232,7 +232,7 @@ public slots :
                 */
                 virtual void toggleGenericPartitioning(
                         const std::vector<repo_vector_t> &sceneBbox,
-                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree);
+                        const std::shared_ptr<repo_partitioning_tree_t> &tree);
 
                 /**
                 * Toggle between show/hide mesh bounding boxes
@@ -285,7 +285,7 @@ public slots :
                          GLC_Material                            *mat);
 
                 void createSPBoxes(
-                        const std::shared_ptr<repo::manipulator::modelutility::PartitioningTree> &tree,
+                        const std::shared_ptr<repo_partitioning_tree_t> &tree,
                         const std::vector<std::vector<float>>   &currentBbox,
                          GLC_Material                      *mat
                         );

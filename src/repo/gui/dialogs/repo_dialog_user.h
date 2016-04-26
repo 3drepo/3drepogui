@@ -67,7 +67,7 @@ namespace dialog {
 
 		//! Explicit constructor.
 		explicit UserDialog(
-			const repo::RepoToken *token,
+			const repo::RepoController::RepoToken *token,
 			repo::RepoController *controller,
 			const repo::core::model::RepoUser &user,
             const std::map<std::string, std::list<std::string> > &databasesWithProjects,
@@ -153,7 +153,7 @@ namespace dialog {
 		Ui::UserDialog *ui;
 
 		//! Database token.
-		const repo::RepoToken *token;
+		const repo::RepoController::RepoToken *token;
 
 		//! Database connection controller.
 		repo::RepoController *controller;
