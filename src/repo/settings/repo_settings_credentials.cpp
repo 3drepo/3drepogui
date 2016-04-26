@@ -22,20 +22,20 @@
 //------------------------------------------------------------------------------
 using namespace repo::settings;
 
-const QString RepoSettingsCredentials::CREDENTIALS = "credentials";
-const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "credentials_array";
+const QString RepoSettingsCredentials::CREDENTIALS = "token";
+const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "token_array";
 
 //------------------------------------------------------------------------------
 
 RepoSettingsCredentials::RepoSettingsCredentials() : QSettings()
 {
-	qRegisterMetaType<std::vector<char>>();
+	//qRegisterMetaType<std::string>();
 	//qRegisterMetaTypeStreamOperators<std::vector<char>>();
 }
 
 //------------------------------------------------------------------------------
 
-void RepoSettingsCredentials::writeCredentials(QList<std::vector<char>> &serialisedTokens)
+void RepoSettingsCredentials::writeCredentials(QList<std::string> &serialisedTokens)
 {
 	beginWriteArray(CREDENTIALS_ARRAY);
 	for (int i = 0; i < serialisedTokens.size(); ++i)
@@ -46,7 +46,6 @@ void RepoSettingsCredentials::writeCredentials(QList<std::vector<char>> &seriali
 		{
 			ss << c;
 		}
-		repoLog("writing token of size: " + std::to_string(serialisedToken.size()));
 		auto tokenStr = QString::fromStdString(ss.str());
 		setArrayIndex(i);
 		QVariant var;
@@ -58,18 +57,14 @@ void RepoSettingsCredentials::writeCredentials(QList<std::vector<char>> &seriali
 
 //------------------------------------------------------------------------------
 
-QList<std::vector<char>> RepoSettingsCredentials::readCredentials()
+QList<std::string> RepoSettingsCredentials::readCredentials()
 {
 	int size = beginReadArray(CREDENTIALS_ARRAY);
-	QList<std::vector<char>> credentialsList;
+	QList<std::string> credentialsList;
 	for (int i = 0; i < size; ++i) {
 		setArrayIndex(i);
 		QString strToken = value(CREDENTIALS).value<QString>();
-		std::string stdStringToken = strToken.toStdString();
-		std::vector<char> token;
-		token.resize(stdStringToken.size());
-		memcpy(token.data(), stdStringToken.data(), stdStringToken.size());
-		repoLog("reading token of size: " + std::to_string(token.size()));
+		std::string token = strToken.toStdString();
 		credentialsList.append(token);
 		emit credentialsAt(i, token);
 	}

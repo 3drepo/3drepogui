@@ -20,41 +20,34 @@
 #include <QDataStream>
 #include <QMetaType>
 
-
-
 #include <iostream>
 
-
 namespace repo {
-namespace settings {
+	namespace settings {
+		class RepoSettingsCredentials : public QSettings
+		{
+			Q_OBJECT
 
-class RepoSettingsCredentials : public QSettings
-{
+				static const QString CREDENTIALS;
+			static const QString CREDENTIALS_ARRAY;
 
-    Q_OBJECT
+		public:
 
-    static const QString CREDENTIALS;
-    static const QString CREDENTIALS_ARRAY;
+			RepoSettingsCredentials();
 
-public:
+			~RepoSettingsCredentials() {}
 
-    RepoSettingsCredentials();
+		signals:
 
-    ~RepoSettingsCredentials() {}
+			void credentialsAt(int i, std::string &credentials);
 
-signals :
+		public:
 
-    void credentialsAt(int i, std::vector<char> &credentials);
+			//! Stores given credentials in settings
+			void writeCredentials(QList<std::string> &credentialsList);
 
-public :
-
-    //! Stores given credentials in settings
-    void writeCredentials(QList<std::vector<char>> &credentialsList);
-
-    //! Emits a singal upon each stored credentials and returns them in a list.
-    QList<std::vector<char>> readCredentials();
-};
-
-
-} // end namespace settings
+			//! Emits a singal upon each stored credentials and returns them in a list.
+			QList<std::string> readCredentials();
+		};
+	} // end namespace settings
 } // end namespace repo

@@ -34,116 +34,111 @@
 // CORE
 #include <repo/repo_controller.h>
 
-
 //------------------------------------------------------------------------------
 
 namespace repo {
-namespace gui{
-namespace widget {
+	namespace gui{
+		namespace widget {
+			Q_DECLARE_METATYPE(std::string)
 
-        Q_DECLARE_METATYPE(std::vector<char>)
+			class ConnectionManagerWidget : public EditableTreeWidget
+			{
+				Q_OBJECT
 
-    class ConnectionManagerWidget : public EditableTreeWidget
-	{
-		Q_OBJECT
+					static const QString COLUMNS_SETTINGS;
 
-			static const QString COLUMNS_SETTINGS;
+				static const QString SELECTION_SETTINGS;
 
-		static const QString SELECTION_SETTINGS;
+				//! Tree view columns
+				enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
 
-		//! Tree view columns
-		enum class Columns { ALIAS, HOST_PORT, AUTHENTICATION, SSL, SSH };
+			public:
 
-	public:
+				explicit ConnectionManagerWidget(QWidget *parent);
 
-		explicit ConnectionManagerWidget(QWidget *parent);
+				~ConnectionManagerWidget();
 
-		~ConnectionManagerWidget();
+				public slots :
 
-		public slots :
+				//! Adds credentials as an item into the table.
+				void addItem(const std::string &credentials);
 
-		//! Adds credentials as an item into the table.
-                void addItem(const std::vector<char> &credentials);
+				//! Updates selected item.
+				virtual void edit();
 
-		//! Updates selected item.
-		virtual void edit();
+				//! Updates item based on model index.
+				virtual void edit(const QModelIndex &index);
 
-		//! Updates item based on model index.
-		virtual void edit(const QModelIndex &index);
+				//! Returns currectly selected connection.
+				std::string getConnection();
 
-		//! Returns currectly selected connection.                
-                std::vector<char> getConnection();
+				//! Returns connection for given model index.
+				std::string getConnection(const QModelIndex &index);
 
-		//! Returns connection for given model index.                
-                std::vector<char> getConnection(const QModelIndex &index);
+				//! Refreshes the current list
+				virtual void refresh();
 
-		//! Refreshes the current list
-		virtual void refresh();
+				//! Copies currectly selected item.
+				virtual void copyItem()
+				{
+					showEditDialog(getConnection(), QModelIndex(), Action::COPY);
+				}
 
-		//! Copies currectly selected item.
-		virtual void copyItem()
-		{
-			showEditDialog(getConnection(), QModelIndex(), Action::COPY);
-		}
+				//! Removes item and refreshes the DB if necessary.
+				virtual void removeItem();
 
-		//! Removes item and refreshes the DB if necessary.
-		virtual void removeItem();
+				//! Shows edit dialog.
+				virtual void showEditDialog()
+				{
+					showEditDialog(
+						std::string(), QModelIndex(), Action::ADD);
+				}
 
-		//! Shows edit dialog.
-		virtual void showEditDialog()
-		{
-                        showEditDialog(
-                                    std::vector<char>(), QModelIndex(), Action::ADD);
-		}
+				//! Shows edit dialog populated with given credentials.
+				void showEditDialog(
+					const std::string &credentials,
+					const QModelIndex &index,
+					const Action action);
 
-		//! Shows edit dialog populated with given credentials.
-		void showEditDialog(
-                        const std::vector<char> &credentials,
-			const QModelIndex &index,
-			const Action action);
+			public:
 
-	public:
+				//! Sets DB controller for connectin validation to work.
+				void setController(repo::RepoController *controller)
+				{
+					this->controller = controller;
+				}
 
-		//! Sets DB controller for connectin validation to work.
-		void setController(repo::RepoController *controller)
-		{
-			this->controller = controller;
-		}
+			private:
 
-	private:
+				//! Serializes table contents onto the HDD.
+				void serialize();
 
-		//! Serializes table contents onto the HDD.
-		void serialize();
+				//! Returns alias tree item from given credentials
+				static QStandardItem *makeAliasItem(
+					const std::string &credentials,
+					const std::string &value);
 
-		//! Returns alias tree item from given credentials
-                static QStandardItem *makeAliasItem(
-                        const std::vector<char> &credentials,
-                        const std::string &value);
+				//! Returns address tree item from given credentials
+				static QStandardItem *makeAddressItem(const std::string &credentials,
+					const std::string &value);
 
-		//! Returns address tree item from given credentials
-                static QStandardItem *makeAddressItem(const std::vector<char> &credentials,
-                                                      const std::string &value);
+				//! Returns authentication tree item from given credentials
+				static QStandardItem *makeAuthenticationItem(
+					const std::string &credentials,
+					const std::string &authDB,
+					const std::string &username);
 
-		//! Returns authentication tree item from given credentials
-                static QStandardItem *makeAuthenticationItem(
-                        const std::vector<char> &credentials,
-                        const std::string &authDB,
-                        const std::string &username);
+				//! Returns ssl tree item from given credentials
+				static QStandardItem *makeSSLItem(const std::string &);
 
-		//! Returns ssl tree item from given credentials
-                static QStandardItem *makeSSLItem(const std::vector<char> &);
+				//! Returns ssh tree item from given credentials
+				static QStandardItem *makeSSHItem(const std::string &);
 
-		//! Returns ssh tree item from given credentials
-                static QStandardItem *makeSSHItem(const std::vector<char> &);
+			private:
 
-	private:
-
-		//! DB controller.
-		repo::RepoController *controller;
-	};
-
-} // widgets
-}
+				//! DB controller.
+				repo::RepoController *controller;
+			};
+		} // widgets
+	}
 } // repo
-
-

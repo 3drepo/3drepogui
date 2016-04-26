@@ -21,100 +21,115 @@ using namespace repo::gui::dialog;
 
 //------------------------------------------------------------------------------
 ConnectDialog::ConnectDialog(
-        repo::RepoController *controller,
-        const std::vector<char> &credentials,
-        const bool isCopy,
-        QWidget *parent,
-        Qt::WindowFlags flags)
-    : QDialog(parent, flags)
-    , ui(new Ui::ConnectDialog)
-    , controller(controller)
+	repo::RepoController *controller,
+	const std::string &credentials,
+	const bool isCopy,
+	QWidget *parent,
+	Qt::WindowFlags flags)
+	: QDialog(parent, flags)
+	, ui(new Ui::ConnectDialog)
+	, credentials(credentials)
+	, controller(controller)
 {
-    ui->setupUi(this);
-    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
+	ui->setupUi(this);
+	setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
-    std::string aliasStr, host, authDB, username;
-    uint32_t port = 27017;
+	std::string aliasStr, host, authDB, username;
+	uint32_t port = 27017;
 
+	repo::RepoController::RepoToken *token = nullptr;
+	if (!credentials.empty())
+	{
+		token = controller->createTokenFromSerialised(credentials);
+		controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
+	}
 
-     repo::RepoController::RepoToken *token = nullptr;
-    if(credentials.size())
-    {
-        token = controller->createTokenFromSerialised((credentials));
-        controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
-    }
+	// Alias
+	QString alias = QString::fromStdString(aliasStr);
+	if (isCopy)
+	{
+		alias += " " + tr("(Copy)");
+	}
+	ui->aliasLineEdit->setText(alias);
 
+	ui->hostLineEdit->setText(QString::fromStdString(host));
+	ui->portLineEdit->setText(QString::number(port));
+	ui->usernameLineEdit->setText(QString::fromStdString(username));
+	ui->authenticationDatabaseLineEdit->setText(
+		QString::fromStdString(authDB));
 
-    // Alias
-    QString alias = QString::fromStdString(aliasStr);
-    if (isCopy)
-    {
-        alias += " " + tr("(Copy)");
-    }
-    ui->aliasLineEdit->setText(alias);
+	// TODO: save encrypted binary version of the password,
+	// see http://qt-project.org/wiki/Simple_encryption
 
-    ui->hostLineEdit->setText(QString::fromStdString(host));
-    ui->portLineEdit->setText(QString::number(port));
-    ui->usernameLineEdit->setText(QString::fromStdString(username));
-    ui->authenticationDatabaseLineEdit->setText(
-                QString::fromStdString(authDB));
+	if (token)
+		delete token;
 
-    // TODO: save encrypted binary version of the password,
-    // see http://qt-project.org/wiki/Simple_encryption
-    //FIXME: since this is always hidden, is there much point in retreiving the digested password?
-    ui->passwordLineEdit->setText(QString::fromStdString("123456789012"));
+	//--------------------------------------------------------------------------
 
-    if(token)
-        delete token;
+	// TODO: make it remember more databases.
+	QStringList wordList;
+	wordList << "admin";
+	databasesCompleter = new QCompleter(wordList);
+	ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
 
-    //--------------------------------------------------------------------------
+	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    // TODO: make it remember more databases.
-    QStringList wordList;
-    wordList << "admin";
-    databasesCompleter = new QCompleter(wordList);
-    ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
+	// TODO: code in support for SSL and SSH
+	ui->tabWidget->setTabEnabled((int)Tab::SSL, false); // SSL tab disabled
+	ui->tabWidget->setTabEnabled((int)Tab::SSH, false); // SSH tab disabled
 
-    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	ui->validateProgressBar->hide();
 
-    // TODO: code in support for SSL and SSH
-    ui->tabWidget->setTabEnabled((int) Tab::SSL, false); // SSL tab disabled
-    ui->tabWidget->setTabEnabled((int) Tab::SSH, false); // SSH tab disabled
-
-    ui->validateProgressBar->hide();
-
-    connect(ui->validatePushButton, SIGNAL(pressed()), this, SLOT(validate()));
+	connect(ui->validatePushButton, SIGNAL(pressed()), this, SLOT(validate()));
 }
 
 //------------------------------------------------------------------------------
 ConnectDialog::~ConnectDialog()
 {
-    delete databasesCompleter;
-    delete ui;
+	delete databasesCompleter;
+	delete ui;
 }
 
 void ConnectDialog::validate()
 {
-//    ui->validateProgressBar->show();
+	//    ui->validateProgressBar->show();
 
-    // TODO: make asynchronous
-    repo::RepoController::RepoToken *token = getConnectionSettings();
+	// TODO: make asynchronous
+	repo::RepoController::RepoToken *token = getConnectionSettings();
 
-    repoLog("@validate");
-    controller->testConnection(token);
+	controller->testConnection(token);
 
-
-
-//    ui->validateProgressBar->hide();
+	//    ui->validateProgressBar->hide();
 }
 
 repo::RepoController::RepoToken* ConnectDialog::getConnectionSettings() const
 {
+	const auto oldToken = controller->createTokenFromSerialised(credentials);
+	repo::RepoController::RepoToken *res;
+	if (!oldToken ||
+		!ui->passwordLineEdit->text().toStdString().empty() ||
+		(ui->passwordLineEdit->text().toStdString().empty() && ui->usernameLineEdit->text().toStdString().empty()))
+	{
+		//password unchanged
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			ui->usernameLineEdit->text().toStdString(),
+			ui->passwordLineEdit->text().toStdString());
+	}
+	else
+	{
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			oldToken);
+	}
 
-    return controller->createToken(ui->hostLineEdit->text().toStdString(),
-                                   ui->portLineEdit->text().toInt(),
-                                   ui->authenticationDatabaseLineEdit->text().toStdString(),
-                                   ui->usernameLineEdit->text().toStdString(),
-                                   ui->passwordLineEdit->text().toStdString());
+	if (oldToken) delete oldToken;
+	return res;
 }
