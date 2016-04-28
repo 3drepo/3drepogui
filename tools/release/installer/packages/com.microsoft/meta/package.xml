@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Visual C++ Redistributable Packages</DisplayName>
+    <Description>Microsoft Visual C++ Redistributable Packages for Visual Studio 2013 (Only needed for Windows 7)</Description>
+    <Version>2013</Version>
+	<ReleaseDate>2014-12-30</ReleaseDate>
+	<Name>Visual C++ Redistributable Packages</Name>
+	<SortingPriority>1</SortingPriority>
+    <Default>false</Default>
+    <Script>installscript.qs</Script>
+</Package>
