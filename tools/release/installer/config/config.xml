@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>3D Repo GUI</Name>
+    <Version>1.0.0</Version>
+    <Title>3D Repo GUI</Title>
+    <Publisher>3D Repo Ltd</Publisher>
+    <StartMenuDir>3D Repo</StartMenuDir>
+    <TargetDir>@ApplicationsDir@/3D Repo/3D Repo GUI</TargetDir>
+    <ProductUrl>http://3drepo.org</ProductUrl>
+    <RunProgram>@ApplicationsDir@/3D Repo/3D Repo GUI/bin/3drepogui.exe</RunProgram>
+</Installer>

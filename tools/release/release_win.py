@@ -16,6 +16,10 @@ releaseTag = "v1.0b2"
 
 #name
 projName = "3drepogui"
+
+#QT installer directory
+qtInstallerexe = "c:\\Qt\\QtIFW2.0.1\\bin\\binarycreator.exe"
+
 #where 3drepogui is
 guiPath = "C:\\Users\\Carmen\\3D Repo\\Repo\\build-3drepogui-Desktop_Qt_5_5_1_MSVC2013_64bit-Release\\release\\"
 bouncerdll = "3drepobouncer_1_0b2.dll"
@@ -46,13 +50,14 @@ rootDir = os.getcwd() + "\\" + releaseTag
 installDir = rootDir
 
 #Create output directory
+os.system("mkdir scratch")
 os.system("mkdir \"" + rootDir + "\"")
 os.system("mkdir \"" +installDir +"\\bin\"")
 
 #Get everything needed to run QT project
 #windeployqt doesn't like quotes in the path... copy to a scratch and use relative path.
-os.system("mkdir scratch")
 os.system("copy  \""+ guiPath +"\" scratch")
+
 os.system("windeployqt scratch")
 
 #Copy exe
@@ -60,27 +65,40 @@ os.system("xcopy /e scratch\\* \"" + installDir + "\\bin\"")
 os.system("del /s \"" + installDir + "\\bin\\*.cpp")
 os.system("del /s \"" + installDir + "\\bin\\*.obj")
 
-os.system("rmdir scratch /S /Q")
+#Copy installer backbone
+os.system("xcopy  installer scratch\\installer\\ /s /e")
+
+bouncerDir = "scratch\\installer\\packages\\org.3drepo.bouncer\\data"
+guiDir = "scratch\\installer\\packages\\org.3drepo.gui\\data"
+
+os.system("mkdir \"" +bouncerDir +"\\bin\"")
+
+#copy the directory to installer
+os.system("xcopy  \""+ installDir +"\\*\" \"" + guiDir + "\" /s /e")
 
 #Copy libraries
 fpMongodll = os.environ["MONGO_ROOT"] + "\\lib\\" + mongodll
 fpAssimpdll = os.environ["ASSIMP_ROOT"] + "\\lib\\" + assimpdll
 fpGLCdll = os.environ["GLC_ROOT"] + "\\lib\\Release\\" + glcdll
-
-os.system("copy \"" + fpMongodll + "\" \"" + installDir + "\\bin\"")
-os.system("copy \"" + fpAssimpdll + "\" \"" + installDir + "\\bin\"")
-os.system("copy \"" + fpGLCdll + "\" \"" + installDir + "\\bin\"")
+os.system("copy \"" + fpMongodll + "\" \"" + bouncerDir + "\\bin\"")
+os.system("copy \"" + fpAssimpdll + "\" \"" + bouncerDir + "\\bin\"")
+os.system("copy \"" + fpGLCdll + "\" \"" + guiDir + "\\bin\\\"")
 
 boostLib = os.environ["BOOST_LIBRARYDIR"]
 for boostDll in boostdlls:
-	os.system("copy \"" + boostLib + "\\" + boostDll + "\" \"" + installDir + "\\bin\"")
+	os.system("copy \"" + boostLib + "\\" + boostDll + "\" \"" + bouncerDir + "\\bin\"")
 
-os.system("copy \"" + os.environ["REPOBOUNCER_ROOT"] + "\\lib\\" + bouncerdll + "\" \"" + installDir + "\\bin\"")
+os.system("copy \"" + os.environ["REPOBOUNCER_ROOT"] + "\\lib\\" + bouncerdll + "\" \"" + bouncerDir + "\\bin\"")
 
-os.system("copy C:\\Windows\\System32\\libeay32.dll \"" + installDir + "\\bin\"")
-os.system("copy C:\\Windows\\System32\\libssl32.dll \"" + installDir + "\\bin\"")
 #copy README and licensing info
-os.system("copy \"" + rootDir + "\\..\\README.txt\" \"" + installDir + "\\\"")
-os.system("mkdir \"" + installDir +"\\license\"")
-os.system("copy \"" + rootDir + "\\..\\license\\*\" \"" + installDir + "\\license\"")
+os.system("copy \"" + rootDir + "\\..\\README.txt\" \"" + guiDir + "\\\"")
+os.system("mkdir \"" + guiDir +"\\license\"")
+os.system("copy \"" + rootDir + "\\..\\license\\*\" \"" + guiDir + "\\license\"")
 
+stringTest = qtInstallerexe + " -c scratch\\installer\\config\config.xml -p scratch\\installer\\packages 3DRepo.exe"
+os.system("echo " + stringTest)
+os.system(qtInstallerexe + " -c scratch\\installer\\config\config.xml -p scratch\\installer\\packages 3DRepo.exe")
+
+#Remove scratch directory
+os.system("rmdir scratch /S /Q")
+os.system("rmdir v1.0b2 /S /Q")
