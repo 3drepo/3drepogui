@@ -89,7 +89,7 @@ namespace widget{
 			*/
 		RepoMdiSubWindow* addSubWindow(
 			repo::RepoController *controller,
-			const repo::RepoToken      * token,
+			const repo::RepoController::RepoToken      * token,
 			const QString& database,
 			const QString &project,
 			const QUuid& id = QUuid(),

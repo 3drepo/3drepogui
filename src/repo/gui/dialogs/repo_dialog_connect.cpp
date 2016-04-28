@@ -21,83 +21,115 @@ using namespace repo::gui::dialog;
 
 //------------------------------------------------------------------------------
 ConnectDialog::ConnectDialog(
-        repo::RepoController *controller,
-        const repo::RepoCredentials &credentials,
-        const bool isCopy,
-        QWidget *parent,
-        Qt::WindowFlags flags)
-    : QDialog(parent, flags)
-    , ui(new Ui::ConnectDialog)
-    , controller(controller)
+	repo::RepoController *controller,
+	const std::string &credentials,
+	const bool isCopy,
+	QWidget *parent,
+	Qt::WindowFlags flags)
+	: QDialog(parent, flags)
+	, ui(new Ui::ConnectDialog)
+	, credentials(credentials)
+	, controller(controller)
 {
-    ui->setupUi(this);
-    setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
+	ui->setupUi(this);
+	setWindowIcon(repo::gui::primitive::RepoFontAwesome::getConnectIcon());
 
-    // Alias
-    QString alias = QString::fromStdString(credentials.getAlias());
-    if (isCopy)
-    {
-        alias += " " + tr("(Copy)");
-    }
-    ui->aliasLineEdit->setText(alias);
+	std::string aliasStr, host, authDB, username;
+	uint32_t port = 27017;
 
-    ui->hostLineEdit->setText(QString::fromStdString(credentials.getHost()));
-    ui->portLineEdit->setText(QString::number(credentials.getPort()));
-    ui->usernameLineEdit->setText(QString::fromStdString(credentials.getUsername()));
-    ui->authenticationDatabaseLineEdit->setText(
-                QString::fromStdString(credentials.getAuthenticationDatabase()));
+	repo::RepoController::RepoToken *token = nullptr;
+	if (!credentials.empty())
+	{
+		token = controller->createTokenFromSerialised(credentials);
+		controller->getInfoFromToken(token, aliasStr, host, port, username, authDB);
+	}
 
-    // TODO: save encrypted binary version of the password,
-    // see http://qt-project.org/wiki/Simple_encryption
-    ui->passwordLineEdit->setText(QString::fromStdString(credentials.getPassword()));
+	// Alias
+	QString alias = QString::fromStdString(aliasStr);
+	if (isCopy)
+	{
+		alias += " " + tr("(Copy)");
+	}
+	ui->aliasLineEdit->setText(alias);
 
-    //--------------------------------------------------------------------------
+	ui->hostLineEdit->setText(QString::fromStdString(host));
+	ui->portLineEdit->setText(QString::number(port));
+	ui->usernameLineEdit->setText(QString::fromStdString(username));
+	ui->authenticationDatabaseLineEdit->setText(
+		QString::fromStdString(authDB));
 
-    // TODO: make it remember more databases.
-    QStringList wordList;
-    wordList << "admin";
-    databasesCompleter = new QCompleter(wordList);
-    ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
+	// TODO: save encrypted binary version of the password,
+	// see http://qt-project.org/wiki/Simple_encryption
 
-    connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	if (token)
+		delete token;
 
-    // TODO: code in support for SSL and SSH
-    ui->tabWidget->setTabEnabled((int) Tab::SSL, false); // SSL tab disabled
-    ui->tabWidget->setTabEnabled((int) Tab::SSH, false); // SSH tab disabled
+	//--------------------------------------------------------------------------
 
-    ui->validateProgressBar->hide();
+	// TODO: make it remember more databases.
+	QStringList wordList;
+	wordList << "admin";
+	databasesCompleter = new QCompleter(wordList);
+	ui->authenticationDatabaseLineEdit->setCompleter(databasesCompleter);
 
-    connect(ui->validatePushButton, SIGNAL(pressed()), this, SLOT(validate()));
+	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+	// TODO: code in support for SSL and SSH
+	ui->tabWidget->setTabEnabled((int)Tab::SSL, false); // SSL tab disabled
+	ui->tabWidget->setTabEnabled((int)Tab::SSH, false); // SSH tab disabled
+
+	ui->validateProgressBar->hide();
+
+	connect(ui->validatePushButton, SIGNAL(pressed()), this, SLOT(validate()));
 }
 
 //------------------------------------------------------------------------------
 ConnectDialog::~ConnectDialog()
 {
-    delete databasesCompleter;
-    delete ui;
+	delete databasesCompleter;
+	delete ui;
 }
 
 void ConnectDialog::validate()
 {
-//    ui->validateProgressBar->show();
+	//    ui->validateProgressBar->show();
 
-    // TODO: make asynchronous
-    repo::RepoCredentials credentials = getConnectionSettings();
+	// TODO: make asynchronous
+	repo::RepoController::RepoToken *token = getConnectionSettings();
 
-    controller->testConnection(credentials);
+	controller->testConnection(token);
 
-//    ui->validateProgressBar->hide();
+	//    ui->validateProgressBar->hide();
 }
 
-repo::RepoCredentials ConnectDialog::getConnectionSettings() const
+repo::RepoController::RepoToken* ConnectDialog::getConnectionSettings() const
 {
-    repo::RepoCredentials credentials(
-                ui->aliasLineEdit->text().toStdString(),
-                ui->hostLineEdit->text().toStdString(),
-                ui->portLineEdit->text().toInt(),
-                ui->authenticationDatabaseLineEdit->text().toStdString(),
-                ui->usernameLineEdit->text().toStdString(),
-                ui->passwordLineEdit->text().toStdString());
-    return credentials;
+	const auto oldToken = controller->createTokenFromSerialised(credentials);
+	repo::RepoController::RepoToken *res;
+	if (!oldToken ||
+		!ui->passwordLineEdit->text().toStdString().empty() ||
+		(ui->passwordLineEdit->text().toStdString().empty() && ui->usernameLineEdit->text().toStdString().empty()))
+	{
+		//password unchanged
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			ui->usernameLineEdit->text().toStdString(),
+			ui->passwordLineEdit->text().toStdString());
+	}
+	else
+	{
+		res = controller->createToken(
+			ui->aliasLineEdit->text().toStdString(),
+			ui->hostLineEdit->text().toStdString(),
+			ui->portLineEdit->text().toInt(),
+			ui->authenticationDatabaseLineEdit->text().toStdString(),
+			oldToken);
+	}
+
+	if (oldToken) delete oldToken;
+	return res;
 }

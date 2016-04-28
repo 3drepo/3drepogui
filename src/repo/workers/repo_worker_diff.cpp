@@ -27,10 +27,10 @@ namespace repoModel = repo::core::model;
 
 DiffWorker::DiffWorker(
 	repo::RepoController                    *controller,
-	const repo::RepoToken                   *token,
+	const repo::RepoController::RepoToken                   *token,
 	      repo::core::model::RepoScene      *sceneA,    
           repo::core::model::RepoScene      *sceneB,
-    const repo::manipulator::diff::Mode     diffMode,
+    const repo::DiffMode     diffMode,
     const bool                              colourCorres)
 	: controller(controller)
 	, token(token)
@@ -53,7 +53,7 @@ void DiffWorker::run()
 
 	if (sceneA && sceneB)
 	{
-		repo::manipulator::diff::DiffResult aRes, bRes;
+        repo_diff_result_t aRes, bRes;
         controller->compareScenes(token, sceneA, sceneB, aRes, bRes, diffMode);
 
 		if (colourCorres)
@@ -71,8 +71,8 @@ void DiffWorker::run()
 }
 
 void DiffWorker::processResultsByCorrespondence(
-	const repo::manipulator::diff::DiffResult &aRes,
-	const repo::manipulator::diff::DiffResult &bRes)
+    const repo_diff_result_t &aRes,
+    const repo_diff_result_t &bRes)
 {
     //Diff is always done on unoptimised graph.
     const repo::core::model::RepoScene::GraphType gType =
@@ -92,8 +92,8 @@ void DiffWorker::processResultsByCorrespondence(
 }
 
 void DiffWorker::processResultsByDiff(
-	const repo::manipulator::diff::DiffResult &aRes,
-	const repo::manipulator::diff::DiffResult &bRes)
+    const repo_diff_result_t &aRes,
+    const repo_diff_result_t &bRes)
 {
     //Diff is always done on unoptimised graph.
     const repo::core::model::RepoScene::GraphType gType =

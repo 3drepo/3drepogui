@@ -40,7 +40,7 @@ namespace repo {
 			//! Default worker constructor.
 			OptimizeWorker(
 				repo::RepoController *controller, 
-				const repo::RepoToken *token,
+				const repo::RepoController::RepoToken *token,
 				repo::core::model::RepoScene *scene);
 
 			//! Default empty destructor.
@@ -57,7 +57,7 @@ namespace repo {
 
 		private:
 			repo::RepoController *controller;
-			const repo::RepoToken      *token;
+			const repo::RepoController::RepoToken      *token;
 			repo::core::model::RepoScene *scene;
 
 		}; // end class

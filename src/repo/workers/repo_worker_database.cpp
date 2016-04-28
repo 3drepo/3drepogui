@@ -25,7 +25,7 @@ using namespace repo::worker;
 
 DatabaseWorker::DatabaseWorker(
         repo::RepoController *controller,
-        repo::RepoToken *token)
+        repo::RepoController::RepoToken *token)
     : RepoAbstractWorker(),
       controller(controller),
       token(token)

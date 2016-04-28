@@ -24,7 +24,7 @@ using namespace repo::gui::dialog;
 using namespace repo::gui;
 
 UserDialog::UserDialog(
-        const repo::RepoToken *token,
+        const repo::RepoController::RepoToken *token,
         repo::RepoController *controller,
         const repo::core::model::RepoUser &user,
         const std::map<std::string, std::list<std::string> > &databasesWithProjects,

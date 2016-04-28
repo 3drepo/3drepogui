@@ -20,6 +20,11 @@
 #include "repo_worker_abstract.h"
 //-----------------------------------------------------------------------------
 #include <repo/repo_controller.h>
+#include <repo/core/model/bson/repo_node_camera.h>
+#include <repo/core/model/bson/repo_node_material.h>
+#include <repo/core/model/bson/repo_node_mesh.h>
+#include <repo/core/model/bson/repo_node_texture.h>
+#include <repo/core/model/bson/repo_node_transformation.h>
 
 #include <QImage>
 #include <GLC_World>

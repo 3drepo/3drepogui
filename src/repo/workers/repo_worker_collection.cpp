@@ -29,7 +29,7 @@ namespace repoModel = repo::core::model;
 
 CollectionWorker::CollectionWorker(
 	repo::RepoController *controller,
-	repo::RepoToken      *token,
+	repo::RepoController::RepoToken      *token,
 	const std::string    &database,
 	const std::string    &collection)
 	: controller(controller)

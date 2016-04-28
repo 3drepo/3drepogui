@@ -16,50 +16,58 @@
 */
 
 #include "repo_settings_credentials.h"
+#include <repo/lib/repo_log.h>
+#include <sstream>
 
 //------------------------------------------------------------------------------
 using namespace repo::settings;
 
-const QString RepoSettingsCredentials::CREDENTIALS = "credentials";
-const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "credentials_array";
+const QString RepoSettingsCredentials::CREDENTIALS = "token";
+const QString RepoSettingsCredentials::CREDENTIALS_ARRAY = "token_array";
 
 //------------------------------------------------------------------------------
 
 RepoSettingsCredentials::RepoSettingsCredentials() : QSettings()
 {
-    qRegisterMetaType<repo::settings::RepoCredentialsStreamable>();
-    qRegisterMetaTypeStreamOperators<repo::settings::RepoCredentialsStreamable>();
+	//qRegisterMetaType<std::string>();
+	//qRegisterMetaTypeStreamOperators<std::vector<char>>();
 }
 
 //------------------------------------------------------------------------------
 
-void RepoSettingsCredentials::writeCredentials(QList<repo::RepoCredentials> &credentialsList)
+void RepoSettingsCredentials::writeCredentials(QList<std::string> &serialisedTokens)
 {
-    beginWriteArray(CREDENTIALS_ARRAY);
-    for (int i = 0; i < credentialsList.size(); ++i)
-    {        
-        const repo::RepoCredentials credentials = credentialsList.at(i);
-        RepoCredentialsStreamable cs(credentials);
-        setArrayIndex(i);
-        QVariant var;
-        var.setValue(cs);
-        setValue(CREDENTIALS, var);
-    }
-    endArray();
+	beginWriteArray(CREDENTIALS_ARRAY);
+	for (int i = 0; i < serialisedTokens.size(); ++i)
+	{
+		const auto serialisedToken = serialisedTokens.at(i);
+		std::stringstream ss;
+		for (const auto &c : serialisedToken)
+		{
+			ss << c;
+		}
+		auto tokenStr = QString::fromStdString(ss.str());
+		setArrayIndex(i);
+		QVariant var;
+		var.setValue(tokenStr);
+		setValue(CREDENTIALS, var);
+	}
+	endArray();
 }
 
 //------------------------------------------------------------------------------
 
-QList<repo::RepoCredentials> RepoSettingsCredentials::readCredentials()
-{    
-    int size = beginReadArray(CREDENTIALS_ARRAY);
-    QList<repo::RepoCredentials> credentialsList;
-    for (int i = 0; i < size; ++i) {
-        setArrayIndex(i);
-        RepoCredentialsStreamable cs = value(CREDENTIALS).value<RepoCredentialsStreamable>();
-        credentialsList.append(cs.credentials);
-        emit credentialsAt(i, cs.credentials);
-    }
-    endArray();
-    return credentialsList;
+QList<std::string> RepoSettingsCredentials::readCredentials()
+{
+	int size = beginReadArray(CREDENTIALS_ARRAY);
+	QList<std::string> credentialsList;
+	for (int i = 0; i < size; ++i) {
+		setArrayIndex(i);
+		QString strToken = value(CREDENTIALS).value<QString>();
+		std::string token = strToken.toStdString();
+		credentialsList.append(token);
+		emit credentialsAt(i, token);
+	}
+	endArray();
+	return credentialsList;
 }

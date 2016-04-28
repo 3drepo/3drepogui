@@ -120,7 +120,7 @@ namespace widget {
 
 		void setDBConnection(
 			repo::RepoController *controller,
-			const repo::RepoToken *token,
+			const repo::RepoController::RepoToken *token,
 			const std::string &database);
 
 	private:
@@ -131,7 +131,7 @@ namespace widget {
 		//! Mapping of databases to their associated projects.
 		std::map<std::string, std::list<std::string> > databasesWithProjects;
 
-		const repo::RepoToken* token;
+		const repo::RepoController::RepoToken* token;
 
 		std::string database;
 

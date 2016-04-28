@@ -21,7 +21,7 @@
 using namespace repo::worker;
 
 UsersWorker::UsersWorker(
-        const repo::RepoToken                   *token,
+        const repo::RepoController::RepoToken                   *token,
         repo::RepoController                    *controller,
         const std::string                       &database,
         const repo::core::model::RepoUser &user,
@@ -69,7 +69,6 @@ void UsersWorker::run()
     }
 
     //--------------------------------------------------------------------------
-    std::auto_ptr<mongo::DBClientCursor> cursor;
     std::list<std::string> fields; // projection, empty at the moment
     //--------------------------------------------------------------------------
     // Get custom roles

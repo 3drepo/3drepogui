@@ -47,10 +47,10 @@ namespace repo {
 			* @param colourCorres true: colour correspondence false: colour differences
 			*/
             DiffWorker(repo::RepoController                    *controller,
-                const repo::RepoToken                   *token,
+                const repo::RepoController::RepoToken                   *token,
                 repo::core::model::RepoScene            *sceneA,
                 repo::core::model::RepoScene            *sceneB,
-                const manipulator::diff::Mode diffMode,
+                const repo::DiffMode diffMode,
                 const bool colourCorres = false
                 );
 
@@ -82,11 +82,11 @@ namespace repo {
 
 		private:
 			repo::RepoController              *controller; //Repo Controller
-			const repo::RepoToken             *token; //Repo Token to access the database
+			const repo::RepoController::RepoToken             *token; //Repo Token to access the database
 			repo::core::model::RepoScene      *sceneA; //Base scene to compare from
 			repo::core::model::RepoScene      *sceneB; //Scene to compare against
 			const bool                         colourCorres; //colour correspondence
-            repo::manipulator::diff::Mode       diffMode;
+            repo::DiffMode       diffMode;
 
 			/**
 			* Process the results by diff, sending off color change signals
@@ -95,8 +95,8 @@ namespace repo {
 			* @param bRes results on B
 			*/
 			void processResultsByDiff(
-				const repo::manipulator::diff::DiffResult &aRes,
-				const repo::manipulator::diff::DiffResult &bRes);
+                const repo_diff_result_t &aRes,
+                const repo_diff_result_t &bRes);
 
 			/**
 			* Process the results by correspondence, sending off color change signals
@@ -105,8 +105,8 @@ namespace repo {
 			* @param bRes results on B
 			*/
 			void processResultsByCorrespondence(
-				const repo::manipulator::diff::DiffResult &aRes,
-				const repo::manipulator::diff::DiffResult &bRes);
+                const repo_diff_result_t &aRes,
+                const repo_diff_result_t &bRes);
 
 
 		}; // end class

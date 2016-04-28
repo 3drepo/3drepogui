@@ -19,11 +19,9 @@
 
 #include <QDialog>
 
-
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -32,36 +30,33 @@
 #include "../../settings/repo_settings_credentials.h"
 
 namespace Ui {
-class ConnectManagerDialog;
+	class ConnectManagerDialog;
 }
 
 namespace repo{
-namespace gui {
-namespace dialog {
+	namespace gui {
+		namespace dialog {
+			class ConnectManagerDialog : public QDialog
+			{
+				Q_OBJECT
 
+			public:
+				explicit ConnectManagerDialog(repo::RepoController *controller, QWidget *parent = 0);
+				~ConnectManagerDialog();
 
-class ConnectManagerDialog : public QDialog
-{
-    Q_OBJECT
+				public slots :
 
-public:
-    explicit ConnectManagerDialog(repo::RepoController *controller, QWidget *parent = 0);
-    ~ConnectManagerDialog();
+				int exec();
 
-public slots :
+				void refresh();
 
-    int exec();
+				std::string getConnection();
 
-    void refresh();
+			private:
+				Ui::ConnectManagerDialog *ui;
 
-    repo::RepoCredentials getConnection();
-
-private:
-    Ui::ConnectManagerDialog *ui;
-
-    repo::RepoController *controller;
-};
-
-} // end namespace widget
-}
+				repo::RepoController *controller;
+			};
+		} // end namespace widget
+	}
 } // end namespace repo

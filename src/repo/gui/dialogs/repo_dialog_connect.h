@@ -28,7 +28,6 @@
 //------------------------------------------------------------------------------
 // CORE
 #include <repo/repo_controller.h>
-#include <repo/repo_credentials.h>
 
 //------------------------------------------------------------------------------
 // GUI
@@ -36,55 +35,54 @@
 #include "../primitives/repo_fontawesome.h"
 
 namespace Ui {
-class ConnectDialog;
+	class ConnectDialog;
 }
 
 namespace repo{
-namespace gui {
-namespace dialog {
+	namespace gui {
+		namespace dialog {
+			/*!
+				* Connection dialog that saves alias, host, port, authentication database,
+				* username and password as RepoCredentials.
+				*/
+			class ConnectDialog : public QDialog
+			{
+				Q_OBJECT
 
-	/*!
-		* Connection dialog that saves alias, host, port, authentication database,
-		* username and password as RepoCredentials.
-		*/
-	class ConnectDialog : public QDialog
-	{
-		Q_OBJECT
+				enum class Tab { ADDRESS, AUTHENTICATION, SSL, SSH };
 
-		enum class Tab { ADDRESS, AUTHENTICATION, SSL, SSH };
+			public:
 
-	public:
+				//! Creates a connection dialog. To show, run exec().
+				ConnectDialog(repo::RepoController *controller,
+					const std::string &credentials,
+					const bool isCopy = false,
+					QWidget *parent = 0,
+					Qt::WindowFlags flags = 0);
 
-		//! Creates a connection dialog. To show, run exec().
-		ConnectDialog(repo::RepoController *controller,
-			const repo::RepoCredentials &credentials,
-			const bool isCopy = false,
-			QWidget *parent = 0,
-			Qt::WindowFlags flags = 0);
+				//! Syncs the global settings.
+				~ConnectDialog();
 
-		//! Syncs the global settings.
-		~ConnectDialog();
+				public slots:
 
-		public slots:
+				void validate();
 
-		void validate();
+			public:
 
-	public:
+				//! Returns current connection settings
+				repo::RepoController::RepoToken* getConnectionSettings() const;
 
-		//! Returns current connection settings
-		repo::RepoCredentials getConnectionSettings() const;
+			private:
 
-	private:
+				//! Ui var
+				Ui::ConnectDialog *ui;
+				std::string credentials;
 
-		//! Ui var
-		Ui::ConnectDialog *ui;
+				//! Completer for databases line edit.
+				QCompleter *databasesCompleter;
 
-		//! Completer for databases line edit.
-		QCompleter *databasesCompleter;
-
-		repo::RepoController *controller;
-
-	};
-}
-} // end namespace widget
+				repo::RepoController *controller;
+			};
+		}
+	} // end namespace widget
 } // end namespace repo
