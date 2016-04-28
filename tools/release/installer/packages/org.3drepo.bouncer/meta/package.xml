@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>3D Repo Bouncer</DisplayName>
+    <Description>3D Repo C++ library</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2016-04-03</ReleaseDate>
+    <Name>org.3drepo.bouncer</Name>
+    <SortingPriority>2</SortingPriority>
+    <Licenses>
+    	    <License name="3D Repo Bouncer License Agreement" file="GNU AGPL v3.txt" />
+	    <License name="Assimp License Agreement" file="ASSIMP License.txt" />
+	    <License name="Boost Software License" file="BOOST Software License v3.txt" />
+	    <License name="Mongo Cxx Driver License Agreement" file="APACHE-2.0.txt" />    	  
+    </Licenses>
+    <Default>true</Default>
+    <Essential>true</Essential>
+    <ForcedInstallation>true</ForcedInstallation>
+</Package>

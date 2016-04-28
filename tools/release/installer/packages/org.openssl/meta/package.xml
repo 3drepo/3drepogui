@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>OpenSSL</DisplayName>
+    <Description>OpenSSL Library</Description>
+    <Version>1.0.2</Version>
+	<ReleaseDate>2016-03-01</ReleaseDate>
+	<Name>org.openssl</Name>
+	<SortingPriority>1</SortingPriority>
+    <Licenses>	  
+	    <License name="OpenSSL License" file="OpenSSL License.txt" />
+	</Licenses>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
