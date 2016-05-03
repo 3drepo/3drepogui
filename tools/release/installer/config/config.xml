@@ -5,7 +5,7 @@
     <Title>3D Repo GUI</Title>
     <Publisher>3D Repo Ltd</Publisher>
     <StartMenuDir>3D Repo</StartMenuDir>
-    <TargetDir>@ApplicationsDir@/3D Repo/3D Repo GUI</TargetDir>
+	<TargetDir>@RootDir@/Program Files/3D Repo/3D Repo GUI</TargetDir>
     <ProductUrl>http://3drepo.org</ProductUrl>
-    <RunProgram>@ApplicationsDir@/3D Repo/3D Repo GUI/bin/3drepogui.exe</RunProgram>
+	<RunProgram>@RootDir@/Program Files/3D Repo/3D Repo GUI/bin/3drepogui.exe</RunProgram>
 </Installer>
