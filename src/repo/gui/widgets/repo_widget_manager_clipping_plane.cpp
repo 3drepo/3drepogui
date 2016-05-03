@@ -62,8 +62,7 @@ RepoClippingPlaneWidget::RepoClippingPlaneWidget(QWidget *parent)
 
 RepoClippingPlaneWidget::~RepoClippingPlaneWidget()
 {
-	setClippingPlaneEnabled(false);
-	delete ui;
+    delete ui;    
 }
 
 repo::gui::renderer::Axis RepoClippingPlaneWidget::getAxis()

@@ -302,14 +302,10 @@ QList<repo::gui::widget::RepoMdiSubWindow *> RepoMdiArea::subWindowList(
 	bool onlyVisible,
 	WindowOrder order) const
 {
-    QList<QMdiSubWindow *> subwindows = QMdiArea::subWindowList(order);
-    QList<QMdiSubWindow *>::iterator it;
     QList<RepoMdiSubWindow *> subWindowList;
-
-    for (it = subwindows.begin(); it != subwindows.end(); ++it)
-	{
-        QMdiSubWindow * window = *it;
-		if (!onlyVisible || window->isVisible())
+    for (QMdiSubWindow * window : QMdiArea::subWindowList(order))
+    {
+        if (!onlyVisible || window->isVisible())
 		{
 			RepoMdiSubWindow * subWindow = static_cast<RepoMdiSubWindow *>(window);
 			if (NULL != subWindow)

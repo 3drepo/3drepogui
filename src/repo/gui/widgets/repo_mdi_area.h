@@ -142,23 +142,16 @@ public :
 			*/
 		template <class T>
 		std::vector<T> getWidgets(WindowOrder order = CreationOrder) const
-		{
-			std::vector<T> openWidgets;
-
-			QList<RepoMdiSubWindow*> subwindows = subWindowList(order);
-			QList<RepoMdiSubWindow*>::iterator it;
-
-			for (it = subwindows.begin(); it != subwindows.end(); ++it)
-			{
-				RepoMdiSubWindow * window = *it;
-				//for each (RepoMdiSubWindow * window in subwindows)
-				//{
-				T widget = dynamic_cast<T>(window->widget());
-				if (NULL != widget)
-					openWidgets.push_back(widget);
-			}
-			return openWidgets;
-		}
+        {
+            std::vector<T> openWidgets;
+            for (RepoMdiSubWindow* window : subWindowList(order))
+            {
+                T widget = dynamic_cast<T>(window->widget());
+                if (NULL != widget)
+                    openWidgets.push_back(widget);
+            }
+            return openWidgets;
+        }
 
 		//! Returns a requested widget if from the active RepoMdiSubWindow. Returns NULL if cannot convert.
 		template <class T>
