@@ -190,8 +190,7 @@ void GLCRenderer::initialize()
     glcViewport.cameraHandle()->setDefaultUpVector(glc::Y_AXIS);
     glcViewport.initGl();
 
-    bool isAdvancedGPU =
-            GLC_State::vendorIsNvidia() ||
+    bool isAdvancedGPU = QString("NVIDIA") == GLC_State::vendor() ||
             QString("Intel") == GLC_State::vendor();
 
     //--------------------------------------------------------------------------
