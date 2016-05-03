@@ -6,6 +6,7 @@ Cross-platform C++ GUI written in Qt.
 ![screenshot](https://cloud.githubusercontent.com/assets/11945337/12173276/c2f2bbf4-b54d-11e5-9c69-50f9dc433a33.png)
 
 ### Latest Releases
+* 03 May 2016 [3D Repo GUI 1.0rc1](https://github.com/3drepo/3drepogui/releases/tag/v1.0-rc1)
 * 04 Apr 2016 [3D Repo GUI 1.0b2](https://github.com/3drepo/3drepogui/releases/tag/v1.0b2)
 * 22 Mar 2016 [3D Repo GUI 1.0b](https://github.com/3drepo/3drepogui/releases/tag/v1.0b) 
 * 07 Jan 2016 [3D Repo GUI 1.0a](https://github.com/3drepo/3drepogui/releases/tag/v1.0a) 
