@@ -1,4 +1,4 @@
-3D Repo GUI v 1.0(Beta Version 2)
+3D Repo GUI v 1.0(Release Candidate 1)
 
 This is the desktop client for the 3D Repo Platform
 
@@ -21,5 +21,14 @@ If you need any help, please contact support@3drepo.org, we
 look forward to hear from you.
 
 =========================== Improvements ========================
-* Release with linkage to 3drepobouncer v1.0b2 to fix various bugs. (see
-* 3drepobouncer v1.0b2 release notes for details)
+* (ISSUE #150) Various changes to support 3drepobouncer updates
+* (ISSUE #115) Resolve a few installation issues
+
+
+=========================== New Features ========================
+* (ISSUE #149) Store RepoToken as RepoCredentials is now obsolete
+* (ISSUE #147) Support for generic shaders
+* (ISSUE #144) Ability to visualise spatial partitioning/ mesh bounding boxes
+* (ISSUE #124) Log is automatically logged to file
+* (ISSUE #110) Releases are now packaged as an installer
+* (ISSUE #58) Plain text password is no longer stored
