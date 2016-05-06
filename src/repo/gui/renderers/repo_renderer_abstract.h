@@ -117,7 +117,7 @@ public:
     * @param position in y
     * @param multiSelection true if allow multiple selection
     */
-    virtual void selectComponent(const int &x, const int &y, bool multiSelection) = 0;
+    virtual void selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection) = 0;
 
     /**
     * Set the colour of the mesh given its name

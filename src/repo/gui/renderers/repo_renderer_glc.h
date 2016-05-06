@@ -161,7 +161,10 @@ namespace repo {
 				* @param y position in y
 				* @param multiSelection if multiple objects should be highlighted
 				*/
-				virtual void selectComponent(const int &x, const int &y, bool multiSelection);
+                virtual void selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection);
+
+                GLC_uint getSelectedComponentID(QOpenGLContext *context, int x, int y);
+
 
 				/**
 				* Set activiation flag

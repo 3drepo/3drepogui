@@ -393,6 +393,71 @@ QImage Rendering3DWidget::renderFrameBufferQImage(int w, int h, GLvoid *data)
     return image;
 }
 
+int Rendering3DWidget::getSelectedID(int x, int y)
+{
+    makeCurrent();
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    QOpenGLFramebufferObject fbo(size().width(), size().height(), format);
+
+    GLsizei width= 4;
+    GLsizei height= width;
+    GLint newX= x - width / 2;
+    GLint newY= (size().height() - y) - height / 2;
+    if (newX < 0) newX= 0;
+    if (newY < 0) newY= 0;
+
+
+    fbo.bind();
+    isInfoVisible = false;
+    GLC_State::setSelectionMode(true);
+    paintGL();
+    GLC_State::setSelectionMode(false);
+    isInfoVisible = true;
+
+    const int squareSize= width * height;
+    const GLsizei arraySize= squareSize * 4; // 4 -> R G B A
+    QVector<GLubyte> colorId(arraySize);
+    context()->functions()->glReadPixels(newX, newY, width, height, GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
+
+    fbo.release();
+    fbo.bindDefault();
+    doneCurrent();
+
+
+    QHash<GLC_uint, int> idHash;
+    QList<int> idWeight;
+
+    // Find the most meaningful color
+    GLC_uint returnId= 0;
+    // There is nothing at the center
+    int maxWeight= 0;
+    int currentIndex= 0;
+    for (int i= 0; i < squareSize; ++i)
+    {
+        GLC_uint id= glc::decodeRgbId(&colorId[i * 4]);
+        if (idHash.contains(id))
+        {
+            const int currentWeight= ++(idWeight[idHash.value(id)]);
+            if (maxWeight < currentWeight)
+            {
+                returnId= id;
+                maxWeight= currentWeight;
+            }
+        }
+        else if (id != 0)
+        {
+            idHash.insert(id, currentIndex++);
+            idWeight.append(1);
+            if (maxWeight < 1)
+            {
+                returnId= id;
+                maxWeight= 1;
+            }
+        }
+    }
+    return returnId;
+}
 
 //------------------------------------------------------------------------------
 //
@@ -656,12 +721,12 @@ void Rendering3DWidget::wheelEvent(QWheelEvent * e)
     QOpenGLWidget::wheelEvent(e);
 }
 
-void Rendering3DWidget::select(int x, int y, bool multiSelection,
-                               QMouseEvent *event)
+void Rendering3DWidget::select(
+        int x, int y, bool multiSelection, QMouseEvent *)
 {
-    renderer->selectComponent(x, y, multiSelection);
+    makeCurrent();
+    renderer->selectComponent(context(), x, y, multiSelection);
     update();
-
 }
 
 

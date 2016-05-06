@@ -628,7 +628,8 @@ void GLCRenderer::render(QPainter *painter,
 
         glcViewport.useClipPlane(false);
 
-        glc3DWidgetManager.render();
+        if (!GLC_State::isInSelectionMode())
+            glc3DWidgetManager.render();
 
         //----------------------------------------------------------------------
         // Display UI Info (orbit circle)
@@ -676,20 +677,11 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
     glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
 }
 
-void GLCRenderer::selectComponent(const int &x, const int &y, bool multiSelection)
+void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-    const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
-    if (spacePartitioningIsUsed)
-    {
-        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
-        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
-        glcWorld.collection()->setSpacePartitionningUsage(false);
-        glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
-        glcWorld.collection()->setSpacePartitionningUsage(true);
-    }
+    GLC_uint selectionID = getSelectedComponentID(context, x, y);
 
-    GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
-
+//    glcViewport.renderAndSelect(x, y);
     if (glcWorld.containsOccurrence(selectionID))
     {
         if ((!glcWorld.isSelected(selectionID))
@@ -723,10 +715,56 @@ void GLCRenderer::selectComponent(const int &x, const int &y, bool multiSelectio
         glcWorld.unselectAll();
         //emit selectionChanged(this, getSelectionList());
     }
-    else
+}
+
+GLC_uint GLCRenderer::getSelectedComponentID(
+        QOpenGLContext *context,
+        int x, int y)
+{
+
+    QOffscreenSurface surface;
+    surface.create();
+    context->makeCurrent(&surface);
+
+
+    if (glcWorld.collection()->spacePartitioningIsUsed())
     {
-        repoLogError("Failed to pin point object for selection");
+            // TODO: this causes GLC_Light exception on Release but not Debug.
+//        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
+//        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
+        glcWorld.collection()->setSpacePartitionningUsage(false);
+        glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
+        glcWorld.collection()->setSpacePartitionningUsage(true);
     }
+
+
+
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
+
+
+    QColor backgroundColor = glcViewport.backgroundColor();
+    glcViewport.setBackgroundColor(QColor(Qt::black));
+
+    GLC_State::setSelectionMode(true);
+    fbo.bind();
+    render(nullptr);
+    GLC_State::setSelectionMode(false);
+
+    QVector<GLubyte> colorId(4); // 4 -> R G B A
+    context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
+                                       GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
+    fbo.release();
+    fbo.bindDefault();
+    context->doneCurrent();
+    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
+    glcViewport.setBackgroundColor(backgroundColor);
+
+//    std::cout << returnId << std::endl;
+
+    surface.destroy();
+    return returnId;
 }
 
 void GLCRenderer::setActivationFlag(const bool &flag)
@@ -1134,21 +1172,24 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 
     //--------------------------------------------------------------------------
     // Update position of the clipping plane widget and make sure it is set visible
-    GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
-    // The move action does not get to the desired position on the first shot
-    // therefore iterate multiple times until reached. Stop at some fixed
-    // large number just in case to prevent accidental infinite looping.
-    int i = 0;
-	glc::WidgetEventFlag result;
-	clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
-    do {
+    if (clippingPlaneWidgets.size() > (int) axis)
+    {
+        GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
+        // The move action does not get to the desired position on the first shot
+        // therefore iterate multiple times until reached. Stop at some fixed
+        // large number just in case to prevent accidental infinite looping.
+        int i = 0;
+        glc::WidgetEventFlag result;
+        clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
+        do {
 
-        result = clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
-        ++i;
+            result = clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
+            ++i;
+        }
+        while (clippingPlaneWidget->center() != centroid && i < 1000);
+
+        clippingPlaneWidget->setVisible(true);
     }
-	while (clippingPlaneWidget->center() != centroid && i < 1000);
-
-    clippingPlaneWidget->setVisible(true);
 }
 
 void GLCRenderer::zoom(const float &zoom)
