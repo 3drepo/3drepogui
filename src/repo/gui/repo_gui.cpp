@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QtSvg>
 
+#include <ctime>
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_gui.h"
@@ -60,6 +61,37 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_FLY_NAVIGATION = "RepoGUI/fl
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION = "RepoGUI/trackball";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION = "RepoGUI/turntable";
 
+
+static std::string getTimeAsString()
+{
+  time_t rawtime;
+  struct tm * timeinfo;
+  char buffer[80];
+
+  time (&rawtime);
+  timeinfo = localtime(&rawtime);
+
+  strftime(buffer,80,"%d-%m-%Y_%Ih%Mm%S",timeinfo);
+  return std::string(buffer);
+
+}
+
+static std::string getLogFileName()
+{
+
+    std::string fileName = getTimeAsString()+".log";
+    auto fullPath = QDir::cleanPath(QDir::homePath() + QDir::separator() +
+                                    QString("3drepo") +
+                                    QDir::separator() +
+                                    QString("gui") +
+                                    QDir::separator() +
+                                    QString(fileName.c_str()));
+
+
+    return fullPath.toStdString();
+}
+
+
 repo::gui::RepoGUI::RepoGUI(
         repo::RepoController *controller,
         QWidget *parent)
@@ -78,6 +110,7 @@ repo::gui::RepoGUI::RepoGUI(
 
     //Subscribe logger to broadcaster who taps into repo bouncer library logs
     repo::logger::RepoLogger::getInstance()->subscribe(ui->logTextBrowser);
+    controller->logToFile(getLogFileName());
 
     QIcon icon(":/images/3drepo-icon.svg");
     this->setWindowIcon(icon);
