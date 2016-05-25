@@ -41,7 +41,6 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
-    , renderInSelection(false)
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -634,20 +633,13 @@ void GLCRenderer::render(QPainter *painter,
         glcViewport.useClipPlane(true);
 
         // Apply global shader if set.
-        if (shaderID && !renderInSelection)
+        if (shaderID && !GLC_State::isInSelectionMode())
             GLC_Shader::use(shaderID);
-
-        if(renderInSelection)
-        {
-            glDisable(GL_BLEND);
-            GLC_ContextManager::instance()->currentContext()->glcEnableLighting(false);
-            glDisable(GL_TEXTURE_2D);
-        }
 
         // Display opaque instanced objects
         glcWorld.render(0, renderingFlag);
-//        if (GLC_State::glslUsed())
-//            glcWorld.renderShaderGroup(renderingFlag);
+        if (GLC_State::glslUsed())
+            glcWorld.renderShaderGroup(renderingFlag);
 
         // Display transparent instanced objects
         glcWorld.render(0, glc::TransparentRenderFlag);
@@ -664,7 +656,7 @@ void GLCRenderer::render(QPainter *painter,
         const int selectedNodesCount = glcWorld.collection()->selectionSize();
         if ((selectedNodesCount > 0) &&
                 GLC_State::selectionShaderUsed() &&
-                !renderInSelection)
+                !GLC_State::isInSelectionMode())
         {
             //if (selectedNodesCount != glcWorld.collection()->drawableObjectsSize())
             //{
@@ -689,7 +681,7 @@ void GLCRenderer::render(QPainter *painter,
 
         glcViewport.useClipPlane(false);
 
-        if (!renderInSelection)
+        if (!GLC_State::isInSelectionMode())
             glc3DWidgetManager.render();
 
         //----------------------------------------------------------------------
@@ -740,48 +732,13 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-    GLC_uint selectionID = getSelectedComponentID(context, x, y);
 
-//    glcViewport.renderAndSelect(x, y);
-    if (glcWorld.containsOccurrence(selectionID))
+    //FIXME: multi-selection doesn't work at the moment
+    if(matMap.size() > (pow(2, 24) -1))
     {
-        if ((!glcWorld.isSelected(selectionID))
-                && (glcWorld.selectionSize() > 0)
-                && (!multiSelection))
-        {
-            glcWorld.unselectAll();
-            //emit selectionChanged(this, getSelectionList());
-        }
-        if (!glcWorld.isSelected(selectionID))
-        {
-            glcWorld.select(selectionID);
-            //emit selectionChanged(this, getSelectionList());
-        }
-        else if (glcWorld.isSelected(selectionID) && multiSelection)
-        {
-            glcWorld.unselect(selectionID);
-            //emit selectionChanged(this, getSelectionList());
-        }
-        else
-        {
-            glcWorld.unselectAll();
-            glcWorld.select(selectionID);
-
-            //emit selectionChanged(this, getSelectionList());
-        }
+        repoError << "This model has too many components to support selection!";
+        return;
     }
-    else if (glcWorld.selectionSize() && (!multiSelection))
-    {
-        // if a geometry is selected, unselect it
-        glcWorld.unselectAll();
-        //emit selectionChanged(this, getSelectionList());
-    }
-}
-
-GLC_uint GLCRenderer::getSelectedComponentID(
-        QOpenGLContext *context,
-        int x, int y)
-{
 
     QOffscreenSurface surface;
     surface.create();
@@ -798,23 +755,22 @@ GLC_uint GLCRenderer::getSelectedComponentID(
         glcWorld.collection()->setSpacePartitionningUsage(true);
     }
 
-
-
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
 
 
     QColor backgroundColor = glcViewport.backgroundColor();
-    glcViewport.setBackgroundColor(QColor(Qt::black));
+    glcViewport.setBackgroundColor(QColor(Qt::white));
 
-   // GLC_State::setSelectionMode(true);
+    GLC_State::setSelectionMode(true);
+    GLC_State::setUseCustomFalseColor(true);
     std::vector<QString> ids;
-    repoLog("size of matMap: " + std::to_string(matMap.size()));
+
     for(auto &matPair : matMap)
     {
         QVector<GLubyte> colorId(4);
-        glc::encodeRgbId(ids.size(),&colorId[0]);
+        glc::encodeRgbId(ids.size()+1,&colorId[0]);
         ids.push_back(matPair.first);
         std::stringstream ss;
         ss << matPair.first.toStdString() << " - " <<(int)colorId[0] <<  "," <<  (int)colorId[1] << ", " << (int)colorId[2] << ", " << (int)colorId[3] ;
@@ -826,19 +782,16 @@ GLC_uint GLCRenderer::getSelectedComponentID(
     fbo.bind();
     glEnable(GL_DEPTH_TEST);
 
-    renderInSelection=true;
-
-
     render(nullptr);
-    renderInSelection=false;
-    //GLC_State::setSelectionMode(false);
+    GLC_State::setSelectionMode(false);
+    GLC_State::setUseCustomFalseColor(false);
 
     QVector<GLubyte> colorId(4); // 4 -> R G B A
     context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
                                        GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
     fbo.release();
     resetColors();
-    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
+    GLC_uint returnId = glc::decodeRgbId(&colorId[0]) -1;
     std::stringstream ss;
     ss << "id: " << returnId << " maps to "
        <<     (returnId < ids.size()?
@@ -858,7 +811,6 @@ GLC_uint GLCRenderer::getSelectedComponentID(
     std::cout << returnId << std::endl;
 
     surface.destroy();
-    return returnId;
 }
 
 void GLCRenderer::setActivationFlag(const bool &flag)

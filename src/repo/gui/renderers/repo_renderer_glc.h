@@ -169,8 +169,6 @@ namespace repo {
 				*/
                 virtual void selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection);
 
-                GLC_uint getSelectedComponentID(QOpenGLContext *context, int x, int y);
-
 
 				/**
 				* Set activiation flag
@@ -340,7 +338,6 @@ public slots :
                 GLC_Plane* clippingPlane;
 
                 bool clippingPlaneReverse;
-                bool renderInSelection; //render in selection mode
 
 				//! Globally applied shader ID.
 				GLuint shaderID;
