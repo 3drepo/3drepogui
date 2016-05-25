@@ -41,6 +41,7 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
+    , renderInSelection(false)
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -353,6 +354,59 @@ void GLCRenderer::setMeshColor(
 
 }
 
+void GLCRenderer::setMeshColor(
+        const QString &uuidString,
+        const qreal &opacity,
+        const QColor &color)
+{
+    auto meshIt = meshMap.find(uuidString);
+    auto matIt = matMap.find(uuidString);
+    GLC_Material *mat = nullptr;
+    if (meshIt != meshMap.end())
+    {
+        GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+        {
+            //has material, alter the emissive color
+            auto matIds = mesh->materialIds();
+            mat = mesh->material(matIds[0]);
+
+        }
+        else
+        {
+            //The mesh should have at least the default material due to how GLC_Mesh is constructed
+            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
+        }
+    }
+    else if (matIt != matMap.end())
+    {
+        mat = matIt->second;
+
+    }
+    else
+    {
+        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
+    }
+
+    if (mat)
+    {
+        if (changedMats.find(mat) == changedMats.end())
+        {
+            //preserve original material
+            changedMats[mat] = GLC_Material(*mat);
+        }
+
+        mat->setEmissiveColor(QColor(0,0,0,0));
+        mat->setDiffuseColor(color);
+        mat->setOpacity(opacity);
+        if (mat->hasTexture())
+        {
+            //take away the texture to make the material visible
+            mat->removeTexture();
+        }
+    }
+}
+
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
 {
     switch (mode)
@@ -435,7 +489,7 @@ void GLCRenderer::setGLCWorld(GLC_World &world)
     extractMeshes(this->glcWorld.rootOccurrence());
 
 
-    glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
+    //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
 }
 
 void GLCRenderer::paintInfo(QPainter *painter,
@@ -580,13 +634,20 @@ void GLCRenderer::render(QPainter *painter,
         glcViewport.useClipPlane(true);
 
         // Apply global shader if set.
-        if (shaderID && !GLC_State::isInSelectionMode())
+        if (shaderID && !renderInSelection)
             GLC_Shader::use(shaderID);
+
+        if(renderInSelection)
+        {
+            glDisable(GL_BLEND);
+            GLC_ContextManager::instance()->currentContext()->glcEnableLighting(false);
+            glDisable(GL_TEXTURE_2D);
+        }
 
         // Display opaque instanced objects
         glcWorld.render(0, renderingFlag);
-        if (GLC_State::glslUsed())
-            glcWorld.renderShaderGroup(renderingFlag);
+//        if (GLC_State::glslUsed())
+//            glcWorld.renderShaderGroup(renderingFlag);
 
         // Display transparent instanced objects
         glcWorld.render(0, glc::TransparentRenderFlag);
@@ -603,7 +664,7 @@ void GLCRenderer::render(QPainter *painter,
         const int selectedNodesCount = glcWorld.collection()->selectionSize();
         if ((selectedNodesCount > 0) &&
                 GLC_State::selectionShaderUsed() &&
-                !GLC_State::isInSelectionMode())
+                !renderInSelection)
         {
             //if (selectedNodesCount != glcWorld.collection()->drawableObjectsSize())
             //{
@@ -628,7 +689,7 @@ void GLCRenderer::render(QPainter *painter,
 
         glcViewport.useClipPlane(false);
 
-        if (!GLC_State::isInSelectionMode())
+        if (!renderInSelection)
             glc3DWidgetManager.render();
 
         //----------------------------------------------------------------------
@@ -747,21 +808,54 @@ GLC_uint GLCRenderer::getSelectedComponentID(
     QColor backgroundColor = glcViewport.backgroundColor();
     glcViewport.setBackgroundColor(QColor(Qt::black));
 
-    GLC_State::setSelectionMode(true);
+   // GLC_State::setSelectionMode(true);
+    std::vector<QString> ids;
+    repoLog("size of matMap: " + std::to_string(matMap.size()));
+    for(auto &matPair : matMap)
+    {
+        QVector<GLubyte> colorId(4);
+        glc::encodeRgbId(ids.size(),&colorId[0]);
+        ids.push_back(matPair.first);
+        std::stringstream ss;
+        ss << matPair.first.toStdString() << " - " <<(int)colorId[0] <<  "," <<  (int)colorId[1] << ", " << (int)colorId[2] << ", " << (int)colorId[3] ;
+        repoLog(ss.str());
+        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
+        setMeshColor(matPair.first, 1.0, color);
+    }
+
     fbo.bind();
+    glEnable(GL_DEPTH_TEST);
+
+    renderInSelection=true;
+
+
     render(nullptr);
-    GLC_State::setSelectionMode(false);
+    renderInSelection=false;
+    //GLC_State::setSelectionMode(false);
 
     QVector<GLubyte> colorId(4); // 4 -> R G B A
     context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
                                        GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
     fbo.release();
+    resetColors();
+    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
+    std::stringstream ss;
+    ss << "id: " << returnId << " maps to "
+       <<     (returnId < ids.size()?
+                ids[(int)returnId].toStdString() :
+              "")
+       << " - " <<(int)colorId[0]
+       <<  "," <<  (int)colorId[1] << ", " << (int)colorId[2] << ", " << (int)colorId[3] ;
+    repoLog(ss.str());
+    if(returnId < ids.size())
+        setMeshColor(ids[(int)returnId], 1.0, QColor(255, 0, 0, 0));
+
     fbo.bindDefault();
     context->doneCurrent();
-    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
+
     glcViewport.setBackgroundColor(backgroundColor);
 
-//    std::cout << returnId << std::endl;
+    std::cout << returnId << std::endl;
 
     surface.destroy();
     return returnId;

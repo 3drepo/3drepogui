@@ -118,6 +118,12 @@ namespace repo {
 					const qreal &opacity,
 					const QColor &color);
 
+
+                virtual void setMeshColor(
+                        const QString &uuidString,
+                        const qreal &opacity,
+                        const QColor &color);
+
 				/**
 				* Start navigate around the model
 				* @param mode which navigation mode
@@ -334,6 +340,7 @@ public slots :
                 GLC_Plane* clippingPlane;
 
                 bool clippingPlaneReverse;
+                bool renderInSelection; //render in selection mode
 
 				//! Globally applied shader ID.
 				GLuint shaderID;
