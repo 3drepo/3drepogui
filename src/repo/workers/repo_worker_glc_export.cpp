@@ -645,21 +645,30 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
                 QString meshId = QString::fromStdString(UUIDtoString(map.mesh_id));
 				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 					mapMaterials.find(map.material_id);
-				if (mapIt != mapMaterials.end())
-				{
-					//material = (GLC_Material*)mapIt->second.at(0);
-					material = new GLC_Material(*mapIt->second.at(0));
+                if(matMap.find(meshId) != matMap.end())
+                {
+                    //We've seen this meshId before -> an instance.
+                    //apply the same GLC_Material instance
+                    material = matMap[meshId];
+                }
+                else
+                {
+                    if (mapIt != mapMaterials.end())
+                    {
+                        material = new GLC_Material(*mapIt->second.at(0));
 
-					material->setId(glc::GLC_GenID());
-				}
-				else
-				{
-					material = new GLC_Material();
-				}
+                        material->setId(glc::GLC_GenID());
+                    }
+                    else
+                    {
+                        material = new GLC_Material();
+                    }
+                    material->setName(meshId);
+                    matMap[meshId] = material;
+                }
 
 				glcMesh->addTriangles(material, glcFaces);
-                material->setName(meshId);
-                matMap[meshId] = material;
+
 			}
 		}
 		else
