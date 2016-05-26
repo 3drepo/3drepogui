@@ -73,7 +73,9 @@ namespace repo {
 				repo::core::model::RepoScene         *scene,
 				const repo::core::model::RepoNode           *node,
 				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
-				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
+                std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
+                std::map<QString, GLC_Mesh*>     &meshMap,
+                std::map<QString, GLC_Material*> &matMap,
 				const bool                                        &countJob=true);
 
 			
@@ -82,19 +84,25 @@ namespace repo {
 			*/
             GLC_StructOccurrence* convertSceneToOccurance(
                 repo::core::model::RepoScene *scene,
+                    std::map<QString, GLC_Mesh*>     &meshMap,
+                    std::map<QString, GLC_Material*> &matMap,
                     const std::vector<double> &offsetVector = std::vector<double>());
 
 		signals:
 
             //! Emitted when loading is finished. Passes GLC world.
-            void finished(GLC_World&);
+            void finished(GLC_World&,
+                          std::map<QString, GLC_Mesh*>&,
+                          std::map<QString, GLC_Material*>&);
 
 		private:
 			repo::core::model::RepoScene* scene;
             const std::vector<double> offsetVector;
 
             GLC_World* createGLCWorld(
-				repo::core::model::RepoScene *scene);
+                repo::core::model::RepoScene *scene,
+                std::map<QString, GLC_Mesh*>     &meshMap,
+                std::map<QString, GLC_Material*> &matMap);
 
 			GLC_3DRep* convertGLCCamera(
 				const repo::core::model::CameraNode *camera);
@@ -105,7 +113,8 @@ namespace repo {
 
 			GLC_3DRep* convertGLCMesh(
 				const repo::core::model::MeshNode        *mesh,
-				std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials);
+                std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
+                 std::map<QString, GLC_Material*> &matMap);
 
 			GLC_Texture* convertGLCTexture(
 				const repo::core::model::TextureNode *texture);

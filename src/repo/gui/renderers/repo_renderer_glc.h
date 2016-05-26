@@ -230,7 +230,9 @@ namespace repo {
 				* Set the world to render to be the world provided
 				* @param world the world to render
 				*/
-				void setGLCWorld(GLC_World &world);
+                void setGLCWorld(GLC_World &world,
+                                 std::map<QString, GLC_Mesh*>     &_meshMap,
+                                 std::map<QString, GLC_Material*> &_matMap);
 
 public slots :
 

@@ -465,12 +465,18 @@ void GLCRenderer::stopNavigation()
     }
 }
 
-void GLCRenderer::setGLCWorld(GLC_World &world)
+void GLCRenderer::setGLCWorld(GLC_World                        &world,
+                              std::map<QString, GLC_Mesh*>     &_meshMap,
+                              std::map<QString, GLC_Material*> &_matMap)
 {
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
     repoLog("\tGLC World size: " + std::to_string(world.size()));
     repoLog("\tGLC World #vertex: " + std::to_string(world.numberOfVertex()));
+
+    meshMap    = _meshMap;
+    matMap     = _matMap;
+
     this->glcWorld = world;
     this->glcWorld.collection()->setLodUsage(true, &glcViewport);
     this->glcWorld.collection()->setVboUsage(true);
@@ -485,7 +491,7 @@ void GLCRenderer::setGLCWorld(GLC_World &world)
     GLC_BoundingBox bbox = this->glcWorld.boundingBox();
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
-    extractMeshes(this->glcWorld.rootOccurrence());
+    //extractMeshes(this->glcWorld.rootOccurrence());
 
 
     //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
@@ -733,9 +739,14 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
 
+    if(multiSelection)
+        repoLogError("Multi-selection currently does not work");
     //FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
     {
+        //We represent indices using rgb values, which is 3*8 bit.
+        //0 can't be used as it will be the same as the background,
+        // so we can represent 2^24-1 components
         repoError << "This model has too many components to support selection!";
         return;
     }
@@ -772,11 +783,8 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         QVector<GLubyte> colorId(4);
         glc::encodeRgbId(ids.size()+1,&colorId[0]);
         ids.push_back(matPair.first);
-        std::stringstream ss;
-        ss << matPair.first.toStdString() << " - " <<(int)colorId[0] <<  "," <<  (int)colorId[1] << ", " << (int)colorId[2] << ", " << (int)colorId[3] ;
-        repoLog(ss.str());
         QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
-        setMeshColor(matPair.first, 1.0, color);
+        setMeshColor(matPair.first, 0.0, color);
     }
 
     fbo.bind();
@@ -792,23 +800,18 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     fbo.release();
     resetColors();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]) -1;
-    std::stringstream ss;
-    ss << "id: " << returnId << " maps to "
-       <<     (returnId < ids.size()?
-                ids[(int)returnId].toStdString() :
-              "")
-       << " - " <<(int)colorId[0]
-       <<  "," <<  (int)colorId[1] << ", " << (int)colorId[2] << ", " << (int)colorId[3] ;
-    repoLog(ss.str());
+
     if(returnId < ids.size())
+    {
         setMeshColor(ids[(int)returnId], 1.0, QColor(255, 0, 0, 0));
+        repoLog("Returned id: " + ids[(int)returnId].toStdString());
+    }
+
 
     fbo.bindDefault();
     context->doneCurrent();
 
     glcViewport.setBackgroundColor(backgroundColor);
-
-    std::cout << returnId << std::endl;
 
     surface.destroy();
 }
