@@ -41,6 +41,7 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
+    , currentlyHighLighted("")
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -65,6 +66,7 @@ GLCRenderer::GLCRenderer()
     glcUICollection.add(line);
 
     //--------------------------------------------------------------------------
+
 
     QObject::connect(
                 &glcMoverController, &GLC_MoverController::repaintNeeded,
@@ -169,6 +171,81 @@ CameraSettings GLCRenderer::getCurrentCamera()
 {
     return convertToCameraSettings(glcViewport.cameraHandle());
 }
+
+void GLCRenderer::highlightMesh(
+        const QString &meshId)
+{
+    if(currentlyHighLighted == meshId)
+    {
+        //currently highlighted, should unhighlight it
+        revertMeshMaterial(meshId);
+        currentlyHighLighted = "";
+    }
+    else
+    {
+        GLC_Material highlightMat;
+
+
+        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.376f, 0.223f, 1.0f));
+        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.376f, 0.223f, 1.0f));
+        highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
+        highlightMat.setEmissiveColor(QColor::fromRgbF(0.0f, 0.0f, 0.0f, 1.0f));
+        highlightMat.setShininess(50);
+
+        changeMeshMaterial(meshId, highlightMat);
+        currentlyHighLighted = meshId;
+    }
+
+
+
+}
+
+void GLCRenderer::changeMeshMaterial(
+        const QString &uuidString,
+        const GLC_Material &newMat)
+{
+    auto meshIt = meshMap.find(uuidString);
+    auto matIt = matMap.find(uuidString);
+    GLC_Material *mat = nullptr;
+    if (matIt != matMap.end())
+    {
+        mat = matIt->second;
+
+    }
+    else if(meshIt != meshMap.end())
+    {
+        GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+        {
+            //has material, alter the emissive color
+            auto matIds = mesh->materialIds();
+            mat = mesh->material(matIds[0]);
+        }
+        else
+        {
+            //The mesh should have at least the default material due to how GLC_Mesh is constructed
+            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
+        }
+
+    }
+    else
+    {
+        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
+    }
+
+    if (mat)
+    {
+        if (changedMats.find(mat) == changedMats.end())
+        {
+            //preserve original material
+            changedMats[mat] = GLC_Material(*mat);
+        }
+
+        *mat=newMat;
+
+    }
+}
+
 
 bool GLCRenderer::increaseFlyVelocity(const float &vel)
 {
@@ -304,53 +381,10 @@ void GLCRenderer::setMeshColor(
         const qreal &opacity,
         const QColor &color)
 {
+
     QString uuidString = QString::fromStdString(UUIDtoString(uniqueID));
-    auto meshIt = meshMap.find(uuidString);
-    auto matIt = matMap.find(uuidString);
-    GLC_Material *mat = nullptr;
-    if (meshIt != meshMap.end())
-    {
-        GLC_Mesh *mesh = meshIt->second;
-        if (mesh->materialCount())
-        {
-            //has material, alter the emissive color
-            auto matIds = mesh->materialIds();
-            mat = mesh->material(matIds[0]);
 
-        }
-        else
-        {
-            //The mesh should have at least the default material due to how GLC_Mesh is constructed
-            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
-        }
-    }
-    else if (matIt != matMap.end())
-    {
-        mat = matIt->second;
-
-    }
-    else
-    {
-        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
-    }
-
-    if (mat)
-    {
-        if (changedMats.find(mat) == changedMats.end())
-        {
-            //preserve original material
-            changedMats[mat] = GLC_Material(*mat);
-        }
-
-        mat->setEmissiveColor(color);
-        mat->setOpacity(opacity);
-        if (mat->hasTexture())
-        {
-            //take away the texture to make the material visible
-            mat->removeTexture();
-        }
-    }
-
+    setMeshColor(uuidString, opacity, color);
 }
 
 void GLCRenderer::setMeshColor(
@@ -358,52 +392,15 @@ void GLCRenderer::setMeshColor(
         const qreal &opacity,
         const QColor &color)
 {
-    auto meshIt = meshMap.find(uuidString);
-    auto matIt = matMap.find(uuidString);
-    GLC_Material *mat = nullptr;
-    if (meshIt != meshMap.end())
-    {
-        GLC_Mesh *mesh = meshIt->second;
-        if (mesh->materialCount())
-        {
-            //has material, alter the emissive color
-            auto matIds = mesh->materialIds();
-            mat = mesh->material(matIds[0]);
+    GLC_Material coloredMat;
+    coloredMat.setAmbientColor(color);
+    coloredMat.setDiffuseColor(color);
+    coloredMat.setSpecularColor(QColor(1.0, 1.0, 1.0, 1.0));
+    coloredMat.setEmissiveColor(QColor(0.0, 0.0, 0.0, 1.0));
+    coloredMat.setShininess(50);
+    coloredMat.setOpacity(opacity);
 
-        }
-        else
-        {
-            //The mesh should have at least the default material due to how GLC_Mesh is constructed
-            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
-        }
-    }
-    else if (matIt != matMap.end())
-    {
-        mat = matIt->second;
-
-    }
-    else
-    {
-        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
-    }
-
-    if (mat)
-    {
-        if (changedMats.find(mat) == changedMats.end())
-        {
-            //preserve original material
-            changedMats[mat] = GLC_Material(*mat);
-        }
-
-        mat->setEmissiveColor(QColor(0,0,0,0));
-        mat->setDiffuseColor(color);
-        mat->setOpacity(opacity);
-        if (mat->hasTexture())
-        {
-            //take away the texture to make the material visible
-            mat->removeTexture();
-        }
-    }
+    changeMeshMaterial(uuidString, coloredMat);
 }
 
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
@@ -736,6 +733,50 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
     glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
 }
 
+void GLCRenderer::revertMeshMaterial(
+        const QString &uuidString)
+{
+    auto meshIt = meshMap.find(uuidString);
+    auto matIt = matMap.find(uuidString);
+    GLC_Material *mat = nullptr;
+    if (matIt != matMap.end())
+    {
+        mat = matIt->second;
+
+    }
+    else if(meshIt != meshMap.end())
+    {
+        GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+        {
+            auto matIds = mesh->materialIds();
+            mat = mesh->material(matIds[0]);
+        }
+        else
+        {
+            //The mesh should have at least the default material due to how GLC_Mesh is constructed
+            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
+        }
+
+    }
+    else
+    {
+        repoLogError("Failed to revert color of mesh " + uuidString.toStdString() + " : mesh not found!");
+    }
+
+    if (mat)
+    {
+        auto changedIt = changedMats.find(mat);
+        if ( changedIt != changedMats.end())
+        {
+            *mat = changedIt->second;
+            changedMats.erase(changedIt);
+        }
+
+    }
+
+}
+
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
 
@@ -803,8 +844,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
 
     if(returnId < ids.size())
     {
-        setMeshColor(ids[(int)returnId], 1.0, QColor(255, 0, 0, 0));
-        repoLog("Returned id: " + ids[(int)returnId].toStdString());
+        highlightMesh(ids[(int)returnId]);
     }
 
 

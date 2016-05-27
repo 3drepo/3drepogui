@@ -299,6 +299,15 @@ public slots :
                          GLC_Material                      *mat
                         );
 
+                /**
+                 * Change the colour of the material
+                 * @param uuidString unique id of the mesh (or submesh) to change
+                 * @param newMat the new material to change to
+                 */
+                void changeMeshMaterial(
+                        const QString &uuidString,
+                        const GLC_Material &newMat);
+
 				/**
 				* Given a pointer to GLC_Camera, convert it into a CameraSettings.
 				* @param cam GLC_Camera
@@ -306,6 +315,13 @@ public slots :
 				*/
 				CameraSettings convertToCameraSettings(GLC_Camera *cam);
 
+                /**
+                 * Highlight the mesh (or the submesh) that has the
+                 * given ID
+                 * @param meshId
+                 */
+                void highlightMesh(
+                        const QString &meshId);
 
 				/**
 				* paint info
@@ -316,6 +332,13 @@ public slots :
 				virtual void paintInfo(QPainter *painter,
 					const int &screenHeight = 100,
 					const int &screenWidth = 100);
+
+                /**
+                 * Revert mesh material back to its original properties
+                 * @param uuidString mesh unique id in QString format
+                 */
+                void revertMeshMaterial(
+                        const QString &uuidString);
 
 				//! List of available shaders.
 				QList<GLC_Shader*> shaders;
@@ -335,6 +358,7 @@ public slots :
 
                 //! Globally applied clipping plane IDs
                 std::vector<GLC_CuttingPlane *> clippingPlaneWidgets;
+                QString currentlyHighLighted;
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;
