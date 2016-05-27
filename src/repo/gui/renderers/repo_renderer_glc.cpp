@@ -186,11 +186,12 @@ void GLCRenderer::highlightMesh(
         GLC_Material highlightMat;
 
 
-        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.376f, 0.223f, 1.0f));
-        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.376f, 0.223f, 1.0f));
+        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
+        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
         highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
         highlightMat.setEmissiveColor(QColor::fromRgbF(0.0f, 0.0f, 0.0f, 1.0f));
-        highlightMat.setShininess(50);
+        highlightMat.setShininess(100);
+        highlightMat.setOpacity(0.7);
 
         changeMeshMaterial(meshId, highlightMat);
         currentlyHighLighted = meshId;
