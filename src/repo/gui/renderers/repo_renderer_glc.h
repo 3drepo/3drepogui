@@ -57,6 +57,14 @@ namespace repo {
 
 				~GLCRenderer();
 				
+                /**
+                 * Apply false colouring materials onto the meshes
+                 * call resetColors() to revert to original materials
+                 * @return returns a vector mapping between the decoded rgba value
+                 *         and mesh id
+                 */
+                std::vector<QString> applyFalseColoringMaterials();
+
 				/**
 				* Recursively extracts meshes from a given occurrence. 
 				* Call with a root node.

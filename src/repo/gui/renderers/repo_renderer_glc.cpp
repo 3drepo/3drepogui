@@ -85,6 +85,34 @@ GLCRenderer::~GLCRenderer()
     glcWorld.clear();
 }
 
+
+std::vector<QString> GLCRenderer::applyFalseColoringMaterials()
+{
+    std::vector<QString> ids;
+    if(matMap.size() > (pow(2, 24) -1))
+    {
+        //We represent indices using rgb values, which is 3*8 bit.
+        //0 can't be used as it will be the same as the background,
+        // so we can represent 2^24-1 components
+        repoError << "This model has too many components to support selection!";
+        return ids;
+    }
+
+    ids.push_back(""); //white is never used as the background will be white.
+    for(auto &matPair : matMap)
+    {
+        QVector<GLubyte> colorId(4);
+        glc::encodeRgbId(ids.size(),&colorId[0]);
+        ids.push_back(matPair.first);
+        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
+        setMeshColor(matPair.first, 1.0, color);
+    }
+
+    return ids;
+
+
+}
+
 CameraSettings GLCRenderer::convertToCameraSettings(GLC_Camera *cam)
 {
     CameraSettings res;
@@ -778,6 +806,7 @@ void GLCRenderer::revertMeshMaterial(
 
 }
 
+
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
 
@@ -818,17 +847,8 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
 
     GLC_State::setSelectionMode(true);
     GLC_State::setUseCustomFalseColor(true);
-    std::vector<QString> ids;
 
-    for(auto &matPair : matMap)
-    {
-        QVector<GLubyte> colorId(4);
-        glc::encodeRgbId(ids.size()+1,&colorId[0]);
-        ids.push_back(matPair.first);
-        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
-        setMeshColor(matPair.first, 0.0, color);
-    }
-
+    auto ids = applyFalseColoringMaterials();
     fbo.bind();
     glEnable(GL_DEPTH_TEST);
 
@@ -841,7 +861,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
                                        GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
     fbo.release();
     resetColors();
-    GLC_uint returnId = glc::decodeRgbId(&colorId[0]) -1;
+    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
     if(returnId < ids.size())
     {
