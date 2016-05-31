@@ -618,8 +618,8 @@ void GLCRenderer::paintInfo(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Display selection
-        if (glcWorld.selectionSize() > 0)
-            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
+        if (!currentlyHighLighted.isEmpty())
+            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + currentlyHighLighted);
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -809,7 +809,6 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-
     if(multiSelection)
         repoLogError("Multi-selection currently does not work");
     //FIXME: multi-selection doesn't work at the moment
@@ -821,7 +820,6 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         repoError << "This model has too many components to support selection!";
         return;
     }
-
     QOffscreenSurface surface;
     surface.create();
     context->makeCurrent(&surface);
@@ -867,7 +865,6 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     {
         highlightMesh(ids[(int)returnId]);
     }
-
 
     fbo.bindDefault();
     context->doneCurrent();
