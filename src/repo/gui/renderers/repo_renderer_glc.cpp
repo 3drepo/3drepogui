@@ -605,10 +605,6 @@ void GLCRenderer::paintInfo(QPainter *painter,
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
         painter->setPen(Qt::gray);
-        QString selectionName;
-        if (glcWorld.selectionSize() > 0)
-            selectionName = glcWorld.selectedOccurrenceList().first()->name();
-
         painter->drawText(9, 14, QString() +
                           tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
         painter->drawText(9, 30, QString() +
@@ -820,10 +816,6 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         repoError << "This model has too many components to support selection!";
         return;
     }
-    QOffscreenSurface surface;
-    surface.create();
-    context->makeCurrent(&surface);
-
 
     if (glcWorld.collection()->spacePartitioningIsUsed())
     {
@@ -839,7 +831,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
 
-
+    fbo.bind();
     QColor backgroundColor = glcViewport.backgroundColor();
     glcViewport.setBackgroundColor(QColor(Qt::white));
 
@@ -847,7 +839,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     GLC_State::setUseCustomFalseColor(true);
 
     auto ids = applyFalseColoringMaterials();
-    fbo.bind();
+
     glEnable(GL_DEPTH_TEST);
 
     render(nullptr);
@@ -857,7 +849,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     QVector<GLubyte> colorId(4); // 4 -> R G B A
     context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
                                        GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
-    fbo.release();
+
     resetColors();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
@@ -865,13 +857,13 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     {
         highlightMesh(ids[(int)returnId]);
     }
-
+    fbo.release();
     fbo.bindDefault();
-    context->doneCurrent();
+
 
     glcViewport.setBackgroundColor(backgroundColor);
 
-    surface.destroy();
+    context->doneCurrent();
 }
 
 void GLCRenderer::setActivationFlag(const bool &flag)
