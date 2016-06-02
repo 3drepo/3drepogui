@@ -649,6 +649,9 @@ void GLCRenderer::render(QPainter *painter,
         GLC_Context::current()->glcLoadIdentity();
         glEnable(GL_MULTISAMPLE);
 
+        glEnable(GL_PROGRAM_POINT_SIZE);
+        glPointSize(getPointSize());
+
 
         //----------------------------------------------------------------------
         // Define the light
@@ -1297,3 +1300,11 @@ void GLCRenderer::zoom(const float &zoom)
     emit cameraChanged(getCurrentCamera());
 }
 
+GLfloat GLCRenderer::getPointSize()
+{
+//    int area = glcViewport.size().width() * glcViewport.size().height();
+//    GLfloat pointSize = (area / 1000.0f) * (1 / glcViewport.cameraHandle()->eye().length());
+//    std::cout << pointSize << " -- " << area / 1000.0f << std::endl;
+//    return pointSize;
+    return 5.0f;
+}

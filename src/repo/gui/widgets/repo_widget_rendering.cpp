@@ -278,6 +278,11 @@ void Rendering3DWidget::linkCameras(
         QObject::connect(renderer, &renderer::AbstractRenderer::cameraChanged,
                          widget, &Rendering3DWidget::setCamera);
 
+        QObject::connect(this,
+                         &repo::gui::widget::Rendering3DWidget::keyPressed,
+                         widget,
+                         &repo::gui::widget::Rendering3DWidget::keyPressEvent);
+
         // TODO: align all views
         //        renderer->notifyCameraChange();
     }
@@ -285,6 +290,11 @@ void Rendering3DWidget::linkCameras(
     {
         QObject::disconnect(renderer, &renderer::AbstractRenderer::cameraChanged,
                             widget, &Rendering3DWidget::setCamera);
+
+        QObject::disconnect(this,
+                         &repo::gui::widget::Rendering3DWidget::keyPressed,
+                         widget,
+                         &repo::gui::widget::Rendering3DWidget::keyPressEvent);
     }
 }
 
@@ -616,10 +626,17 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         break;
     }
 
-
     // Pass on the event to parent.
     QOpenGLWidget::keyPressEvent(e);
+
+    // The original widget that caused the key press is null sender.
+    // However, whichever subsequently linked widget that receives this
+    // information will have a non-null sender() so in that case it will stop
+    // emitting any further to avoid infinite looping across all linked widgets.
+    if (!sender())
+        emit keyPressed(e);
 }
+
 void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
 {
     switch (e->button())
