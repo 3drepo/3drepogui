@@ -57,6 +57,14 @@ namespace repo {
 
 				~GLCRenderer();
 				
+                /**
+                 * Apply false colouring materials onto the meshes
+                 * call resetColors() to revert to original materials
+                 * @return returns a vector mapping between the decoded rgba value
+                 *         and mesh id
+                 */
+                std::vector<QString> applyFalseColoringMaterials();
+
 				/**
 				* Recursively extracts meshes from a given occurrence. 
 				* Call with a root node.
@@ -118,6 +126,12 @@ namespace repo {
 					const qreal &opacity,
 					const QColor &color);
 
+
+                virtual void setMeshColor(
+                        const QString &uuidString,
+                        const qreal &opacity,
+                        const QColor &color);
+
 				/**
 				* Start navigate around the model
 				* @param mode which navigation mode
@@ -161,7 +175,8 @@ namespace repo {
 				* @param y position in y
 				* @param multiSelection if multiple objects should be highlighted
 				*/
-				virtual void selectComponent(const int &x, const int &y, bool multiSelection);
+                virtual void selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection);
+
 
 				/**
 				* Set activiation flag
@@ -223,7 +238,9 @@ namespace repo {
 				* Set the world to render to be the world provided
 				* @param world the world to render
 				*/
-				void setGLCWorld(GLC_World &world);
+                void setGLCWorld(GLC_World &world,
+                                 std::map<QString, GLC_Mesh*>     &_meshMap,
+                                 std::map<QString, GLC_Material*> &_matMap);
 
 public slots :
 
@@ -290,6 +307,15 @@ public slots :
                          GLC_Material                      *mat
                         );
 
+                /**
+                 * Change the colour of the material
+                 * @param uuidString unique id of the mesh (or submesh) to change
+                 * @param newMat the new material to change to
+                 */
+                void changeMeshMaterial(
+                        const QString &uuidString,
+                        const GLC_Material &newMat);
+
 				/**
 				* Given a pointer to GLC_Camera, convert it into a CameraSettings.
 				* @param cam GLC_Camera
@@ -297,6 +323,13 @@ public slots :
 				*/
 				CameraSettings convertToCameraSettings(GLC_Camera *cam);
 
+                /**
+                 * Highlight the mesh (or the submesh) that has the
+                 * given ID
+                 * @param meshId
+                 */
+                void highlightMesh(
+                        const QString &meshId);
 
 				/**
 				* paint info
@@ -307,6 +340,13 @@ public slots :
 				virtual void paintInfo(QPainter *painter,
 					const int &screenHeight = 100,
 					const int &screenWidth = 100);
+
+                /**
+                 * Revert mesh material back to its original properties
+                 * @param uuidString mesh unique id in QString format
+                 */
+                void revertMeshMaterial(
+                        const QString &uuidString);
 
 				//! List of available shaders.
 				QList<GLC_Shader*> shaders;
@@ -326,6 +366,7 @@ public slots :
 
                 //! Globally applied clipping plane IDs
                 std::vector<GLC_CuttingPlane *> clippingPlaneWidgets;
+                QString currentlyHighLighted;
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;

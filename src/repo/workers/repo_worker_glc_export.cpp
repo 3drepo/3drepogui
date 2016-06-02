@@ -32,132 +32,6 @@ namespace repoModel = repo::core::model;
 //------------------------------------------------------------------------------
 
 
-class RepoGLCCamera : public GLC_Geometry
-{
-public:
-
-    RepoGLCCamera(
-        const GLC_Point3d &position,
-        const float depth,
-        const float halfWidth,
-        const float halfHeight,
-        const GLC_Matrix4x4 &transformation)
-        : position(position)
-        , depth(depth)
-        , halfWidth(halfWidth)
-        , halfHeight(halfHeight)
-        , transformation(transformation)
-        , GLC_Geometry("Camera", true){};
-
-    ~RepoGLCCamera(){};
-
-    //! Returns a bounding box of this wireframe camera representation
-    const GLC_BoundingBox& boundingBox()
-    {
-        if (NULL == m_pBoundingBox)
-        {
-            m_pBoundingBox = new GLC_BoundingBox();
-            if (m_WireData.isEmpty())
-                createWire();
-            m_pBoundingBox->combine(m_WireData.boundingBox());
-            m_pBoundingBox->combine(GLC_Vector3d(0.0, 0.0, -2 * glc::EPSILON));
-        }
-        return *m_pBoundingBox;
-    }
-
-    //! Returns a clone
-    GLC_Geometry* clone() const
-    {
-        return new RepoGLCCamera(*this);
-    }
-
-private:
-
-    //! Renders the wireframe presentation as a line strip.
-    void glDraw(const GLC_RenderProperties& renderProperties)
-    {
-        if (m_WireData.isEmpty())
-            createWire();
-        m_WireData.glDraw(renderProperties, GL_LINE_STRIP);
-    }
-
-
-    //! Creates the wireframe representation from the given GLC Camera.
-    void createWire()
-    {
-        {
-            GLfloatVector vertices;
-
-            GLC_Matrix4x4 rotation = transformation.rotationMatrix().transpose(); //camera.modelViewMatrix().rotationMatrix().transpose(); //.invert();
-            GLC_Point3d eye = position; // == rotation * GLC_Point3d(0,0,0) + camera.eye()
-
-            GLC_Point3d frustrumTopLeft = rotation * GLC_Point3d(-halfWidth, halfHeight, depth) + position;
-            GLC_Point3d frustrumTopRight = rotation * GLC_Point3d(halfWidth, halfHeight, depth) + position;
-            GLC_Point3d frustrumBottomRight = rotation * GLC_Point3d(halfWidth, -halfHeight, depth) + position;
-            GLC_Point3d frustrumBottomLeft = rotation * GLC_Point3d(-halfWidth, -halfHeight, depth) + position;
-
-            float triangleHalfBase = halfWidth * 0.7f; // Half of the side of the triangle
-            float triangleHeight = triangleHalfBase; // sqrt(triangleHalfBase * 2.0f * triangleHalfBase * 2.0f - triangleHalfBase * triangleHalfBase);
-            float verticalOffset = halfHeight * 1.1f; // Y-axis offset to position triangle above viewport
-            GLC_Point3d triangleLeft = rotation * GLC_Point3d(-triangleHalfBase, verticalOffset, depth) + position;
-            GLC_Point3d triangleTop = rotation * GLC_Point3d(0.0f, verticalOffset + triangleHeight, depth) + position;
-            GLC_Point3d triangleRight = rotation * GLC_Point3d(triangleHalfBase, verticalOffset, depth) + position;
-
-            //-------------------------------------------------------------------------
-            // Frustrum arms
-            vertices << eye.x() << eye.y() << eye.z(); // eye
-            vertices << frustrumTopLeft.x() << frustrumTopLeft.y() << frustrumTopLeft.z(); // top left
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-
-            vertices << eye.x() << eye.y() << eye.z(); // eye
-            vertices << frustrumTopRight.x() << frustrumTopRight.y() << frustrumTopRight.z(); // top right
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-
-            vertices << eye.x() << eye.y() << eye.z(); // eye
-            vertices << frustrumBottomRight.x() << frustrumBottomRight.y() << frustrumBottomRight.z(); // bottom right
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-
-            vertices << eye.x() << eye.y() << eye.z(); // eye
-            vertices << frustrumBottomLeft.x() << frustrumBottomLeft.y() << frustrumBottomLeft.z(); // bottom left
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-
-            //-------------------------------------------------------------------------
-            // Viewport
-            vertices << frustrumTopLeft.x() << frustrumTopLeft.y() << frustrumTopLeft.z(); // top left
-            vertices << frustrumTopRight.x() << frustrumTopRight.y() << frustrumTopRight.z(); // top right
-            vertices << frustrumBottomRight.x() << frustrumBottomRight.y() << frustrumBottomRight.z(); // bottom right
-            vertices << frustrumBottomLeft.x() << frustrumBottomLeft.y() << frustrumBottomLeft.z(); // bottom left
-            vertices << frustrumTopLeft.x() << frustrumTopLeft.y() << frustrumTopLeft.z(); // top left
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-
-            //-------------------------------------------------------------------------
-            // Up Triangle
-            vertices << triangleLeft.x() << triangleLeft.y() << triangleLeft.z(); // -1.0f << -0.4f << 0.3f; // left
-            vertices << triangleTop.x() << triangleTop.y() << triangleTop.z(); // -1.0f << 0.4f << 0.3f; // top
-            vertices << triangleRight.x() << triangleRight.y() << triangleRight.z(); // -1.0f << 0.0f << 0.6f; // right
-            vertices << triangleLeft.x() << triangleLeft.y() << triangleLeft.z(); // -1.0f << -0.4f << 0.3f; // left
-            GLC_Geometry::addVerticeGroup(vertices);
-            vertices.clear();
-        }
-    }
-
-    float depth;
-
-    float halfWidth;
-
-    float halfHeight;
-
-    GLC_Point3d position;
-
-    GLC_Matrix4x4 transformation;
-
-};
-
 GLCExportWorker::GLCExportWorker(
     repo::core::model::RepoScene* scene,
         const std::vector<double> &offsetVector):
@@ -173,6 +47,9 @@ GLCExportWorker::GLCExportWorker(
     {
         repoDebug << "stash graph not found, visualising with default graph...";
     }
+
+    qRegisterMetaType<std::map<QString, GLC_Mesh*>>("std::map<QString, GLC_Mesh*>&");
+    qRegisterMetaType<std::map<QString, GLC_Material*>>("std::map<QString, GLC_Material*>&");
 
 }
 
@@ -190,7 +67,11 @@ void GLCExportWorker::run()
         jobsCount = scene->getItemsInCurrentGraph(repoViewGraph);
         done = 0;
         emit progress(0, 0); // undetermined (moving) progress bar
-        GLC_World *glcWorld = createGLCWorld(scene);
+
+        std::map<QString, GLC_Mesh*> meshMap;
+        std::map<QString, GLC_Material*> matMap;
+
+        GLC_World *glcWorld = createGLCWorld(scene, meshMap, matMap);
 
         //--------------------------------------------------------------------------
         emit progress(jobsCount, jobsCount);
@@ -221,7 +102,10 @@ void GLCExportWorker::run()
         //--------------------------------------------------------------------------
 
 		if (!cancelled)
-			emit finished(wholeGraph);
+        {
+            repoLog("Completed world. emitting signals...");
+            emit finished(wholeGraph, meshMap, matMap);
+        }
     }
     else{
         repoLog("Trying to produce a GLC representation with a nullptr to scene!");
@@ -230,13 +114,15 @@ void GLCExportWorker::run()
 }
 
 GLC_World* GLCExportWorker::createGLCWorld(
-    repo::core::model::RepoScene *scene)
+    repo::core::model::RepoScene     *scene,
+    std::map<QString, GLC_Mesh*>     &meshMap,
+    std::map<QString, GLC_Material*> &matMap)
 {
 
     //-----
     GLC_World* glcWorld = nullptr;
     if (!cancelled && scene && scene->hasRoot(scene->getViewGraph())){
-        auto occ = convertSceneToOccurance(scene, offsetVector);
+        auto occ = convertSceneToOccurance(scene, meshMap, matMap, offsetVector);
         if (occ)
             glcWorld = new GLC_World(occ);
 		else
@@ -251,6 +137,8 @@ GLC_World* GLCExportWorker::createGLCWorld(
 
 GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     repo::core::model::RepoScene *scene,
+    std::map<QString, GLC_Mesh*>     &meshMap,
+    std::map<QString, GLC_Material*> &matMap,
     const std::vector<double> &offsetVector)
 {
 
@@ -334,7 +222,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 		if (mesh && !cancelled)
         {
             GLC_3DRep* glcMesh = convertGLCMesh(
-                (repoModel::MeshNode*)mesh, parentToGLCMaterial);
+                (repoModel::MeshNode*)mesh, parentToGLCMaterial, matMap);
             if (glcMesh)
             {
                 std::vector<repoUUID> parents = mesh->getParentIDs();
@@ -347,6 +235,17 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                     //Map the mesh to all parent UUIDs
                     parentToGLCMeshes[parent].push_back(glcMesh);
                 }
+
+                for (int i = 0; i < glcMesh->numberOfBody(); ++i)
+                {
+                    GLC_Mesh * meshObj = dynamic_cast<GLC_Mesh*>(glcMesh->geomAt(i));
+
+                    if (meshObj)
+                    {
+                        meshMap[glcMesh->name()] = meshObj;
+                    }
+                }
+
             }
         }
     }
@@ -400,19 +299,21 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                                 + std::to_string(dOffset[1]) + ", "
                                 + std::to_string(dOffset[2]));
 
-        return createOccurrenceFromNode(scene, &transFormedRoot, parentToGLCMeshes, parentToGLCCameras);
+        return createOccurrenceFromNode(scene, &transFormedRoot, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap);
 
     }
     else
-        return createOccurrenceFromNode(scene, rootNode, parentToGLCMeshes, parentToGLCCameras);
+        return createOccurrenceFromNode(scene, rootNode, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap);
 }
 
 GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
     repo::core::model::RepoScene                     *scene,
-    const repo::core::model::RepoNode                 *node,
-    std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcMeshesMap,
-    std::map<repoUUID, std::vector<GLC_3DRep*>>             &glcCamerasMap,
-    const bool                                              &countJob)
+    const repo::core::model::RepoNode                *node,
+    std::map<repoUUID, std::vector<GLC_3DRep*>>      &glcMeshesMap,
+    std::map<repoUUID, std::vector<GLC_3DRep*>>      &glcCamerasMap,
+    std::map<QString, GLC_Mesh*>                     &meshMap,
+    std::map<QString, GLC_Material*>                 &matMap,
+            const bool                               &countJob)
 {
     /*
     * There are a number of assumptions within this function
@@ -542,7 +443,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
 				|| refScene->getAllReferences(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0)))
         	{
                 //There is nothing to visualise if there are no meshes
-        		occurrence = convertSceneToOccurance(refScene);
+                occurrence = convertSceneToOccurance(refScene, meshMap, matMap);
         	}
             else
             {
@@ -563,6 +464,8 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
                 child,
                 glcMeshesMap,
                 glcCamerasMap,
+                meshMap,
+                matMap,
                 countJob);
 
             if (childOccurance)
@@ -585,27 +488,27 @@ GLC_3DRep* GLCExportWorker::convertGLCCamera(
     const repo::core::model::CameraNode *camera)
 {
     GLC_3DRep * glcCamera = nullptr;
-    if (camera)
-    {
-        repo_vector_t position = camera->getPosition();
-        GLC_Point3d glcPosition(position.x, position.y, position.z);
+//    if (camera)
+//    {
+//        repo_vector_t position = camera->getPosition();
+//        GLC_Point3d glcPosition(position.x, position.y, position.z);
 
-        GLC_Matrix4x4 glcMatrix(&camera->getCameraMatrix(false).at(0));
+//        GLC_Matrix4x4 glcMatrix(&camera->getCameraMatrix(false).at(0));
 
-        float halfWidth = 0.5; //std::tan(assimpCamera->mHorizontalFOV) / depth;
-        float aspectRatio = camera->getAspectRatio();
+//        float halfWidth = 0.5; //std::tan(assimpCamera->mHorizontalFOV) / depth;
+//        float aspectRatio = camera->getAspectRatio();
 
-        float halfHeight = halfWidth / (aspectRatio ? aspectRatio : 1);
-        float depth = halfWidth * 2 / std::tan(camera->getHorizontalFOV());
+//        float halfHeight = halfWidth / (aspectRatio ? aspectRatio : 1);
+//        float depth = halfWidth * 2 / std::tan(camera->getHorizontalFOV());
 
-        // Camera wireframe representation
-        RepoGLCCamera *repoGLCCam = new RepoGLCCamera(glcPosition, depth, halfWidth, halfHeight, glcMatrix);
+//        // Camera wireframe representation
+//        RepoGLCCamera *repoGLCCam = new RepoGLCCamera(glcPosition, depth, halfWidth, halfHeight, glcMatrix);
 
 
-        glcCamera = new GLC_3DRep(repoGLCCam);
+//        glcCamera = new GLC_3DRep(repoGLCCam);
 
-        glcCamera->setName(QString::fromStdString(camera->getName().c_str()));
-    }
+//        glcCamera->setName(QString::fromStdString(camera->getName().c_str()));
+//    }
 
     return glcCamera;
 
@@ -693,7 +596,8 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 
 GLC_3DRep* GLCExportWorker::convertGLCMesh(
     const repo::core::model::MeshNode        *mesh,
-    std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials)
+    std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
+    std::map<QString, GLC_Material*> &matMap)
 {
 
 	GLC_Mesh * glcMesh = new GLC_Mesh;
@@ -738,22 +642,33 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo);
 
 				GLC_Material* material = nullptr;
+                QString meshId = QString::fromStdString(UUIDtoString(map.mesh_id));
 				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 					mapMaterials.find(map.material_id);
-				if (mapIt != mapMaterials.end())
-				{
-					//material = (GLC_Material*)mapIt->second.at(0);
-					material = new GLC_Material(*mapIt->second.at(0));
-					material->setName(QString::fromStdString(UUIDtoString(map.mesh_id)));
-					material->setId(glc::GLC_GenID());
-				}
-				else
-				{
-					material = new GLC_Material();
-					material->setName(QString::fromStdString(UUIDtoString(map.mesh_id)));
-				}
+                if(matMap.find(meshId) != matMap.end())
+                {
+                    //We've seen this meshId before -> an instance.
+                    //apply the same GLC_Material instance
+                    material = matMap[meshId];
+                }
+                else
+                {
+                    if (mapIt != mapMaterials.end())
+                    {
+                        material = new GLC_Material(*mapIt->second.at(0));
+
+                        material->setId(glc::GLC_GenID());
+                    }
+                    else
+                    {
+                        material = new GLC_Material();
+                    }
+                    material->setName(meshId);
+                    matMap[meshId] = material;
+                }
 
 				glcMesh->addTriangles(material, glcFaces);
+
 			}
 		}
 		else
@@ -762,6 +677,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 			QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec);
 
+            QString meshUniqueID = QString::fromStdString(UUIDtoString(mesh->getUniqueID()));
 			if (glcFaces.size() > 0)
 			{
 				GLC_Material* material = nullptr;
@@ -769,10 +685,16 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 					mapMaterials.find(mesh->getSharedID());
 				if (mapIt != mapMaterials.end())
 				{
-					//FIXME: assume 1 material only
-					material = (GLC_Material*)mapIt->second.at(0);
+                    material = new GLC_Material(*mapIt->second.at(0));
 				}
+                else
+                {
+                    material = new GLC_Material();
+
+                }
+                material->setName(meshUniqueID);
 				glcMesh->addTriangles(material, glcFaces);
+                matMap[meshUniqueID] = material;
 			}
 		}
 
@@ -807,7 +729,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		glcMesh->finish();
 
     }
-	
+
 	GLC_3DRep* pRep = new GLC_3DRep(glcMesh);
 	glcMesh = NULL;
 	pRep->clean();

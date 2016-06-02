@@ -232,6 +232,8 @@ public:
 
     QImage renderFrameBufferQImage(int w, int h, GLvoid *data);
 
+    int getSelectedID(int x, int y);
+
 protected:
 
     //--------------------------------------------------------------------------
@@ -250,7 +252,7 @@ protected:
     void wheelEvent(QWheelEvent*);
 
     //! Object selection processing
-    void select(int x, int y, bool multiSelection, QMouseEvent* pMouseEvent);
+    void select(int x, int y, bool multiSelection, QMouseEvent*);
 
 
     //--------------------------------------------------------------------------

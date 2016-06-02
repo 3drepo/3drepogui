@@ -41,6 +41,7 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
+    , currentlyHighLighted("")
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -66,6 +67,7 @@ GLCRenderer::GLCRenderer()
 
     //--------------------------------------------------------------------------
 
+
     QObject::connect(
                 &glcMoverController, &GLC_MoverController::repaintNeeded,
                 this, &AbstractRenderer::repaintNeeded);
@@ -81,6 +83,34 @@ GLCRenderer::GLCRenderer()
 GLCRenderer::~GLCRenderer()
 {
     glcWorld.clear();
+}
+
+
+std::vector<QString> GLCRenderer::applyFalseColoringMaterials()
+{
+    std::vector<QString> ids;
+    if(matMap.size() > (pow(2, 24) -1))
+    {
+        //We represent indices using rgb values, which is 3*8 bit.
+        //0 can't be used as it will be the same as the background,
+        // so we can represent 2^24-1 components
+        repoError << "This model has too many components to support selection!";
+        return ids;
+    }
+
+    ids.push_back(""); //white is never used as the background will be white.
+    for(auto &matPair : matMap)
+    {
+        QVector<GLubyte> colorId(4);
+        glc::encodeRgbId(ids.size(),&colorId[0]);
+        ids.push_back(matPair.first);
+        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
+        setMeshColor(matPair.first, 1.0, color);
+    }
+
+    return ids;
+
+
 }
 
 CameraSettings GLCRenderer::convertToCameraSettings(GLC_Camera *cam)
@@ -169,6 +199,82 @@ CameraSettings GLCRenderer::getCurrentCamera()
 {
     return convertToCameraSettings(glcViewport.cameraHandle());
 }
+
+void GLCRenderer::highlightMesh(
+        const QString &meshId)
+{
+    if(currentlyHighLighted == meshId)
+    {
+        //currently highlighted, should unhighlight it
+        revertMeshMaterial(meshId);
+        currentlyHighLighted = "";
+    }
+    else
+    {
+        GLC_Material highlightMat;
+
+
+        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
+        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
+        highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
+        highlightMat.setEmissiveColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
+//        highlightMat.setShininess(100);
+        highlightMat.setOpacity(1.0);
+
+        changeMeshMaterial(meshId, highlightMat);
+        currentlyHighLighted = meshId;
+    }
+
+
+
+}
+
+void GLCRenderer::changeMeshMaterial(
+        const QString &uuidString,
+        const GLC_Material &newMat)
+{
+    auto meshIt = meshMap.find(uuidString);
+    auto matIt = matMap.find(uuidString);
+    GLC_Material *mat = nullptr;
+    if (matIt != matMap.end())
+    {
+        mat = matIt->second;
+
+    }
+    else if(meshIt != meshMap.end())
+    {
+        GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+        {
+            //has material, alter the emissive color
+            auto matIds = mesh->materialIds();
+            mat = mesh->material(matIds[0]);
+        }
+        else
+        {
+            //The mesh should have at least the default material due to how GLC_Mesh is constructed
+            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
+        }
+
+    }
+    else
+    {
+        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
+    }
+
+    if (mat)
+    {
+        if (changedMats.find(mat) == changedMats.end())
+        {
+            //preserve original material
+            changedMats[mat] = GLC_Material(*mat);
+        }
+
+        *mat=newMat;
+
+    }
+}
+
 
 bool GLCRenderer::increaseFlyVelocity(const float &vel)
 {
@@ -304,53 +410,26 @@ void GLCRenderer::setMeshColor(
         const qreal &opacity,
         const QColor &color)
 {
+
     QString uuidString = QString::fromStdString(UUIDtoString(uniqueID));
-    auto meshIt = meshMap.find(uuidString);
-    auto matIt = matMap.find(uuidString);
-    GLC_Material *mat = nullptr;
-    if (meshIt != meshMap.end())
-    {
-        GLC_Mesh *mesh = meshIt->second;
-        if (mesh->materialCount())
-        {
-            //has material, alter the emissive color
-            auto matIds = mesh->materialIds();
-            mat = mesh->material(matIds[0]);
 
-        }
-        else
-        {
-            //The mesh should have at least the default material due to how GLC_Mesh is constructed
-            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
-        }
-    }
-    else if (matIt != matMap.end())
-    {
-        mat = matIt->second;
+    setMeshColor(uuidString, opacity, color);
+}
 
-    }
-    else
-    {
-        repoLogError("Failed to set color of mesh " + uuidString.toStdString() + " : mesh not found!");
-    }
+void GLCRenderer::setMeshColor(
+        const QString &uuidString,
+        const qreal &opacity,
+        const QColor &color)
+{
+    GLC_Material coloredMat;
+    coloredMat.setAmbientColor(color);
+    coloredMat.setDiffuseColor(color);
+    coloredMat.setSpecularColor(QColor(1.0, 1.0, 1.0, 1.0));
+    coloredMat.setEmissiveColor(QColor(0.0, 0.0, 0.0, 1.0));
+    coloredMat.setShininess(50);
+    coloredMat.setOpacity(opacity);
 
-    if (mat)
-    {
-        if (changedMats.find(mat) == changedMats.end())
-        {
-            //preserve original material
-            changedMats[mat] = GLC_Material(*mat);
-        }
-
-        mat->setEmissiveColor(color);
-        mat->setOpacity(opacity);
-        if (mat->hasTexture())
-        {
-            //take away the texture to make the material visible
-            mat->removeTexture();
-        }
-    }
-
+    changeMeshMaterial(uuidString, coloredMat);
 }
 
 void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &y)
@@ -412,12 +491,18 @@ void GLCRenderer::stopNavigation()
     }
 }
 
-void GLCRenderer::setGLCWorld(GLC_World &world)
+void GLCRenderer::setGLCWorld(GLC_World                        &world,
+                              std::map<QString, GLC_Mesh*>     &_meshMap,
+                              std::map<QString, GLC_Material*> &_matMap)
 {
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
     repoLog("\tGLC World size: " + std::to_string(world.size()));
     repoLog("\tGLC World #vertex: " + std::to_string(world.numberOfVertex()));
+
+    meshMap    = _meshMap;
+    matMap     = _matMap;
+
     this->glcWorld = world;
     this->glcWorld.collection()->setLodUsage(true, &glcViewport);
     this->glcWorld.collection()->setVboUsage(true);
@@ -432,10 +517,10 @@ void GLCRenderer::setGLCWorld(GLC_World &world)
     GLC_BoundingBox bbox = this->glcWorld.boundingBox();
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
-    extractMeshes(this->glcWorld.rootOccurrence());
+    //extractMeshes(this->glcWorld.rootOccurrence());
 
 
-    glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
+    //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
 }
 
 void GLCRenderer::paintInfo(QPainter *painter,
@@ -520,10 +605,6 @@ void GLCRenderer::paintInfo(QPainter *painter,
         painter->setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
 
         painter->setPen(Qt::gray);
-        QString selectionName;
-        if (glcWorld.selectionSize() > 0)
-            selectionName = glcWorld.selectedOccurrenceList().first()->name();
-
         painter->drawText(9, 14, QString() +
                           tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
         painter->drawText(9, 30, QString() +
@@ -533,8 +614,8 @@ void GLCRenderer::paintInfo(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Display selection
-        if (glcWorld.selectionSize() > 0)
-            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + selectionName);
+        if (!currentlyHighLighted.isEmpty())
+            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + currentlyHighLighted);
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -628,7 +709,8 @@ void GLCRenderer::render(QPainter *painter,
 
         glcViewport.useClipPlane(false);
 
-        glc3DWidgetManager.render();
+        if (!GLC_State::isInSelectionMode())
+            glc3DWidgetManager.render();
 
         //----------------------------------------------------------------------
         // Display UI Info (orbit circle)
@@ -676,57 +758,112 @@ void GLCRenderer::resizeWindow(const int &width, const int &height)
     glcViewport.setWinGLSize(width, height); // Compute window aspect ratio
 }
 
-void GLCRenderer::selectComponent(const int &x, const int &y, bool multiSelection)
+void GLCRenderer::revertMeshMaterial(
+        const QString &uuidString)
 {
-    const bool spacePartitioningIsUsed = glcWorld.collection()->spacePartitioningIsUsed();
-    if (spacePartitioningIsUsed)
+    auto meshIt = meshMap.find(uuidString);
+    auto matIt = matMap.find(uuidString);
+    GLC_Material *mat = nullptr;
+    if (matIt != matMap.end())
     {
-        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
-        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
+        mat = matIt->second;
+
+    }
+    else if(meshIt != meshMap.end())
+    {
+        GLC_Mesh *mesh = meshIt->second;
+        if (mesh->materialCount())
+        {
+            auto matIds = mesh->materialIds();
+            mat = mesh->material(matIds[0]);
+        }
+        else
+        {
+            //The mesh should have at least the default material due to how GLC_Mesh is constructed
+            repoLogError("mesh " + uuidString.toStdString() + " has no material. This is unexpected!");
+        }
+
+    }
+    else
+    {
+        repoLogError("Failed to revert color of mesh " + uuidString.toStdString() + " : mesh not found!");
+    }
+
+    if (mat)
+    {
+        auto changedIt = changedMats.find(mat);
+        if ( changedIt != changedMats.end())
+        {
+            *mat = changedIt->second;
+            changedMats.erase(changedIt);
+        }
+
+    }
+
+}
+
+
+void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
+{
+    if(multiSelection)
+        repoLogError("Multi-selection currently does not work");
+    //FIXME: multi-selection doesn't work at the moment
+    if(matMap.size() > (pow(2, 24) -1))
+    {
+        //We represent indices using rgb values, which is 3*8 bit.
+        //0 can't be used as it will be the same as the background,
+        // so we can represent 2^24-1 components
+        repoError << "This model has too many components to support selection!";
+        return;
+    }
+
+    if (glcWorld.collection()->spacePartitioningIsUsed())
+    {
+            // TODO: this causes GLC_Light exception on Release but not Debug.
+//        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
+//        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
         glcWorld.collection()->setSpacePartitionningUsage(false);
         glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
         glcWorld.collection()->setSpacePartitionningUsage(true);
     }
 
-    GLC_uint selectionID = glcViewport.renderAndSelect(x, y);
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
 
-    if (glcWorld.containsOccurrence(selectionID))
-    {
-        if ((!glcWorld.isSelected(selectionID))
-                && (glcWorld.selectionSize() > 0)
-                && (!multiSelection))
-        {
-            glcWorld.unselectAll();
-            //emit selectionChanged(this, getSelectionList());
-        }
-        if (!glcWorld.isSelected(selectionID))
-        {
-            glcWorld.select(selectionID);
-            //emit selectionChanged(this, getSelectionList());
-        }
-        else if (glcWorld.isSelected(selectionID) && multiSelection)
-        {
-            glcWorld.unselect(selectionID);
-            //emit selectionChanged(this, getSelectionList());
-        }
-        else
-        {
-            glcWorld.unselectAll();
-            glcWorld.select(selectionID);
+    fbo.bind();
+    QColor backgroundColor = glcViewport.backgroundColor();
+    glcViewport.setBackgroundColor(QColor(Qt::white));
 
-            //emit selectionChanged(this, getSelectionList());
-        }
-    }
-    else if (glcWorld.selectionSize() && (!multiSelection))
+    GLC_State::setSelectionMode(true);
+    GLC_State::setUseCustomFalseColor(true);
+
+    auto ids = applyFalseColoringMaterials();
+
+    glEnable(GL_DEPTH_TEST);
+
+    render(nullptr);
+    GLC_State::setSelectionMode(false);
+    GLC_State::setUseCustomFalseColor(false);
+
+    QVector<GLubyte> colorId(4); // 4 -> R G B A
+    context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
+                                       GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
+
+    resetColors();
+    GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
+
+    if(returnId < ids.size())
     {
-        // if a geometry is selected, unselect it
-        glcWorld.unselectAll();
-        //emit selectionChanged(this, getSelectionList());
+        highlightMesh(ids[(int)returnId]);
     }
-    else
-    {
-        repoLogError("Failed to pin point object for selection");
-    }
+    fbo.release();
+    fbo.bindDefault();
+
+
+    glcViewport.setBackgroundColor(backgroundColor);
+
+    context->doneCurrent();
 }
 
 void GLCRenderer::setActivationFlag(const bool &flag)
@@ -1134,21 +1271,24 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 
     //--------------------------------------------------------------------------
     // Update position of the clipping plane widget and make sure it is set visible
-    GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
-    // The move action does not get to the desired position on the first shot
-    // therefore iterate multiple times until reached. Stop at some fixed
-    // large number just in case to prevent accidental infinite looping.
-    int i = 0;
-	glc::WidgetEventFlag result;
-	clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
-    do {
+    if (clippingPlaneWidgets.size() > (int) axis)
+    {
+        GLC_CuttingPlane* clippingPlaneWidget = clippingPlaneWidgets[(int) axis];
+        // The move action does not get to the desired position on the first shot
+        // therefore iterate multiple times until reached. Stop at some fixed
+        // large number just in case to prevent accidental infinite looping.
+        int i = 0;
+        glc::WidgetEventFlag result;
+        clippingPlaneWidget->select(clippingPlaneWidget->center(), clippingPlaneWidget->id());
+        do {
 
-        result = clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
-        ++i;
+            result = clippingPlaneWidget->move(centroid, clippingPlaneWidget->id());
+            ++i;
+        }
+        while (clippingPlaneWidget->center() != centroid && i < 1000);
+
+        clippingPlaneWidget->setVisible(true);
     }
-	while (clippingPlaneWidget->center() != centroid && i < 1000);
-
-    clippingPlaneWidget->setVisible(true);
 }
 
 void GLCRenderer::zoom(const float &zoom)
