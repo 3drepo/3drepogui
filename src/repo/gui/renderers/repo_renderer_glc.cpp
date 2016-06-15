@@ -264,7 +264,8 @@ CameraSettings GLCRenderer::getCurrentCamera()
 
 QImage GLCRenderer::getCurrentImageWithNoShading(
         const bool disableTexture,
-        const bool useFalseColoring)
+        const bool useFalseColoring,
+        std::vector<QString> &idMap)
 {
     resetColors();
 
@@ -290,7 +291,7 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     fbo.bind();
 
-    enableSelectionMode(!useFalseColoring);
+    idMap = enableSelectionMode(!useFalseColoring);
 
     render(nullptr);
 
@@ -308,15 +309,16 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
         const bool disableTexture)
 {
 
-
-    return getCurrentImageWithNoShading(disableTexture, false);
+    std::vector<QString> idMap;
+    return getCurrentImageWithNoShading(disableTexture, false, idMap);
 
 }
 
-QImage GLCRenderer::getCurrentImageWithFalseColoring()
+QImage GLCRenderer::getCurrentImageWithFalseColoring(
+        std::vector<QString> &idMap)
 {
 
-    return getCurrentImageWithNoShading(false, true);
+    return getCurrentImageWithNoShading(false, true, idMap);
 
 }
 

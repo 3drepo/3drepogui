@@ -95,9 +95,12 @@ namespace repo {
                 /**
                  * Retrieve a 2D Image at the current camera view
                  * in false coloring with no lighting effects.
+                 * @param idMap (return value) this function will fill in the ID mapping
+                 *              of decoded ints to unique ID of original meshes
                  * @return returns a QImage of the current view with no lighting effects
                  */
-                virtual QImage getCurrentImageWithFalseColoring();
+                virtual QImage getCurrentImageWithFalseColoring(
+                        std::vector<QString> &idMap);
 
 				/**
 				* Increase velocity
@@ -364,11 +367,14 @@ public slots :
                  * Note: false coloring takes precedence over disableTexture
                  * @param disableTexture remove texture on image
                  * @param useFalseColoring use custom false coloring on image
+                 * @param idMap if useFalseColoring is set to true, fill up idMap
+                 *                with decoded int to meshes' unique id mapping
                  * @return returns a QImage of the current view with no lighting effects
                  */
                 QImage getCurrentImageWithNoShading(
                         const bool disableTexture,
-                        const bool useFalseColoring);
+                        const bool useFalseColoring,
+                        std::vector<QString> &idMap);
 
                 /**
                  * Highlight the mesh (or the submesh) that has the
