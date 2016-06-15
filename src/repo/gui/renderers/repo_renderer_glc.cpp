@@ -143,6 +143,68 @@ void GLCRenderer::deleteShaders(QOpenGLContext *context)
     shaders.clear();
 }
 
+
+
+void GLCRenderer::disableSelectionMode()
+{
+    if(GLC_State::isInSelectionMode())
+    {
+        GLC_State::setSelectionMode(false);
+        GLC_State::setUseCustomFalseColor(false);
+        resetColors();
+    }
+    else
+    {
+        repoError << "Trying to disable selectionMode when it is not in selection mode!";
+    }
+
+}
+
+
+std::vector<QString> GLCRenderer::enableSelectionMode(const bool useCurrentMaterials)
+{
+    std::vector<QString> idMapping;
+    if(GLC_State::isInSelectionMode())
+    {
+        repoError << "Trying to enable selectionMode when it is in selection mode!";
+    }
+    else if(matMap.size() > (pow(2, 24) -1))
+    {
+        //We represent indices using rgb values, which is 3*8 bit.
+        //0 can't be used as it will be the same as the background,
+        // so we can represent 2^24-1 components
+        repoError << "This model has too many components to support selection!";
+
+    }
+    else
+    {
+
+        if (glcWorld.collection()->spacePartitioningIsUsed())
+        {
+                // TODO: this causes GLC_Light exception on Release but not Debug.
+    //        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
+    //        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
+            glcWorld.collection()->setSpacePartitionningUsage(false);
+            glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
+            glcWorld.collection()->setSpacePartitionningUsage(true);
+        }
+
+        GLC_State::setSelectionMode(true);
+        GLC_State::setUseCustomFalseColor(true);
+        if(!useCurrentMaterials)
+        {
+            idMapping = applyFalseColoringMaterials();
+        }
+
+
+        glEnable(GL_DEPTH_TEST);
+
+    }
+
+    return idMapping;
+}
+
+
 void GLCRenderer::extractMeshes(GLC_StructOccurrence * occurrence)
 {
     if (occurrence)
@@ -200,6 +262,64 @@ CameraSettings GLCRenderer::getCurrentCamera()
     return convertToCameraSettings(glcViewport.cameraHandle());
 }
 
+QImage GLCRenderer::getCurrentImageWithNoShading(
+        const bool disableTexture,
+        const bool useFalseColoring)
+{
+    resetColors();
+
+    if(!useFalseColoring && disableTexture)
+    {
+        //loop through all the materials and remove it's texture
+
+        for(auto &mat : matMap)
+        {
+            if(mat.second->hasTexture())
+            {
+                changedMats[mat.second] = GLC_Material(*mat.second);
+                mat.second->removeTexture();
+            }
+        }
+
+    }
+
+
+    QOpenGLFramebufferObjectFormat format;
+    format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+    QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
+
+    fbo.bind();
+
+    enableSelectionMode(!useFalseColoring);
+
+    render(nullptr);
+
+    auto image = fbo.toImage();
+
+
+    disableSelectionMode();
+    fbo.release();
+    fbo.bindDefault();
+
+    return image;
+}
+
+QImage GLCRenderer::getCurrentImageWithNoShading(
+        const bool disableTexture)
+{
+
+
+    return getCurrentImageWithNoShading(disableTexture, false);
+
+}
+
+QImage GLCRenderer::getCurrentImageWithFalseColoring()
+{
+
+    return getCurrentImageWithNoShading(false, true);
+
+}
+
 void GLCRenderer::highlightMesh(
         const QString &meshId)
 {
@@ -218,7 +338,6 @@ void GLCRenderer::highlightMesh(
         highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
         highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
         highlightMat.setEmissiveColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-//        highlightMat.setShininess(100);
         highlightMat.setOpacity(1.0);
 
         changeMeshMaterial(meshId, highlightMat);
@@ -820,16 +939,6 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         return;
     }
 
-    if (glcWorld.collection()->spacePartitioningIsUsed())
-    {
-            // TODO: this causes GLC_Light exception on Release but not Debug.
-//        GLC_Frustum selectionFrustum(glcViewport.selectionFrustum(x, y));
-//        glcWorld.collection()->updateInstanceViewableState(selectionFrustum);
-        glcWorld.collection()->setSpacePartitionningUsage(false);
-        glcWorld.collection()->updateInstanceViewableState(glcViewport.frustum());
-        glcWorld.collection()->setSpacePartitionningUsage(true);
-    }
-
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
@@ -838,22 +947,16 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     QColor backgroundColor = glcViewport.backgroundColor();
     glcViewport.setBackgroundColor(QColor(Qt::white));
 
-    GLC_State::setSelectionMode(true);
-    GLC_State::setUseCustomFalseColor(true);
-
-    auto ids = applyFalseColoringMaterials();
-
-    glEnable(GL_DEPTH_TEST);
+    auto ids = enableSelectionMode(false);
 
     render(nullptr);
-    GLC_State::setSelectionMode(false);
-    GLC_State::setUseCustomFalseColor(false);
+
 
     QVector<GLubyte> colorId(4); // 4 -> R G B A
     context->functions()->glReadPixels(x, glcViewport.size().height() - y, 1, 1,
                                        GL_RGBA, GL_UNSIGNED_BYTE, colorId.data());
 
-    resetColors();
+    disableSelectionMode();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
     if(returnId < ids.size())

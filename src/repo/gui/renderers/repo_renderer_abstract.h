@@ -65,6 +65,22 @@ public:
     virtual CameraSettings getCurrentCamera() = 0;
 
     /**
+     * Retrieve a 2D Image at the current camera view
+     * with no lighting effects.
+     * @param disableTexture if true, textures are removed from the image
+     * @return returns a QImage of the current view with no lighting effects
+     */
+    virtual QImage getCurrentImageWithNoShading(
+            const bool disableTexture) = 0;
+
+    /**
+     * Retrieve a 2D Image at the current camera view
+     * in false coloring with no lighting effects.
+     * @return returns a QImage of the current view with no lighting effects
+     */
+    virtual QImage getCurrentImageWithFalseColoring() = 0;
+
+    /**
     * Increase velocity
     * @param vel velocity delta
     * @return returns true upon success
