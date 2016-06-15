@@ -504,6 +504,18 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
         //		glEnable(GL_CULL_FACE);
         //		//glFrontFace(false ? GL_CCW : GL_CW);
         //	}
+    case Qt::Key_D:
+    {
+        auto res = renderer->getCurrentImageWithNoShading(e->modifiers() == Qt::ControlModifier);
+        res.save("C:\\Users\\Carmen\\Desktop\\test.png");
+        break;
+    }
+    case Qt::Key_E:
+    {
+        auto res = renderer->getCurrentImageWithFalseColoring();
+        res.save("C:\\Users\\Carmen\\Desktop\\test.png");
+        break;
+    }
     case Qt::Key_R:
     {
         renderer->resetView();

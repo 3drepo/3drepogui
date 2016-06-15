@@ -83,6 +83,22 @@ namespace repo {
 				*/
 				virtual CameraSettings getCurrentCamera();
 
+                /**
+                 * Retrieve a 2D Image at the current camera view
+                 * with no lighting effects.
+                 * @param disableTexture if true, textures are removed from the image
+                 * @return returns a QImage of the current view with no lighting effects
+                 */
+                virtual QImage getCurrentImageWithNoShading(
+                        const bool disableTexture);
+
+                /**
+                 * Retrieve a 2D Image at the current camera view
+                 * in false coloring with no lighting effects.
+                 * @return returns a QImage of the current view with no lighting effects
+                 */
+                virtual QImage getCurrentImageWithFalseColoring();
+
 				/**
 				* Increase velocity
 				* @param vel velocity delta
@@ -322,6 +338,35 @@ public slots :
 				* @return returns a CameraSettings
 				*/
 				CameraSettings convertToCameraSettings(GLC_Camera *cam);
+
+                /**
+                 * Disable selection mode and revert material
+                 * settings to its original state
+                 */
+                void disableSelectionMode();
+
+                /**
+                 * Enable selection mode and use custom false
+                 * coloring unless otherwise stated
+                 * @param useCurrentMaterials use currently assigned materials
+                 *          instead ofcustom false coloring
+                 * @return returns a vector of ID related to custom false coloring,
+                 *                  empty vector if failed or useCurrentMaterials is set to true
+                 */
+                std::vector<QString> enableSelectionMode(
+                        const bool useCurrentMaterials);
+
+                /**
+                 * Retrieve a 2D Image at the current camera view
+                 * with no lighting effects.
+                 * Note: false coloring takes precedence over disableTexture
+                 * @param disableTexture remove texture on image
+                 * @param useFalseColoring use custom false coloring on image
+                 * @return returns a QImage of the current view with no lighting effects
+                 */
+                QImage getCurrentImageWithNoShading(
+                        const bool disableTexture,
+                        const bool useFalseColoring);
 
                 /**
                  * Highlight the mesh (or the submesh) that has the
