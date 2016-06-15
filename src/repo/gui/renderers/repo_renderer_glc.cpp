@@ -268,7 +268,7 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 {
     resetColors();
 
-    if(disableTexture)
+    if(!useFalseColoring && disableTexture)
     {
         //loop through all the materials and remove it's texture
 
@@ -290,7 +290,7 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     fbo.bind();
 
-    enableSelectionMode(useFalseColoring);
+    enableSelectionMode(!useFalseColoring);
 
     render(nullptr);
 
@@ -309,14 +309,14 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 {
 
 
-    return getCurrentImageWithNoShading(disableTexture, true);
+    return getCurrentImageWithNoShading(disableTexture, false);
 
 }
 
 QImage GLCRenderer::getCurrentImageWithFalseColoring()
 {
 
-    return getCurrentImageWithNoShading(false, false);
+    return getCurrentImageWithNoShading(false, true);
 
 }
 
