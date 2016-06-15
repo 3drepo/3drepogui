@@ -284,8 +284,12 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     }
 
-    w = (w <= 0) ? glcViewport.size().width() : w;
-    h = (h <= 0) ? glcViewport.size().height() : h;
+    // Set new size
+    int originalWidth = glcViewport.size().width();
+    int originalHeight = glcViewport.size().height();
+    w = (w <= 0) ? originalWidth : w;
+    h = (h <= 0) ? originalHeight : h;
+    resizeWindow(w, h);
 
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
@@ -301,6 +305,9 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
     disableSelectionMode();
     fbo.release();
     fbo.bindDefault();
+
+    // Reset to original window size.
+    resizeWindow(originalWidth, originalHeight);
 
     return image;
 }
