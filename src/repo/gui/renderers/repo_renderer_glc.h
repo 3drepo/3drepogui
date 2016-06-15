@@ -90,7 +90,7 @@ namespace repo {
                  * @return returns a QImage of the current view with no lighting effects
                  */
                 virtual QImage getCurrentImageWithNoShading(
-                        const bool disableTexture);
+                        const bool disableTexture, int w = 0, int h = 0);
 
                 /**
                  * Retrieve a 2D Image at the current camera view
@@ -100,7 +100,7 @@ namespace repo {
                  * @return returns a QImage of the current view with no lighting effects
                  */
                 virtual QImage getCurrentImageWithFalseColoring(
-                        std::vector<QString> &idMap);
+                        std::vector<QString> &idMap, int w = 0, int h = 0);
 
 				/**
 				* Increase velocity
@@ -374,7 +374,7 @@ public slots :
                 QImage getCurrentImageWithNoShading(
                         const bool disableTexture,
                         const bool useFalseColoring,
-                        std::vector<QString> &idMap);
+                        std::vector<QString> &idMap, int w = 0, int h = 0);
 
                 /**
                  * Highlight the mesh (or the submesh) that has the
