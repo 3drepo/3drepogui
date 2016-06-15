@@ -305,6 +305,8 @@ public slots :
 
                 virtual void zoom(const float &zoom);
 
+                GLfloat getPointSize();
+
 			protected:				
 
 
@@ -421,8 +423,7 @@ public slots :
 				//! Globally applied shader ID.
 				GLuint shaderID;
 
-                std::vector<double> offset;
-				
+                std::vector<double> offset;		
 
 			}; // end class
 		} //end namespace renderer

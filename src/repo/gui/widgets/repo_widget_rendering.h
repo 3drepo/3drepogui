@@ -146,6 +146,8 @@ public slots :
 
     void updateClippingPlane(repo::gui::renderer::Axis axis, double value, bool reverse = false);
 
+    void keyPressEvent(QKeyEvent*);
+
 signals:
 
     void cancelRenderingOps();
@@ -153,6 +155,8 @@ signals:
     void modelLoadProgress(int value, int maximum);
 
     void selectionChanged(const Rendering3DWidget *, std::vector<std::string>);
+
+    void keyPressed(QKeyEvent *);
 
 public:
 
@@ -241,7 +245,7 @@ protected:
     // User interaction
     //
     //--------------------------------------------------------------------------
-    void keyPressEvent(QKeyEvent*);
+
     void keyReleaseEvent(QKeyEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseDoubleClickEvent(QMouseEvent*);
