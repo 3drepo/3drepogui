@@ -71,7 +71,7 @@ public:
      * @return returns a QImage of the current view with no lighting effects
      */
     virtual QImage getCurrentImageWithNoShading(
-            const bool disableTexture) = 0;
+            const bool disableTexture, int w = 0, int h = 0) = 0;
 
     /**
      * Retrieve a 2D Image at the current camera view
@@ -81,7 +81,7 @@ public:
      * @return returns a QImage of the current view with no lighting effects
      */
     virtual QImage getCurrentImageWithFalseColoring(
-            std::vector<QString> &idMap) = 0;
+            std::vector<QString> &idMap, int w = 0, int h = 0) = 0;
 
     /**
     * Increase velocity
