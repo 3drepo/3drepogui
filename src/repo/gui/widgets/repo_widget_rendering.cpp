@@ -522,7 +522,8 @@ void Rendering3DWidget::keyPressEvent(QKeyEvent *e)
     }
     case Qt::Key_E:
     {
-        auto res = renderer->getCurrentImageWithFalseColoring();
+        std::vector<QString> idMap;
+        auto res = renderer->getCurrentImageWithFalseColoring(idMap);
         res.save("C:\\Users\\Carmen\\Desktop\\test.png");
         break;
     }

@@ -76,9 +76,12 @@ public:
     /**
      * Retrieve a 2D Image at the current camera view
      * in false coloring with no lighting effects.
+     * @param idMap (return value) this function will fill in the ID mapping
+     *              of decoded ints to unique ID of original meshes
      * @return returns a QImage of the current view with no lighting effects
      */
-    virtual QImage getCurrentImageWithFalseColoring() = 0;
+    virtual QImage getCurrentImageWithFalseColoring(
+            std::vector<QString> &idMap) = 0;
 
     /**
     * Increase velocity
