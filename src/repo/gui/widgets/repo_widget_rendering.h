@@ -146,8 +146,6 @@ public slots :
 
     void updateClippingPlane(repo::gui::renderer::Axis axis, double value, bool reverse = false);
 
-    void keyPressEvent(QKeyEvent*);
-
 signals:
 
     void cancelRenderingOps();
@@ -238,7 +236,7 @@ public:
 
     int getSelectedID(int x, int y);
 
-protected:
+public:
 
     //--------------------------------------------------------------------------
     //
@@ -246,6 +244,7 @@ protected:
     //
     //--------------------------------------------------------------------------
 
+    void keyPressEvent(QKeyEvent*);
     void keyReleaseEvent(QKeyEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseDoubleClickEvent(QMouseEvent*);

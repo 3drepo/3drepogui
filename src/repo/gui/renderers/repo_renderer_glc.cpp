@@ -265,7 +265,7 @@ CameraSettings GLCRenderer::getCurrentCamera()
 QImage GLCRenderer::getCurrentImageWithNoShading(
         const bool disableTexture,
         const bool useFalseColoring,
-        std::vector<QString> &idMap)
+        std::vector<QString> &idMap, int w, int h)
 {
     resetColors();
 
@@ -284,41 +284,48 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     }
 
+    // Set new size
+    int originalWidth = glcViewport.size().width();
+    int originalHeight = glcViewport.size().height();
+    w = (w <= 0) ? originalWidth : w;
+    h = (h <= 0) ? originalHeight : h;
+    resizeWindow(w, h);
 
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
-    QOpenGLFramebufferObject fbo(glcViewport.size().width(), glcViewport.size().height(), format);
+    QOpenGLFramebufferObject fbo(w, h, format);
 
     fbo.bind();
 
     idMap = enableSelectionMode(!useFalseColoring);
-
     render(nullptr);
 
     auto image = fbo.toImage();
-
 
     disableSelectionMode();
     fbo.release();
     fbo.bindDefault();
 
+    // Reset to original window size.
+    resizeWindow(originalWidth, originalHeight);
+
     return image;
 }
 
 QImage GLCRenderer::getCurrentImageWithNoShading(
-        const bool disableTexture)
+        const bool disableTexture, int w, int h)
 {
 
     std::vector<QString> idMap;
-    return getCurrentImageWithNoShading(disableTexture, false, idMap);
+    return getCurrentImageWithNoShading(disableTexture, false, idMap, w, h);
 
 }
 
 QImage GLCRenderer::getCurrentImageWithFalseColoring(
-        std::vector<QString> &idMap)
+        std::vector<QString> &idMap, int w, int h)
 {
 
-    return getCurrentImageWithNoShading(false, true, idMap);
+    return getCurrentImageWithNoShading(false, true, idMap, w, h);
 
 }
 
