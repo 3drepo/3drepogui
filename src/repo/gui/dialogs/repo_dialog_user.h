@@ -61,7 +61,7 @@ namespace dialog {
 	{
 		Q_OBJECT
 
-        enum class Tab { ROLES, API_KEYS };
+        enum class Tab { ROLES, API_KEYS, LICENSES };
 
 	public:
 

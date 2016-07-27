@@ -47,8 +47,9 @@ UserDialog::UserDialog(
         ui->avatarPushButton, &QPushButton::pressed,
         this, &UserDialog::openImageFileDialog);
 
-    ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::ROLES);
-    ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::API_KEYS);
+    ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::ROLES);
+    //ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::API_KEYS);
+    ui->licensesUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::LICENSES);
 
     //--------------------------------------------------------------------------
     ui->avatarPushButton->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
@@ -124,6 +125,9 @@ UserDialog::UserDialog(
     ui->apiKeysUnfilterableTreeWidget->setHeaders({tr("Label"), tr("API Key")});
     setNextAPIKey();
 
+    //Licenses
+    ui->licensesUnfilterableTreeWidget->setHeaders({tr("License Type"), tr("Assigned to")});
+
     //--------------------------------------------------------------------------
     // Populate user data
     if (!user.isEmpty())
@@ -148,6 +152,9 @@ UserDialog::UserDialog(
         // Acess Rights
         ui->rolesUnfilterableTreeWidget->addRows(user.getRolesList());
         ui->apiKeysUnfilterableTreeWidget->addRows(user.getAPIKeysList());
+        ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment());
+        ui->labelQuota->setText(QString::fromStdString(std::to_string(user.getQuota())));
+        ui->labelCollaborators->setText(QString::fromStdString(std::to_string(user.getNCollaborators())));
     }
 
 
