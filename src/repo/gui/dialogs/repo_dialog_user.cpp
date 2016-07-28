@@ -21,7 +21,7 @@
 #include "ui_repo_dialog_user.h"
 
 #include <repo/lib/repo_log.h>
-
+#include <iomanip>
 using namespace repo::gui::dialog;
 using namespace repo::gui;
 
@@ -183,7 +183,6 @@ UserDialog::~UserDialog()
 
 void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
 {
-    repoLog("@AddRemove license. old count: " + std::to_string(oldRowCount) + ", new count: " + std::to_string(newRowCount));
     int diff = newRowCount - oldRowCount;
     auto modUser = user.cloneAndUpdateLicenseCount(diff);
     if(modUser.isEmpty())
@@ -320,8 +319,24 @@ void UserDialog::setAvatar(const QImage &image)
 
 void UserDialog::updateLicenseWidget()
 {
-//    ui->licensesUnfilterableTreeWidget->removeAll();
-//    ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment());
-    ui->labelQuota->setText(QString::fromStdString(std::to_string(user.getQuota())));
+    ui->licensesUnfilterableTreeWidget->disableSignals();
+    ui->licensesUnfilterableTreeWidget->removeAll();
+    ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment(), true, false);
+    ui->licensesUnfilterableTreeWidget->enableSignals();
+
+    double quota = user.getQuota();
+    const static std::vector<std::string> units = {"B", "KB", "MB", "GB", "TB"};
+    int unitSelection = 0;
+    while(quota > 1024. && unitSelection < units.size()-1)
+    {
+        quota /= 1024.;
+        ++unitSelection;
+    }
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << quota << " " <<  units[unitSelection];
+
+    auto quotaStr = stream.str();
+
+    ui->labelQuota->setText(QString::fromStdString(quotaStr));
     ui->labelCollaborators->setText(QString::fromStdString(std::to_string(user.getNCollaborators())));
 }

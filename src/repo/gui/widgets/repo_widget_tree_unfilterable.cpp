@@ -27,6 +27,7 @@ UnfilterableTreeWidget::UnfilterableTreeWidget(QWidget *parent)
     , newRowText({tr("<empty>"), tr("<empty>")})
     , tabWidget(0)
     , tab(0)
+    , emitChangeSignal(true)
 {
     ui->setupUi(this);
 
@@ -83,7 +84,9 @@ void UnfilterableTreeWidget::removeAll()
 {
     int oldRowCount = getRowCount();
     ui->treeWidget->clear();
-    emit rowCountChanged(oldRowCount, 0);
+
+    if(emitChangeSignal)
+        emit rowCountChanged(oldRowCount, 0);
 }
 
 void UnfilterableTreeWidget::removeRow()
@@ -97,11 +100,13 @@ void UnfilterableTreeWidget::removeRow()
         delete item;
 
         int newRowCount = getRowCount();
-        emit rowCountChanged(oldRowCount, newRowCount);
+        if(emitChangeSignal)
+            emit rowCountChanged(oldRowCount, newRowCount);
     }
 }
 
-QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QStringList &list, bool enabled)
+QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QStringList &list, bool enabled,
+                                                 const bool editable)
 {
     QTreeWidgetItem *item = 0;
     if (list.size() == ui->treeWidget->columnCount())
@@ -113,9 +118,11 @@ QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QStringList &list, bool en
         {
             item->setData(i++, Qt::DecorationRole, s);
         }
-        Qt::ItemFlags flags = Qt::ItemIsEditable;
+        Qt::ItemFlags flags;
         if (enabled)
             flags |= Qt::ItemIsEnabled;
+        if(editable)
+            flags |= Qt::ItemIsEditable;
         item->setFlags(flags);
 
         ui->treeWidget->addTopLevelItem(item);
@@ -126,7 +133,8 @@ QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QStringList &list, bool en
         ui->treeWidget->setCurrentItem(item ,0);
 
         int newRowCount = getRowCount();
-        emit rowCountChanged(oldRowCount, newRowCount);
+        if(emitChangeSignal)
+            emit rowCountChanged(oldRowCount, newRowCount);
     }
     return item;
 }
@@ -138,17 +146,18 @@ QTreeWidgetItem *UnfilterableTreeWidget::addRow(const QString &a, const QString 
 
 QTreeWidgetItem *UnfilterableTreeWidget::addRow(
         const std::pair<std::string, std::string> &pair,
-        bool enabled)
+        bool enabled, const bool editable)
 {
     return addRow(
         {QString::fromStdString(pair.first), QString::fromStdString(pair.second)},
-        enabled);
+        enabled, editable);
 }
 
-void UnfilterableTreeWidget::addRows(const std::list<std::pair<std::string, std::string> > &list)
+void UnfilterableTreeWidget::addRows(const std::list<std::pair<std::string, std::string> > &list,
+                                     const bool enabled, const bool editable)
 {
     for (auto pair : list)
-        addRow(pair);
+        addRow(pair, enabled,editable );
 }
 
 std::list<std::pair<std::string, std::string> > UnfilterableTreeWidget::getItemsAsListOfPairsOfStrings() const
@@ -231,7 +240,8 @@ void UnfilterableTreeWidget::notifyTabTextChange(int oldRowCount, int newRowCoun
     {
         text = updateCountString(tabWidget->tabText(tab), oldRowCount, newRowCount);
     }
-    emit tabTextChanged(tab, text);
+    if(emitChangeSignal)
+        emit tabTextChanged(tab, text);
 }
 
 void UnfilterableTreeWidget::registerTabWidget(QTabWidget *tabWidget, int tab)
