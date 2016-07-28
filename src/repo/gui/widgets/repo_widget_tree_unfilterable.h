@@ -61,6 +61,7 @@ namespace widget {
 		public slots :
 
 		void setButtonsEnabled(bool enabled);
+        void setButtonsEnabled(bool enabledAdd, bool enableRemove);
 
 		//! Sets the headers on this model.
 		void setHeaders(const QStringList &headers);
@@ -116,6 +117,8 @@ namespace widget {
 
 		//! Chops last chars of type " (oldCount)" and appends " (newCount)"
 		static QString updateCountString(QString string, int oldCount, int newCount);
+
+        void removeAll();
 
 	private:
 

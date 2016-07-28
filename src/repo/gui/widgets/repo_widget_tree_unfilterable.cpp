@@ -65,13 +65,25 @@ UnfilterableTreeWidget::~UnfilterableTreeWidget()
 
 void UnfilterableTreeWidget::setButtonsEnabled(bool enabled)
 {
-    ui->addPushButton->setEnabled(enabled);
-    ui->removePushButton->setEnabled(enabled);
+    setButtonsEnabled(enabled, enabled);
+}
+
+void UnfilterableTreeWidget::setButtonsEnabled(bool enabledAdd, bool enableRemove)
+{
+    ui->addPushButton->setEnabled(enabledAdd);
+    ui->removePushButton->setEnabled(enableRemove);
 }
 
 void UnfilterableTreeWidget::setHeaders(const QStringList &headers)
 {
     ui->treeWidget->setHeaderLabels(headers);
+}
+
+void UnfilterableTreeWidget::removeAll()
+{
+    int oldRowCount = getRowCount();
+    ui->treeWidget->clear();
+    emit rowCountChanged(oldRowCount, 0);
 }
 
 void UnfilterableTreeWidget::removeRow()

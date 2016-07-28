@@ -249,8 +249,11 @@
    </item>
    <item>
     <widget class="QTabWidget" name="tabUsers">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
@@ -340,43 +343,43 @@
           </property>
           <property name="bottomMargin">
            <number>9</number>
-	   </property>
-	   <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+          </property>
           <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Quota:</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Quota:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelQuota">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Collaborators:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelCollaborators">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item>
-           <widget class="QLabel" name="labelQuota">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Collaborators:</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelCollaborators">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
           <item>
            <widget class="repo::gui::widget::UnfilterableTreeWidget" name="licensesUnfilterableTreeWidget" native="true">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -385,7 +388,6 @@
        </item>
       </layout>
      </widget>
-
     </widget>
    </item>
    <item>

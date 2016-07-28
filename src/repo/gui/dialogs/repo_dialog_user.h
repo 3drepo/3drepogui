@@ -139,6 +139,9 @@ namespace dialog {
 		void setAvatar(const QImage &image);
 
 	private:
+        void addRemoveLicense(int oldRowCount, int newRowCount);
+        //Update contents of the license widget with the user info
+        void updateLicenseWidget();
 
 		//! Email regular expression validator.
 		QRegExpValidator *emailValidator;

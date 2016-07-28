@@ -20,6 +20,8 @@
 #include "repo_dialog_user.h"
 #include "ui_repo_dialog_user.h"
 
+#include <repo/lib/repo_log.h>
+
 using namespace repo::gui::dialog;
 using namespace repo::gui;
 
@@ -149,18 +151,20 @@ UserDialog::UserDialog(
         ui->credentialsGroupBox->setChecked(isCopy && !user.isEmpty());
 
         //----------------------------------------------------------------------
-        // Acess Rights
+        // Access Rights
         ui->rolesUnfilterableTreeWidget->addRows(user.getRolesList());
         ui->apiKeysUnfilterableTreeWidget->addRows(user.getAPIKeysList());
-        ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment());
-        ui->labelQuota->setText(QString::fromStdString(std::to_string(user.getQuota())));
-        ui->labelCollaborators->setText(QString::fromStdString(std::to_string(user.getNCollaborators())));
+        updateLicenseWidget();
     }
 
 
     QObject::connect(ui->apiKeysUnfilterableTreeWidget,
                      &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
                      this, &UserDialog::setNextAPIKey);
+
+    QObject::connect(ui->licensesUnfilterableTreeWidget,
+                     &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
+                     this, &UserDialog::addRemoveLicense);
 
     //--------------------------------------------------------------------------
     // Regular expression validator for email
@@ -175,6 +179,20 @@ UserDialog::~UserDialog()
 {
     delete ui;
     delete emailValidator;
+}
+
+void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
+{
+    repoLog("@AddRemove license. old count: " + std::to_string(oldRowCount) + ", new count: " + std::to_string(newRowCount));
+    int diff = newRowCount - oldRowCount;
+    auto modUser = user.cloneAndUpdateLicenseCount(diff);
+    if(modUser.isEmpty())
+    {
+       repoLogError("Failed to add/remove license.");
+    }
+    else
+        user = modUser;
+    updateLicenseWidget();
 }
 
 QIcon UserDialog::getIcon()
@@ -298,4 +316,12 @@ void UserDialog::setAvatar(const QImage &image)
 	this->avatar = imageBytes;
 
     ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
+}
+
+void UserDialog::updateLicenseWidget()
+{
+//    ui->licensesUnfilterableTreeWidget->removeAll();
+//    ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment());
+    ui->labelQuota->setText(QString::fromStdString(std::to_string(user.getQuota())));
+    ui->labelCollaborators->setText(QString::fromStdString(std::to_string(user.getNCollaborators())));
 }
