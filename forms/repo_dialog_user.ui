@@ -253,7 +253,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="rolesTab">
       <attribute name="title">
@@ -371,6 +371,24 @@
              <widget class="QLabel" name="labelCollaborators">
               <property name="text">
                <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QCheckBox" name="expiryDateCheckBox">
+              <property name="text">
+               <string>Set New License Expiry Date:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDateTimeEdit" name="expiryDateEdit">
+              <property name="enabled">
+               <bool>false</bool>
               </property>
              </widget>
             </item>

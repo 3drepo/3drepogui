@@ -84,6 +84,7 @@ namespace dialog {
 		void openImageFileDialog();
 
 		void setNextAPIKey();
+        void expiryDateStateChanged(int state);
 
 	public:
 

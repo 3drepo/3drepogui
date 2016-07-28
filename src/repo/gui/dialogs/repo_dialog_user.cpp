@@ -155,6 +155,8 @@ UserDialog::UserDialog(
         ui->rolesUnfilterableTreeWidget->addRows(user.getRolesList());
         ui->apiKeysUnfilterableTreeWidget->addRows(user.getAPIKeysList());
         updateLicenseWidget();
+
+        ui->expiryDateEdit->setDateTime(QDateTime::currentDateTime().addMonths(1));
     }
 
 
@@ -165,6 +167,11 @@ UserDialog::UserDialog(
     QObject::connect(ui->licensesUnfilterableTreeWidget,
                      &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
                      this, &UserDialog::addRemoveLicense);
+
+    QObject::connect(ui->expiryDateCheckBox,
+                     &QCheckBox::stateChanged,
+                     this, &UserDialog::expiryDateStateChanged
+                     );
 
     //--------------------------------------------------------------------------
     // Regular expression validator for email
@@ -184,7 +191,8 @@ UserDialog::~UserDialog()
 void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
 {
     int diff = newRowCount - oldRowCount;
-    auto modUser = user.cloneAndUpdateLicenseCount(diff);
+    auto ts = ui->expiryDateEdit->isEnabled()? ui->expiryDateEdit->dateTime().toTime_t()*1000 : -1;
+    auto modUser = user.cloneAndUpdateLicenseCount(diff, ts);
     if(modUser.isEmpty())
     {
        repoLogError("Failed to add/remove license.");
@@ -192,6 +200,12 @@ void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
     else
         user = modUser;
     updateLicenseWidget();
+}
+
+void UserDialog::expiryDateStateChanged(int state)
+{
+    ui->expiryDateEdit->setEnabled(state);
+
 }
 
 QIcon UserDialog::getIcon()
