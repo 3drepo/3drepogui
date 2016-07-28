@@ -192,7 +192,6 @@ void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
 {
     int diff = newRowCount - oldRowCount;
     int64_t ts = ui->expiryDateCheckBox->isChecked()? ui->expiryDateEdit->dateTime().toMSecsSinceEpoch() : -1;
-    repoLog("is Checkbox checked? : " + std::to_string(ui->expiryDateCheckBox->isChecked()) + " ts: " + std::to_string(ts));
     auto modUser = user.cloneAndUpdateLicenseCount(diff, ts);
     if(modUser.isEmpty())
     {
@@ -301,8 +300,7 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
                 getAPIKeys(),
                 avatar);
 
-    //return user.cloneAndMergeUserInfo(userNew);
-    return user;
+    return user.cloneAndMergeUserInfo(userNew);
 }
 
 void UserDialog::setAvatar(const std::vector<char> &image)
