@@ -191,7 +191,8 @@ UserDialog::~UserDialog()
 void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
 {
     int diff = newRowCount - oldRowCount;
-    auto ts = ui->expiryDateEdit->isEnabled()? ui->expiryDateEdit->dateTime().toTime_t()*1000 : -1;
+    int64_t ts = ui->expiryDateCheckBox->isChecked()? ui->expiryDateEdit->dateTime().toMSecsSinceEpoch() : -1;
+    repoLog("is Checkbox checked? : " + std::to_string(ui->expiryDateCheckBox->isChecked()) + " ts: " + std::to_string(ts));
     auto modUser = user.cloneAndUpdateLicenseCount(diff, ts);
     if(modUser.isEmpty())
     {
@@ -290,7 +291,7 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
     // non-empty selections in projects, groups and roles
 
     // TODO: make sure the password has changed since the last edit.
-	return  repo::core::model::RepoBSONFactory::makeRepoUser(
+    auto userNew = repo::core::model::RepoBSONFactory::makeRepoUser(
                 getUsername(),
                 getPassword(),
                 getFirstName(),
@@ -299,6 +300,9 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
                 getRoles(),
                 getAPIKeys(),
                 avatar);
+
+    //return user.cloneAndMergeUserInfo(userNew);
+    return user;
 }
 
 void UserDialog::setAvatar(const std::vector<char> &image)
@@ -326,7 +330,7 @@ void UserDialog::setAvatar(const QImage &image)
                                    image.height(),
                                    REPO_MEDIA_TYPE_JPG);*/
 
-	this->avatar = imageBytes;
+    this->avatar = imageBytes;
 
     ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
 }
