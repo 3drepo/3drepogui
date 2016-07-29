@@ -61,6 +61,7 @@ namespace widget {
 		public slots :
 
 		void setButtonsEnabled(bool enabled);
+        void setButtonsEnabled(bool enabledAdd, bool enableRemove);
 
 		//! Sets the headers on this model.
 		void setHeaders(const QStringList &headers);
@@ -75,13 +76,16 @@ namespace widget {
 		virtual void removeRow();
 
 		//! Adds items as a list. Makes sure the size of the list mataches columns count.
-		QTreeWidgetItem *addRow(const QStringList &list, bool enabled = true);
+        QTreeWidgetItem *addRow(const QStringList &list, bool enabled = true,
+                                const bool editable = true);
 
 		QTreeWidgetItem *addRow(const QString &a, const QString &b);
 
-		QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair, bool enabled = true);
+        QTreeWidgetItem *addRow(const std::pair<std::string, std::string> &pair
+                                , bool enabled = true, const bool editable = true);
 
-		void addRows(const std::list<std::pair<std::string, std::string> > &list);
+        void addRows(const std::list<std::pair<std::string, std::string> > &list
+                     , const bool enabled = true, const bool editable = true);
 
 		std::list<std::pair<std::string, std::string> > getItemsAsListOfPairsOfStrings() const;
 
@@ -117,6 +121,11 @@ namespace widget {
 		//! Chops last chars of type " (oldCount)" and appends " (newCount)"
 		static QString updateCountString(QString string, int oldCount, int newCount);
 
+        void removeAll();
+
+        void disableSignals() { emitChangeSignal = false ;}
+        void enableSignals() { emitChangeSignal = true ;}
+
 	private:
 
 		//! Items to add as default row when Add button is pressed.
@@ -128,6 +137,7 @@ namespace widget {
 		QTabWidget *tabWidget;
 
 		int tab;
+        bool emitChangeSignal;
 
 		//! Ui var.
 		Ui::UnfilterableTreeWidget *ui;

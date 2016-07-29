@@ -20,6 +20,8 @@
 #include "repo_dialog_user.h"
 #include "ui_repo_dialog_user.h"
 
+#include <repo/lib/repo_log.h>
+#include <iomanip>
 using namespace repo::gui::dialog;
 using namespace repo::gui;
 
@@ -47,8 +49,9 @@ UserDialog::UserDialog(
         ui->avatarPushButton, &QPushButton::pressed,
         this, &UserDialog::openImageFileDialog);
 
-    ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::ROLES);
-    ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabWidget, (int) Tab::API_KEYS);
+    ui->rolesUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::ROLES);
+    //ui->apiKeysUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::API_KEYS);
+    ui->licensesUnfilterableTreeWidget->registerTabWidget(ui->tabUsers, (int) Tab::LICENSES);
 
     //--------------------------------------------------------------------------
     ui->avatarPushButton->setIcon(repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
@@ -124,6 +127,9 @@ UserDialog::UserDialog(
     ui->apiKeysUnfilterableTreeWidget->setHeaders({tr("Label"), tr("API Key")});
     setNextAPIKey();
 
+    //Licenses
+    ui->licensesUnfilterableTreeWidget->setHeaders({tr("License Type"), tr("Assigned to")});
+
     //--------------------------------------------------------------------------
     // Populate user data
     if (!user.isEmpty())
@@ -145,15 +151,27 @@ UserDialog::UserDialog(
         ui->credentialsGroupBox->setChecked(isCopy && !user.isEmpty());
 
         //----------------------------------------------------------------------
-        // Acess Rights
+        // Access Rights
         ui->rolesUnfilterableTreeWidget->addRows(user.getRolesList());
         ui->apiKeysUnfilterableTreeWidget->addRows(user.getAPIKeysList());
+        updateLicenseWidget();
+
+        ui->expiryDateEdit->setDateTime(QDateTime::currentDateTime().addMonths(1));
     }
 
 
     QObject::connect(ui->apiKeysUnfilterableTreeWidget,
                      &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
                      this, &UserDialog::setNextAPIKey);
+
+    QObject::connect(ui->licensesUnfilterableTreeWidget,
+                     &repo::gui::widget::UnfilterableTreeWidget::rowCountChanged,
+                     this, &UserDialog::addRemoveLicense);
+
+    QObject::connect(ui->expiryDateCheckBox,
+                     &QCheckBox::stateChanged,
+                     this, &UserDialog::expiryDateStateChanged
+                     );
 
     //--------------------------------------------------------------------------
     // Regular expression validator for email
@@ -168,6 +186,26 @@ UserDialog::~UserDialog()
 {
     delete ui;
     delete emailValidator;
+}
+
+void UserDialog::addRemoveLicense(int oldRowCount, int newRowCount)
+{
+    int diff = newRowCount - oldRowCount;
+    int64_t ts = ui->expiryDateCheckBox->isChecked()? ui->expiryDateEdit->dateTime().toMSecsSinceEpoch() : -1;
+    auto modUser = user.cloneAndUpdateLicenseCount(diff, ts);
+    if(modUser.isEmpty())
+    {
+       repoLogError("Failed to add/remove license.");
+    }
+    else
+        user = modUser;
+    updateLicenseWidget();
+}
+
+void UserDialog::expiryDateStateChanged(int state)
+{
+    ui->expiryDateEdit->setEnabled(state);
+
 }
 
 QIcon UserDialog::getIcon()
@@ -252,7 +290,7 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
     // non-empty selections in projects, groups and roles
 
     // TODO: make sure the password has changed since the last edit.
-	return  repo::core::model::RepoBSONFactory::makeRepoUser(
+    auto userNew = repo::core::model::RepoBSONFactory::makeRepoUser(
                 getUsername(),
                 getPassword(),
                 getFirstName(),
@@ -261,6 +299,8 @@ repo::core::model::RepoUser UserDialog::getUpdatedUser() const
                 getRoles(),
                 getAPIKeys(),
                 avatar);
+
+    return user.cloneAndMergeUserInfo(userNew);
 }
 
 void UserDialog::setAvatar(const std::vector<char> &image)
@@ -288,7 +328,31 @@ void UserDialog::setAvatar(const QImage &image)
                                    image.height(),
                                    REPO_MEDIA_TYPE_JPG);*/
 
-	this->avatar = imageBytes;
+    this->avatar = imageBytes;
 
     ui->avatarPushButton->setIcon(QIcon(QPixmap::fromImage(image)));
+}
+
+void UserDialog::updateLicenseWidget()
+{
+    ui->licensesUnfilterableTreeWidget->disableSignals();
+    ui->licensesUnfilterableTreeWidget->removeAll();
+    ui->licensesUnfilterableTreeWidget->addRows(user.getLicenseAssignment(), true, false);
+    ui->licensesUnfilterableTreeWidget->enableSignals();
+
+    double quota = user.getQuota();
+    const static std::vector<std::string> units = {"B", "KB", "MB", "GB", "TB"};
+    int unitSelection = 0;
+    while(quota > 1024. && unitSelection < units.size()-1)
+    {
+        quota /= 1024.;
+        ++unitSelection;
+    }
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << quota << " " <<  units[unitSelection];
+
+    auto quotaStr = stream.str();
+
+    ui->labelQuota->setText(QString::fromStdString(quotaStr));
+    ui->labelCollaborators->setText(QString::fromStdString(std::to_string(user.getNCollaborators())));
 }

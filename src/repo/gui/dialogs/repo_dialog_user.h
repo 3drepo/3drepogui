@@ -61,7 +61,7 @@ namespace dialog {
 	{
 		Q_OBJECT
 
-        enum class Tab { ROLES, API_KEYS };
+        enum class Tab { ROLES, API_KEYS, LICENSES };
 
 	public:
 
@@ -84,6 +84,7 @@ namespace dialog {
 		void openImageFileDialog();
 
 		void setNextAPIKey();
+        void expiryDateStateChanged(int state);
 
 	public:
 
@@ -139,6 +140,9 @@ namespace dialog {
 		void setAvatar(const QImage &image);
 
 	private:
+        void addRemoveLicense(int oldRowCount, int newRowCount);
+        //Update contents of the license widget with the user info
+        void updateLicenseWidget();
 
 		//! Email regular expression validator.
 		QRegExpValidator *emailValidator;
