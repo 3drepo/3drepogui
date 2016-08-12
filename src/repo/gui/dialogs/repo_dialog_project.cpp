@@ -28,6 +28,7 @@ ProjectDialog::ProjectDialog(
         bool isCopy,
         QWidget *parent) :
     QDialog(parent),
+    projectSettings(projectSettings),
     ui(new Ui::ProjectDialog)
 {
     ui->setupUi(this);
@@ -71,11 +72,8 @@ ProjectDialog::~ProjectDialog()
 
 repo::core::model::RepoProjectSettings ProjectDialog::getSettings() const
 {
-    // TODO: add some kind of validation to input fields.
 
-    // TODO: remove group, octal settings and add new properties
-    // subbson: pinSize, avatarHeight, visibilityLimit, speed, zNear, zFar
-    return repo::core::model::RepoBSONFactory::makeRepoProjectSettings(
+    auto projectChanges =  repo::core::model::RepoBSONFactory::makeRepoProjectSettings(
                 ui->nameLineEdit->text().toStdString(),
                 ui->ownerComboBox->currentText().toStdString(),
                 ui->typeComboBox->currentText().toStdString(),
@@ -86,6 +84,8 @@ repo::core::model::RepoProjectSettings ProjectDialog::getSettings() const
                 ui->speedDoubleSpinBox->value(),
                 ui->zNearDoubleSpinBox->value(),
                 ui->zFarDoubleSpinBox->value());
+
+    return projectSettings.cloneAndMergeProjectSettings(projectChanges);
 }
 
 void ProjectDialog::explainDefaultValue(QLabel *label, double value)
