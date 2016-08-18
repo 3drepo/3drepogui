@@ -90,6 +90,8 @@ namespace primitive{
 
 		virtual void setDatabasesComboBox(QComboBox *comboBox) const;
 
+        virtual void setDatabasesComboBox(QComboBox *comboBox, const QString &selection) const;
+
 		virtual void setProjectsComboBox(QComboBox *comboBox) const;
 
 		//! Populates given combo box with given items.
