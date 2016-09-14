@@ -35,6 +35,16 @@ void RepoIDBCache::setDatabasesComboBox(QComboBox *comboBox) const
                 getSelectedDatabase());
 }
 
+void RepoIDBCache::setDatabasesComboBox(
+        QComboBox *comboBox,
+        const QString &selection) const
+{
+    setComboBox(comboBox,
+                RepoFontAwesome::getDatabaseIcon(),
+                getDatabases(getSelectedHost()),
+                selection);
+}
+
 void RepoIDBCache::setProjectsComboBox(QComboBox *comboBox) const
 {
     setComboBox(comboBox,

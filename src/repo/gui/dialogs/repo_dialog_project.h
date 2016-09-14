@@ -58,9 +58,7 @@ namespace dialog {
 	private:
 
 		void explainDefaultValue(QLabel *label, double value);
-
-	private:
-
+        repo::core::model::RepoProjectSettings projectSettings;
 		Ui::ProjectDialog *ui;
 
 	}; // end class

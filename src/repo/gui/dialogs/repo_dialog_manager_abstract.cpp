@@ -38,7 +38,8 @@ AbstractManagerDialog::AbstractManagerDialog(
     if (dbCache)
     {
         dbCache->setHostsComboBox(ui->hostComboBox);
-        dbCache->setDatabasesComboBox(ui->databaseComboBox);
+        dbCache->setDatabasesComboBox(ui->databaseComboBox, "admin");
+
     }
     //--------------------------------------------------------------------------
     model = new QStandardItemModel(this);
