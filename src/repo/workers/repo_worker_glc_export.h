@@ -25,6 +25,7 @@
 #include <repo/core/model/bson/repo_node_mesh.h>
 #include <repo/core/model/bson/repo_node_texture.h>
 #include <repo/core/model/bson/repo_node_transformation.h>
+#include <repo/core/model/bson/repo_node_light.h>
 
 #include <QImage>
 #include <GLC_World>
@@ -93,19 +94,32 @@ namespace repo {
             //! Emitted when loading is finished. Passes GLC world.
             void finished(GLC_World&,
                           std::map<QString, GLC_Mesh*>&,
-                          std::map<QString, GLC_Material*>&);
+                          std::map<QString, GLC_Material*>&,
+                          std::vector<GLC_Light*>&);
 
 		private:
 			repo::core::model::RepoScene* scene;
             const std::vector<double> offsetVector;
 
             GLC_World* createGLCWorld(
-                repo::core::model::RepoScene *scene,
+                repo::core::model::RepoScene     *scene,
                 std::map<QString, GLC_Mesh*>     &meshMap,
-                std::map<QString, GLC_Material*> &matMap);
+                std::map<QString, GLC_Material*> &matMap,
+                 std::vector<GLC_Light*> &lights
+                    );
+
+            void createGLCLights(
+                repo::core::model::RepoScene     *scene,
+                 std::vector<GLC_Light*>          &lights
+                    );
 
 			GLC_3DRep* convertGLCCamera(
 				const repo::core::model::CameraNode *camera);
+
+            GLC_Light* convertGLCLight(
+                     const repo::core::model::LightNode *light,
+                    const unsigned int &ind
+                    );
 
 			GLC_Material* convertGLCMaterial(
 				const repo::core::model::MaterialNode   *material,
@@ -115,6 +129,7 @@ namespace repo {
 				const repo::core::model::MeshNode        *mesh,
                 std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
                  std::map<QString, GLC_Material*> &matMap);
+
 
 			GLC_Texture* convertGLCTexture(
 				const repo::core::model::TextureNode *texture);

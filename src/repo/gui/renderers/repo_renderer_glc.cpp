@@ -32,7 +32,6 @@ using namespace repo::gui::renderer;
 
 GLCRenderer::GLCRenderer()
     : AbstractRenderer()
-    , glcLight()
     , glcViewport()
     , glcMoverController()
     , glc3DWidgetManager(&glcViewport)
@@ -51,7 +50,7 @@ GLCRenderer::GLCRenderer()
                 repColor, &glcViewport);
 
     glcViewport.setBackgroundColor(Qt::white);
-    glcLight.setPosition(1.0, 1.0, 1.0);
+
 
     //--------------------------------------------------------------------------
     // Create XYZ axes overlay
@@ -83,6 +82,8 @@ GLCRenderer::GLCRenderer()
 GLCRenderer::~GLCRenderer()
 {
     glcWorld.clear();
+    for(auto &light : lights)
+        delete light;
 }
 
 
@@ -621,7 +622,8 @@ void GLCRenderer::stopNavigation()
 
 void GLCRenderer::setGLCWorld(GLC_World                        &world,
                               std::map<QString, GLC_Mesh*>     &_meshMap,
-                              std::map<QString, GLC_Material*> &_matMap)
+                              std::map<QString, GLC_Material*> &_matMap,
+                              std::vector <GLC_Light*>          &_lights)
 {
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
@@ -630,6 +632,7 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
 
     meshMap    = _meshMap;
     matMap     = _matMap;
+    lights = _lights;
 
     this->glcWorld = world;
     this->glcWorld.collection()->setLodUsage(true, &glcViewport);
@@ -646,9 +649,11 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
 
-
-
-    //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
+    if(!lights.size())
+    {
+        lights.push_back(new GLC_Light());
+        lights.back()->setPosition(1.0, 1.0, 1.0);
+    }
 }
 
 void GLCRenderer::paintInfo(QPainter *painter,
@@ -783,7 +788,14 @@ void GLCRenderer::render(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Define the light
-        glcLight.glExecute();
+        repoLog("#Lights: " + std::to_string(lights.size()));
+        int i = 0;
+        for(auto &light : lights)
+        {
+            if(i == 8) break; //openGL only support 8 lights
+            repoLog("executing light #" + std::to_string(i++));
+            light->glExecute();
+        }
 
         //----------------------------------------------------------------------
         // Define view matrix

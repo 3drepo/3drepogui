@@ -18,6 +18,7 @@
 //------------------------------------------------------------------------------
 // GUI
 #include "repo_worker_glc_export.h"
+
 #include "../logger/repo_logger.h"
 #include <maths/glc_geomtools.h>
 
@@ -50,6 +51,7 @@ GLCExportWorker::GLCExportWorker(
 
     qRegisterMetaType<std::map<QString, GLC_Mesh*>>("std::map<QString, GLC_Mesh*>&");
     qRegisterMetaType<std::map<QString, GLC_Material*>>("std::map<QString, GLC_Material*>&");
+    qRegisterMetaType<std::vector<GLC_Light*>>("std::vector<GLC_Light*>&");
 
 }
 
@@ -70,8 +72,9 @@ void GLCExportWorker::run()
 
         std::map<QString, GLC_Mesh*> meshMap;
         std::map<QString, GLC_Material*> matMap;
+        std::vector<GLC_Light*> lights;
 
-        GLC_World *glcWorld = createGLCWorld(scene, meshMap, matMap);
+        GLC_World *glcWorld = createGLCWorld(scene, meshMap, matMap, lights);
 
         //--------------------------------------------------------------------------
         emit progress(jobsCount, jobsCount);
@@ -103,8 +106,8 @@ void GLCExportWorker::run()
 
 		if (!cancelled)
         {
-            repoLog("Completed world. emitting signals...");
-            emit finished(wholeGraph, meshMap, matMap);
+            repoLog("Completed world. emitting signals... #lights: " + std::to_string(lights.size()));
+            emit finished(wholeGraph, meshMap, matMap, lights);
         }
     }
     else{
@@ -113,10 +116,106 @@ void GLCExportWorker::run()
     emit RepoAbstractWorker::finished();
 }
 
+GLC_Light* GLCExportWorker::convertGLCLight(
+         const repo::core::model::LightNode *light,
+        const unsigned int                  &ind
+        )
+{
+    GLC_Light::LightType type;
+
+    if(light)
+    {
+        switch(light->getLightType())
+        {
+            //FIXME: Point and ambient  = position?
+            case repo::core::model::LightNode::LightType::AMBIENT:
+            case repo::core::model::LightNode::LightType::POINT:
+                type = GLC_Light::LightType::LightPosition;
+                break;
+            case repo::core::model::LightNode::LightType::DIRECTIONAL:
+                type = GLC_Light::LightType::LightDirection;
+                break;
+            case repo::core::model::LightNode::LightType::SPOT:
+                type = GLC_Light::LightType::LightSpot;
+                break;
+            default:
+                repoLogError("Unknown light type!");
+        }
+        GLC_Light *resLight = new GLC_Light(type);
+
+        auto ambientColor = light->getAmbientColor();
+        resLight->setAmbientColor(QColor(ambientColor.r, ambientColor.g, ambientColor.b));
+        auto diffuseColor = light->getDiffuseColor();
+        resLight->setDiffuseColor(QColor(diffuseColor.r, diffuseColor.g, diffuseColor.b));
+        auto specularColor = light->getSpecularColor();
+        resLight->setSpecularColor(QColor(specularColor.r, specularColor.g, specularColor.b));
+
+        auto position = light->getPosition();
+        resLight->setPosition(GLC_Point3d(position.x, position.y, position.z));
+
+//        auto direction = light->getDirection();
+//        resLight->setSpotDirection(GLC_Point3d(direction.x, direction.y, direction.z));
+
+//        resLight->setConstantAttenuation(light->getConstantAttenuation());
+//        resLight->setLinearAttenuation(light->getLinearAttenuation());
+//        resLight->setQuadraticAttenuation(light->getQuadraticAttenuation());
+
+        resLight->setSpotCutoffAngle(light->getOuterConeAngle());
+        resLight->setSpotEponent(light->getSpotExponent());
+        return resLight;
+    }
+    else
+        return nullptr;
+
+
+
+}
+
+void GLCExportWorker::createGLCLights(
+    repo::core::model::RepoScene     *scene,
+     std::vector<GLC_Light*>          &lights
+        )
+{
+    auto repoLights = scene->getAllLights(scene->getViewGraph());
+    if(repoLights.size())
+        repoLog("Generating GLC lights...");
+    unsigned int ind = 1;
+    for(auto &lightNode : repoLights)
+    {     
+        auto light = static_cast<repo::core::model::LightNode*>(lightNode);
+        auto parents = light->getParentIDs();
+        repo::core::model::RepoNode* currentNode = light;
+        repo::core::model::LightNode currentLight = *light;
+        while (parents.size())
+        {
+            currentNode = scene->getNodeBySharedID(scene->getViewGraph(), parents[0]);
+            auto trans = dynamic_cast<repo::core::model::TransformationNode*>(currentNode);
+            if (trans)
+            {
+                currentLight = currentLight.cloneAndApplyTransformation(trans->getTransMatrix(false));
+            }
+            else
+            {
+                repoLogError("Unexpected node type: ancestors of light node should always be a transformation, type is: " + currentNode->getType());
+            }
+            parents = currentNode->getParentIDs();
+            if (parents.size() > 1)
+                repoLogError("Light is instanced. This is unexpected!");
+        }
+
+        //now that we're sure the light node is transformed, create GLCLight
+        if(auto lightptr = convertGLCLight(light, ind++))
+            lights.push_back(lightptr);
+
+    }
+}
+
 GLC_World* GLCExportWorker::createGLCWorld(
     repo::core::model::RepoScene     *scene,
     std::map<QString, GLC_Mesh*>     &meshMap,
-    std::map<QString, GLC_Material*> &matMap)
+    std::map<QString, GLC_Material*> &matMap,
+     std::vector<GLC_Light*> &lights
+        )
 {
 
     //-----
@@ -129,6 +228,8 @@ GLC_World* GLCExportWorker::createGLCWorld(
 		{
 			repoLogError("Unable to create GLC world : Null pointer to occurence");
 		}
+
+        createGLCLights(scene, lights);
     }
 
     return glcWorld;

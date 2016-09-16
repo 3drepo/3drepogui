@@ -259,7 +259,8 @@ namespace repo {
 				*/
                 void setGLCWorld(GLC_World &world,
                                  std::map<QString, GLC_Mesh*>     &_meshMap,
-                                 std::map<QString, GLC_Material*> &_matMap);
+                                 std::map<QString, GLC_Material*> &_matMap,
+                                 std::vector <GLC_Light*>          &_lights);
 
 public slots :
 
@@ -406,13 +407,13 @@ public slots :
 
 				GLC_3DWidgetManager glc3DWidgetManager;
 				GLC_World glcWorld; //! 3D world, the main scene to render.				
-				GLC_Light glcLight; //! Main light of the scene.				
 				GLC_Viewport glcViewport; //! The viewport, in GLC lib attributed as glView.
 				GLC_3DViewCollection glcViewCollection; //! The main collection of auxiliary objects (such as bboxes).				
 				GLC_3DViewCollection glcUICollection; //! The main collection of UI components (such as axes).
 				GLC_MoverController glcMoverController; //! The navigation controller of the scene (arc ball, fly etc).
 				std::map<QString, GLC_Mesh*> meshMap;
 				std::map<QString, GLC_Material*> matMap;
+                std::vector <GLC_Light*>          lights;
 				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
 				glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
