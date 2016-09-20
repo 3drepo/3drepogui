@@ -487,15 +487,15 @@ void GLCRenderer::loadModel(
     // Fire up the asynchronous calculation.
     QThreadPool::globalInstance()->start(worker);
 
-	if (offsetVector.size())
-	{
-		auto sceneOffset = scene->getWorldOffset();
-		std::vector<double> dOffset = { sceneOffset[0] - offsetVector[0],
-			sceneOffset[1] - offsetVector[1], sceneOffset[2] - offsetVector[2] };
+    if (offsetVector.size())
+    {
+        auto sceneOffset = scene->getWorldOffset();
+        std::vector<double> dOffset = { sceneOffset[0] - offsetVector[0],
+            sceneOffset[1] - offsetVector[1], sceneOffset[2] - offsetVector[2] };
 
-		offset = dOffset;
-	}
-    
+        offset = dOffset;
+    }
+
 }
 
 bool GLCRenderer::move(const int &x, const int &y)
@@ -648,10 +648,26 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     GLC_BoundingBox bbox = this->glcWorld.boundingBox();
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
+//    for(auto &light:lights)
+//    {
+//        auto pos = light->position();
+//        auto dir = light->spotDirection();
+//        auto endPt = GLC_Point3d(dir.x(),
+//                               dir.y(),
+//                               dir.z());
 
+//        auto point = GLC_Factory::instance()->createLine(
+//                    pos, endPt);
+//        auto sphere = new GLC_Sphere(0.5, pos);
+//        GLC_3DRep point2(sphere);
+//        glcViewCollection.add(point);
+//        glcViewCollection.add(point2);
+//    }
+
+//    lights.clear();
     if(!lights.size())
     {
-        lights.push_back(new GLC_Light());
+        lights.push_back( new GLC_Light());
         lights.back()->setPosition(1.0, 1.0, 1.0);
     }
 }
@@ -765,10 +781,14 @@ void GLCRenderer::render(QPainter *painter,
     {
         GLC_RenderStatistics::reset();
 
+
+
         //----------------------------------------------------------------------
         // Calculate camera's depth of view
         glcViewport.setDistMinAndMax(glcWorld.boundingBox());
         glcWorld.collection()->updateInstanceViewableState();
+
+
 
         //----------------------------------------------------------------------
         // Clear screen
@@ -786,14 +806,15 @@ void GLCRenderer::render(QPainter *painter,
         glPointSize(getPointSize());
 
 
+
         //----------------------------------------------------------------------
         // Define the light
         repoLog("#Lights: " + std::to_string(lights.size()));
         int i = 0;
         for(auto &light : lights)
         {
-            if(i == 8) break; //openGL only support 8 lights
-            repoLog("executing light #" + std::to_string(i++));
+            if(i++ == 8) break; //openGL only support 8 lights
+            repoLog("executing light #" + std::to_string(i));
             light->glExecute();
         }
 
@@ -1108,9 +1129,9 @@ void GLCRenderer::createSPBoxes(
             auto leftBox = currentBox;
             int axis = tree->type == repo::PartitioningTreeType::PARTITION_X? 0 :
                                         (tree->type == repo::PartitioningTreeType::PARTITION_Y? 1 : 2);
-			double offsetAxis = offset.size() ? offset[axis] : 0;
-			rightBox[0][axis] = median + offsetAxis;
-			leftBox[1][axis] = median + offsetAxis;
+            double offsetAxis = offset.size() ? offset[axis] : 0;
+            rightBox[0][axis] = median + offsetAxis;
+            leftBox[1][axis] = median + offsetAxis;
             createSPBoxes(tree->left, leftBox, mat);
             createSPBoxes(tree->right, rightBox, mat);
         }
@@ -1362,7 +1383,7 @@ GLC_CuttingPlane* GLCRenderer::createCuttingPlane(const GLC_Point3d &centroid, c
 }
 
 void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
-{    
+{
     clippingPlaneReverse = reverse;
 
     // Hide any previously visible clipping plane widgets

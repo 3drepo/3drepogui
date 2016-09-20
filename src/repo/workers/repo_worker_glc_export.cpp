@@ -144,23 +144,32 @@ GLC_Light* GLCExportWorker::convertGLCLight(
         GLC_Light *resLight = new GLC_Light(type);
 
         auto ambientColor = light->getAmbientColor();
-        resLight->setAmbientColor(QColor(ambientColor.r, ambientColor.g, ambientColor.b));
+        QColor amb, dif, spec;
+
+        amb.setRgbF(ambientColor.r, ambientColor.g, ambientColor.b);
+        resLight->setAmbientColor(amb);
         auto diffuseColor = light->getDiffuseColor();
-        resLight->setDiffuseColor(QColor(diffuseColor.r, diffuseColor.g, diffuseColor.b));
+
+        dif.setRgbF(diffuseColor.r, diffuseColor.g, diffuseColor.b);
+        resLight->setDiffuseColor(dif);
+
         auto specularColor = light->getSpecularColor();
-        resLight->setSpecularColor(QColor(specularColor.r, specularColor.g, specularColor.b));
+        spec.setRgbF(specularColor.r, specularColor.g, specularColor.b);
+        resLight->setSpecularColor(spec);
 
         auto position = light->getPosition();
         resLight->setPosition(GLC_Point3d(position.x, position.y, position.z));
 
-//        auto direction = light->getDirection();
-//        resLight->setSpotDirection(GLC_Point3d(direction.x, direction.y, direction.z));
+        auto direction = light->getDirection();
+        resLight->setSpotDirection(GLC_Point3d(direction.x, direction.y, direction.z));
 
-//        resLight->setConstantAttenuation(light->getConstantAttenuation());
-//        resLight->setLinearAttenuation(light->getLinearAttenuation());
-//        resLight->setQuadraticAttenuation(light->getQuadraticAttenuation());
+        resLight->setConstantAttenuation(light->getConstantAttenuation());
+        resLight->setLinearAttenuation(light->getLinearAttenuation());
+        resLight->setQuadraticAttenuation(light->getQuadraticAttenuation());
 
-        resLight->setSpotCutoffAngle(light->getOuterConeAngle());
+        auto angle = light->getInnerConeAngle();
+
+        resLight->setSpotCutoffAngle(angle);
         resLight->setSpotEponent(light->getSpotExponent());
         return resLight;
     }
