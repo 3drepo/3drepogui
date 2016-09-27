@@ -3,7 +3,7 @@
 
 Cross-platform C++ GUI written in Qt. 
 
-![screenshot](https://cloud.githubusercontent.com/assets/11945337/12173276/c2f2bbf4-b54d-11e5-9c69-50f9dc433a33.png)
+![screenshot](https://cloud.githubusercontent.com/assets/11945337/14990176/3d866e22-1153-11e6-9128-575bfd89ef8a.png)
 
 ### Latest Releases
 We always recommend using the [Latest stable release](https://github.com/3drepo/3drepogui/releases). However, to access cutting-edge development versions, check out the [tags](https://github.com/3drepo/3drepogui/tags).
