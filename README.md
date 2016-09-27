@@ -6,10 +6,7 @@ Cross-platform C++ GUI written in Qt.
 ![screenshot](https://cloud.githubusercontent.com/assets/11945337/12173276/c2f2bbf4-b54d-11e5-9c69-50f9dc433a33.png)
 
 ### Latest Releases
-* 03 May 2016 [3D Repo GUI 1.0rc1](https://github.com/3drepo/3drepogui/releases/tag/v1.0-rc1)
-* 04 Apr 2016 [3D Repo GUI 1.0b2](https://github.com/3drepo/3drepogui/releases/tag/v1.0b2)
-* 22 Mar 2016 [3D Repo GUI 1.0b](https://github.com/3drepo/3drepogui/releases/tag/v1.0b) 
-* 07 Jan 2016 [3D Repo GUI 1.0a](https://github.com/3drepo/3drepogui/releases/tag/v1.0a) 
+We always recommend using the [Latest stable release](https://github.com/3drepo/3drepogui/releases). However, to access cutting-edge development versions, check out the [tags](https://github.com/3drepo/3drepogui/tags).
 
 ## Licenses
 This project is Copyright of [3D Repo Ltd](http://3drepo.org), a company registered in England and Wales No. 09014101, and is released under the open source [GNU Affero General Public License v3](http://www.gnu.org/licenses/agpl-3.0.en.html). Should you require a commercial license, please contact [support@3drepo.org](mailto:support@3drepo.org). All contributors are required to sign either the [3D Repo Individual](https://gist.github.com/jozefdobos/e177af804c9bcd217b73) or the [3D Repo Entity](https://gist.github.com/jozefdobos/c7c4c1c18cfb211c45d2) [Contributor License Agreement (CLA)](https://en.wikipedia.org/wiki/Contributor_License_Agreement).
