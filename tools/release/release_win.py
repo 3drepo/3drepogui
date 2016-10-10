@@ -12,7 +12,7 @@
 githubRepo = "https://github.com/3drepo/3drepogui"
 
 #Release tag (Also used to name the folder)
-releaseTag = "v1.3.0"
+releaseTag = "v1.5.1"
 
 #name
 projName = "3drepogui"
@@ -22,7 +22,7 @@ qtInstallerexe = "c:\\Qt\\QtIFW2.0.1\\bin\\binarycreator.exe"
 
 #where 3drepogui is
 guiPath = "C:\\Users\\Carmen\\3D Repo\\Repo\\build-3drepogui-Desktop_Qt_5_5_1_MSVC2013_64bit-Release\\release\\"
-bouncerdll = "3drepobouncer_1_3_0.dll"
+bouncerdll = "3drepobouncer_1_5_2.dll"
 
 
 #Specification required for qmake
@@ -39,6 +39,14 @@ mongodll = "mongoclient.dll"
 
 #Name of assimp dll
 assimpdll = "assimp-vc120-mt.dll"
+
+
+#Name of IFCOpenShell dlls
+ifcopenshelldlls = ["IfcGeom.dll","IfcParse.dll"]
+
+#Name of OCCT dlls
+occtdlls = ["TKBO.dll", "TKBool.dll", "TKBRep.dll", "TKernel.dll", "TKFillet.dll", "TKG2d.dll", "TKG3d.dll", "TKGeomAlgo.dll", "TKGeomBase.dll", "TKIGES.dll", "TKMath.dll", "TKMesh.dll", "TKOffset.dll", "TKPrim.dll", "TKShHealing.dll", "TKSTEP.dll", "TKSTEP209.dll", "TKSTEPAttr.dll", "TKSTEPBase.dll", "TKTopAlgo.dll", "TKXSBase.dll"]
+
 
 #Names of boost dlls
 boostdlls = ["boost_chrono-vc120-mt-1_58.dll", "boost_date_time-vc120-mt-1_58.dll", "boost_filesystem-vc120-mt-1_58.dll", "boost_log_setup-vc120-mt-1_58.dll","boost_log-vc120-mt-1_58.dll","boost_program_options-vc120-mt-1_58.dll","boost_regex-vc120-mt-1_58.dll","boost_system-vc120-mt-1_58.dll","boost_thread-vc120-mt-1_58.dll"]
@@ -83,6 +91,14 @@ fpGLCdll = os.environ["GLC_ROOT"] + "\\lib\\Release\\" + glcdll
 os.system("copy \"" + fpMongodll + "\" \"" + bouncerDir + "\\bin\"")
 os.system("copy \"" + fpAssimpdll + "\" \"" + bouncerDir + "\\bin\"")
 os.system("copy \"" + fpGLCdll + "\" \"" + guiDir + "\\bin\\\"")
+
+ifcopenshellLib = os.environ["IFCOPENSHELL_ROOT"] + "\\bin"
+for ifcopenshellDll in ifcopenshelldlls:
+	os.system("copy \"" + ifcopenshellLib + "\\" + ifcopenshellDll + "\" \"" + bouncerDir + "\\bin\"")
+
+occtLib = os.environ["OCCT_LIB_DIR"] + "\\..\\bin"
+for occtDll in occtdlls:
+	os.system("copy \"" + occtLib + "\\" + occtDll + "\" \"" + installDir + "\\bin\"")
 
 boostLib = os.environ["BOOST_LIBRARYDIR"]
 for boostDll in boostdlls:
