@@ -25,8 +25,8 @@ before_install:
     - sudo apt-get install libvtk5-dev libxmu-dev libxi-dev
     - export MONGO_ROOT=$PWD/mongo-cxx-1.1.0 
     - export ASSIMP_ROOT=$PWD/assimp-install 
-    - export OCCT_ROOT=$PWD/../occt-install
-    - export IFCOPENSHELL_ROOT=$PWD/../ifcopenshell
+    - export OCCT_ROOT=$PWD/occt-install
+    - export IFCOPENSHELL_ROOT=$PWD/ifcopenshell
     - cd 3drepobouncer
     - cmake -DREPO_BUILD_CLIENT=OFF -DREPO_BUILD_TESTS=OFF  -DCMAKE_BUILD_TYPE=Release .
     - sudo make -j2 install
