@@ -20,8 +20,8 @@ before_install:
     - git clone https://github.com/3drepo/3drepobouncer.git
     - tar -zxvf 3drepobouncer/tools/ext_libs/mongo-cxx-1.1.0.tgz
     - tar -zxvf 3drepobouncer/tools/ext_libs/assimp-install.tgz
-    - tar -zxvf tools/ext_libs/occt.tgz
-    - tar -zxvf tools/ext_libs/ifcopenshell.tgz
+    - tar -zxvf 3drepobouncer/tools/ext_libs/occt.tgz
+    - tar -zxvf 3drepobouncer/tools/ext_libs/ifcopenshell.tgz
     - sudo apt-get install libvtk5-dev libxmu-dev libxi-dev
     - export MONGO_ROOT=$PWD/mongo-cxx-1.1.0 
     - export ASSIMP_ROOT=$PWD/assimp-install 
