@@ -21,11 +21,8 @@ If you need any help, please contact support@3drepo.org, we
 look forward to hear from you.
 
 =========================== Improvements ========================
-* (ISSUE #152) Fix crashes upon exit
-* (ISSUE #156) Log file is now stored in $HOME/3drepo/ by default
-
+* (ISSUE #172) Fix bug where project settings are being overwritten
+* (ISSUE #173) Improve usability of access manager
 
 =========================== New Features ========================
-* (ISSUE #83) Single geometry selection is now supported
-* (ISSUE #165) Short cut key presses will now affect all 3D models in view
-* (ISSUE #158) You can now view and edit User's license information
+* (ISSUE #158, #159) You can now view and edit User's license information
