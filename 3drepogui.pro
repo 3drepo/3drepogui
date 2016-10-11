@@ -103,7 +103,7 @@ unix|macx:MOC_DIR = ./moc/ui
             OCCT_LIB_DIR = $${OCCTDIR}/include
     }
 
-    OCCTLIB = -lTKBO -lTKBool -lTKBRep -lTKernel -lTKFillet -lTKG2d -lTKG3d -TKGeomAlgo -lTKGeomBase -lTKIGES -lTKMath -lTKMesh -lTKOffset -lTKPrim -lTKShHealing -lTKSTEP -lTKSTEP209 -lTKSTEPAttr -lTKSTEPBase -lTKTopAlgo -lTKXSBase
+    OCCTLIB = -lTKBO -lTKBool -lTKBRep -lTKernel -lTKFillet -lTKG2d -lTKG3d -lTKGeomAlgo -lTKGeomBase -lTKIGES -lTKMath -lTKMesh -lTKOffset -lTKPrim -lTKShHealing -lTKSTEP -lTKSTEP209 -lTKSTEPAttr -lTKSTEPBase -lTKTopAlgo -lTKXSBase
 
     macx|unix|win32: LIBS += -L$${OCCT_LIB_DIR} $${OCCTLIB}
 
