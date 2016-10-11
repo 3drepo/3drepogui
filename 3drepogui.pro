@@ -100,7 +100,7 @@ unix|macx:MOC_DIR = ./moc/ui
 !isEmpty(OCCTDIR) {
     OCCT_INC_DIR = $${OCCTDIR}/include
     isEmpty(OCCT_LIB_DIR){
-            OCCT_LIB_DIR = $${OCCTDIR}/include
+            OCCT_LIB_DIR = $${OCCTDIR}/lib
     }
 
     OCCTLIB = -lTKBO -lTKBool -lTKBRep -lTKernel -lTKFillet -lTKG2d -lTKG3d -lTKGeomAlgo -lTKGeomBase -lTKIGES -lTKMath -lTKMesh -lTKOffset -lTKPrim -lTKShHealing -lTKSTEP -lTKSTEP209 -lTKSTEPAttr -lTKSTEPBase -lTKTopAlgo -lTKXSBase
