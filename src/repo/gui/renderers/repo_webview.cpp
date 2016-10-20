@@ -30,11 +30,11 @@ RepoWebView::RepoWebView(
 {
 
     // Global settings for all pages
-    QWebSettings *webSettings = QWebSettings::globalSettings();
-    webSettings->setAttribute(QWebSettings::WebGLEnabled, true);
-    webSettings->setAttribute(QWebSettings::PluginsEnabled, true);
-    webSettings->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-    webSettings->setAttribute(QWebSettings::AcceleratedCompositingEnabled, true);
+    QWebEngineSettings *webSettings = QWebEngineSettings::globalSettings();
+    webSettings->setAttribute(QWebEngineSettings::WebGLEnabled, true);
+    webSettings->setAttribute(QWebEngineSettings::PluginsEnabled, true);
+    webSettings->setAttribute(QWebEngineSettings::Accelerated2dCanvasEnabled, true);
+    webSettings->setAttribute(QWebEngineSettings::JavascriptEnabled, true);
 
     ui->setupUi(this);
 
@@ -56,19 +56,19 @@ RepoWebView::RepoWebView(
 
 
     QObject::connect(ui->reloadPushButton, &QPushButton::pressed,
-                      ui->webView, &QWebView::reload);
+                      ui->webView, &QWebEngineView::reload);
     ui->reloadPushButton->setIcon(
                 repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
                     repo::gui::primitive::RepoFontAwesome::fa_repeat));
 
     QObject::connect(ui->backwardPushButton, &QPushButton::pressed,
-                      ui->webView, &QWebView::back);
+                      ui->webView, &QWebEngineView::back);
     ui->backwardPushButton->setIcon(
                 repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
                     repo::gui::primitive::RepoFontAwesome::fa_arrow_left));
 
     QObject::connect(ui->forwardPushButton, &QPushButton::pressed,
-                      ui->webView, &QWebView::forward);
+                      ui->webView, &QWebEngineView::forward);
     ui->forwardPushButton->setIcon(
                 repo::gui::primitive::RepoFontAwesome::getInstance().getIcon(
                     repo::gui::primitive::RepoFontAwesome::fa_arrow_right));

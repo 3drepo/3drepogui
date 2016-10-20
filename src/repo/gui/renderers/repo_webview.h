@@ -20,9 +20,7 @@
 #include <QWidget>
 #include <QUrl>
 #include <QtNetwork>
-#include <QWebSettings>
-#include <QGraphicsWebView>
-#include <QGLWidget>
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
 
 namespace Ui {
 class RepoWebView;
