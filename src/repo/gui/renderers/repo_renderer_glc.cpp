@@ -645,7 +645,7 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     GLC_BoundingBox bbox = this->glcWorld.boundingBox();
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
-    //extractMeshes(this->glcWorld.rootOccurrence());
+
 
 
     //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());

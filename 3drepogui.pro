@@ -96,6 +96,39 @@ unix|macx:MOC_DIR = ./moc/ui
 }
 
 
+#================================ IFCOPENSHELL/OCCT =======================================
+!isEmpty(OCCTDIR) {
+    OCCT_INC_DIR = $${OCCTDIR}/include
+    isEmpty(OCCT_LIB_DIR){
+            OCCT_LIB_DIR = $${OCCTDIR}/lib
+    }
+
+    OCCTLIB = -lTKBO -lTKBool -lTKBRep -lTKernel -lTKFillet -lTKG2d -lTKG3d -lTKGeomAlgo -lTKGeomBase -lTKIGES -lTKMath -lTKMesh -lTKOffset -lTKPrim -lTKShHealing -lTKSTEP -lTKSTEP209 -lTKSTEPAttr -lTKSTEPBase -lTKTopAlgo -lTKXSBase
+
+    macx|unix|win32: LIBS += -L$${OCCT_LIB_DIR} $${OCCTLIB}
+
+    INCLUDEPATH += $${OCCT_INC_DIR}
+    DEPENDPATH += $${OCCT_INC_DIR}
+
+} else {
+    error(Cannot find OCCT library. Please ensure the environment variables OCCT_ROOT and OCCT_LIB_DIR is set.)
+}
+
+!isEmpty(IFCOPENSHELLDIR) {
+    IFCOPENSHELL_INC_DIR = $${IFCOPENSHELLDIR}/include
+    IFCOPENSHELL_LIB_DIR = $${IFCOPENSHELLDIR}/lib/
+
+    IFCOPENSHELLLIB = -lIfcParse -lIfcGeom
+
+    macx|unix|win32: LIBS += -L$${IFCOPENSHELL_LIB_DIR} $${IFCOPENSHELLLIB}
+
+    INCLUDEPATH += $${IFCOPENSHELL_INC_DIR}
+    DEPENDPATH += $${IFCOPENSHELL_INC_DIR}
+
+} else {
+    error(Cannot find IFCOpenShell library. Please ensure the environment variables IFCOPENSHELL_ROOT)
+}
+
 #================================ ASSIMP =======================================
 !isEmpty(ASSIMPDIR) {
     ASSIMP_LIB_DIR = $${ASSIMPDIR}/lib/

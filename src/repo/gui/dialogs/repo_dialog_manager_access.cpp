@@ -36,7 +36,7 @@ AccessManagerDialog::AccessManagerDialog(
     if (dbCache)
     {
         dbCache->setHostsComboBox(ui->hostComboBox);
-        dbCache->setDatabasesComboBox(ui->databaseComboBox);
+        dbCache->setDatabasesComboBox(ui->databaseComboBox, "admin");
     }
 
     //--------------------------------------------------------------------------
