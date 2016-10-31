@@ -289,12 +289,7 @@ repo::gui::RepoGUI::RepoGUI(
                      ui->mdiArea, SLOT(addSceneGraphSubWindow()));
     ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
-    // Web View
-    QObject::connect(ui->actionWeb_View, &QAction::triggered,
-                     ui->mdiArea, &widget::RepoMdiArea::addWebViewSubWindow);
-    ui->actionWeb_View->setIcon(
-                primitive::RepoFontAwesome::getInstance().getIcon(
-                    primitive::RepoFontAwesome::fa_globe));
+
 
 
     //--------------------------------------------------------------------------
