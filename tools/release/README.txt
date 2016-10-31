@@ -1,4 +1,4 @@
-3D Repo GUI v 1.3.0
+3D Repo GUI v 1.6.0
 
 This is the desktop client for the 3D Repo Platform
 
