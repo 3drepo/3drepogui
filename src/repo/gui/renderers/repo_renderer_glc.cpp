@@ -351,6 +351,7 @@ void GLCRenderer::highlightMesh(
 
         changeMeshMaterial(meshId, highlightMat);
         currentlyHighLighted = meshId;
+        repoLog("Highlighted mesh: " + meshId.toStdString());
     }
 
 
@@ -495,6 +496,7 @@ void GLCRenderer::loadModel(
 		offset = dOffset;
 	}
     
+    this->scene = scene;
 }
 
 bool GLCRenderer::move(const int &x, const int &y)
@@ -743,7 +745,17 @@ void GLCRenderer::paintInfo(QPainter *painter,
         //----------------------------------------------------------------------
         // Display selection
         if (!currentlyHighLighted.isEmpty())
-            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + currentlyHighLighted);
+        {
+            repoUUID meshId = stringToUUID(currentlyHighLighted.toStdString());
+            auto mesh = scene->getNodeByUniqueID(repo::core::model::RepoScene::GraphType::DEFAULT,meshId);
+            QString meshString = currentlyHighLighted;
+            if(mesh)
+            {
+                meshString = QString::fromStdString(mesh->getName()) + "(" + currentlyHighLighted + ")";
+            }
+
+            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + meshString);
+        }
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();

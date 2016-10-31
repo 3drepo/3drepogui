@@ -414,7 +414,8 @@ public slots :
 				std::map<QString, GLC_Mesh*> meshMap;
 				std::map<QString, GLC_Material*> matMap;
 				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
-				glc::RenderFlag renderingFlag; //! Rendering flag.
+                repo::core::model::RepoScene *scene;
+                glc::RenderFlag renderingFlag; //! Rendering flag.
 				bool isWireframe;
 
                 //! Globally applied clipping plane IDs
