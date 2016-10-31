@@ -109,8 +109,6 @@ namespace widget{
 			return QMdiArea::addSubWindow(widget, windowFlags);
 		}
 
-		//! Adds a web view subwindow.
-		RepoMdiSubWindow* addWebViewSubWindow();
 
         //! Adds a scene graph subwindow for active window, if any.
         RepoMdiSubWindow* addSceneGraphSubWindow();

@@ -32,7 +32,6 @@ HEADERS +=  \
 	src/repo/gui/renderers/repo_renderer_abstract.h \
 	src/repo/gui/renderers/repo_renderer_glc.h \
 	src/repo/gui/renderers/repo_renderer_graph.h \
-	src/repo/gui/renderers/repo_webview.h \
 	src/repo/gui/widgets/repo_line_edit.h \
 	src/repo/gui/widgets/repo_mdi_area.h \
 	src/repo/gui/widgets/repo_mdi_subwindow.h \
@@ -106,7 +105,6 @@ SOURCES +=  \
 	src/repo/gui/renderers/repo_renderer_abstract.cpp \
 	src/repo/gui/renderers/repo_renderer_glc.cpp \
 	src/repo/gui/renderers/repo_renderer_graph.cpp \
-	src/repo/gui/renderers/repo_webview.cpp \
 	src/repo/gui/widgets/repo_line_edit.cpp \
 	src/repo/gui/widgets/repo_mdi_area.cpp \
 	src/repo/gui/widgets/repo_mdi_subwindow.cpp \

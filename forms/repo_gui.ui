@@ -35,7 +35,7 @@
      <x>0</x>
      <y>0</y>
      <width>1086</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -117,7 +117,6 @@
     <addaction name="separator"/>
     <addaction name="actionAuto_Camera"/>
     <addaction name="separator"/>
-    <addaction name="actionWeb_View"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
