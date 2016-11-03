@@ -658,8 +658,7 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
     {
         if (e->modifiers() == Qt::ControlModifier)
         {
-            this->setCursor(Qt::PointingHandCursor);
-            renderer->startNavigation(renderer::NavMode::TARGET, e->x(), e->y());
+			//do nothing
         }
         else if (e->modifiers() == Qt::ShiftModifier)
         {

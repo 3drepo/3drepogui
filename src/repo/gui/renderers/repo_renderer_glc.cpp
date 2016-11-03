@@ -41,7 +41,7 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
-    , currentlyHighLighted("")
+    , lastHighLighted("")
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -125,7 +125,6 @@ void GLCRenderer::disableSelectionMode()
     {
         GLC_State::setSelectionMode(false);
         GLC_State::setUseCustomFalseColor(false);
-        resetColors();
     }
     else
     {
@@ -293,11 +292,16 @@ QImage GLCRenderer::getCurrentImageWithFalseColoring(
 void GLCRenderer::highlightMesh(
         const QString &meshId)
 {
-    if(currentlyHighLighted == meshId)
+	if (currentlyHighLighted.find(meshId) != currentlyHighLighted.end())
     {
         //currently highlighted, should unhighlight it
         revertMeshMaterial(meshId);
-        currentlyHighLighted = "";
+		currentlyHighLighted.erase(meshId);
+		if (meshId == lastHighLighted)
+		{
+			lastHighLighted = *currentlyHighLighted.begin();
+		}
+
     }
     else
     {
@@ -311,8 +315,9 @@ void GLCRenderer::highlightMesh(
         highlightMat.setOpacity(1.0);
 
         changeMeshMaterial(meshId, highlightMat);
-        currentlyHighLighted = meshId;
+        currentlyHighLighted.insert(meshId);
         repoLog("Highlighted mesh: " + meshId.toStdString());
+		lastHighLighted = meshId;
     }
 
 
@@ -709,14 +714,15 @@ void GLCRenderer::paintInfo(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Display selection
-        if (!currentlyHighLighted.isEmpty())
+        if (currentlyHighLighted.size())
         {
-            repoUUID meshId = stringToUUID(currentlyHighLighted.toStdString());
+			
+            repoUUID meshId = stringToUUID(lastHighLighted.toStdString());
             auto mesh = scene->getNodeByUniqueID(repo::core::model::RepoScene::GraphType::DEFAULT,meshId);
-            QString meshString = currentlyHighLighted;
+			QString meshString = lastHighLighted;
             if(mesh)
             {
-                meshString = QString::fromStdString(mesh->getName()) + "(" + currentlyHighLighted + ")";
+				meshString = QString::fromStdString(mesh->getName()) + "(" + lastHighLighted + ")";
             }
 
             painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + meshString);
@@ -914,9 +920,16 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-    if(multiSelection)
-        repoLogError("Multi-selection currently does not work");
-    //FIXME: multi-selection doesn't work at the moment
+	if (!multiSelection)
+	{
+		for (const auto mesh : currentlyHighLighted)
+		{
+			revertMeshMaterial(mesh);
+		}
+		currentlyHighLighted.clear();
+	}
+
+	//FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
     {
         //We represent indices using rgb values, which is 3*8 bit.
@@ -950,10 +963,8 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     {
         highlightMesh(idmap[(int)returnId]);
     }
-	else
-	{
-		currentlyHighLighted = "";
-	}
+	
+	
 	
     fbo.release();
     fbo.bindDefault();
