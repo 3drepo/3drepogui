@@ -702,6 +702,8 @@ void GLCRenderer::paintInfo(QPainter *painter,
                           tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
         painter->drawText(9, 30, QString() +
                           tr("Objs") + ": " + locale.toString((uint)GLC_RenderStatistics::bodyCount()));
+		painter->drawText(9, 45, QString() +
+			tr("Meshes") + ": " + locale.toString(idmap.size()));
 
         painter->drawText(screenWidth - 60, 14, fpsCounter.getFPSString());
 
