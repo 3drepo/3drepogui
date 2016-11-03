@@ -708,7 +708,7 @@ void GLCRenderer::paintInfo(QPainter *painter,
         painter->drawText(9, 30, QString() +
                           tr("Objs") + ": " + locale.toString((uint)GLC_RenderStatistics::bodyCount()));
 		painter->drawText(9, 45, QString() +
-			tr("Meshes") + ": " + locale.toString(idmap.size()));
+			tr("Meshes") + ": " + locale.toString((uint)idmap.size()));
 
         painter->drawText(screenWidth - 60, 14, fpsCounter.getFPSString());
 
