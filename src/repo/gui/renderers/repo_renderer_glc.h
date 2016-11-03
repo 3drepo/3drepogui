@@ -57,13 +57,6 @@ namespace repo {
 
 				~GLCRenderer();
 				
-                /**
-                 * Apply false colouring materials onto the meshes
-                 * call resetColors() to revert to original materials
-                 * @return returns a vector mapping between the decoded rgba value
-                 *         and mesh id
-                 */
-                std::vector<QString> applyFalseColoringMaterials();
 
 				/**
 				* Recursively extracts meshes from a given occurrence. 
@@ -259,7 +252,8 @@ namespace repo {
 				*/
                 void setGLCWorld(GLC_World &world,
                                  std::map<QString, GLC_Mesh*>     &_meshMap,
-                                 std::map<QString, GLC_Material*> &_matMap);
+                                 std::map<QString, GLC_Material*> &_matMap,
+                                 std::vector<QString> &_idmap);
 
 public slots :
 
@@ -414,8 +408,10 @@ public slots :
 				std::map<QString, GLC_Mesh*> meshMap;
 				std::map<QString, GLC_Material*> matMap;
 				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
+                std::vector<QString> idmap;
                 repo::core::model::RepoScene *scene;
                 glc::RenderFlag renderingFlag; //! Rendering flag.
+
 				bool isWireframe;
 
                 //! Globally applied clipping plane IDs
