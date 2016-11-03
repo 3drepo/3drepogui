@@ -416,7 +416,8 @@ public slots :
 
                 //! Globally applied clipping plane IDs
                 std::vector<GLC_CuttingPlane *> clippingPlaneWidgets;
-                QString currentlyHighLighted;
+                std::set<QString> currentlyHighLighted;
+				QString lastHighLighted;
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;
