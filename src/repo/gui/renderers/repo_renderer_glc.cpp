@@ -720,6 +720,7 @@ void GLCRenderer::paintInfo(QPainter *painter,
             painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + meshString);
         }
 
+
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -947,6 +948,10 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     {
         highlightMesh(idmap[(int)returnId]);
     }
+	else
+	{
+		currentlyHighLighted = "";
+	}
 	
     fbo.release();
     fbo.bindDefault();
