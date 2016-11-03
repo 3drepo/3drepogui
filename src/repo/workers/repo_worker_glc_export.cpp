@@ -50,6 +50,7 @@ GLCExportWorker::GLCExportWorker(
 
     qRegisterMetaType<std::map<QString, GLC_Mesh*>>("std::map<QString, GLC_Mesh*>&");
     qRegisterMetaType<std::map<QString, GLC_Material*>>("std::map<QString, GLC_Material*>&");
+    qRegisterMetaType<std::vector<QString>>("std::vector<QString>&");
 
 }
 
@@ -58,7 +59,6 @@ GLCExportWorker::~GLCExportWorker() {}
 void GLCExportWorker::run()
 {
 	repoLog("Running GLC Export worker..");
-
 	if (!cancelled && scene && scene->getRoot(scene->getViewGraph()))
     {
         repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
@@ -70,8 +70,9 @@ void GLCExportWorker::run()
 
         std::map<QString, GLC_Mesh*> meshMap;
         std::map<QString, GLC_Material*> matMap;
+        std::vector<QString> idMap;
 
-        GLC_World *glcWorld = createGLCWorld(scene, meshMap, matMap);
+        GLC_World *glcWorld = createGLCWorld(scene, meshMap, matMap, idMap);
 
         //--------------------------------------------------------------------------
         emit progress(jobsCount, jobsCount);
@@ -104,7 +105,7 @@ void GLCExportWorker::run()
 		if (!cancelled)
         {
             repoLog("Completed world. emitting signals...");
-            emit finished(wholeGraph, meshMap, matMap);
+            emit finished(wholeGraph, meshMap, matMap, idMap);
         }
     }
     else{
@@ -116,13 +117,14 @@ void GLCExportWorker::run()
 GLC_World* GLCExportWorker::createGLCWorld(
     repo::core::model::RepoScene     *scene,
     std::map<QString, GLC_Mesh*>     &meshMap,
-    std::map<QString, GLC_Material*> &matMap)
+    std::map<QString, GLC_Material*> &matMap,
+    std::vector<QString>            &idMap)
 {
 
     //-----
     GLC_World* glcWorld = nullptr;
     if (!cancelled && scene && scene->hasRoot(scene->getViewGraph())){
-        auto occ = convertSceneToOccurance(scene, meshMap, matMap, offsetVector);
+        auto occ = convertSceneToOccurance(scene, meshMap, matMap, idMap, offsetVector);
         if (occ)
             glcWorld = new GLC_World(occ);
 		else
@@ -139,11 +141,11 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     repo::core::model::RepoScene *scene,
     std::map<QString, GLC_Mesh*>     &meshMap,
     std::map<QString, GLC_Material*> &matMap,
+    std::vector<QString>            &idMap,
     const std::vector<double> &offsetVector)
 {
 
     repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
-
     //------------------------------------------------------------------
     // Allocate Textures
     std::map<repoUUID, std::vector<GLC_Texture*>> parentToGLCTexture;
@@ -214,7 +216,6 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     //-------------------------------------------------------------------------
     // Allocate Meshes
-
     repoModel::RepoNodeSet meshes = scene->getAllMeshes(repoViewGraph);
     std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCMeshes;
     for (auto &mesh : meshes)
@@ -222,7 +223,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 		if (mesh && !cancelled)
         {
             GLC_3DRep* glcMesh = convertGLCMesh(
-                (repoModel::MeshNode*)mesh, parentToGLCMaterial, matMap);
+                (repoModel::MeshNode*)mesh, parentToGLCMaterial, matMap, idMap);
             if (glcMesh)
             {
                 std::vector<repoUUID> parents = mesh->getParentIDs();
@@ -278,7 +279,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
   //      }
   //  }
-
+repoLog("Creating GLC tree");
     auto rootNode = scene->getRoot(repoViewGraph);
     if(rootNode && offsetVector.size())
     {
@@ -299,11 +300,11 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                                 + std::to_string(dOffset[1]) + ", "
                                 + std::to_string(dOffset[2]));
 
-        return createOccurrenceFromNode(scene, &transFormedRoot, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap);
+        return createOccurrenceFromNode(scene, &transFormedRoot, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap, idMap);
 
     }
     else
-        return createOccurrenceFromNode(scene, rootNode, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap);
+        return createOccurrenceFromNode(scene, rootNode, parentToGLCMeshes, parentToGLCCameras, meshMap, matMap, idMap);
 }
 
 GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
@@ -313,6 +314,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
     std::map<repoUUID, std::vector<GLC_3DRep*>>      &glcCamerasMap,
     std::map<QString, GLC_Mesh*>                     &meshMap,
     std::map<QString, GLC_Material*>                 &matMap,
+                std::vector<QString>                         &idMap,
             const bool                               &countJob)
 {
     /*
@@ -443,7 +445,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
 				|| refScene->getAllReferences(repo::core::model::RepoScene::GraphType::OPTIMIZED).size() > 0)))
         	{
                 //There is nothing to visualise if there are no meshes
-                occurrence = convertSceneToOccurance(refScene, meshMap, matMap);
+                occurrence = convertSceneToOccurance(refScene, meshMap, matMap, idMap);
         	}
             else
             {
@@ -466,6 +468,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
                 glcCamerasMap,
                 meshMap,
                 matMap,
+                idMap,
                 countJob);
 
             if (childOccurance)
@@ -597,7 +600,8 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 GLC_3DRep* GLCExportWorker::convertGLCMesh(
     const repo::core::model::MeshNode        *mesh,
     std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
-    std::map<QString, GLC_Material*> &matMap)
+    std::map<QString, GLC_Material*> &matMap,
+    std::vector<QString>            &idMap )
 {
 
 	GLC_Mesh * glcMesh = new GLC_Mesh;
@@ -643,6 +647,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 				GLC_Material* material = nullptr;
                 QString meshId = QString::fromStdString(UUIDtoString(map.mesh_id));
+                idMap.push_back(meshId);
 				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 					mapMaterials.find(map.material_id);
                 if(matMap.find(meshId) != matMap.end())
@@ -667,7 +672,20 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
                     matMap[meshId] = material;
                 }
 
-				glcMesh->addTriangles(material, glcFaces);
+                //Generate selection material
+                QVector<GLubyte> colorId(4);
+                glc::encodeRgbId(idMap.size(),&colorId[0]);
+                QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
+                GLC_Material *coloredMat = new GLC_Material();
+                coloredMat->setAmbientColor(color);
+                coloredMat->setDiffuseColor(color);
+                coloredMat->setSpecularColor(QColor(1.0, 1.0, 1.0, 1.0));
+                coloredMat->setEmissiveColor(QColor(0.0, 0.0, 0.0, 1.0));
+                coloredMat->setShininess(50);
+                coloredMat->setOpacity(1);
+
+				glcMesh->addTriangles(material, glcFaces, coloredMat);
+
 
 			}
 		}
@@ -693,7 +711,20 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
                 }
                 material->setName(meshUniqueID);
-				glcMesh->addTriangles(material, glcFaces);
+
+				QVector<GLubyte> colorId(4);
+				idMap.push_back(meshUniqueID);
+				glc::encodeRgbId(idMap.size(), &colorId[0]);
+				QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
+				GLC_Material *coloredMat = new GLC_Material();
+				coloredMat->setAmbientColor(color);
+				coloredMat->setDiffuseColor(color);
+				coloredMat->setSpecularColor(QColor(1.0, 1.0, 1.0, 1.0));
+				coloredMat->setEmissiveColor(QColor(0.0, 0.0, 0.0, 1.0));
+				coloredMat->setShininess(50);
+				coloredMat->setOpacity(1);
+
+				glcMesh->addTriangles(material, glcFaces, coloredMat);
                 matMap[meshUniqueID] = material;
 			}
 		}

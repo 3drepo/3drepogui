@@ -86,32 +86,6 @@ GLCRenderer::~GLCRenderer()
 }
 
 
-std::vector<QString> GLCRenderer::applyFalseColoringMaterials()
-{
-    std::vector<QString> ids;
-    if(matMap.size() > (pow(2, 24) -1))
-    {
-        //We represent indices using rgb values, which is 3*8 bit.
-        //0 can't be used as it will be the same as the background,
-        // so we can represent 2^24-1 components
-        repoError << "This model has too many components to support selection!";
-        return ids;
-    }
-
-    ids.push_back(""); //white is never used as the background will be white.
-    for(auto &matPair : matMap)
-    {
-        QVector<GLubyte> colorId(4);
-        glc::encodeRgbId(ids.size(),&colorId[0]);
-        ids.push_back(matPair.first);
-        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
-        setMeshColor(matPair.first, 1.0, color);
-    }
-
-    return ids;
-
-
-}
 
 CameraSettings GLCRenderer::convertToCameraSettings(GLC_Camera *cam)
 {
@@ -168,14 +142,6 @@ std::vector<QString> GLCRenderer::enableSelectionMode(const bool useCurrentMater
     {
         repoError << "Trying to enable selectionMode when it is in selection mode!";
     }
-    else if(matMap.size() > (pow(2, 24) -1))
-    {
-        //We represent indices using rgb values, which is 3*8 bit.
-        //0 can't be used as it will be the same as the background,
-        // so we can represent 2^24-1 components
-        repoError << "This model has too many components to support selection!";
-
-    }
     else
     {
 
@@ -190,12 +156,7 @@ std::vector<QString> GLCRenderer::enableSelectionMode(const bool useCurrentMater
         }
 
         GLC_State::setSelectionMode(true);
-        GLC_State::setUseCustomFalseColor(true);
-        if(!useCurrentMaterials)
-        {
-            idMapping = applyFalseColoringMaterials();
-        }
-
+        GLC_State::setUseCustomFalseColor(!useCurrentMaterials);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -297,7 +258,7 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     fbo.bind();
 
-    idMap = enableSelectionMode(!useFalseColoring);
+    enableSelectionMode(!useFalseColoring);
     render(nullptr);
 
     auto image = fbo.toImage();
@@ -623,7 +584,8 @@ void GLCRenderer::stopNavigation()
 
 void GLCRenderer::setGLCWorld(GLC_World                        &world,
                               std::map<QString, GLC_Mesh*>     &_meshMap,
-                              std::map<QString, GLC_Material*> &_matMap)
+                              std::map<QString, GLC_Material*> &_matMap,
+                              std::vector<QString> &_idmap)
 {
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
@@ -632,6 +594,7 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
 
     meshMap    = _meshMap;
     matMap     = _matMap;
+    idmap = _idmap;
 
     this->glcWorld = world;
     this->glcWorld.collection()->setLodUsage(true, &glcViewport);
@@ -968,7 +931,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     QColor backgroundColor = glcViewport.backgroundColor();
     glcViewport.setBackgroundColor(QColor(Qt::white));
 
-    auto ids = enableSelectionMode(false);
+    enableSelectionMode(false);
 
     render(nullptr);
 
@@ -980,10 +943,11 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     disableSelectionMode();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
-    if(returnId < ids.size())
+    if(--returnId < idmap.size())
     {
-        highlightMesh(ids[(int)returnId]);
+        highlightMesh(idmap[(int)returnId]);
     }
+	
     fbo.release();
     fbo.bindDefault();
 
@@ -1145,9 +1109,6 @@ void GLCRenderer::toggleGenericPartitioning(
                 }
             }
 
-            repoLog("Bounding box: ["+std::to_string(sceneBbox[0].x)+","+std::to_string(sceneBbox[0].y)+","+std::to_string(sceneBbox[0].z)
-                    +"]["+std::to_string(sceneBbox[1].x)+","+std::to_string(sceneBbox[1].y)+","+std::to_string(sceneBbox[1].z)
-                    +"]");
             createSPBoxes(tree, bbox, mat);
         }
 
