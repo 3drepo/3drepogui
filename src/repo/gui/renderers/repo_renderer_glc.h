@@ -264,6 +264,7 @@ public slots :
                         const std::vector<repo_vector_t> &sceneBbox,
                         const std::shared_ptr<repo_partitioning_tree_t> &tree);
 
+
                 /**
                 * Toggle between show/hide mesh bounding boxes
                 */
@@ -394,6 +395,10 @@ public slots :
                  */
                 void revertMeshMaterial(
                         const QString &uuidString);
+
+
+				virtual void toggleHighLight(
+					const QString &meshId);
 
 				//! List of available shaders.
 				QList<GLC_Shader*> shaders;

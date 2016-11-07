@@ -295,33 +295,77 @@ void GLCRenderer::highlightMesh(
 	if (currentlyHighLighted.find(meshId) != currentlyHighLighted.end())
     {
         //currently highlighted, should unhighlight it
-        revertMeshMaterial(meshId);
+		toggleHighLight(meshId);
 		currentlyHighLighted.erase(meshId);
 		if (meshId == lastHighLighted)
 		{
-			lastHighLighted = *currentlyHighLighted.begin();
+			if (currentlyHighLighted.size())
+				lastHighLighted = *currentlyHighLighted.begin();
+			else
+				lastHighLighted = "";
 		}
 
     }
     else
     {
-        GLC_Material highlightMat;
-
-
-        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
-        highlightMat.setEmissiveColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setOpacity(1.0);
-
-        changeMeshMaterial(meshId, highlightMat);
+		toggleHighLight(meshId);
         currentlyHighLighted.insert(meshId);
-        repoLog("Highlighted mesh: " + meshId.toStdString());
+		repoLog("Mesh: " + meshId.toStdString());
 		lastHighLighted = meshId;
     }
 
 
 
+}
+
+void GLCRenderer::toggleHighLight(
+	const QString &meshId)
+{
+	auto meshIt = meshMap.find(meshId);
+	auto matIt = matMap.find(meshId);
+	GLC_Material *mat = nullptr;
+	if (matIt != matMap.end())
+	{
+		mat = matIt->second;
+
+	}
+	else if (meshIt != meshMap.end())
+	{
+		GLC_Mesh *mesh = meshIt->second;
+		if (mesh->materialCount())
+		{
+			//has material, alter the emissive color
+			auto matIds = mesh->materialIds();
+			mat = mesh->material(matIds[0]);
+		}
+		else
+		{
+			//The mesh should have at least the default material due to how GLC_Mesh is constructed
+			repoLogError("mesh " + meshId.toStdString() + " has no material. This is unexpected!");
+		}
+
+	}
+	else
+	{
+		repoLogError("Failed to set color of mesh " + meshId.toStdString() + " : mesh not found!");
+	}
+
+	if (mat)
+	{
+		bool selected = mat->isSelected();
+
+		auto geom = mat->getGeo();
+		for (const auto geo : geom.values())
+		{
+			auto mesh = dynamic_cast<GLC_Mesh*>(geo);
+			if (mesh)
+			{
+				mesh->updateSubMeshSelectedCount(!selected);
+			}
+		}
+
+		mat->setSelection(!selected);
+	}
 }
 
 void GLCRenderer::changeMeshMaterial(
@@ -796,26 +840,35 @@ void GLCRenderer::render(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Display selected objects
-        const int selectedNodesCount = glcWorld.collection()->selectionSize();
+        const int selectedNodesCount = glcWorld.collection()->selectionSize() + currentlyHighLighted.size();
         if ((selectedNodesCount > 0) &&
                 GLC_State::selectionShaderUsed() &&
                 !GLC_State::isInSelectionMode())
         {
-            //if (selectedNodesCount != glcWorld.collection()->drawableObjectsSize())
-            //{
-            //Draw the selection with Zbuffer
-            glcWorld.render(1, renderingFlag);
-            //}
+			if (glcWorld.collection()->selectionSize())
+            {
+				//Draw the selection with Zbuffer
+				glcWorld.render(1, renderingFlag);
+            }
+
             glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
             // Draw the selection transparent
             glEnable(GL_CULL_FACE);
             glEnable(GL_BLEND);
             glDepthFunc(GL_ALWAYS);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            glcWorld.render(1, renderingFlag);
+			if (currentlyHighLighted.size())
+			{
+				GLC_State::setRenderSelectionMode(true);
+				glcWorld.render(0, renderingFlag);
+				GLC_State::setRenderSelectionMode(false);
+			}
+			if (glcWorld.collection()->selectionSize())
+				glcWorld.render(1, renderingFlag);
             glPopAttrib();
+
         }
-        else if (selectedNodesCount > 0)
+		else if (glcWorld.collection()->selectionSize()  > 0)
             glcWorld.render(1, renderingFlag);
 
         // Remove global shader if set.
@@ -920,14 +973,7 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-	if (!multiSelection)
-	{
-		for (const auto mesh : currentlyHighLighted)
-		{
-			revertMeshMaterial(mesh);
-		}
-		currentlyHighLighted.clear();
-	}
+	
 
 	//FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
@@ -959,10 +1005,28 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     disableSelectionMode();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
+	QString meshId;
     if(--returnId < idmap.size())
     {
-        highlightMesh(idmap[(int)returnId]);
+		meshId = idmap[(int)returnId];
+		highlightMesh(meshId);
     }
+
+
+	if (!multiSelection)
+	{
+		for (const auto mesh : currentlyHighLighted)
+		{
+			if (meshId != mesh)
+			{
+				toggleHighLight(mesh);
+				currentlyHighLighted.erase(mesh);
+			}
+				
+			
+		}
+
+	}
 	
 	
 	
@@ -982,7 +1046,7 @@ void GLCRenderer::setActivationFlag(const bool &flag)
 
 void GLCRenderer::setAndInitSelectionShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context)
 {
-    if (GLC_State::glslUsed()) // && !GLC_State::selectionShaderUsed())
+    if (GLC_State::glslUsed())
     {
         GLC_State::setSelectionShaderUsage(true);
         GLC_SelectionMaterial::setShaders(vertexFile,fragmentFile,context);
@@ -1276,8 +1340,22 @@ void GLCRenderer::toggleSelectAll()
     if (glcWorld.collection()->selectionSize() ==
             glcWorld.collection()->drawableObjectsSize())
         glcWorld.unselectAll();
-    else
-        glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
+	else
+	{
+		glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
+		for (const auto mesh : currentlyHighLighted)
+		{
+			toggleHighLight(mesh);
+		}
+		currentlyHighLighted.clear();
+	}
+
+	//for (const auto mesh : idmap)
+	//{
+	//	toggleHighLight(mesh);
+	//	currentlyHighLighted.insert(mesh);
+	//}
+
 }
 
 void GLCRenderer::toggleWireframe()
