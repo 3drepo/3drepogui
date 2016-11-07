@@ -179,13 +179,15 @@ void Rendering3DWidget::initializeShaders()
     {
         try
         {
-            renderer->setAndInitSelectionShaders(selectVertexShaderFile, selectFragmentShaderFile, context());
-            //------------------------------------------------------------------
+
+            
             renderer->appendAndInitRenderingShaders(defaultVertexShaderFile, defaultFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(goochVertexShaderFile, goochFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(minnaertVertexShaderFile, minnaertFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(toonVertexShaderFile, toonFragmentShaderFile, context());
             renderer->appendAndInitRenderingShaders(phongVertexShaderFile, phongFragmentShaderFile, context());
+			//------------------------------------------------------------------
+			renderer->setAndInitSelectionShaders(selectVertexShaderFile, selectFragmentShaderFile, context());
         }
         catch (GLC_Exception e)
         {
