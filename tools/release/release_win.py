@@ -1,4 +1,3 @@
-
 #============== CONSTANTS DECLARATIONS - CHANGE AS NESCCESSARY =================
 #NOTE: This script assumes the following:
 #  1. Envar MONGO_ROOT is set
@@ -86,11 +85,12 @@ os.system("xcopy  \""+ installDir +"\\*\" \"" + guiDir + "\" /s /e")
 
 #Copy libraries
 fpMongodll = os.environ["MONGO_ROOT"] + "\\lib\\" + mongodll
-fpAssimpdll = os.environ["ASSIMP_ROOT"] + "\\lib\\" + assimpdll
+fpAssimpdll = os.environ["ASSIMP_ROOT"] + "\\bin\\" + assimpdll
 fpGLCdll = os.environ["GLC_ROOT"] + "\\lib\\Release\\" + glcdll
 os.system("copy \"" + fpMongodll + "\" \"" + bouncerDir + "\\bin\"")
 os.system("copy \"" + fpAssimpdll + "\" \"" + bouncerDir + "\\bin\"")
 os.system("copy \"" + fpGLCdll + "\" \"" + guiDir + "\\bin\\\"")
+
 
 ifcopenshellLib = os.environ["IFCOPENSHELL_ROOT"] + "\\bin"
 for ifcopenshellDll in ifcopenshelldlls:
@@ -98,7 +98,7 @@ for ifcopenshellDll in ifcopenshelldlls:
 
 occtLib = os.environ["OCCT_LIB_DIR"] + "\\..\\bin"
 for occtDll in occtdlls:
-	os.system("copy \"" + occtLib + "\\" + occtDll + "\" \"" + installDir + "\\bin\"")
+	os.system("copy \"" + occtLib + "\\" + occtDll + "\" \"" + bouncerDir + "\\bin\"")
 
 boostLib = os.environ["BOOST_LIBRARYDIR"]
 for boostDll in boostdlls:
@@ -116,5 +116,5 @@ os.system("echo " + stringTest)
 os.system(qtInstallerexe + " -c scratch\\installer\\config\config.xml -p scratch\\installer\\packages 3DRepo.exe")
 
 #Remove scratch directory
-os.system("rmdir scratch /S /Q")
-os.system("rmdir v1.0b2 /S /Q")
+#os.system("rmdir scratch /S /Q")
+os.system("rmdir "+ releaseTag +" /S /Q")
