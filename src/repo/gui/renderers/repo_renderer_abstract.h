@@ -34,7 +34,7 @@ namespace renderer {
 
 //! Standard camera positions type.
 enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
-enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET };
+enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET, HELICOPTER };
 enum class RenderMode {POINT, WIREFRAME, WIREFRAME_SHADING, SHADING};
 enum class Axis {X = 0, Y = 1, Z = 2};
 

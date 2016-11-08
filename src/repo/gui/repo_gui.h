@@ -211,6 +211,8 @@ private:
 
     static const QString REPO_SETTINGS_GUI_FLY_NAVIGATION;
 
+    static const QString REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION;
+
     static const QString REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION;
 
     static const QString REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION;

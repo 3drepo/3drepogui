@@ -107,6 +107,7 @@
      <addaction name="actionFly"/>
      <addaction name="actionTrack_Ball"/>
      <addaction name="actionTurntable"/>
+     <addaction name="actionHelicopter"/>
     </widget>
     <addaction name="actionLink"/>
     <addaction name="menuNavigation"/>
@@ -739,6 +740,17 @@
    </property>
    <property name="shortcut">
     <string>1</string>
+   </property>
+  </action>
+    <action name="actionHelicopter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Helicopter</string>
+   </property>
+   <property name="shortcut">
+    <string>4</string>
    </property>
   </action>
   <action name="actionRemoveProject">
