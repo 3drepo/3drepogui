@@ -295,8 +295,7 @@ void GLCRenderer::highlightMesh(
 	if (currentlyHighLighted.find(meshId) != currentlyHighLighted.end())
     {
         //currently highlighted, should unhighlight it
-		toggleHighLight(meshId);
-		currentlyHighLighted.erase(meshId);
+        toggleHighLight(meshId, false);
 		if (meshId == lastHighLighted)
 		{
 			if (currentlyHighLighted.size())
@@ -308,10 +307,9 @@ void GLCRenderer::highlightMesh(
     }
     else
     {
-		toggleHighLight(meshId);
-        currentlyHighLighted.insert(meshId);
+        toggleHighLight(meshId, true);
 		repoLog("Mesh: " + meshId.toStdString());
-		lastHighLighted = meshId;
+
     }
 
 
@@ -319,7 +317,8 @@ void GLCRenderer::highlightMesh(
 }
 
 void GLCRenderer::toggleHighLight(
-	const QString &meshId)
+    const QString &meshId,
+        const bool &highLight)
 {
 	auto meshIt = meshMap.find(meshId);
 	auto matIt = matMap.find(meshId);
@@ -353,18 +352,29 @@ void GLCRenderer::toggleHighLight(
 	if (mat)
 	{
 		bool selected = mat->isSelected();
+        if(selected != highLight)
+        {
+            auto geom = mat->getGeo();
+            for (const auto geo : geom.values())
+            {
+                auto mesh = dynamic_cast<GLC_Mesh*>(geo);
+                if (mesh)
+                {
+                    mesh->updateSubMeshSelectedCount(highLight);
+                }
+            }
 
-		auto geom = mat->getGeo();
-		for (const auto geo : geom.values())
-		{
-			auto mesh = dynamic_cast<GLC_Mesh*>(geo);
-			if (mesh)
-			{
-				mesh->updateSubMeshSelectedCount(!selected);
-			}
-		}
+            mat->setSelection(highLight);
+            if(highLight)
+                currentlyHighLighted.insert(meshId);
+            else
+                currentlyHighLighted.erase(meshId);
+            lastHighLighted = meshId;
+        }
 
-		mat->setSelection(!selected);
+
+
+
 	}
 }
 
@@ -973,8 +983,6 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-    if(!multiSelection)
-        glcWorld.unselectAll();
 
 	//FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
@@ -1020,8 +1028,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
 		{
 			if (meshId != mesh)
 			{
-				toggleHighLight(mesh);
-				currentlyHighLighted.erase(mesh);
+                toggleHighLight(mesh, false);
 			}
 				
 			
@@ -1338,18 +1345,11 @@ void GLCRenderer::toggleProjection()
 
 void GLCRenderer::toggleSelectAll()
 {
-    if (glcWorld.collection()->selectionSize() ==
-            glcWorld.collection()->drawableObjectsSize())
-        glcWorld.unselectAll();
-	else
-	{
-		glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
-		for (const auto mesh : currentlyHighLighted)
-		{
-			toggleHighLight(mesh);
-		}
-		currentlyHighLighted.clear();
-	}
+    bool selectAll = currentlyHighLighted.size() != idmap.size();
+    for (const auto mesh : idmap)
+    {
+        toggleHighLight(mesh, selectAll);
+    }
 
 }
 

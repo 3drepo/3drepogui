@@ -398,7 +398,8 @@ public slots :
 
 
 				virtual void toggleHighLight(
-					const QString &meshId);
+                    const QString &meshId,
+                        const bool &highLight);
 
 				//! List of available shaders.
 				QList<GLC_Shader*> shaders;
