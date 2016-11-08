@@ -973,7 +973,8 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-	
+    if(!multiSelection)
+        glcWorld.unselectAll();
 
 	//FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
@@ -1349,12 +1350,6 @@ void GLCRenderer::toggleSelectAll()
 		}
 		currentlyHighLighted.clear();
 	}
-
-	//for (const auto mesh : idmap)
-	//{
-	//	toggleHighLight(mesh);
-	//	currentlyHighLighted.insert(mesh);
-	//}
 
 }
 
