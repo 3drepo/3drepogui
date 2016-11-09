@@ -255,6 +255,7 @@ namespace repo {
                                  std::map<QString, GLC_Material*> &_matMap,
                                  std::vector<QString> &_idmap);
 
+                virtual void tiltUp(const bool up);
 public slots :
 
                 /**

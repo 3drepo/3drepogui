@@ -742,7 +742,12 @@ void Rendering3DWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 void Rendering3DWidget::wheelEvent(QWheelEvent * e)
 {
-    if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
+    if(navMode == renderer::NavMode::HELICOPTER)
+    {
+        renderer->tiltUp(e->delta() > 0);
+        update();
+    }
+    else if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
     {
         renderer->zoom(e->delta() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
         update();

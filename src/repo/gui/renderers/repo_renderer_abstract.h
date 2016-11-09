@@ -232,6 +232,12 @@ public:
     */
     virtual void setBackgroundColor(const QColor &color) = 0;
 
+    /**
+     * @brief tilt the camera up/down
+     * @param up if true, up, otherwise down
+     */
+    virtual void tiltUp(const bool up) = 0;
+
     virtual void toggleGenericPartitioning(
             const std::vector<repo_vector_t> &sceneBbox,
             const std::shared_ptr<repo_partitioning_tree_t> &tree) = 0;

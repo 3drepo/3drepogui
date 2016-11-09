@@ -621,6 +621,12 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
                     GLC_MoverController::Fly,
                     GLC_UserInput(x, y));
         break;
+    case NavMode::HELICOPTER :
+        glcViewport.cameraHandle()->setUpCam(GLC_Vector3d(0,1,0));
+//        glcMoverController.setActiveMover(
+//                    GLC_MoverController::Helicopter,
+//                    GLC_UserInput(x, y));
+        break;
 
     case NavMode::ZOOM :
         glcMoverController.setActiveMover(
@@ -1468,6 +1474,15 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 
         clippingPlaneWidget->setVisible(true);
     }
+}
+
+void GLCRenderer::tiltUp(const bool up)
+{
+    auto normal = glcViewport.cameraHandle()->upVector() ^  (glcViewport.cameraHandle()->target()-glcViewport.cameraHandle()->eye());
+    double angle = 0.05;
+    if(up)  angle*=-1.;
+    glcViewport.cameraHandle()->rotateAround(normal,angle,  glcViewport.cameraHandle()->eye());
+    emit cameraChanged(getCurrentCamera());
 }
 
 void GLCRenderer::zoom(const float &zoom)
