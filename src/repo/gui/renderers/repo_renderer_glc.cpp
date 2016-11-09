@@ -623,9 +623,9 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
         break;
     case NavMode::HELICOPTER :
         glcViewport.cameraHandle()->setUpCam(GLC_Vector3d(0,1,0));
-//        glcMoverController.setActiveMover(
-//                    GLC_MoverController::Helicopter,
-//                    GLC_UserInput(x, y));
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::Helicopter,
+                    GLC_UserInput(x, y));
         break;
 
     case NavMode::ZOOM :
