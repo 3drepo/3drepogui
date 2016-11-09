@@ -1480,7 +1480,7 @@ void GLCRenderer::tiltUp(const bool up)
 {
     auto normal = glcViewport.cameraHandle()->upVector() ^  (glcViewport.cameraHandle()->target()-glcViewport.cameraHandle()->eye());
     double angle = 0.05;
-    if(up)  angle*=-1.;
+    if(!up)  angle*=-1.;
     glcViewport.cameraHandle()->rotateAround(normal,angle,  glcViewport.cameraHandle()->eye());
     emit cameraChanged(getCurrentCamera());
 }
