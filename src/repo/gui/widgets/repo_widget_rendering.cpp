@@ -691,8 +691,13 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
         }
         break;
     case (Qt::MidButton) :
-        this->setCursor(Qt::SizeVerCursor);
-        renderer->startNavigation(renderer::NavMode::ZOOM, e->x(), e->y());
+        if (navMode == renderer::NavMode::HELICOPTER)
+            renderer->startNavigation(renderer::NavMode::HELICOPTERV, e->x(), e->y());
+        else
+        {
+            this->setCursor(Qt::SizeVerCursor);
+            renderer->startNavigation(renderer::NavMode::ZOOM, e->x(), e->y());
+        }
         break;
     }
     update();
