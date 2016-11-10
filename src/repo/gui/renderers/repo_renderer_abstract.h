@@ -34,7 +34,7 @@ namespace renderer {
 
 //! Standard camera positions type.
 enum class CameraView { BACK, BOTTOM, FRONT, ISO, LEFT, RIGHT, TOP };
-enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET };
+enum class NavMode { TURNTABLE, PAN, FLY, ZOOM, ORBIT, TSR, TARGET, HELICOPTER, HELICOPTERF, HELICOPTERV };
 enum class RenderMode {POINT, WIREFRAME, WIREFRAME_SHADING, SHADING};
 enum class Axis {X = 0, Y = 1, Z = 2};
 
@@ -231,6 +231,12 @@ public:
     * @param color colour to change to
     */
     virtual void setBackgroundColor(const QColor &color) = 0;
+
+    /**
+     * @brief tilt the camera up/down
+     * @param up if true, up, otherwise down
+     */
+    virtual void tiltUp(const bool up) = 0;
 
     virtual void toggleGenericPartitioning(
             const std::vector<repo_vector_t> &sceneBbox,

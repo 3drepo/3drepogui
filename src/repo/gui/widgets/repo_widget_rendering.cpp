@@ -673,13 +673,22 @@ void Rendering3DWidget::mousePressEvent(QMouseEvent *e)
                 this->setCursor(Qt::CrossCursor);
             else
                 this->setCursor(Qt::ClosedHandCursor);
-            renderer->startNavigation(navMode, e->x(), e->y());
+
+            if(navMode == renderer::NavMode::HELICOPTER)
+                renderer->startNavigation(renderer::NavMode::HELICOPTERF, e->x(), e->y());
+            else
+                renderer->startNavigation(navMode, e->x(), e->y());
         }
         break;
     }
     case (Qt::RightButton) :
-        this->setCursor(Qt::SizeAllCursor);
-        renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
+        if (navMode == renderer::NavMode::HELICOPTER)
+            renderer->startNavigation(renderer::NavMode::HELICOPTERV, e->x(), e->y());
+        else
+        {
+            this->setCursor(Qt::SizeAllCursor);
+            renderer->startNavigation(renderer::NavMode::PAN, e->x(), e->y());
+        }
         break;
     case (Qt::MidButton) :
         this->setCursor(Qt::SizeVerCursor);
@@ -742,7 +751,12 @@ void Rendering3DWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 void Rendering3DWidget::wheelEvent(QWheelEvent * e)
 {
-    if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
+    if(navMode == renderer::NavMode::HELICOPTER)
+    {
+        renderer->tiltUp(e->delta() > 0);
+        update();
+    }
+    else if (!renderer->increaseFlyVelocity(e->delta() < 0 ? 1.0 / 1.3 : 1.3))
     {
         renderer->zoom(e->delta() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
         update();

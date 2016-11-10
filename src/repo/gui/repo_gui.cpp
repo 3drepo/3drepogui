@@ -58,6 +58,7 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_FLY_NAVIGATION = "RepoGUI/fly";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION = "RepoGUI/helicopter";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION = "RepoGUI/trackball";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION = "RepoGUI/turntable";
 
@@ -245,8 +246,10 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionTrack_Ball, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     ui->actionTrack_Ball->setIcon(primitive::RepoFontAwesome::getTrackBallIcon());
     navigationModeActionGroup->addAction(ui->actionFly);
-    QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);    
     ui->actionFly->setIcon(primitive::RepoFontAwesome::getFlyIcon());
+    QObject::connect(ui->actionHelicopter, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    ui->actionHelicopter->setIcon(primitive::RepoFontAwesome::getHelicopterIcon());
 
     if (ui->actionTurntable->isChecked())
         ui->actionTurntable->trigger();
@@ -947,6 +950,11 @@ void repo::gui::RepoGUI::toggleNavigationMode()
     {
         ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::FLY);
     }
+    else if (action == ui->actionHelicopter ||
+              ui->menuNavigation->menuAction()->text() == ui->actionHelicopter->text())
+    {
+        ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::HELICOPTER);
+    }
 
 }
 
@@ -1058,6 +1066,7 @@ void repo::gui::RepoGUI::restoreSettings()
     restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
     restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
     ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, true).toBool());
+    ui->actionHelicopter->setChecked(settings.value(REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION, false).toBool());
     ui->actionFly->setChecked(settings.value(REPO_SETTINGS_GUI_FLY_NAVIGATION, false).toBool());
     ui->actionTrack_Ball->setChecked(settings.value(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, false).toBool());
     ui->actionTurntable->setChecked(settings.value(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, true).toBool());
@@ -1069,6 +1078,7 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_GUI_GEOMETRY, saveGeometry());
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
+    settings.setValue(REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION, ui->actionHelicopter->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_FLY_NAVIGATION, ui->actionFly->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, ui->actionTrack_Ball->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, ui->actionTurntable->isChecked());

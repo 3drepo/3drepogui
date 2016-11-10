@@ -94,6 +94,11 @@ namespace primitive {
             return getIconStatic(fa_plane);
         }
 
+        static QIcon getHelicopterIcon()
+        {
+            return getIconStatic(fa_binoculars);
+        }
+
         static QIcon getTrackBallIcon()
         {
             return getIconStatic(fa_crosshairs);
