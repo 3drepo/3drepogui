@@ -621,10 +621,14 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
                     GLC_MoverController::Fly,
                     GLC_UserInput(x, y));
         break;
-    case NavMode::HELICOPTER :
-        glcViewport.cameraHandle()->setUpCam(GLC_Vector3d(0,1,0));
+    case NavMode::HELICOPTERF :
         glcMoverController.setActiveMover(
-                    GLC_MoverController::Helicopter,
+                    GLC_MoverController::HelicopterF,
+                    GLC_UserInput(x, y));
+        break;
+    case NavMode::HELICOPTERV :
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::HelicopterV,
                     GLC_UserInput(x, y));
         break;
 
@@ -1478,7 +1482,7 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 
 void GLCRenderer::tiltUp(const bool up)
 {
-    auto normal = glcViewport.cameraHandle()->upVector() ^  (glcViewport.cameraHandle()->target()-glcViewport.cameraHandle()->eye());
+    auto normal = glcViewport.cameraHandle()->upVector() ^  glcViewport.cameraHandle()->forward();
     double angle = 0.05;
     if(!up)  angle*=-1.;
     glcViewport.cameraHandle()->rotateAround(normal,angle,  glcViewport.cameraHandle()->eye());
