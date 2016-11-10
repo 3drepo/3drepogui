@@ -26,6 +26,7 @@
 #include <GLC_Octree>
 #include <GLC_State>
 #include <glc_renderstatistics.h>
+#include <viewport/glc_helicoptermover.h>
 //------------------------------------------------------------------------------
 
 using namespace repo::gui::renderer;
@@ -680,6 +681,21 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
 
+    auto vmover = glcMoverController.getMover((int)NavMode::HELICOPTERV);
+    auto heliVMover = static_cast<GLC_HelicopterMover*>(vmover);
+    if(heliVMover)
+    {
+        repoLog("Setting v mover bbox...");
+        heliVMover->setBoundingBox(bbox);
+    }
+
+    auto hmover = glcMoverController.getMover((int)NavMode::HELICOPTERF);
+    auto heliHMover = static_cast<GLC_HelicopterMover*>(hmover);
+    if(heliHMover)
+    {
+        repoLog("Setting h mover bbox...");
+        heliHMover->setBoundingBox(bbox);
+    }
 
 
     //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
