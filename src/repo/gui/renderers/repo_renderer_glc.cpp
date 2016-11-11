@@ -297,13 +297,7 @@ void GLCRenderer::highlightMesh(
     {
         //currently highlighted, should unhighlight it
         toggleHighLight(meshId, false);
-		if (meshId == lastHighLighted)
-		{
-			if (currentlyHighLighted.size())
-				lastHighLighted = *currentlyHighLighted.begin();
-			else
-				lastHighLighted = "";
-		}
+
 
     }
     else
@@ -366,11 +360,22 @@ void GLCRenderer::toggleHighLight(
             }
 
             mat->setSelection(highLight);
-            if(highLight)
-                currentlyHighLighted.insert(meshId);
-            else
-                currentlyHighLighted.erase(meshId);
-            lastHighLighted = meshId;
+			if (highLight){
+				currentlyHighLighted.insert(meshId);
+				lastHighLighted = meshId;
+			}
+			else
+			{
+				currentlyHighLighted.erase(meshId);
+				if (meshId == lastHighLighted)
+				{
+					if (currentlyHighLighted.size())
+						lastHighLighted = *currentlyHighLighted.begin();
+					else
+						lastHighLighted = "";
+				}
+			}
+
         }
 
 
@@ -1019,6 +1024,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         repoError << "This model has too many components to support selection!";
         return;
     }
+	
 
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
@@ -1047,23 +1053,18 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
 		highlightMesh(meshId);
     }
 
-
 	if (!multiSelection)
 	{
-		for (const auto mesh : currentlyHighLighted)
+		//We need to copy the set into vector first or it'll hit the assertion about erasing elements from sets whilst iterating.
+		std::vector<QString> meshVec;
+		std::copy(currentlyHighLighted.begin(), currentlyHighLighted.end(), std::back_inserter(meshVec));
+		for (const auto mesh : meshVec)
 		{
-			if (meshId != mesh)
-			{
-                toggleHighLight(mesh, false);
-			}
-				
-			
+			if (mesh != meshId)
+				toggleHighLight(mesh, false);
 		}
 
 	}
-	
-	
-	
     fbo.release();
     fbo.bindDefault();
 
