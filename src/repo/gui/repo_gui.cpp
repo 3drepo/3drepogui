@@ -248,6 +248,7 @@ repo::gui::RepoGUI::RepoGUI(
     navigationModeActionGroup->addAction(ui->actionFly);
     QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);    
     ui->actionFly->setIcon(primitive::RepoFontAwesome::getFlyIcon());
+    navigationModeActionGroup->addAction(ui->actionHelicopter);
     QObject::connect(ui->actionHelicopter, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     ui->actionHelicopter->setIcon(primitive::RepoFontAwesome::getHelicopterIcon());
 
@@ -257,6 +258,8 @@ repo::gui::RepoGUI::RepoGUI(
         ui->actionTrack_Ball->trigger();
     else if (ui->actionFly->isChecked())
         ui->actionFly->trigger();
+    else if (ui->actionHelicopter->isChecked())
+        ui->actionHelicopter->trigger();
 
     //	connect(actionISO, SIGNAL(triggered()), this, SLOT(cameraISOSlot()));
     //	actionISO->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_dot_circle_o));
