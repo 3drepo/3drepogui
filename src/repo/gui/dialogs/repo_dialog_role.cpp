@@ -35,11 +35,10 @@ RoleDialog::RoleDialog(
     , databasesWithProjects(databasesWithProjects)
     , ui(new Ui::RoleDialog)
     , rwSeparatedEntries(repo::gui::primitive::RepoComboBoxEditor::getSeparatedEntries({
-	tr("Read").toStdString(),
-	tr("Write").toStdString(),
+    tr("Read (Cannot comment)").toStdString(),
+    tr("Read (Can comment)").toStdString(),
 	tr("ReadWrite").toStdString() }))
 {
-
 	
     ui->setupUi(this);
 
@@ -291,14 +290,14 @@ QString RoleDialog::accessRightToString(const repo::core::model::AccessRight &rw
     QString str;
     switch(rw)
     {
-    case repo::core::model::AccessRight::READ :
-        str = tr("Read");
+    case repo::core::model::AccessRight::READ_ONLY :
+        str = tr("Read (Cannot comment)");
         break;
     case repo::core::model::AccessRight::READ_WRITE :
         str = tr("ReadWrite");
         break;
-    case repo::core::model::AccessRight::WRITE :
-        str  = tr("Write");
+    case repo::core::model::AccessRight::READ_AND_COMMENT :
+        str  = tr("Read (Can comment)");
         break;
     }
     return str;
@@ -308,11 +307,11 @@ repo::core::model::AccessRight RoleDialog::stringToAccessRight(
         const QString &str)
 {
     repo::core::model::AccessRight ar;
-    if (str == tr("Read"))
-        ar = repo::core::model::AccessRight::READ;
+    if (str == tr("Read (Cannot comment)"))
+        ar = repo::core::model::AccessRight::READ_ONLY;
     else if (str == tr("ReadWrite"))
         ar = repo::core::model::AccessRight::READ_WRITE;
-    else if (str == tr("Write"))
-        ar = repo::core::model::AccessRight::WRITE;
+    else if (str == tr("Read (Can comment)"))
+        ar = repo::core::model::AccessRight::READ_AND_COMMENT;
     return ar;
 }
