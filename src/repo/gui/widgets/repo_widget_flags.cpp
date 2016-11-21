@@ -141,6 +141,8 @@ FlagsWidget::FlagsWidget(QWidget *parent) :
 
     ui->validateDataStructuresCheckBox->setChecked(settings->getValidateDataStructures());
 
+    ui->omitIFCSpaceCheckBox->setChecked(settings->getSkipIFCSpaceRepresentation());
+
     //--------------------------------------------------------------------------
 
     QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
@@ -319,6 +321,7 @@ void FlagsWidget::apply()
 
     settings->setValidateDataStructures(
                       ui->validateDataStructuresCheckBox->isChecked());
+    settings->setSkipIFCSpaceRepresentation(ui->omitIFCSpaceCheckBox->isChecked());
 }
 
 void FlagsWidget::reset()

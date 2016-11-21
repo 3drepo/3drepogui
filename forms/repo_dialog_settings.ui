@@ -181,6 +181,28 @@
               </item>
              </layout>
             </widget>
+            <widget class="QWidget" name="tabIfcOpenShell">
+             <attribute name="title">
+              <string>IFC Open Shell</string>
+			  </attribute>
+	          <layout class="QVBoxLayout" name="verticalLayout_4">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="repo::gui::widget::IFCFlagsWidget" name="ifcFlagsWidget" native="true"/>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -239,7 +261,13 @@
   <customwidget>
    <class>repo::gui::widget::FlagsWidget</class>
    <extends>QWidget</extends>
-    <header>src/repo/gui/widgets/repo_widget_flags.h</header>
+   <header>src/repo/gui/widgets/repo_widget_flags.h</header>
+   <container>1</container>
+  </customwidget>
+    <customwidget>
+   <class>repo::gui::widget::IFCFlagsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/repo/gui/widgets/repo_widget_flags_ifc.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

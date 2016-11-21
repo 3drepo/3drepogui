@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>637</width>
-    <height>463</height>
+    <width>738</width>
+    <height>542</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1167,6 +1167,13 @@
           <widget class="QCheckBox" name="validateDataStructuresCheckBox">
            <property name="text">
             <string>Validate Data Structures</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="omitIFCSpaceCheckBox">
+           <property name="text">
+            <string>Omit IFC Spaces</string>
            </property>
           </widget>
          </item>

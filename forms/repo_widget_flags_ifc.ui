@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IFCFlagsWidget</class>
+ <widget class="QWidget" name="repo_widget_flags_ifc.h">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>738</width>
+    <height>542</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QComboBox" name="preDefinedSettingsComboBox">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Default</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Direct 3D</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Basic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Medium</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Extreme</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="useIFCOpenShellGroupBox">
+     <property name="title">
+      <string>Use IFCOpenShell for IFC Files</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

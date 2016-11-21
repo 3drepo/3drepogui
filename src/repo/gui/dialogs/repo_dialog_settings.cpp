@@ -87,6 +87,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::apply()
 {
     ui->assimpFlagsWidget->apply();
+    ui->ifcFlagsWidget->apply();
 }
 
 void SettingsDialog::changeOptionsPane(const QModelIndex &index)
