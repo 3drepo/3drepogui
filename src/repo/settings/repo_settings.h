@@ -434,6 +434,15 @@ public :
 	}
 
     /*!
+     * Returns true if IFC Space representation should be skipped
+     * Defaults to true
+     */
+    bool getSkipIFCSpaceRepresentation() const
+    {
+        return value(QString(IFC_SKIP_SPACE_REPRESENTATIONS.c_str()), true).toBool();
+    }
+
+    /*!
      * Returns ture if sort and remove is checked in settings, false otherwise.
      * Defaults to false.
      */
@@ -537,9 +546,16 @@ public :
      * otherwise. Defaults to false.
      */
     bool getValidateDataStructures() const
-	{
-		return value(QString(VALIDATE_DATA_STRUCTURES.c_str()), repoDefaultValidateDataStructures).toBool();
-	}
+    {
+        return value(QString(VALIDATE_DATA_STRUCTURES.c_str()), repoDefaultValidateDataStructures).toBool();
+    }
+
+
+    bool getUseIFCOpenShell() const
+    {
+        return value(QString(USE_IFC_OPEN_SHELL.c_str()), false).toBool();
+    }
+
 
 public :
 
@@ -759,6 +775,11 @@ public :
 		QSettings::setValue(QString(REMOVE_REDUNDANT_NODES_SKIP.c_str()), skip);
 	}
 
+    void setSkipIFCSpaceRepresentation(bool on)
+    {
+        QSettings::setValue(QString(IFC_SKIP_SPACE_REPRESENTATIONS.c_str()), on);
+    }
+
     void setSortAndRemove(bool on)
 	{
 		QSettings::setValue(QString(SORT_AND_REMOVE.c_str()), on);
@@ -818,6 +839,13 @@ public :
 	{
 		QSettings::setValue(QString(VALIDATE_DATA_STRUCTURES.c_str()), on);
 	}
+
+    //IFC OpenShell Setters
+
+    void setUseIFCOpenShell(bool on)
+    {
+        QSettings::setValue(QString(USE_IFC_OPEN_SHELL.c_str()), on);
+    }
 
 };
 
