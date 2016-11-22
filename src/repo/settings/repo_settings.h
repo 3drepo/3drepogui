@@ -551,9 +551,54 @@ public :
     }
 
 
+    /*!
+     * Returns true if using IFC open shell is checked in settings, false
+     * otherwise. Defaults to false.
+     */
     bool getUseIFCOpenShell() const
     {
         return value(QString(USE_IFC_OPEN_SHELL.c_str()), false).toBool();
+    }
+
+    /*!
+     * Returns true if element filtering is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool getUseElementsFiltering() const
+    {
+        return value(QString(IOS_USE_FILTER.c_str()), repoDefaultIOSUseFilter).toBool();
+    }
+
+
+    /*!
+     * Returns true if exclusion element filtering is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool getIsExclusionFilter() const
+    {
+        return value(QString(IOS_FILTER_EXCLUSION.c_str()), repoDefaultIsExclusion).toBool();
+    }
+
+    /*!
+     * Returns list of keywords being filtered
+     */
+    std::vector<std::string> getFilteringKeywords() const
+    {
+        QVariantList list;
+        for(const auto &key : repoDefaultIfcOpenShellFilterList)
+        {
+            list.push_back(QString::fromStdString((key)));
+        }
+
+        QVariantList retlist =  value(QString(IOS_FILTER_LIST.c_str()), list).toList();
+
+        std::vector<std::string> vec;
+        for(const auto &l : retlist)
+        {
+            vec.push_back(l.toString().toStdString());
+        }
+        return vec;
+
     }
 
 
@@ -841,11 +886,31 @@ public :
 	}
 
     //IFC OpenShell Setters
-
     void setUseIFCOpenShell(bool on)
     {
         QSettings::setValue(QString(USE_IFC_OPEN_SHELL.c_str()), on);
     }
+
+    void setUseElementsFiltering(bool on)
+    {
+        QSettings::setValue(QString(IOS_USE_FILTER.c_str()), on);
+    }
+
+    void setIsExclusionFilter(bool on)
+    {
+        QSettings::setValue(QString(IOS_FILTER_EXCLUSION.c_str()), on);
+    }
+
+    void setFilteringKeywords(const std::vector<std::string> &keywords)
+    {
+        QVariantList list;
+        for (const auto &key : keywords)
+        {
+            list.push_back(QString::fromStdString(key));
+        }
+        QSettings::setValue(QString(IOS_FILTER_LIST.c_str()), list);
+    }
+
 
 };
 

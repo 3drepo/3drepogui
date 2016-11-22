@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>IFCFlagsWidget</class>
- <widget class="QWidget" name="repo_widget_flags_ifc.h">
+ <widget class="QWidget" name="IFCFlagsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -60,10 +60,63 @@
      <property name="checked">
       <bool>false</bool>
      </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QGroupBox" name="ElementFilteringGroupBox">
+        <property name="title">
+         <string>Element Filters</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QRadioButton" name="includeElementsRadioButton">
+             <property name="text">
+              <string>Include</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="excludeElementsRadioButton">
+             <property name="text">
+              <string>Exclude</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="repo::gui::widget::UnfilterableTreeWidget" name="elementsFilter" native="true"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>repo::gui::widget::UnfilterableTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>src/repo/gui/widgets/repo_widget_tree_unfilterable.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

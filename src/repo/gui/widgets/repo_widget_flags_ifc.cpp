@@ -32,6 +32,20 @@ IFCFlagsWidget::IFCFlagsWidget(QWidget *parent) :
     //--------------------------------------------------------------------------
 
     ui->useIFCOpenShellGroupBox->setChecked(settings->getUseIFCOpenShell());
+    ui->ElementFilteringGroupBox->setChecked(settings->getUseElementsFiltering());
+    ui->excludeElementsRadioButton->setChecked(settings->getIsExclusionFilter());
+    ui->includeElementsRadioButton->setChecked(!settings->getIsExclusionFilter());
+
+    ui->elementsFilter->setHeaders({tr("Filtering Keywords")});
+
+    auto keywords = settings->getFilteringKeywords();
+
+    for(const auto &keyword : keywords)
+    {
+        ui->elementsFilter->addRow({QString::fromStdString(keyword)}, true, true);
+    }
+
+    ui->elementsFilter->setNewRowText({tr("<New Keyword>")});
 
 
     //--------------------------------------------------------------------------
@@ -67,11 +81,17 @@ IFCFlagsWidget::~IFCFlagsWidget()
 void IFCFlagsWidget::apply()
 {    
     settings->setUseIFCOpenShell(ui->useIFCOpenShellGroupBox->isChecked());
+    settings->setUseElementsFiltering(ui->ElementFilteringGroupBox->isChecked());
+    settings->setIsExclusionFilter(ui->excludeElementsRadioButton->isChecked());
+    settings->setFilteringKeywords(ui->elementsFilter->getItemsAsVectorOfStrings());
 }
 
 void IFCFlagsWidget::reset()
 {
     ui->useIFCOpenShellGroupBox->setChecked(false);
+    ui->ElementFilteringGroupBox->setChecked(repoDefaultIOSUseFilter);
+    ui->excludeElementsRadioButton->setChecked(repoDefaultIsExclusion);
+    ui->includeElementsRadioButton->setChecked(!repoDefaultIsExclusion);
 }
 
 
