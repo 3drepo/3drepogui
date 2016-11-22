@@ -24,7 +24,14 @@ RepoSortFilterProxyModel::RepoSortFilterProxyModel(
 	bool filterTopMostItems)
 	: QSortFilterProxyModel(parent)
 	, filterTopMostItems(filterTopMostItems)
-{}
+{
+
+    setSortRole(Qt::UserRole+1);
+    setDynamicSortFilter(true);
+    setFilterKeyColumn(-1); // filter all columns
+    setFilterCaseSensitivity(Qt::CaseInsensitive);
+    setSortCaseSensitivity(Qt::CaseInsensitive);
+}
 
 bool RepoSortFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const
 {

@@ -17,6 +17,8 @@
 
 #include "repo_standard_item.h"
 
+#include <iostream>
+
 using namespace repo::gui::primitive;
 
 //------------------------------------------------------------------------------

@@ -47,7 +47,7 @@ void RepoWorkerProjects::run()
 
     //--------------------------------------------------------------------------
     // Get mapping of databases with their associated projects.
-    // This is long running job!
+    // This is a long running job!
     std::list<std::string> databases = controller->getDatabases(token);
     emit databasesFetched(databases);
     emit progressValueChanged(jobsDone++);

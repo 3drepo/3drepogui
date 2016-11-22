@@ -400,6 +400,13 @@ repo::gui::RepoGUI::RepoGUI(
 
     //--------------------------------------------------------------------------
     //
+    // Repos
+    //
+    //--------------------------------------------------------------------------
+    repos = new models::RepositoriesModel(controller, ui->reposWidget);
+
+    //--------------------------------------------------------------------------
+    //
     // Restore previous GUI user settings
     //
     //--------------------------------------------------------------------------
@@ -413,6 +420,7 @@ repo::gui::RepoGUI::RepoGUI(
 
 repo::gui::RepoGUI::~RepoGUI()
 {
+    delete repos;
     delete ui;
     delete navigationModeActionGroup;
 }
@@ -541,12 +549,15 @@ void repo::gui::RepoGUI::connectDB()
         std::string errMsg;
 
         auto credentials = connectManager.getConnection();
-        repo::RepoController::RepoToken*  connectionToken = controller->createTokenFromSerialised(credentials);
+        repo::RepoController::RepoToken *token = controller->createTokenFromSerialised(credentials);
 
-        if (connectionToken && controller->authenticateMongo(errMsg, connectionToken))
+        if (token && controller->authenticateMongo(errMsg, token))
         {
             //connection/authentication success
-            ui->widgetRepository->fetchDatabases(controller, connectionToken);
+            ui->widgetRepository->fetchDatabases(controller, token);
+
+
+
             //-----------------------------------------------------------------
             // enable buttons
             ui->actionRefresh->setEnabled(true);
@@ -559,6 +570,10 @@ void repo::gui::RepoGUI::connectDB()
             ui->actionFederate->setEnabled(true);
             ui->actionAddMapTiles->setEnabled(true);
             ui->actionRemoveProject->setEnabled(true);
+
+
+
+            repos->connect(token);
         }
         else
         {

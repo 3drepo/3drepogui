@@ -28,6 +28,7 @@ HEADERS +=  \
 	src/repo/gui/primitives/repo_idbcache.h \
 	src/repo/gui/primitives/repo_sort_filter_proxy_model.h \
 	src/repo/gui/primitives/repo_standard_item.h \
+	src/repo/gui/primitives/repo_standard_item_factory.h \
 	src/repo/gui/renderers/repo_fpscounter.h \
 	src/repo/gui/renderers/repo_renderer_abstract.h \
 	src/repo/gui/renderers/repo_renderer_glc.h \
@@ -55,6 +56,7 @@ HEADERS +=  \
 	src/repo/logger/repo_logger.h \
 	src/repo/logger/repo_stream_redirect.h \
 	src/repo/logger/repo_subscriber_abstract.h \
+	src/repo/models/repo_model_repositories.h \
 	src/repo/settings/repo_settings.h \
 	src/repo/settings/repo_settings_credentials.h \
 	src/repo/workers/repo_multithreader.h \
@@ -63,6 +65,7 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_collection.h \
 	src/repo/workers/repo_worker_commit.h \
 	src/repo/workers/repo_worker_database.h \
+	src/repo/workers/repo_worker_databases.h \
 	src/repo/workers/repo_worker_diff.h \
 	src/repo/workers/repo_worker_file_export.h \
 	src/repo/workers/repo_worker_file_import.h \
@@ -101,6 +104,7 @@ SOURCES +=  \
 	src/repo/gui/primitives/repo_idbcache.cpp \
 	src/repo/gui/primitives/repo_sort_filter_proxy_model.cpp \
 	src/repo/gui/primitives/repo_standard_item.cpp \
+	src/repo/gui/primitives/repo_standard_item_factory.cpp \
 	src/repo/gui/renderers/repo_fpscounter.cpp \
 	src/repo/gui/renderers/repo_renderer_abstract.cpp \
 	src/repo/gui/renderers/repo_renderer_glc.cpp \
@@ -128,6 +132,7 @@ SOURCES +=  \
 	src/repo/logger/repo_logger.cpp \
 	src/repo/logger/repo_stream_redirect.cpp \
 	src/repo/logger/repo_subscriber_abstract.cpp \
+	src/repo/models/repo_model_repositories.cpp \
 	src/repo/settings/repo_settings_credentials.cpp \
 	src/repo/workers/repo_multithreader.cpp \
 	src/repo/workers/repo_mutex.cpp \
@@ -135,6 +140,7 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_collection.cpp \
 	src/repo/workers/repo_worker_commit.cpp \
 	src/repo/workers/repo_worker_database.cpp \
+	src/repo/workers/repo_worker_databases.cpp \
 	src/repo/workers/repo_worker_diff.cpp \
 	src/repo/workers/repo_worker_file_export.cpp \
 	src/repo/workers/repo_worker_file_import.cpp \

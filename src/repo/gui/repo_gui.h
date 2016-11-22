@@ -25,9 +25,12 @@
 #include <repo/repo_controller.h>
 
 // GUI
-
 #include "widgets/repo_widget_rendering.h"
 #include "widgets/repo_mdi_subwindow.h"
+
+// Models
+#include "../models/repo_model_repositories.h"
+
 //------------------------------------------------------------------------------
 
 
@@ -199,6 +202,9 @@ private:
 	
     //! Navigation mode action group (so that only one mode can be active at any given time)
     QActionGroup *navigationModeActionGroup;
+
+    //! Internal model driving the repositories widget
+    models::RepositoriesModel *repos;
 
     //! Settings geometry label.
     static const QString REPO_SETTINGS_GUI_GEOMETRY;

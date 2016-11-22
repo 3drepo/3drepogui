@@ -49,6 +49,9 @@ namespace primitive{
 		//! Returns true if any of the children of the index match filtering expression, false otherwise.
 		bool filterAcceptsChildren(int sourceRow, const QModelIndex &sourceParent) const;
 
+    protected :
+
+        //! Decides whether the top most items are also to be filtered or not.
 		bool filterTopMostItems;
 	};
 

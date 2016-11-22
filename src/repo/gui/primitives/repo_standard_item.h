@@ -15,6 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <QStandardItem>
 #include <QString>
 #include <QLocale>
@@ -33,6 +35,8 @@ namespace primitive {
 		* preset settings. For instance it enables easy creation of number and filesize
 		* entries that are correctly sortable as numbers eg 1, 2, 3, 20, 30, rather
 		* that as strings "1", "2", "20", "3", 30".
+        *
+        * See also RepoSortFilterProxyModel
 		*/
 	class RepoStandardItem : public QStandardItem
 	{
@@ -49,7 +53,7 @@ namespace primitive {
 
 		//! Creates default non-editable item from std::string.
 		RepoStandardItem(const std::string &label)
-			: RepoStandardItem(QString::fromStdString(label)) {}
+            : RepoStandardItem(QString::fromStdString(label)) {}
 
 		/**
 			* Creates a sortable non-editable item from given number. If the filesie is
@@ -61,7 +65,7 @@ namespace primitive {
 			? toFileSize((qlonglong)number)
 			: toLocaleString((qulonglong)number),
 			(qulonglong)number,
-			Qt::DisplayRole, // this makes numbers sortable as numbers and not strings
+            Qt::UserRole + 1,
 			Qt::AlignRight)
 		{}
 
