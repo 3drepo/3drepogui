@@ -602,6 +602,97 @@ public :
     }
 
 
+    virtual bool getWieldVertices() const
+    {
+        return value(QString(IOS_WIELD_VERTICES.c_str()), repoDefaultIOSWieldVertices).toBool();
+    }
+
+    virtual bool getUseWorldCoords() const
+    {
+        return value(QString(IOS_USE_WORLD_COORDS.c_str()), repoDefaultIOSUseWorldCoords).toBool();
+    }
+
+    virtual bool getConvertUnits() const
+    {
+        return value(QString(IOS_CONVERT_UNITS.c_str()), repoDefaultIOSConvertBackUnits).toBool();
+    }
+
+    virtual bool getUseBRepData() const
+    {
+        return value(QString(IOS_USE_BREP_DATA.c_str()), repoDefaultIOSUseBrepData).toBool();
+    }
+
+    virtual bool getSewShells() const
+    {
+        return value(QString(IOS_SEW_SHELLS.c_str()), repoDefaultIOSSewShells).toBool();
+    }
+
+    virtual bool getFasterBooleans() const
+    {
+        return value(QString(IOS_FASTER_BOOLEANS.c_str()), repoDefaultIOSFasterBooleans).toBool();
+    }
+
+    virtual bool getNoOpeningSubtractions() const
+    {
+        return value(QString(IOS_NO_OPENING_SUB.c_str()), repoDefaultIOSDisableOpeningSubtractions).toBool();
+    }
+
+    virtual bool getNoTriangulation() const
+    {
+        return value(QString(IOS_NO_TRIANGULATE.c_str()), repoDefaultIOSDisableTriangulate).toBool();
+    }
+
+    virtual bool getUseDefaultMaterials() const
+    {
+        return value(QString(IOS_USE_DEFAULT_MATS.c_str()), repoDefaultIOSApplyDefaultMaterials).toBool();
+    }
+
+    virtual bool getIncludeAllCurves() const
+    {
+        return value(QString(IOS_INCLUDE_CURVES.c_str()), repoDefaultIOSIncludesCurves).toBool();
+    }
+
+    virtual bool getDisableSolidSurfaces() const
+    {
+        return value(QString(IOS_NO_SOLIDS_SURFACES.c_str()), repoDefaultIOSExcludesSolidsAndSurfaces).toBool();
+    }
+
+    virtual bool getNoNormals() const
+    {
+        return value(QString(IOS_NO_NORMALS.c_str()), repoDefaultIOSNoNormals).toBool();
+    }
+
+    virtual bool getUseElementGuids() const
+    {
+        return value(QString(IOS_USE_ELEMENT_GUIDS.c_str()), repoDefaultIOSUseElementGuids).toBool();
+    }
+
+    virtual bool getUseElementNames() const
+    {
+        return value(QString(IOS_USE_ELEMENT_NAMES.c_str()), repoDefaultIOSUseElementGuids).toBool();
+    }
+
+    virtual bool getUseMaterialNames() const
+    {
+        return value(QString(IOS_USE_MAT_NAMES.c_str()), repoDefaultIOSUseMatNames).toBool();
+    }
+
+    virtual bool getCentreModels() const
+    {
+        return value(QString(IOS_CENTRE_MODEL.c_str()), repoDefaultIOSCentreModel).toBool();
+    }
+
+    virtual bool getGenerateUVs() const
+    {
+        return value(QString(IOS_GENERATE_UVS.c_str()), repoDefaultIOSGenerateUVs).toBool();
+    }
+
+    virtual bool getApplyLayerSets() const
+    {
+        return value(QString(IOS_APPLY_LAYER_SETS.c_str()), repoDefaultIOSApplyLayerSets).toBool();
+    }
+
+
 public :
 
 
@@ -910,7 +1001,95 @@ public :
         }
         QSettings::setValue(QString(IOS_FILTER_LIST.c_str()), list);
     }
+    virtual void setWieldVertices(bool on)
+    {
+         QSettings::setValue(QString(IOS_WIELD_VERTICES.c_str()), on);
+    }
 
+    virtual void setUseWorldCoords(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_WORLD_COORDS.c_str()), on);
+    }
+
+    virtual void setConvertUnits(bool on)
+    {
+         QSettings::setValue(QString(IOS_CONVERT_UNITS.c_str()), on);
+    }
+
+    virtual void setUseBRepData(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_BREP_DATA.c_str()), on);
+    }
+
+    virtual void setSewShells(bool on)
+    {
+         QSettings::setValue(QString(IOS_SEW_SHELLS.c_str()), on);
+    }
+
+    virtual void setFasterBooleans(bool on)
+    {
+         QSettings::setValue(QString(IOS_FASTER_BOOLEANS.c_str()), on);
+    }
+
+    virtual void setNoOpeningSubtractions(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_OPENING_SUB.c_str()), on);
+    }
+
+    virtual void setNoTriangulation(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_TRIANGULATE.c_str()), on);
+    }
+
+    virtual void setUseDefaultMaterials(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_DEFAULT_MATS.c_str()), on);
+    }
+
+    virtual void setIncludeAllCurves(bool on)
+    {
+         QSettings::setValue(QString(IOS_INCLUDE_CURVES.c_str()), on);
+    }
+
+    virtual void setDisableSolidSurfaces(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_SOLIDS_SURFACES.c_str()), on);
+    }
+
+    virtual void setNoNormals(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_NORMALS.c_str()), on);
+    }
+
+    virtual void setUseElementGuids(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_ELEMENT_GUIDS.c_str()), on);
+    }
+
+    virtual void setUseElementNames(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_ELEMENT_NAMES.c_str()), on);
+    }
+
+    virtual void setUseMaterialNames(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_MAT_NAMES.c_str()), on);
+    }
+
+    virtual void setCentreModels(bool on)
+    {
+         QSettings::setValue(QString(IOS_CENTRE_MODEL.c_str()), on);
+    }
+
+    virtual void setGenerateUVs(bool on)
+    {
+         QSettings::setValue(QString(IOS_GENERATE_UVS.c_str()), on);
+    }
+
+    virtual void setApplyLayerSets(bool on)
+    {
+         QSettings::setValue(QString(IOS_APPLY_LAYER_SETS.c_str()), on);
+    }
 
 };
 

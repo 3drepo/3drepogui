@@ -48,28 +48,26 @@ IFCFlagsWidget::IFCFlagsWidget(QWidget *parent) :
     ui->elementsFilter->setNewRowText({tr("<New Keyword>")});
 
 
-    //--------------------------------------------------------------------------
+    ui->wieldVerticesCheckBox->setChecked(settings->getWieldVertices());
+    ui->useWorldCoordCeckBox->setChecked(settings->getUseWorldCoords());
+    ui->convertUnitsCheckBox->setChecked(settings->getConvertUnits());
+    ui->useBRepCheckBox->setChecked(settings->getUseBRepData());
+    ui->sewShellsCheckBox->setChecked(settings->getSewShells());
+    ui->fasterBooleansCheckBox->setChecked(settings->getFasterBooleans());
+    ui->disableOpeningSubCheckBox->setChecked(settings->getNoOpeningSubtractions());
+    ui->NoTriangulationCheckBox->setChecked(settings->getNoTriangulation());
+    ui->applyDefaultCheckBox->setChecked(settings->getUseDefaultMaterials());
+    ui->includeCurvesCheckBox->setChecked(settings->getIncludeAllCurves());
+    ui->noSolidsSurfacesCheckBox->setChecked(settings->getDisableSolidSurfaces());
+    ui->noNormalsCheckBox->setChecked(settings->getNoNormals());
+    ui->useElementGUIDCheckBox->setChecked(settings->getUseElementGuids());
+    ui->useElementNamesCheckBox->setChecked(settings->getUseElementNames());
+    ui->useMatNamesCheckBox->setChecked(settings->getUseMaterialNames());
+    ui->centralModelCheckBox->setChecked(settings->getCentreModels());
+    ui->genUVCheckBox->setChecked(settings->getGenerateUVs());
+    ui->applyLayerSetsCheckBox->setChecked(settings->getApplyLayerSets());
 
-//    QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
-//                     ui->calculateTangentSpaceDoubleSpinBox, SLOT(setEnabled(bool)));
 
-//    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
-//                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
-
-//    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
-//                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
-
-//    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
-//                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
-
-//    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
-//                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
-
-//    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
-//                     this, SLOT(setCreaseAngleEnabled(bool)));
-
-//    QObject::connect(ui->preDefinedSettingsComboBox, SIGNAL(currentIndexChanged(int)),
-//                     this, SLOT(setPredefinedSettings(int)));
 }
 
 IFCFlagsWidget::~IFCFlagsWidget()
@@ -84,6 +82,25 @@ void IFCFlagsWidget::apply()
     settings->setUseElementsFiltering(ui->ElementFilteringGroupBox->isChecked());
     settings->setIsExclusionFilter(ui->excludeElementsRadioButton->isChecked());
     settings->setFilteringKeywords(ui->elementsFilter->getItemsAsVectorOfStrings());
+
+    settings->setWieldVertices(ui->wieldVerticesCheckBox->isChecked());
+    settings->setUseWorldCoords(ui->useWorldCoordCeckBox->isChecked());
+    settings->setConvertUnits(ui->convertUnitsCheckBox->isChecked());
+    settings->setUseBRepData(ui->useBRepCheckBox->isChecked());
+    settings->setSewShells(ui->sewShellsCheckBox->isChecked());
+    settings->setFasterBooleans(ui->fasterBooleansCheckBox->isChecked());
+    settings->setNoOpeningSubtractions(ui->disableOpeningSubCheckBox->isChecked());
+    settings->setNoTriangulation(ui->NoTriangulationCheckBox->isChecked());
+    settings->setUseDefaultMaterials(ui->applyDefaultCheckBox->isChecked());
+    settings->setIncludeAllCurves(ui->includeCurvesCheckBox->isChecked());
+    settings->setDisableSolidSurfaces(ui->noSolidsSurfacesCheckBox->isChecked());
+    settings->setNoNormals(ui->noNormalsCheckBox->isChecked());
+    settings->setUseElementGuids(ui->useElementGUIDCheckBox->isChecked());
+    settings->setUseElementNames(ui->useElementNamesCheckBox->isChecked());
+    settings->setUseMaterialNames(ui->useMatNamesCheckBox->isChecked());
+    settings->setCentreModels(ui->centralModelCheckBox->isChecked());
+    settings->setGenerateUVs(ui->genUVCheckBox->isChecked());
+    settings->setApplyLayerSets(ui->applyLayerSetsCheckBox->isChecked());
 }
 
 void IFCFlagsWidget::reset()
@@ -92,6 +109,25 @@ void IFCFlagsWidget::reset()
     ui->ElementFilteringGroupBox->setChecked(repoDefaultIOSUseFilter);
     ui->excludeElementsRadioButton->setChecked(repoDefaultIsExclusion);
     ui->includeElementsRadioButton->setChecked(!repoDefaultIsExclusion);
+
+    ui->wieldVerticesCheckBox->setChecked(repoDefaultIOSWieldVertices);
+    ui->useWorldCoordCeckBox->setChecked(repoDefaultIOSUseWorldCoords);
+    ui->convertUnitsCheckBox->setChecked(repoDefaultIOSConvertBackUnits);
+    ui->useBRepCheckBox->setChecked(repoDefaultIOSUseBrepData);
+    ui->sewShellsCheckBox->setChecked(repoDefaultIOSSewShells);
+    ui->fasterBooleansCheckBox->setChecked(repoDefaultIOSFasterBooleans);
+    ui->disableOpeningSubCheckBox->setChecked(repoDefaultIOSDisableOpeningSubtractions);
+    ui->NoTriangulationCheckBox->setChecked(repoDefaultIOSDisableTriangulate);
+    ui->applyDefaultCheckBox->setChecked(repoDefaultIOSApplyDefaultMaterials);
+    ui->includeCurvesCheckBox->setChecked(repoDefaultIOSIncludesCurves);
+    ui->noSolidsSurfacesCheckBox->setChecked(repoDefaultIOSExcludesSolidsAndSurfaces);
+    ui->noNormalsCheckBox->setChecked(repoDefaultIOSNoNormals);
+    ui->useElementGUIDCheckBox->setChecked(repoDefaultIOSUseElementGuids);
+    ui->useElementNamesCheckBox->setChecked(repoDefaultIOSUseElementNames);
+    ui->useMatNamesCheckBox->setChecked(repoDefaultIOSUseMatNames);
+    ui->centralModelCheckBox->setChecked(repoDefaultIOSCentreModel);
+    ui->genUVCheckBox->setChecked(repoDefaultIOSGenerateUVs);
+    ui->applyLayerSetsCheckBox->setChecked(repoDefaultIOSApplyLayerSets);
 }
 
 
