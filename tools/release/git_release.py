@@ -9,12 +9,12 @@ def fatalError(message):
 
 numArguments = len(sys.argv)
 
-if numArguments < 3:
+if numArguments < 4:
     fatalError("Usage: " + sys.argv[0] + " <prod/dev> <guiversion> <bouncerversion>")
 
 release_type = sys.argv[1]
 version      = sys.argv[2]
-bversion      = sys.argv[3]
+bversion     = sys.argv[3]
 
 production   = (release_type == "prod")
 branch       = "release" if production else "master"
