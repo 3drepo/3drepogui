@@ -51,6 +51,9 @@
    </item>
    <item>
     <widget class="QGroupBox" name="useIFCOpenShellGroupBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="title">
       <string>Use IFCOpenShell for IFC Files</string>
      </property>
@@ -62,9 +65,9 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="options1groupBox">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="title">
          <string/>
@@ -138,9 +141,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="options2GroupBox">
         <property name="enabled">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="title">
          <string/>
@@ -184,7 +187,7 @@
          <item>
           <widget class="QCheckBox" name="includeCurvesCheckBox">
            <property name="enabled">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="text">
             <string>Include IfcCurve sub types</string>

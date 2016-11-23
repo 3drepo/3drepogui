@@ -31,6 +31,30 @@ FlagsWidget::FlagsWidget(QWidget *parent) :
     settings = new repo::settings::RepoSettings();
     //--------------------------------------------------------------------------
 
+
+    //--------------------------------------------------------------------------
+
+    QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
+                     ui->calculateTangentSpaceDoubleSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
+                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
+                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
+                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
+                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
+                     this, SLOT(setCreaseAngleEnabled(bool)));
+
+    QObject::connect(ui->preDefinedSettingsComboBox, SIGNAL(currentIndexChanged(int)),
+                     this, SLOT(setPredefinedSettings(int)));
+
     ui->calculateTangentSpaceCheckBox->setChecked(settings->getCalculateTangentSpace());
 
     ui->calculateTangentSpaceDoubleSpinBox->setValue(settings->getCalculateTangentSpaceMaxSmoothingAngle());
@@ -143,28 +167,6 @@ FlagsWidget::FlagsWidget(QWidget *parent) :
 
     ui->omitIFCSpaceCheckBox->setChecked(settings->getSkipIFCSpaceRepresentation());
 
-    //--------------------------------------------------------------------------
-
-    QObject::connect(ui->calculateTangentSpaceCheckBox, SIGNAL(toggled(bool)),
-                     ui->calculateTangentSpaceDoubleSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->improveCacheLocalityCheckBox, SIGNAL(toggled(bool)),
-                     ui->improveCacheLocalitySpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->splitByBoneCountCheckBox, SIGNAL(toggled(bool)),
-                     ui->splitByBoneCountSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->limitBoneWeightsCheckBox, SIGNAL(toggled(bool)),
-                     ui->limitBoneWeightsSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->generateNormalsSmoothRadioButton, SIGNAL(toggled(bool)),
-                     ui->generateNormalsSmoothDoubleSpinBox, SLOT(setEnabled(bool)));
-
-    QObject::connect(ui->generateNormalsGroupBox, SIGNAL(toggled(bool)),
-                     this, SLOT(setCreaseAngleEnabled(bool)));
-
-    QObject::connect(ui->preDefinedSettingsComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(setPredefinedSettings(int)));
 }
 
 FlagsWidget::~FlagsWidget()

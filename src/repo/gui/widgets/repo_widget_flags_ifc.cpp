@@ -31,6 +31,12 @@ IFCFlagsWidget::IFCFlagsWidget(QWidget *parent) :
     settings = new repo::settings::RepoSettings();
     //--------------------------------------------------------------------------
 
+    QObject::connect(ui->useIFCOpenShellGroupBox, SIGNAL(toggled(bool)),
+                     ui->options1groupBox, SLOT(setEnabled(bool)));
+
+    QObject::connect(ui->useIFCOpenShellGroupBox, SIGNAL(toggled(bool)),
+                     ui->options2GroupBox, SLOT(setEnabled(bool)));
+
     ui->useIFCOpenShellGroupBox->setChecked(settings->getUseIFCOpenShell());
     ui->ElementFilteringGroupBox->setChecked(settings->getUseElementsFiltering());
     ui->excludeElementsRadioButton->setChecked(settings->getIsExclusionFilter());
