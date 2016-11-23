@@ -31,7 +31,7 @@ RepositoriesModel::RepositoriesModel(
     , widget(widget)
 {
 
-    widget->restoreHeaders({"Name", "Count", "Allocated", "Size"},
+    widget->restoreHeaders({"Name", "Count", "Allocated", "Actual"},
                            REPO_SETTINGS_REPOSITORIES_MODEL_HEADERS);
 
     proxy = new repo::gui::primitive::RepoSortFilterProxyModel((QWidget*) widget, false);
@@ -77,6 +77,10 @@ void RepositoriesModel::connect(RepoController::RepoToken* token)
             worker, &repo::worker::DatabasesWorker::databaseFetched,
             this, &RepositoriesModel::addDatabase);
 
+        QObject::connect(
+            worker, &repo::worker::DatabasesWorker::databaseStatsFetched,
+            this, &RepositoriesModel::setDatabaseStats);
+
 //		QObject::connect(
 //			worker, &repo::worker::DatabasesWorker::finished,
 //            ui->databasesProgressBar, &QProgressBar::hide);
@@ -116,23 +120,35 @@ void RepositoriesModel::refresh()
 
 }
 
-void RepositoriesModel::addHost(RepoStandardItemRow hostRow)
+void RepositoriesModel::addHost(const RepoStandardItemRow &hostRow)
 {
-    widget->addTopLevelRow(hostRow);
-    widget->expandItem(hostRow[0]);
-
-//    for (std::string db : controller->getDatabases(token))
-//    {
-//        addDatabase(host, QString::fromStdString(db));
-//    }
+    widget->addTopLevelRow(hostRow.toQList());
+    widget->expandItem(hostRow[NAME]);
 }
 
-void RepositoriesModel::addDatabase(RepoStandardItemRow hostRow, RepoStandardItemRow databaseRow)
+void RepositoriesModel::addDatabase(const RepoStandardItemRow &hostRow,
+                                    const RepoStandardItemRow &databaseRow)
 {
-//    RepoController::RepoToken* token = (RepoController::RepoToken*) host->data(Qt::UserRole + 2).value<void *>();
-//    repo::core::model::DatabaseStats dbStats = controller->getDatabaseStats(token, database.toStdString());
-//    QList<QStandardItem *> row;
+    hostRow[NAME]->appendRow(databaseRow.toQList());
+}
+
+void RepositoriesModel::setDatabaseStats(const RepoStandardItemRow &hostRow,
+                                         const RepoStandardItemRow &databaseRow,
+                                         const core::model::DatabaseStats &databaseStats)
+{  
+    uint64_t count = databaseStats.getCollectionsCount();
+    uint64_t allocated = databaseStats.getStorageSize();
+    uint64_t size = databaseStats.getDataSize();
+
+    databaseRow[COUNT]->setDataNumber(count);
+    databaseRow[ALLOCATED]->setDataNumber(allocated, true);
+    databaseRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->setDataNumber(
+                size, true);
+
+    hostRow[COUNT]->setDataNumber(hostRow[COUNT]->data().toLongLong() + count);
+    hostRow[ALLOCATED]->setDataNumber(hostRow[ALLOCATED]->data().toLongLong() + allocated, true);
+    hostRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->setDataNumber(
+                hostRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->data().toLongLong() + size, true);
 
 
-    hostRow[0]->appendRow(databaseRow);
 }

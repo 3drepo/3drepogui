@@ -69,14 +69,16 @@ namespace primitive {
 			Qt::AlignRight)
 		{}
 
+        void setDataNumber(uint64_t number, bool filesize = false);
+
 	public:
 
 		//! Returns a human readable string of kilobytes, megabytes etc.
-		static QString toFileSize(uint64_t bytes);
+        static QString toFileSize(uint64_t bytes);
 
 		//! Returns the current locale string representation.
 		template <class T>
-		static QString toLocaleString(const T & value)
+        static QString toLocaleString(const T & value)
 		{
 			QLocale locale;
 			return locale.toString(value);

@@ -27,11 +27,18 @@ namespace repo {
 namespace gui{
 namespace primitive {
 
-typedef QList<QStandardItem *> RepoStandardItemRow;
+struct RepoStandardItemRow : QList<RepoStandardItem *>
+{
+    const QList<QStandardItem *> toQList() const
+    { return reinterpret_cast<const QList<QStandardItem *> &>(*this); }
+};
 
+//! Databases header positions
+enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
 
 class RepoStandardItemFactory
 {
+
 public:
 
     static RepoStandardItemRow makeHost(

@@ -26,7 +26,6 @@
 #include "repo_worker_abstract.h"
 #include "../gui/primitives/repo_standard_item_factory.h"
 
-
 namespace repo {
     namespace worker {
 
@@ -36,6 +35,9 @@ namespace repo {
         class DatabasesWorker : public RepoAbstractWorker {
 
             Q_OBJECT
+
+            //! Databases header positions
+            enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
 
         public:
 
@@ -47,10 +49,15 @@ namespace repo {
 
         signals:
 
-            void hostFetched(gui::primitive::RepoStandardItemRow hostRow);
+            void hostFetched(const gui::primitive::RepoStandardItemRow &hostRow);
 
-            void databaseFetched(gui::primitive::RepoStandardItemRow hostItem,
-                                 gui::primitive::RepoStandardItemRow databaseRow);
+            void databaseFetched(const gui::primitive::RepoStandardItemRow &hostRow,
+                                 const gui::primitive::RepoStandardItemRow &databaseRow);
+
+            void databaseStatsFetched(
+                    const gui::primitive::RepoStandardItemRow &hostRow,
+                    const gui::primitive::RepoStandardItemRow &databaseRow,
+                    const core::model::DatabaseStats &databaseStats);
 
             void collectionFetched(repo::core::model::CollectionStats stats);
 

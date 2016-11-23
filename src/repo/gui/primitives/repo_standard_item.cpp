@@ -41,6 +41,15 @@ RepoStandardItem::RepoStandardItem(
     setEditable(false);
 }
 
+void RepoStandardItem::setDataNumber(uint64_t number, bool filesize)
+{
+    setText(filesize
+        ? toFileSize((qlonglong)number)
+        : toLocaleString((qulonglong)number));
+    setToolTip(text());
+    setData((qlonglong)number);
+}
+
 QString RepoStandardItem::toFileSize(uint64_t bytes)
 {
     QString value;

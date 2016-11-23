@@ -29,6 +29,9 @@
 #include "../gui/primitives/repo_sort_filter_proxy_model.h"
 #include "../workers/repo_worker_databases.h"
 
+using namespace repo::gui::primitive;
+using namespace repo::core::model;
+
 namespace repo {
 namespace models {
 
@@ -40,8 +43,7 @@ namespace models {
  */
 class RepositoriesModel : public QObject
 {
-
-    Q_OBJECT
+    Q_OBJECT    
 
 public :
 
@@ -80,10 +82,14 @@ signals :
 
 public slots :
 
-    void addHost(gui::primitive::RepoStandardItemRow hostRow);
+    void addHost(const RepoStandardItemRow &hostRow);
 
-    void addDatabase(gui::primitive::RepoStandardItemRow hostRow,
-                     gui::primitive::RepoStandardItemRow databaseRow);
+    void addDatabase(const RepoStandardItemRow &hostRow,
+                     const RepoStandardItemRow &databaseRow);
+
+    void setDatabaseStats(const RepoStandardItemRow &hostRow,
+                          const RepoStandardItemRow &databaseRow,
+                          const DatabaseStats &databaseStats);
 
 private:
 

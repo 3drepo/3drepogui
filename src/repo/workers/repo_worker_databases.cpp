@@ -23,6 +23,7 @@
 
 using namespace repo::worker;
 using namespace repo::gui::primitive;
+using namespace repo::core::model;
 
 DatabasesWorker::DatabasesWorker(
         repo::RepoController *controller,
@@ -32,6 +33,7 @@ DatabasesWorker::DatabasesWorker(
       token(token)
 {  
     qRegisterMetaType<gui::primitive::RepoStandardItemRow>("gui::primitive::RepoStandardItemRow");
+    qRegisterMetaType<core::model::DatabaseStats>("core::model::DatabaseStats");
 }
 
 DatabasesWorker::~DatabasesWorker() {}
@@ -48,19 +50,27 @@ void DatabasesWorker::run()
 
 
 
+    QList<RepoStandardItemRow> databaseRows;
     for (std::string database : controller->getDatabases(token))
     {
-        emit databaseFetched(hostRow, RepoStandardItemFactory::makeDatabase(database));
+        RepoStandardItemRow databaseRow = RepoStandardItemFactory::makeDatabase(database);
+        emit databaseFetched(hostRow, databaseRow);
+        databaseRows.append(databaseRow);
     }
 
 
-
-
-
-
-
-
-
+    // This has to be separate loop for speed purposes
+    // Setting is emitted as it needs to happen on the main GUI thread to get
+    // instant visual feedback for the end user
+    for (const RepoStandardItemRow &databaseRow : databaseRows)
+    {
+        QString database = databaseRow[NAME]->text();
+        emit databaseStatsFetched(hostRow,
+                                  databaseRow,
+                                  controller->getDatabaseStats(
+                                      token,
+                                      database.toStdString()));
+    }
 
     //----------------------------------------------------------------------
     // For each database (if not cancelled)
