@@ -71,6 +71,10 @@ namespace primitive {
 
         void setDataNumber(uint64_t number, bool filesize = false);
 
+        virtual void setType(int userType) { this->userType = userType; }
+
+        virtual int type() const { return userType; }
+
 	public:
 
 		//! Returns a human readable string of kilobytes, megabytes etc.
@@ -83,8 +87,13 @@ namespace primitive {
 			QLocale locale;
 			return locale.toString(value);
 		}
+
+    private :
+
+        int userType;
+
 	};
 
 } // primitives
-}
+} // gui
 } // repo

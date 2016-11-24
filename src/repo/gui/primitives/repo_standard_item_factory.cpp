@@ -19,7 +19,7 @@
 
 using namespace repo::gui::primitive;
 
-RepoStandardItemRow RepoStandardItemFactory::makeHost(
+RepoStandardItemRow RepoStandardItemFactory::makeHostRow(
         repo::RepoController *controller,
         repo::RepoController::RepoToken* token)
 {
@@ -38,13 +38,13 @@ RepoStandardItemRow RepoStandardItemFactory::makeHost(
     item->setIcon(RepoFontAwesome::getHostIcon());
     row.append(item);
 
-    row.append(new RepoStandardItem(0));
+    row.append(new RepoStandardItem(0, true));
     row.append(new RepoStandardItem(0, true));
     row.append(new RepoStandardItem(0, true));
     return row;
 }
 
-RepoStandardItemRow RepoStandardItemFactory::makeDatabase(const std::string &database)
+RepoStandardItemRow RepoStandardItemFactory::makeDatabaseRow(const std::string &database)
 {
     QString db = QString::fromStdString(database);
 
@@ -53,9 +53,11 @@ RepoStandardItemRow RepoStandardItemFactory::makeDatabase(const std::string &dat
     item->setData(db);
     item->setIcon(RepoFontAwesome::getDatabaseIcon());
     row.append(item);
-    row.append(new RepoStandardItem(0)); // count
+    row.append(new RepoStandardItem(0, true)); // count
     row.append(new RepoStandardItem(0, true)); // allocated
     row.append(new RepoStandardItem(0, true)); // storage size
+
+    item->appendRow({new RepoStandardItem("..", QVariant()), new RepoStandardItem(0, true), new RepoStandardItem(0, true),new RepoStandardItem(0, true)});
 
     return row;
 }

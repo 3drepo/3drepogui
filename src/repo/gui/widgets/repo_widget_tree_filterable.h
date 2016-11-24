@@ -52,7 +52,7 @@ namespace widget {
 		//! Emitted whenever the total count of items in the model changes.
 		void totalCountChanged(int);
 
-		public slots:
+    public slots:
 
 		//! Makes the visual layout compacted without borders.
 		void setCollapsedUI();

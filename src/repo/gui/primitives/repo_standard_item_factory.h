@@ -41,11 +41,11 @@ class RepoStandardItemFactory
 
 public:
 
-    static RepoStandardItemRow makeHost(
+    static RepoStandardItemRow makeHostRow(
             RepoController *controller,
             RepoController::RepoToken *token);
 
-    static RepoStandardItemRow makeDatabase(const std::string &database);
+    static RepoStandardItemRow makeDatabaseRow(const std::string &database);
 };
 
 }

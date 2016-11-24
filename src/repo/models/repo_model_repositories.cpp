@@ -151,4 +151,6 @@ void RepositoriesModel::setDatabaseStats(const RepoStandardItemRow &hostRow,
                 hostRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->data().toLongLong() + size, true);
 
 
+    widget->updateCountLabel();
+
 }

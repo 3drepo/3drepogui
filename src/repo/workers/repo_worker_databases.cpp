@@ -45,7 +45,7 @@ void DatabasesWorker::run()
     emit progressValueChanged(0);
 
 
-    RepoStandardItemRow hostRow = RepoStandardItemFactory::makeHost(controller, token);
+    RepoStandardItemRow hostRow = RepoStandardItemFactory::makeHostRow(controller, token);
     emit hostFetched(hostRow);
 
 
@@ -53,7 +53,7 @@ void DatabasesWorker::run()
     QList<RepoStandardItemRow> databaseRows;
     for (std::string database : controller->getDatabases(token))
     {
-        RepoStandardItemRow databaseRow = RepoStandardItemFactory::makeDatabase(database);
+        RepoStandardItemRow databaseRow = RepoStandardItemFactory::makeDatabaseRow(database);
         emit databaseFetched(hostRow, databaseRow);
         databaseRows.append(databaseRow);
     }

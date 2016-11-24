@@ -40,11 +40,11 @@ FilterableTreeWidget::FilterableTreeWidget(QWidget *parent)
                 this, &FilterableTreeWidget::updateCountLabel);
 
     QObject::connect(
-                model, &QStandardItemModel::rowsRemoved,
+                model, &QStandardItemModel::rowsInserted,
                 this, &FilterableTreeWidget::notifyOfTotalCountChange);
 
     QObject::connect(
-                model, &QStandardItemModel::rowsInserted,
+                model, &QStandardItemModel::rowsRemoved,
                 this, &FilterableTreeWidget::notifyOfTotalCountChange);
 }
 
