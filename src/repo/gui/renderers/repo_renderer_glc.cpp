@@ -690,7 +690,6 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     auto heliVMover = static_cast<GLC_HelicopterMover*>(vmover);
     if(heliVMover)
     {
-        repoLog("Setting v mover bbox...");
         heliVMover->setBoundingBox(bbox);
     }
 
@@ -698,7 +697,6 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     auto heliHMover = static_cast<GLC_HelicopterMover*>(hmover);
     if(heliHMover)
     {
-        repoLog("Setting h mover bbox...");
         heliHMover->setBoundingBox(bbox);
     }
 

@@ -38,6 +38,7 @@ HEADERS +=  \
 	src/repo/gui/widgets/repo_mdi_subwindow.h \
 	src/repo/gui/widgets/repo_text_browser.h \
 	src/repo/gui/widgets/repo_widget_flags.h \
+	src/repo/gui/widgets/repo_widget_flags_ifc.h \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.h \
 	src/repo/gui/widgets/repo_widget_manager_clipping_plane.h \
 	src/repo/gui/widgets/repo_widget_manager_connect.h \
@@ -114,6 +115,7 @@ SOURCES +=  \
 	src/repo/gui/widgets/repo_mdi_subwindow.cpp \
 	src/repo/gui/widgets/repo_text_browser.cpp \
 	src/repo/gui/widgets/repo_widget_flags.cpp \
+	src/repo/gui/widgets/repo_widget_flags_ifc.cpp \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.cpp \
 	src/repo/gui/widgets/repo_widget_manager_clipping_plane.cpp \
 	src/repo/gui/widgets/repo_widget_manager_connect.cpp \
@@ -173,6 +175,7 @@ FORMS +=  \
 	forms/repo_gui.ui \
 	forms/repo_webview.ui \
 	forms/repo_widget_flags.ui \
+	forms/repo_widget_flags_ifc.ui \
 	forms/repo_widget_manager_3ddiff.ui \
 	forms/repo_widget_manager_clipping_plane.ui \
 	forms/repo_widget_repository.ui \

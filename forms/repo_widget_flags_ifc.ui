@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IFCFlagsWidget</class>
+ <widget class="QWidget" name="IFCFlagsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>738</width>
+    <height>542</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QComboBox" name="preDefinedSettingsComboBox">
+     <property name="editable">
+      <bool>false</bool>
+     </property>
+     <property name="frame">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>Default</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Direct 3D</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Basic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Medium</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Real-time Extreme</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="useIFCOpenShellGroupBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="title">
+      <string>Use IFCOpenShell for IFC Files</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QGroupBox" name="options1groupBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="ElementFilteringGroupBox">
+           <property name="title">
+            <string>Element Filters</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QRadioButton" name="includeElementsRadioButton">
+                <property name="text">
+                 <string>Include</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="excludeElementsRadioButton">
+                <property name="text">
+                 <string>Exclude</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="repo::gui::widget::UnfilterableTreeWidget" name="elementsFilter" native="true"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="wieldVerticesCheckBox">
+           <property name="text">
+            <string>Wield Vertices</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="useWorldCoordCeckBox">
+           <property name="text">
+            <string>Pre Transform Vertices</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="convertUnitsCheckBox">
+           <property name="text">
+            <string>Use Original Units</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="useBRepCheckBox">
+           <property name="text">
+            <string>Use BRep Data</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="options2GroupBox">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QCheckBox" name="sewShellsCheckBox">
+           <property name="text">
+            <string>Join up IfcConnectedFaceSets</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="fasterBooleansCheckBox">
+           <property name="text">
+            <string>Optimise opening processing</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="disableOpeningSubCheckBox">
+           <property name="text">
+            <string>Disable opening Subtraction</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="NoTriangulationCheckBox">
+           <property name="text">
+            <string>Disable Triangulation</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="applyDefaultCheckBox">
+           <property name="text">
+            <string>Apply default materials</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="includeCurvesCheckBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Include IfcCurve sub types</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="noSolidsSurfacesCheckBox">
+           <property name="text">
+            <string>Exclude IfcSolidModel IfcSurface sub types</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="noNormalsCheckBox">
+           <property name="text">
+            <string>Disable normals generation</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="useElementNamesCheckBox">
+           <property name="text">
+            <string>Use element names</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="useElementGUIDCheckBox">
+           <property name="text">
+            <string>Use element GUIDs</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="useMatNamesCheckBox">
+           <property name="text">
+            <string>Use material names</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="centralModelCheckBox">
+           <property name="text">
+            <string>Centralise model</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="genUVCheckBox">
+           <property name="text">
+            <string>Generate UV Coordinates</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="applyLayerSetsCheckBox">
+           <property name="text">
+            <string>Slice representations to IfcLayerSets</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>repo::gui::widget::UnfilterableTreeWidget</class>
+   <extends>QWidget</extends>
+   <header>src/repo/gui/widgets/repo_widget_tree_unfilterable.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

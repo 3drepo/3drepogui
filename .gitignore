@@ -1,7 +1,6 @@
-release
 /*.user
-release
 *~
+/release
 Lib
 Makefile
 debug_me
