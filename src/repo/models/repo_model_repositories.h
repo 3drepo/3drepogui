@@ -82,6 +82,10 @@ signals :
 
 public slots :
 
+    void refreshHost(RepoStandardItem *host);
+
+    RepoStandardItemRow addHost(RepoController::RepoToken* token);
+
     void addHost(const RepoStandardItemRow &hostRow);
 
     void addDatabase(const RepoStandardItemRow &hostRow,
@@ -90,6 +94,14 @@ public slots :
     void setDatabaseStats(const RepoStandardItemRow &hostRow,
                           const RepoStandardItemRow &databaseRow,
                           const DatabaseStats &databaseStats);
+
+    void expand(QStandardItem *item);
+
+    void collapse(QStandardItem *item);
+
+protected :
+
+    RepoStandardItemRow getRow(const QStandardItem *) const;
 
 private:
 
@@ -104,9 +116,6 @@ private:
     QThreadPool threadPool;
 
     static const QString REPO_SETTINGS_REPOSITORIES_MODEL_HEADERS;
-
-
-
 };
 
 } // models

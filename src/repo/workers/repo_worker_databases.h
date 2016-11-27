@@ -42,14 +42,14 @@ namespace repo {
         public:
 
             //! Default worker constructor.
-            DatabasesWorker(repo::RepoController *controller, repo::RepoController::RepoToken *token);
+            DatabasesWorker(repo::RepoController *controller,
+                            repo::RepoController::RepoToken *token,
+                            const gui::primitive::RepoStandardItemRow &hostRow);
 
             //! Default empty destructor.
             ~DatabasesWorker();
 
         signals:
-
-            void hostFetched(const gui::primitive::RepoStandardItemRow &hostRow);
 
             void databaseFetched(const gui::primitive::RepoStandardItemRow &hostRow,
                                  const gui::primitive::RepoStandardItemRow &databaseRow);
@@ -76,7 +76,8 @@ namespace repo {
 
         private:
             repo::RepoController *controller;
-            repo::RepoController::RepoToken      *token;
+            repo::RepoController::RepoToken *token;
+            repo::gui::primitive::RepoStandardItemRow hostRow;
 
         }; // end class
 

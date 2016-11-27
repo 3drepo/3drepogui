@@ -90,6 +90,7 @@ namespace primitive {
 
     private :
 
+        // Value has to be QStandardItem::UserType (1000) or more.
         int userType;
 
 	};

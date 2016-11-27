@@ -20,6 +20,7 @@ using namespace repo;
 using namespace repo::gui::widget;
 using namespace repo::models;
 using namespace repo::gui::primitive;
+using namespace repo::worker;
 
 const QString RepositoriesModel::REPO_SETTINGS_REPOSITORIES_MODEL_HEADERS = "RepositoriesModel/headers";
 
@@ -36,6 +37,14 @@ RepositoriesModel::RepositoriesModel(
 
     proxy = new repo::gui::primitive::RepoSortFilterProxyModel((QWidget*) widget, false);
     widget->setProxyModel(proxy);
+
+    QObject::connect(
+                widget, &FilterableTreeWidget::expanded,
+                this, &RepositoriesModel::expand);
+
+    QObject::connect(
+                widget, &FilterableTreeWidget::collapsed,
+                this, &RepositoriesModel::collapse);
 }
 
 RepositoriesModel::~RepositoriesModel()
@@ -52,55 +61,8 @@ bool RepositoriesModel::cancelAllThreads()
 }
 
 void RepositoriesModel::connect(RepoController::RepoToken* token)
-{
-    //--------------------------------------------------------------------------
-    // Cancel any previously running threads.
-    if (cancelAllThreads())
-    {
-        repoLog("Fetching databases...");
-
-        //----------------------------------------------------------------------
-        repo::worker::DatabasesWorker * worker = new repo::worker::DatabasesWorker(controller, token);
-        worker->setAutoDelete(true);
-
-        //----------------------------------------------------------------------
-        // Direct connection ensures cancel signal is processed ASAP
-        QObject::connect(
-            this, &RepositoriesModel::cancel,
-            worker, &repo::worker::DatabasesWorker::cancel, Qt::DirectConnection);
-
-                QObject::connect(
-                    worker, &repo::worker::DatabasesWorker::hostFetched,
-                    this, &RepositoriesModel::addHost);
-
-        QObject::connect(
-            worker, &repo::worker::DatabasesWorker::databaseFetched,
-            this, &RepositoriesModel::addDatabase);
-
-        QObject::connect(
-            worker, &repo::worker::DatabasesWorker::databaseStatsFetched,
-            this, &RepositoriesModel::setDatabaseStats);
-
-//		QObject::connect(
-//			worker, &repo::worker::DatabasesWorker::finished,
-//            ui->databasesProgressBar, &QProgressBar::hide);
-
-//		QObject::connect(
-//			worker, &repo::worker::DatabasesWorker::progressRangeChanged,
-//            ui->databasesProgressBar, &QProgressBar::setRange);
-
-//		QObject::connect(
-//			worker, &repo::wgorker::DatabasesWorker::progressValueChanged,
-//            ui->databasesProgressBar, &QProgressBar::setValue);
-
-        //----------------------------------------------------------------------
-        // Clear any previous entries in the databases and collection models
-//		clearDatabaseModel();
-
-        //----------------------------------------------------------------------
-//        ui->databasesProgressBar->show();
-        threadPool.start(worker);
-    }
+{    
+    RepoStandardItemRow hostRow = addHost(token);
 }
 
 void RepositoriesModel::disconnect()
@@ -120,8 +82,72 @@ void RepositoriesModel::refresh()
 
 }
 
-void RepositoriesModel::addHost(const RepoStandardItemRow &hostRow)
+void RepositoriesModel::refreshHost(RepoStandardItem *host)
 {
+    //--------------------------------------------------------------------------
+    // Cancel any previously running threads.
+    if (cancelAllThreads())
+    {
+        repoLog("Fetching databases...");
+        RepoController::RepoToken* token = (RepoController::RepoToken*)
+                host->data(Qt::UserRole + 2).value<void *>();
+
+        //----------------------------------------------------------------------
+        // Clear any previous entries in the databases and collection models
+        host->removeRows(0, host->rowCount());
+
+        RepoStandardItemRow hostRow = getRow(host);
+
+        // Rest counts
+        hostRow[COUNT]->setDataNumber(0);
+        hostRow[ALLOCATED]->setDataNumber(0, true);
+        hostRow[RepoDatabasesColumns::SIZE]->setDataNumber(0, true);
+
+        //----------------------------------------------------------------------
+        DatabasesWorker * worker = new DatabasesWorker(controller, token, hostRow);
+        worker->setAutoDelete(true);
+
+        //----------------------------------------------------------------------
+        // Direct connection ensures cancel signal is processed ASAP
+        QObject::connect(
+                    this, &RepositoriesModel::cancel,
+                    worker, &DatabasesWorker::cancel, Qt::DirectConnection);
+
+        QObject::connect(
+                    worker, &repo::worker::DatabasesWorker::databaseFetched,
+                    this, &RepositoriesModel::addDatabase);
+
+        QObject::connect(
+                    worker, &repo::worker::DatabasesWorker::databaseStatsFetched,
+                    this, &RepositoriesModel::setDatabaseStats);
+
+        QObject::connect(
+                    worker, &repo::worker::DatabasesWorker::finished,
+                    widget->getProgressBar(), &QProgressBar::hide);
+
+        QObject::connect(
+                    worker, &repo::worker::DatabasesWorker::progressRangeChanged,
+                    widget->getProgressBar(), &QProgressBar::setRange);
+
+        QObject::connect(
+                    worker, &repo::worker::DatabasesWorker::progressValueChanged,
+                    widget->getProgressBar(), &QProgressBar::setValue);
+
+        //----------------------------------------------------------------------
+        widget->getProgressBar()->show();
+        threadPool.start(worker);
+    }
+}
+
+RepoStandardItemRow RepositoriesModel::addHost(RepoController::RepoToken* token)
+{
+    RepoStandardItemRow hostRow = RepoStandardItemFactory::makeHostRow(controller, token);
+    addHost(hostRow);
+    return hostRow;
+}
+
+void RepositoriesModel::addHost(const RepoStandardItemRow &hostRow)
+{    
     widget->addTopLevelRow(hostRow.toQList());
     widget->expandItem(hostRow[NAME]);
 }
@@ -147,10 +173,52 @@ void RepositoriesModel::setDatabaseStats(const RepoStandardItemRow &hostRow,
 
     hostRow[COUNT]->setDataNumber(hostRow[COUNT]->data().toLongLong() + count);
     hostRow[ALLOCATED]->setDataNumber(hostRow[ALLOCATED]->data().toLongLong() + allocated, true);
-    hostRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->setDataNumber(
-                hostRow[repo::gui::primitive::RepoDatabasesColumns::SIZE]->data().toLongLong() + size, true);
+    hostRow[RepoDatabasesColumns::SIZE]->setDataNumber(
+                hostRow[RepoDatabasesColumns::SIZE]->data().toLongLong() + size, true);
+}
 
+void RepositoriesModel::expand(QStandardItem *item)
+{
+//    RepoStandardItem *repoItem = (RepoStandardItem *)(item);
+    std::cout << "Expand triggered " << item->type() << std::endl;
 
-    widget->updateCountLabel();
+    switch (item->type())
+    {
+    case RepoDatabasesTypes::HOST :
+        refreshHost((RepoStandardItem *)item);
+        break;
+    case RepoDatabasesTypes::DATABASE :
+        break;
+    case RepoDatabasesTypes::PROJECT :
+        break;
+    }
+}
 
+void RepositoriesModel::collapse(QStandardItem *item)
+{
+    std::cout << "Collapse triggered " << item->type() << std::endl;
+
+    switch (item->type())
+    {
+    case RepoDatabasesTypes::HOST :
+        // cancel loading
+        cancelAllThreads();
+        break;
+    case RepoDatabasesTypes::DATABASE :
+        // cancel loading
+        break;
+    case RepoDatabasesTypes::PROJECT :
+        // cancel ??
+        break;
+    }
+}
+
+RepoStandardItemRow RepositoriesModel::getRow(const QStandardItem *item) const
+{
+    RepoStandardItemRow row;
+    row.append((RepoStandardItem *)widget->getSiblingFromItem(item, NAME));
+    row.append((RepoStandardItem *)widget->getSiblingFromItem(item, COUNT));
+    row.append((RepoStandardItem *)widget->getSiblingFromItem(item, ALLOCATED));
+    row.append((RepoStandardItem *)widget->getSiblingFromItem(item, RepoDatabasesColumns::SIZE));
+    return row;
 }

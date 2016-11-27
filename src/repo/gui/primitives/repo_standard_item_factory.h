@@ -34,7 +34,13 @@ struct RepoStandardItemRow : QList<RepoStandardItem *>
 };
 
 //! Databases header positions
-enum RepoDatabasesColumns { NAME = 0, COUNT = 1, SIZE = 2, ALLOCATED = 3 };
+enum RepoDatabasesColumns { NAME = 0, COUNT = 1, ALLOCATED = 2, SIZE = 3,  };
+
+enum RepoDatabasesTypes {
+    HOST      = 0 + QStandardItem::UserType,
+    DATABASE  = 1 + QStandardItem::UserType,
+    PROJECT   = 2 + QStandardItem::UserType
+};
 
 class RepoStandardItemFactory
 {

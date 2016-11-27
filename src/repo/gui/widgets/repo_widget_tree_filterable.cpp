@@ -46,6 +46,14 @@ FilterableTreeWidget::FilterableTreeWidget(QWidget *parent)
     QObject::connect(
                 model, &QStandardItemModel::rowsRemoved,
                 this, &FilterableTreeWidget::notifyOfTotalCountChange);
+
+    QObject::connect(
+                ui->treeView, &ClickableTreeWidget::expanded,
+                this, &FilterableTreeWidget::notifyOfExpansion);
+
+    QObject::connect(
+                ui->treeView, &ClickableTreeWidget::collapsed,
+                this, &FilterableTreeWidget::notifyOfCollapse);
 }
 
 FilterableTreeWidget::~FilterableTreeWidget()
@@ -84,6 +92,14 @@ void FilterableTreeWidget::setMargins(int m)
     this->layout()->setContentsMargins(m,m,m,m);
 }
 
+void FilterableTreeWidget::addRow(const QList<QStandardItem*>& row, QStandardItem *parent)
+{
+    if (!parent)
+        addTopLevelRow(row);
+    else
+        parent->appendRow(row);
+}
+
 void FilterableTreeWidget::expandTopLevelItems() const
 {
     ui->treeView->expandToDepth(1);
@@ -100,7 +116,6 @@ void FilterableTreeWidget::clear()
     ui->lineEdit->clear();
     updateCountLabel();
 }
-
 
 void FilterableTreeWidget::updateCountLabel() const
 {
@@ -123,11 +138,26 @@ void FilterableTreeWidget::removeRow(const QModelIndex &index)
     }
 }
 
+void FilterableTreeWidget::removeRow(const QStandardItem *item)
+{
+    removeRow(model->indexFromItem(item));
+}
 
 void FilterableTreeWidget::notifyOfTotalCountChange()
 {
     emit totalCountChanged(model->rowCount());
 }
+
+void FilterableTreeWidget::notifyOfExpansion(const QModelIndex &index)
+{
+    emit expanded(model->itemFromIndex(proxy->mapToSource(index)));
+}
+
+void FilterableTreeWidget::notifyOfCollapse(const QModelIndex &index)
+{
+    emit collapsed(model->itemFromIndex(proxy->mapToSource(index)));
+}
+
 
 //------------------------------------------------------------------------------
 
@@ -189,6 +219,15 @@ QStandardItem *FilterableTreeWidget::getItemFromSource(
 {
     QModelIndex index = model->index(sourceIndex.row(), column, sourceIndex.parent());
     return model->itemFromIndex(index);
+}
+
+QStandardItem *FilterableTreeWidget::getSiblingFromItem(const QStandardItem *item, int column) const
+{
+    QStandardItem *sibling = NULL;
+    QModelIndex index = model->indexFromItem(item);
+    if (index.isValid())
+        sibling = model->itemFromIndex(model->sibling(index.row(), column, index));
+    return sibling;
 }
 
 void FilterableTreeWidget::setProxyModel(QSortFilterProxyModel* proxy)

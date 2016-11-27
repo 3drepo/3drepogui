@@ -36,11 +36,12 @@ RepoStandardItemRow RepoStandardItemFactory::makeHostRow(
 
     item->setToolTip(QString::fromStdString(host) + ":" + QString::number(port));
     item->setIcon(RepoFontAwesome::getHostIcon());
+    item->setType(RepoDatabasesTypes::HOST);
     row.append(item);
 
-    row.append(new RepoStandardItem(0, true));
-    row.append(new RepoStandardItem(0, true));
-    row.append(new RepoStandardItem(0, true));
+    row.append(new RepoStandardItem(0, true)); // count
+    row.append(new RepoStandardItem(0, true)); // allocated
+    row.append(new RepoStandardItem(0, true)); // storage size
     return row;
 }
 
@@ -52,6 +53,7 @@ RepoStandardItemRow RepoStandardItemFactory::makeDatabaseRow(const std::string &
     RepoStandardItem *item = new RepoStandardItem(db, db);
     item->setData(db);
     item->setIcon(RepoFontAwesome::getDatabaseIcon());
+    item->setType(RepoDatabasesTypes::DATABASE);
     row.append(item);
     row.append(new RepoStandardItem(0, true)); // count
     row.append(new RepoStandardItem(0, true)); // allocated

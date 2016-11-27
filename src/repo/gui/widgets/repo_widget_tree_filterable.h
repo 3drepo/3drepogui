@@ -52,6 +52,10 @@ namespace widget {
 		//! Emitted whenever the total count of items in the model changes.
 		void totalCountChanged(int);
 
+        void expanded(QStandardItem *);
+
+        void collapsed(QStandardItem *);
+
     public slots:
 
 		//! Makes the visual layout compacted without borders.
@@ -73,6 +77,8 @@ namespace widget {
 			model->invisibleRootItem()->appendRow(item);
 		}
 
+        void addRow(const QList<QStandardItem*>& row, QStandardItem *parent = NULL);
+
 		//! Expands all top level items.
 		void expandTopLevelItems() const;
 
@@ -87,6 +93,8 @@ namespace widget {
 
 		//! Removes row given by index if any.
 		void removeRow(const QModelIndex &index);
+
+        void removeRow(const QStandardItem *item);
 
 		//! Clears the tree view.
 		void clear();
@@ -139,6 +147,9 @@ namespace widget {
 
 		//! Model
 		QStandardItem *getItemFromSource(const QModelIndex &sourceIndex, int column = 0) const;
+
+        //! Model
+        QStandardItem *getSiblingFromItem(const QStandardItem *item, int column = 0) const;
 
 	public:
 
@@ -223,6 +234,12 @@ namespace widget {
 
 		//! Emits the signal of totalChanged if number of items in model changes.
 		void notifyOfTotalCountChange();
+
+        //! Emits the signal of expanded given a proxy index.
+        void notifyOfExpansion(const QModelIndex &index);
+
+        //! Emits the signal of collapsed given a proxy index.
+        void notifyOfCollapse(const QModelIndex &index);
 
 	protected:
 
