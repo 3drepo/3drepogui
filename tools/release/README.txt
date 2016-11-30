@@ -26,6 +26,7 @@ look forward to hear from you.
 * (ISSUE #178) QT webkit is no longer a dependency
 * (ISSUE #183) Changed presentation of selected geometry
 * (ISSUE #163) Fixed bug where selection text is still shown after unselecting
+* (ISSUE #153) Fixed crashes with KD Tree display
 
 =========================== New Features ========================
 * (ISSUE #164) Multi-Selection is now supported
