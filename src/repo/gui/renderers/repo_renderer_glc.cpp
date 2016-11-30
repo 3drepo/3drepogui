@@ -1207,8 +1207,11 @@ void GLCRenderer::toggleGenericPartitioning(
     {
         if(tree)
         {
-            static GLC_Material* mat = new GLC_Material(Qt::yellow);
-            mat->setOpacity(0.1);
+			
+			auto mat = new GLC_Material(Qt::yellow);
+			mat->setOpacity(0.1);
+			
+			
 
             std::vector<std::vector<float>> bbox = {
                 {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
@@ -1228,8 +1231,10 @@ void GLCRenderer::toggleGenericPartitioning(
         }
 
     }
-    else
-        glcViewCollection.clear();
+	else
+	{
+		glcViewCollection.clear();
+	}
 
 }
 
