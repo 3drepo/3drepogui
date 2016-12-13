@@ -71,8 +71,6 @@ public slots:
     //! Shows about dialog.
     void about();
 
-    //! Creates a new map tiles project.
-    void addMapTiles();
 
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree();
