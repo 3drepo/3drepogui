@@ -44,7 +44,6 @@
 #include "primitives/repo_color.h"
 #include "dialogs/repo_dialog_manager_abstract.h"
 #include "dialogs/repo_dialog_federation.h"
-#include "dialogs/repo_dialog_map.h"
 
 
 //------------------------------------------------------------------------------
@@ -207,10 +206,6 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionAccessManager, SIGNAL(triggered()),
                      this, SLOT(openAccessManager()));
      ui->actionAccessManager->setIcon(primitive::RepoFontAwesome::getAccessManagerIcon());
-
-    // Add Map Tiles...
-    QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
-                     this, SLOT(addMapTiles()));
 
     //--------------------------------------------------------------------------
     // Drop
@@ -430,18 +425,6 @@ void repo::gui::RepoGUI::about()
     aboutDialog.exec();
 }
 
-void repo::gui::RepoGUI::addMapTiles()
-{
-    dialog::MapDialog mapTilesDialog(this);
-    if(mapTilesDialog.exec()){
-
-        repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
-        if (scene)
-        {
-            commit(scene);
-        }
-    }
-}
 
 // TODO: fix me
 void repo::gui::RepoGUI::addSelectionTree()
@@ -557,7 +540,6 @@ void repo::gui::RepoGUI::connectDB()
             ui->actionDisconnect->setEnabled(true);
             ui->actionAccessManager->setEnabled(true);
             ui->actionFederate->setEnabled(true);
-            ui->actionAddMapTiles->setEnabled(true);
             ui->actionRemoveProject->setEnabled(true);
         }
         else
@@ -613,7 +595,6 @@ void repo::gui::RepoGUI::disconnectDB()
         ui->actionDisconnect->setEnabled(false);
         ui->actionAccessManager->setEnabled(false);
         ui->actionFederate->setEnabled(false);
-        ui->actionAddMapTiles->setEnabled(false);
         ui->actionRemoveProject->setEnabled(false);
     }
 }

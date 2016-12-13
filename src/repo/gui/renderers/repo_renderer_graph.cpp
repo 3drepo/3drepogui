@@ -132,10 +132,6 @@ QGraphicsEllipseItem *GraphRenderer::addNode(repo::core::model::RepoNode *node, 
         dark = Qt::darkMagenta;
         light = Qt::magenta;
         break;
-    case repo::core::model::NodeType::MAP :
-        dark = repo::gui::primitive::RepoColor::fromHex("#cd5b45"); // Coral3
-        light = repo::gui::primitive::RepoColor::fromHex("#ff7f50"); // Coral
-        break;
     case repo::core::model::NodeType::MATERIAL :
         dark = Qt::darkRed;
         light = Qt::red;
