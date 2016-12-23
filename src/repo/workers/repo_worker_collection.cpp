@@ -22,7 +22,6 @@
 
 #include <repo/core/model/bson/repo_bson_element.h>
 #include <repo/core/model/bson/repo_node_mesh.h>
-#include <repo/core/model/repo_node_utils.h>
 
 using namespace repo::worker;
 namespace repoModel = repo::core::model;

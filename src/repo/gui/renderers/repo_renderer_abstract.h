@@ -23,7 +23,6 @@
 #include <QFile>
 #include <QPainter>
 #include <repo/core/model/collection/repo_scene.h>
-#include <repo/core/model/repo_node_utils.h>
 #include <repo/manipulator/modelutility/spatialpartitioning/repo_spatial_partitioner_abstract.h>
 
 #include "repo_fpscounter.h"
