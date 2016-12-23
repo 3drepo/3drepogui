@@ -134,7 +134,7 @@ namespace repo {
 				* @param color color of change to
 				*/
 				virtual void setMeshColor(
-					const repoUUID &uniqueID,
+                                        const repo::lib::RepoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color);
 
@@ -262,7 +262,7 @@ public slots :
                 * Toggle between show/hide genericSpatialPartitioning
                 */
                 virtual void toggleGenericPartitioning(
-                        const std::vector<repo_vector_t> &sceneBbox,
+                        const std::vector<repo::lib::RepoVector3D> &sceneBbox,
                         const std::shared_ptr<repo_partitioning_tree_t> &tree);
 
 
@@ -315,7 +315,7 @@ public slots :
                         const repo::core::model::RepoScene            *scene,
                         const repo::core::model::RepoScene::GraphType &gType,
                         const repo::core::model::RepoNode             *node,
-                        const std::vector<float>                      &matrix,
+                        const repo::lib::RepoMatrix                      &matrix,
                          GLC_Material                            *mat);
 
                 void createSPBoxes(

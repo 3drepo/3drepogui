@@ -53,6 +53,7 @@ namespace repo {
 			//! Default empty destructor.
 			~CollectionWorker();
 
+
 		signals:
 
 			void keyValuePairAdded(

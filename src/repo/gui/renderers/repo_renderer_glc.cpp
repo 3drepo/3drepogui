@@ -562,12 +562,12 @@ void GLCRenderer::setRenderingMode(const RenderMode &mode)
 }
 
 void GLCRenderer::setMeshColor(
-        const repoUUID &uniqueID,
+        const repo::lib::RepoUUID &uniqueID,
         const qreal &opacity,
         const QColor &color)
 {
 
-    QString uuidString = QString::fromStdString(UUIDtoString(uniqueID));
+    QString uuidString = QString::fromStdString(uniqueID.toString());
 
     setMeshColor(uuidString, opacity, color);
 }
@@ -800,7 +800,7 @@ void GLCRenderer::paintInfo(QPainter *painter,
         if (currentlyHighLighted.size())
         {
 			
-            repoUUID meshId = stringToUUID(lastHighLighted.toStdString());
+            repo::lib::RepoUUID meshId = lastHighLighted.toStdString();
             auto mesh = scene->getNodeByUniqueID(repo::core::model::RepoScene::GraphType::DEFAULT,meshId);
 			QString meshString = lastHighLighted;
             if(mesh)
@@ -1199,7 +1199,7 @@ void GLCRenderer::createSPBoxes(
 }
 
 void GLCRenderer::toggleGenericPartitioning(
-                       const std::vector<repo_vector_t> &sceneBbox,
+                       const std::vector<repo::lib::RepoVector3D> &sceneBbox,
                        const std::shared_ptr<repo_partitioning_tree_t> &tree)
 {
 
@@ -1242,7 +1242,7 @@ void GLCRenderer::createMeshBBoxes(
         const repo::core::model::RepoScene            *scene,
         const repo::core::model::RepoScene::GraphType &gType,
         const repo::core::model::RepoNode             *node,
-        const std::vector<float>                      &matrix,
+        const repo::lib::RepoMatrix                       &matrix,
               GLC_Material                            *mat)
 {
     switch(node->getTypeAsEnum())
@@ -1257,8 +1257,8 @@ void GLCRenderer::createMeshBBoxes(
                 {
                     for(const auto &map : mappings)
                     {
-                        auto min = multiplyMatVec(matrix,  map.min);
-                        auto max = multiplyMatVec(matrix,  map.max);
+                        auto min = matrix * map.min;
+                        auto max = matrix * map.max;
 
                         GLC_Point3d lower (min.x, min.y, min.z);
                         GLC_Point3d higher(max.x, max.y, max.z);
@@ -1275,7 +1275,7 @@ void GLCRenderer::createMeshBBoxes(
                     auto currentBox = meshPtr->getBoundingBox();
                     for(auto &entry : currentBox)
                     {
-                        entry = multiplyMatVec(matrix, entry);
+                        entry = matrix* entry;
                     }
 
                     GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
@@ -1294,7 +1294,7 @@ void GLCRenderer::createMeshBBoxes(
         case repo::core::model::NodeType::TRANSFORMATION:
         {
             auto transPtr = dynamic_cast<const repo::core::model::TransformationNode*>(node);
-            auto newTrans = matMult(matrix, transPtr->getTransMatrix(false));
+            auto newTrans = matrix * transPtr->getTransMatrix(false);
             auto children = scene->getChildrenAsNodes(gType, transPtr->getSharedID());
             for(const auto &child : children)
             {

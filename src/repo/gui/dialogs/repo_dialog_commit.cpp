@@ -175,15 +175,14 @@ void CommitDialog::addNode(repo::core::model::RepoNode *node, const QString &sta
         //----------------------------------------------------------------------
         // UID
         item = new QStandardItem(QString::fromStdString(
-                                     UUIDtoString(
-                                         node->getUniqueID())));
+                                     node->getUniqueID().toString()));
         item->setEditable(false);
         row.append(item);
         //----------------------------------------------------------------------
         // SID
         item = new QStandardItem(
                     QString::fromStdString(
-                        UUIDtoString(node->getSharedID())));
+                        node->getSharedID().toString()));
         item->setEditable(false);
         row.append(item);
         //----------------------------------------------------------------------

@@ -281,7 +281,7 @@ void UserDialog::openImageFileDialog()
 void UserDialog::setNextAPIKey()
 {
     ui->apiKeysUnfilterableTreeWidget->setNewRowText(
-        {tr("label"),QString::fromStdString(UUIDtoString(generateUUID()))});
+        {tr("label"),QString::fromStdString(repo::lib::RepoUUID::createUUID().toString())});
 }
 
 repo::core::model::RepoUser UserDialog::getUpdatedUser() const

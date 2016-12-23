@@ -237,7 +237,7 @@ void Rendering3DWidget::setPredefinedCamera(const repo::gui::renderer::CameraVie
 }
 
 void Rendering3DWidget::setMeshColor(
-        const repoUUID &uniqueID,
+        const repo::lib::RepoUUID &uniqueID,
         const qreal &opacity,
         const QColor &color)
 {

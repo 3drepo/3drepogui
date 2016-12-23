@@ -27,7 +27,6 @@
 
 // Core
 #include <repo/core/model/collection/repo_scene.h>
-#include <repo/core/model/repo_node_utils.h>
 
 Q_DECLARE_METATYPE(repo::core::model::RepoNode *)
 
@@ -70,7 +69,7 @@ namespace renderer {
 
 	public:
 
-		static QString uuidToQString(const repoUUID &uuid);
+        static QString uuidToQString(const repo::lib::RepoUUID &uuid);
 
 	private:
 
