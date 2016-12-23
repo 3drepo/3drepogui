@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     std::vector<repo::lib::RepoAbstractListener*> listeners;
     listeners.push_back(repo::logger::RepoLogger::getInstance());
 
-    repo::RepoController *controller = new repo::RepoController(listeners);
+    repo::RepoController *controller = new repo::RepoController(listeners, 4, 1);
 
 
 	//check env var to see whether a debug level is set

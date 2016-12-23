@@ -70,7 +70,7 @@ namespace renderer {
 
 	public:
 
-		static QString uuidToQString(const repoUUID &uuid);
+        static QString uuidToQString(const repo::lib::RepoUUID &uuid);
 
 	private:
 

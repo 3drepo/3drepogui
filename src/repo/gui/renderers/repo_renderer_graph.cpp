@@ -205,7 +205,7 @@ std::vector<QGraphicsLineItem*> GraphRenderer::addLines(
         qreal halfPen = penWidth/2;
 
         int i = 0;
-        for (repoUUID parentID : node->getParentIDs())
+        for (repo::lib::RepoUUID parentID : node->getParentIDs())
         {
             QGraphicsItem *parentItem = painted[uuidToQString(parentID)];
             QGraphicsLineItem *line = addLine(
@@ -224,15 +224,15 @@ std::vector<QGraphicsLineItem*> GraphRenderer::addLines(
 bool GraphRenderer::areAllParentsPainted(const repo::core::model::RepoNode *node)
 {
     bool allPainted = true;
-    for (repoUUID parentID : node->getParentIDs())
+    for (repo::lib::RepoUUID parentID : node->getParentIDs())
     {
         allPainted = allPainted && (painted.contains(uuidToQString(parentID)));
     }
     return allPainted;
 }
 
-QString GraphRenderer::uuidToQString(const repoUUID &uuid)
+QString GraphRenderer::uuidToQString(const repo::lib::RepoUUID &uuid)
 {
-    return QString::fromStdString(UUIDtoString(uuid));
+    return QString::fromStdString(uuid.toString());
 }
 

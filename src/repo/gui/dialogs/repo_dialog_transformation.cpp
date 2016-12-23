@@ -34,7 +34,7 @@ TransformationDialog::TransformationDialog(
     ui->setupUi(this);
 
     setName(transformation.getName());
-    setMatrix(transformation.getTransMatrix(false));
+    setMatrix(transformation.getTransMatrix(false).getData());
 
     QObject::connect(ui->identityPushButton, &QPushButton::pressed,
                      this, &TransformationDialog::setIdentity);

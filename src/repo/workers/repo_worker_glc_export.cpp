@@ -148,7 +148,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     repo::core::model::RepoScene::GraphType repoViewGraph = scene->getViewGraph();
     //------------------------------------------------------------------
     // Allocate Textures
-    std::map<repoUUID, std::vector<GLC_Texture*>> parentToGLCTexture;
+    std::map<repo::lib::RepoUUID, std::vector<GLC_Texture*>> parentToGLCTexture;
 
     repoModel::RepoNodeSet textures = scene->getAllTextures(repoViewGraph);
 
@@ -159,7 +159,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
             GLC_Texture* glcTexture = convertGLCTexture((repoModel::TextureNode*)texture);
             if (glcTexture)
             {
-                std::vector<repoUUID> parents = texture->getParentIDs();
+                std::vector<repo::lib::RepoUUID> parents = texture->getParentIDs();
                 for (auto &parent : parents)
                 {
 
@@ -177,7 +177,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
 
     //------------------------------------------------------------------
     // Allocate Materials
-    std::map<repoUUID, std::vector<GLC_Material*>> parentToGLCMaterial;
+    std::map<repo::lib::RepoUUID, std::vector<GLC_Material*>> parentToGLCMaterial;
 
     repoModel::RepoNodeSet materials = scene->getAllMaterials(repoViewGraph);
 
@@ -191,7 +191,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
             {
 				if (repoViewGraph == repo::core::model::RepoScene::GraphType::DEFAULT)
 				{
-					std::vector<repoUUID> parents = material->getParentIDs();
+                    std::vector<repo::lib::RepoUUID> parents = material->getParentIDs();
 					for (auto &parent : parents)
 					{
 						if (parentToGLCMaterial.find(parent) == parentToGLCMaterial.end())
@@ -217,7 +217,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     //-------------------------------------------------------------------------
     // Allocate Meshes
     repoModel::RepoNodeSet meshes = scene->getAllMeshes(repoViewGraph);
-    std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCMeshes;
+    std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>> parentToGLCMeshes;
     for (auto &mesh : meshes)
     {
 		if (mesh && !cancelled)
@@ -226,7 +226,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
                 (repoModel::MeshNode*)mesh, parentToGLCMaterial, matMap, idMap);
             if (glcMesh)
             {
-                std::vector<repoUUID> parents = mesh->getParentIDs();
+                std::vector<repo::lib::RepoUUID> parents = mesh->getParentIDs();
                 for (auto &parent : parents)
                 {
                     if (parentToGLCMeshes.find(parent) == parentToGLCMeshes.end())
@@ -254,7 +254,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
     //-------------------------------------------------------------------------
     // Allocate cameras
   //  repoModel::RepoNodeSet cameras = scene->getAllCameras(repoViewGraph);
-    std::map<repoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
+    std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>> parentToGLCCameras;
   //  for (auto &camera : cameras)
   //  {
 		//if (camera && !cancelled)
@@ -264,7 +264,7 @@ GLC_StructOccurrence* GLCExportWorker::convertSceneToOccurance(
   //          //	(repoModel::CameraNode*)camera);
   //          //if (glcCamera)
   //          //{
-  //          //	std::vector<repoUUID> parents = camera->getParentIDs();
+  //          //	std::vector<repo::lib::RepoUUID> parents = camera->getParentIDs();
   //          //	for (auto &parent : parents)
   //          //	{
   //          //		//Map the material to all parent UUIDs
@@ -310,8 +310,8 @@ repoLog("Creating GLC tree");
 GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
     repo::core::model::RepoScene                     *scene,
     const repo::core::model::RepoNode                *node,
-    std::map<repoUUID, std::vector<GLC_3DRep*>>      &glcMeshesMap,
-    std::map<repoUUID, std::vector<GLC_3DRep*>>      &glcCamerasMap,
+    std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>>      &glcMeshesMap,
+    std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>>      &glcCamerasMap,
     std::map<QString, GLC_Mesh*>                     &meshMap,
     std::map<QString, GLC_Material*>                 &matMap,
                 std::vector<QString>                         &idMap,
@@ -330,7 +330,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
     if (node)
     {
         repoModel::NodeType type = node->getTypeAsEnum();
-        repoUUID sharedID = node->getSharedID();
+        repo::lib::RepoUUID sharedID = node->getSharedID();
 
         QString name(node->getName().c_str());
         switch (type)
@@ -346,7 +346,7 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
         case repoModel::NodeType::TRANSFORMATION:
         {
             GLC_3DRep* pRep = nullptr;
-            std::map<repoUUID, std::vector<GLC_3DRep*>>::iterator it = glcMeshesMap.find(sharedID);
+            std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>>::iterator it = glcMeshesMap.find(sharedID);
             if (it != glcMeshesMap.end())
             {
                 //has meshes
@@ -418,15 +418,9 @@ GLC_StructOccurrence* GLCExportWorker::createOccurrenceFromNode(
             auto trans = (repoModel::TransformationNode*) node;
             auto mat = trans->getTransMatrix(true);
 
-			if (mat.size() != 16)
-			{
-				repoLogError("Matrix size is not 16!!!");
-			}
-			else
-			{				
-				GLC_Matrix4x4 transMat(mat.data());
-				instance->move(transMat);
-			}
+            GLC_Matrix4x4 transMat(mat.getData().data());
+            instance->move(transMat);
+
 
 
             occurrence = new GLC_StructOccurrence(instance);
@@ -493,7 +487,7 @@ GLC_3DRep* GLCExportWorker::convertGLCCamera(
     GLC_3DRep * glcCamera = nullptr;
 //    if (camera)
 //    {
-//        repo_vector_t position = camera->getPosition();
+//        repo::lib::RepoVector3D position = camera->getPosition();
 //        GLC_Point3d glcPosition(position.x, position.y, position.z);
 
 //        GLC_Matrix4x4 glcMatrix(&camera->getCameraMatrix(false).at(0));
@@ -519,7 +513,7 @@ GLC_3DRep* GLCExportWorker::convertGLCCamera(
 
 GLC_Material* GLCExportWorker::convertGLCMaterial(
     const repo::core::model::MaterialNode   *material,
-    std::map<repoUUID, std::vector<GLC_Texture*>> &mapTexture)
+    std::map<repo::lib::RepoUUID, std::vector<GLC_Texture*>> &mapTexture)
 {
     GLC_Material* glcMat = nullptr;
 
@@ -586,7 +580,7 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 
         //-------------------------------------------------------------------------
         // Diffuse texture
-        std::map<repoUUID, std::vector<GLC_Texture*>>::iterator mapIt = mapTexture.find(material->getSharedID());
+        std::map<repo::lib::RepoUUID, std::vector<GLC_Texture*>>::iterator mapIt = mapTexture.find(material->getSharedID());
         if (mapIt != mapTexture.end())
         {
             //FIXME: only takes in 1 texture.
@@ -599,7 +593,7 @@ GLC_Material* GLCExportWorker::convertGLCMaterial(
 
 GLC_3DRep* GLCExportWorker::convertGLCMesh(
     const repo::core::model::MeshNode        *mesh,
-    std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
+    std::map<repo::lib::RepoUUID, std::vector<GLC_Material*>> &mapMaterials,
     std::map<QString, GLC_Material*> &matMap,
     std::vector<QString>            &idMap )
 {
@@ -608,9 +602,9 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
     if (mesh)
     {
 		std::string name = mesh->getName();
-		glcMesh->setName(QString::fromStdString(UUIDtoString(mesh->getUniqueID())));
+        glcMesh->setName(QString::fromStdString(mesh->getUniqueID().toString()));
 
-        std::vector<repo_vector_t> vector3d;
+        std::vector<repo::lib::RepoVector3D> vector3d;
 		//Vertices
 		vector3d = mesh->getVertices();
 		QVector<GLfloat> glcVec = createGLCVector(vector3d);
@@ -618,7 +612,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 			glcMesh->addVertice(glcVec);
 
 		//Normals
-        std::vector<repo_vector_t> normal3d = mesh->getNormals();
+        std::vector<repo::lib::RepoVector3D> normal3d = mesh->getNormals();
 		QVector<GLfloat> glcNorm = createGLCVector(normal3d);
 		if (glcNorm.size() > 0)
 			glcMesh->addNormals(glcNorm);
@@ -646,9 +640,9 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 				QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec, map.triFrom, map.triTo);
 
 				GLC_Material* material = nullptr;
-                QString meshId = QString::fromStdString(UUIDtoString(map.mesh_id));
+                QString meshId = QString::fromStdString(map.mesh_id.toString());
                 idMap.push_back(meshId);
-				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
+                std::map<repo::lib::RepoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 					mapMaterials.find(map.material_id);
                 if(matMap.find(meshId) != matMap.end())
                 {
@@ -695,11 +689,11 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 
 			QList<GLuint> glcFaces = createGLCFaceList(faces, glcVec);
 
-            QString meshUniqueID = QString::fromStdString(UUIDtoString(mesh->getUniqueID()));
+            QString meshUniqueID = QString::fromStdString(mesh->getUniqueID().toString());
 			if (glcFaces.size() > 0)
 			{
 				GLC_Material* material = nullptr;
-				std::map<repoUUID, std::vector<GLC_Material*>>::iterator mapIt =
+                std::map<repo::lib::RepoUUID, std::vector<GLC_Material*>>::iterator mapIt =
 					mapMaterials.find(mesh->getSharedID());
 				if (mapIt != mapMaterials.end())
 				{
@@ -740,7 +734,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
             for (uint32_t j = 0; j < face.size(); ++j)
 			{
 				//FIXME: this is assuming order in assimp's mVertice = vector3d's order
-                repo_vector_t vertex = vector3d[face[j]];
+                repo::lib::RepoVector3D vertex = vector3d[face[j]];
 				faceVertices << vertex.x << vertex.y << vertex.z;
 			}
 
@@ -749,7 +743,7 @@ GLC_3DRep* GLCExportWorker::convertGLCMesh(
 		}
 		
 
-        std::vector<repo_vector2d_t> uvVectors = mesh->getUVChannels();
+        std::vector<repo::lib::RepoVector2D> uvVectors = mesh->getUVChannels();
 		QVector<GLfloat> glcUVVec = createGLCVector(uvVectors);
 
 		if (glcUVVec.size() > 0)
@@ -847,7 +841,7 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 }
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector_t> &vec
+    const std::vector<repo::lib::RepoVector3D> &vec
     )
 {
     QVector<GLfloat> glcVector;
@@ -855,8 +849,8 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
     if (vec.size())
     {
 		
-		//FIXME: since repo_vector_t is a struct, can't we just memcpy?
-        glcVector.resize(vec.size() * 3); //repo_vector_t always have 3 values
+        //FIXME: since repo::lib::RepoVector3D is a struct, can't we just memcpy?
+        glcVector.resize(vec.size() * 3); //repo::lib::RepoVector3D always have 3 values
         int ind = 0;
         for (const auto &v : vec)
         {
@@ -871,14 +865,14 @@ QVector<GLfloat> GLCExportWorker::createGLCVector(
 
 
 QVector<GLfloat> GLCExportWorker::createGLCVector(
-    const std::vector<repo_vector2d_t> &vec
+    const std::vector<repo::lib::RepoVector2D> &vec
     )
 {
     QVector<GLfloat> glcVector;
 
     if (vec.size())
     {
-        glcVector.resize(vec.size() * 2); //repo_vector_t always have 3 values
+        glcVector.resize(vec.size() * 2); //repo::lib::RepoVector3D always have 3 values
         int ind = 0;
         for (const auto &v : vec)
         {
