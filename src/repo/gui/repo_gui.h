@@ -31,7 +31,7 @@
 //------------------------------------------------------------------------------
 
 
-#define EXPECTED_BOUNCER_VERSION "1.6.1"
+#define EXPECTED_BOUNCER_VERSION "1.7.6"
 
 namespace Ui
 {
@@ -71,8 +71,6 @@ public slots:
     //! Shows about dialog.
     void about();
 
-    //! Creates a new map tiles project.
-    void addMapTiles();
 
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree();
@@ -210,6 +208,8 @@ private:
     static const QString REPO_SETTINGS_LINK_WINDOWS;
 
     static const QString REPO_SETTINGS_GUI_FLY_NAVIGATION;
+
+    static const QString REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION;
 
     static const QString REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION;
 

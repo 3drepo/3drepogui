@@ -72,10 +72,11 @@ namespace repo {
             GLC_StructOccurrence* createOccurrenceFromNode(
 				repo::core::model::RepoScene         *scene,
 				const repo::core::model::RepoNode           *node,
-				std::map<repoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
-                std::map<repoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
+                                std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>> &glcMeshesMap,
+                std::map<repo::lib::RepoUUID, std::vector<GLC_3DRep*>> &glcCamerasMap,
                 std::map<QString, GLC_Mesh*>     &meshMap,
                 std::map<QString, GLC_Material*> &matMap,
+                std::vector<QString>             &idMap,
 				const bool                                        &countJob=true);
 
 			
@@ -86,6 +87,8 @@ namespace repo {
                 repo::core::model::RepoScene *scene,
                     std::map<QString, GLC_Mesh*>     &meshMap,
                     std::map<QString, GLC_Material*> &matMap,
+                    std::vector<QString>            &idMap,
+
                     const std::vector<double> &offsetVector = std::vector<double>());
 
 		signals:
@@ -93,7 +96,8 @@ namespace repo {
             //! Emitted when loading is finished. Passes GLC world.
             void finished(GLC_World&,
                           std::map<QString, GLC_Mesh*>&,
-                          std::map<QString, GLC_Material*>&);
+                          std::map<QString, GLC_Material*>&,
+                           std::vector<QString>            &idMap);
 
 		private:
 			repo::core::model::RepoScene* scene;
@@ -102,19 +106,21 @@ namespace repo {
             GLC_World* createGLCWorld(
                 repo::core::model::RepoScene *scene,
                 std::map<QString, GLC_Mesh*>     &meshMap,
-                std::map<QString, GLC_Material*> &matMap);
+                std::map<QString, GLC_Material*> &matMap,
+                    std::vector<QString>            &idMap);
 
 			GLC_3DRep* convertGLCCamera(
 				const repo::core::model::CameraNode *camera);
 
 			GLC_Material* convertGLCMaterial(
 				const repo::core::model::MaterialNode   *material,
-				std::map<repoUUID, std::vector<GLC_Texture*>> &mapTexture);
+                                std::map<repo::lib::RepoUUID, std::vector<GLC_Texture*>> &mapTexture);
 
 			GLC_3DRep* convertGLCMesh(
 				const repo::core::model::MeshNode        *mesh,
-                std::map<repoUUID, std::vector<GLC_Material*>> &mapMaterials,
-                 std::map<QString, GLC_Material*> &matMap);
+                std::map<repo::lib::RepoUUID, std::vector<GLC_Material*>> &mapMaterials,
+                 std::map<QString, GLC_Material*> &matMap,
+                    std::vector<QString>            &idMap);
 
 			GLC_Texture* convertGLCTexture(
 				const repo::core::model::TextureNode *texture);
@@ -127,14 +133,14 @@ namespace repo {
 
 			GLC_3DRep* createGLCMesh(
 				const repo::core::model::RepoScene *scene,
-				const repo::core::model::MeshNode   *node);
+                const repo::core::model::MeshNode   *node);
 
 			QVector<GLfloat> createGLCVector(
-                const std::vector<repo_vector_t> &vec
+                const std::vector<repo::lib::RepoVector3D> &vec
 				);
 
 			QVector<GLfloat> createGLCVector(
-                const std::vector<repo_vector2d_t> &vec
+                const std::vector<repo::lib::RepoVector2D> &vec
 				);
 
 			QVector<GLfloat> createGLCVector(

@@ -434,6 +434,15 @@ public :
 	}
 
     /*!
+     * Returns true if IFC Space representation should be skipped
+     * Defaults to true
+     */
+    bool getSkipIFCSpaceRepresentation() const
+    {
+        return value(QString(IFC_SKIP_SPACE_REPRESENTATIONS.c_str()), true).toBool();
+    }
+
+    /*!
      * Returns ture if sort and remove is checked in settings, false otherwise.
      * Defaults to false.
      */
@@ -537,9 +546,152 @@ public :
      * otherwise. Defaults to false.
      */
     bool getValidateDataStructures() const
-	{
-		return value(QString(VALIDATE_DATA_STRUCTURES.c_str()), repoDefaultValidateDataStructures).toBool();
-	}
+    {
+        return value(QString(VALIDATE_DATA_STRUCTURES.c_str()), repoDefaultValidateDataStructures).toBool();
+    }
+
+
+    /*!
+     * Returns true if using IFC open shell is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool getUseIFCOpenShell() const
+    {
+        return value(QString(USE_IFC_OPEN_SHELL.c_str()), false).toBool();
+    }
+
+    /*!
+     * Returns true if element filtering is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool getUseElementsFiltering() const
+    {
+        return value(QString(IOS_USE_FILTER.c_str()), repoDefaultIOSUseFilter).toBool();
+    }
+
+
+    /*!
+     * Returns true if exclusion element filtering is checked in settings, false
+     * otherwise. Defaults to false.
+     */
+    bool getIsExclusionFilter() const
+    {
+        return value(QString(IOS_FILTER_EXCLUSION.c_str()), repoDefaultIsExclusion).toBool();
+    }
+
+    /*!
+     * Returns list of keywords being filtered
+     */
+    std::vector<std::string> getFilteringKeywords() const
+    {
+        QVariantList list;
+        for(const auto &key : repoDefaultIfcOpenShellFilterList)
+        {
+            list.push_back(QString::fromStdString((key)));
+        }
+
+        QVariantList retlist =  value(QString(IOS_FILTER_LIST.c_str()), list).toList();
+
+        std::vector<std::string> vec;
+        for(const auto &l : retlist)
+        {
+            vec.push_back(l.toString().toStdString());
+        }
+        return vec;
+
+    }
+
+
+    virtual bool getWieldVertices() const
+    {
+        return value(QString(IOS_WIELD_VERTICES.c_str()), repoDefaultIOSWieldVertices).toBool();
+    }
+
+    virtual bool getUseWorldCoords() const
+    {
+        return value(QString(IOS_USE_WORLD_COORDS.c_str()), repoDefaultIOSUseWorldCoords).toBool();
+    }
+
+    virtual bool getConvertUnits() const
+    {
+        return value(QString(IOS_CONVERT_UNITS.c_str()), repoDefaultIOSConvertBackUnits).toBool();
+    }
+
+    virtual bool getUseBRepData() const
+    {
+        return value(QString(IOS_USE_BREP_DATA.c_str()), repoDefaultIOSUseBrepData).toBool();
+    }
+
+    virtual bool getSewShells() const
+    {
+        return value(QString(IOS_SEW_SHELLS.c_str()), repoDefaultIOSSewShells).toBool();
+    }
+
+    virtual bool getFasterBooleans() const
+    {
+        return value(QString(IOS_FASTER_BOOLEANS.c_str()), repoDefaultIOSFasterBooleans).toBool();
+    }
+
+    virtual bool getNoOpeningSubtractions() const
+    {
+        return value(QString(IOS_NO_OPENING_SUB.c_str()), repoDefaultIOSDisableOpeningSubtractions).toBool();
+    }
+
+    virtual bool getNoTriangulation() const
+    {
+        return value(QString(IOS_NO_TRIANGULATE.c_str()), repoDefaultIOSDisableTriangulate).toBool();
+    }
+
+    virtual bool getUseDefaultMaterials() const
+    {
+        return value(QString(IOS_USE_DEFAULT_MATS.c_str()), repoDefaultIOSApplyDefaultMaterials).toBool();
+    }
+
+    virtual bool getIncludeAllCurves() const
+    {
+        return value(QString(IOS_INCLUDE_CURVES.c_str()), repoDefaultIOSIncludesCurves).toBool();
+    }
+
+    virtual bool getDisableSolidSurfaces() const
+    {
+        return value(QString(IOS_NO_SOLIDS_SURFACES.c_str()), repoDefaultIOSExcludesSolidsAndSurfaces).toBool();
+    }
+
+    virtual bool getNoNormals() const
+    {
+        return value(QString(IOS_NO_NORMALS.c_str()), repoDefaultIOSNoNormals).toBool();
+    }
+
+    virtual bool getUseElementGuids() const
+    {
+        return value(QString(IOS_USE_ELEMENT_GUIDS.c_str()), repoDefaultIOSUseElementGuids).toBool();
+    }
+
+    virtual bool getUseElementNames() const
+    {
+        return value(QString(IOS_USE_ELEMENT_NAMES.c_str()), repoDefaultIOSUseElementGuids).toBool();
+    }
+
+    virtual bool getUseMaterialNames() const
+    {
+        return value(QString(IOS_USE_MAT_NAMES.c_str()), repoDefaultIOSUseMatNames).toBool();
+    }
+
+    virtual bool getCentreModels() const
+    {
+        return value(QString(IOS_CENTRE_MODEL.c_str()), repoDefaultIOSCentreModel).toBool();
+    }
+
+    virtual bool getGenerateUVs() const
+    {
+        return value(QString(IOS_GENERATE_UVS.c_str()), repoDefaultIOSGenerateUVs).toBool();
+    }
+
+    virtual bool getApplyLayerSets() const
+    {
+        return value(QString(IOS_APPLY_LAYER_SETS.c_str()), repoDefaultIOSApplyLayerSets).toBool();
+    }
+
 
 public :
 
@@ -759,6 +911,11 @@ public :
 		QSettings::setValue(QString(REMOVE_REDUNDANT_NODES_SKIP.c_str()), skip);
 	}
 
+    void setSkipIFCSpaceRepresentation(bool on)
+    {
+        QSettings::setValue(QString(IFC_SKIP_SPACE_REPRESENTATIONS.c_str()), on);
+    }
+
     void setSortAndRemove(bool on)
 	{
 		QSettings::setValue(QString(SORT_AND_REMOVE.c_str()), on);
@@ -818,6 +975,121 @@ public :
 	{
 		QSettings::setValue(QString(VALIDATE_DATA_STRUCTURES.c_str()), on);
 	}
+
+    //IFC OpenShell Setters
+    void setUseIFCOpenShell(bool on)
+    {
+        QSettings::setValue(QString(USE_IFC_OPEN_SHELL.c_str()), on);
+    }
+
+    void setUseElementsFiltering(bool on)
+    {
+        QSettings::setValue(QString(IOS_USE_FILTER.c_str()), on);
+    }
+
+    void setIsExclusionFilter(bool on)
+    {
+        QSettings::setValue(QString(IOS_FILTER_EXCLUSION.c_str()), on);
+    }
+
+    void setFilteringKeywords(const std::vector<std::string> &keywords)
+    {
+        QVariantList list;
+        for (const auto &key : keywords)
+        {
+            list.push_back(QString::fromStdString(key));
+        }
+        QSettings::setValue(QString(IOS_FILTER_LIST.c_str()), list);
+    }
+    virtual void setWieldVertices(bool on)
+    {
+         QSettings::setValue(QString(IOS_WIELD_VERTICES.c_str()), on);
+    }
+
+    virtual void setUseWorldCoords(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_WORLD_COORDS.c_str()), on);
+    }
+
+    virtual void setConvertUnits(bool on)
+    {
+         QSettings::setValue(QString(IOS_CONVERT_UNITS.c_str()), on);
+    }
+
+    virtual void setUseBRepData(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_BREP_DATA.c_str()), on);
+    }
+
+    virtual void setSewShells(bool on)
+    {
+         QSettings::setValue(QString(IOS_SEW_SHELLS.c_str()), on);
+    }
+
+    virtual void setFasterBooleans(bool on)
+    {
+         QSettings::setValue(QString(IOS_FASTER_BOOLEANS.c_str()), on);
+    }
+
+    virtual void setNoOpeningSubtractions(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_OPENING_SUB.c_str()), on);
+    }
+
+    virtual void setNoTriangulation(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_TRIANGULATE.c_str()), on);
+    }
+
+    virtual void setUseDefaultMaterials(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_DEFAULT_MATS.c_str()), on);
+    }
+
+    virtual void setIncludeAllCurves(bool on)
+    {
+         QSettings::setValue(QString(IOS_INCLUDE_CURVES.c_str()), on);
+    }
+
+    virtual void setDisableSolidSurfaces(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_SOLIDS_SURFACES.c_str()), on);
+    }
+
+    virtual void setNoNormals(bool on)
+    {
+         QSettings::setValue(QString(IOS_NO_NORMALS.c_str()), on);
+    }
+
+    virtual void setUseElementGuids(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_ELEMENT_GUIDS.c_str()), on);
+    }
+
+    virtual void setUseElementNames(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_ELEMENT_NAMES.c_str()), on);
+    }
+
+    virtual void setUseMaterialNames(bool on)
+    {
+         QSettings::setValue(QString(IOS_USE_MAT_NAMES.c_str()), on);
+    }
+
+    virtual void setCentreModels(bool on)
+    {
+         QSettings::setValue(QString(IOS_CENTRE_MODEL.c_str()), on);
+    }
+
+    virtual void setGenerateUVs(bool on)
+    {
+         QSettings::setValue(QString(IOS_GENERATE_UVS.c_str()), on);
+    }
+
+    virtual void setApplyLayerSets(bool on)
+    {
+         QSettings::setValue(QString(IOS_APPLY_LAYER_SETS.c_str()), on);
+    }
 
 };
 

@@ -57,13 +57,6 @@ namespace repo {
 
 				~GLCRenderer();
 				
-                /**
-                 * Apply false colouring materials onto the meshes
-                 * call resetColors() to revert to original materials
-                 * @return returns a vector mapping between the decoded rgba value
-                 *         and mesh id
-                 */
-                std::vector<QString> applyFalseColoringMaterials();
 
 				/**
 				* Recursively extracts meshes from a given occurrence. 
@@ -141,7 +134,7 @@ namespace repo {
 				* @param color color of change to
 				*/
 				virtual void setMeshColor(
-					const repoUUID &uniqueID,
+                                        const repo::lib::RepoUUID &uniqueID,
 					const qreal &opacity,
 					const QColor &color);
 
@@ -259,16 +252,19 @@ namespace repo {
 				*/
                 void setGLCWorld(GLC_World &world,
                                  std::map<QString, GLC_Mesh*>     &_meshMap,
-                                 std::map<QString, GLC_Material*> &_matMap);
+                                 std::map<QString, GLC_Material*> &_matMap,
+                                 std::vector<QString> &_idmap);
 
+                virtual void tiltUp(const bool up);
 public slots :
 
                 /**
                 * Toggle between show/hide genericSpatialPartitioning
                 */
                 virtual void toggleGenericPartitioning(
-                        const std::vector<repo_vector_t> &sceneBbox,
+                        const std::vector<repo::lib::RepoVector3D> &sceneBbox,
                         const std::shared_ptr<repo_partitioning_tree_t> &tree);
+
 
                 /**
                 * Toggle between show/hide mesh bounding boxes
@@ -319,7 +315,7 @@ public slots :
                         const repo::core::model::RepoScene            *scene,
                         const repo::core::model::RepoScene::GraphType &gType,
                         const repo::core::model::RepoNode             *node,
-                        const std::vector<float>                      &matrix,
+                        const repo::lib::RepoMatrix                      &matrix,
                          GLC_Material                            *mat);
 
                 void createSPBoxes(
@@ -401,6 +397,11 @@ public slots :
                 void revertMeshMaterial(
                         const QString &uuidString);
 
+
+				virtual void toggleHighLight(
+                    const QString &meshId,
+                        const bool &highLight);
+
 				//! List of available shaders.
 				QList<GLC_Shader*> shaders;
 
@@ -414,12 +415,16 @@ public slots :
 				std::map<QString, GLC_Mesh*> meshMap;
 				std::map<QString, GLC_Material*> matMap;
 				std::map<GLC_Material*, GLC_Material> changedMats; //Map the pointer of the GLC material that has been changed to the original
-				glc::RenderFlag renderingFlag; //! Rendering flag.
+                std::vector<QString> idmap;
+                repo::core::model::RepoScene *scene;
+                glc::RenderFlag renderingFlag; //! Rendering flag.
+
 				bool isWireframe;
 
                 //! Globally applied clipping plane IDs
                 std::vector<GLC_CuttingPlane *> clippingPlaneWidgets;
-                QString currentlyHighLighted;
+                std::set<QString> currentlyHighLighted;
+				QString lastHighLighted;
 
                 //! Clipping plane
                 GLC_Plane* clippingPlane;

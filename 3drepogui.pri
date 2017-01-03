@@ -15,7 +15,6 @@ HEADERS +=  \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.h \
 	src/repo/gui/dialogs/repo_dialog_manager_access.h \
 	src/repo/gui/dialogs/repo_dialog_manager_connect.h \
-	src/repo/gui/dialogs/repo_dialog_map.h \
 	src/repo/gui/dialogs/repo_dialog_project.h \
 	src/repo/gui/dialogs/repo_dialog_role.h \
 	src/repo/gui/dialogs/repo_dialog_settings.h \
@@ -32,12 +31,12 @@ HEADERS +=  \
 	src/repo/gui/renderers/repo_renderer_abstract.h \
 	src/repo/gui/renderers/repo_renderer_glc.h \
 	src/repo/gui/renderers/repo_renderer_graph.h \
-	src/repo/gui/renderers/repo_webview.h \
 	src/repo/gui/widgets/repo_line_edit.h \
 	src/repo/gui/widgets/repo_mdi_area.h \
 	src/repo/gui/widgets/repo_mdi_subwindow.h \
 	src/repo/gui/widgets/repo_text_browser.h \
 	src/repo/gui/widgets/repo_widget_flags.h \
+	src/repo/gui/widgets/repo_widget_flags_ifc.h \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.h \
 	src/repo/gui/widgets/repo_widget_manager_clipping_plane.h \
 	src/repo/gui/widgets/repo_widget_manager_connect.h \
@@ -89,7 +88,6 @@ SOURCES +=  \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.cpp \
 	src/repo/gui/dialogs/repo_dialog_manager_access.cpp \
 	src/repo/gui/dialogs/repo_dialog_manager_connect.cpp \
-	src/repo/gui/dialogs/repo_dialog_map.cpp \
 	src/repo/gui/dialogs/repo_dialog_project.cpp \
 	src/repo/gui/dialogs/repo_dialog_role.cpp \
 	src/repo/gui/dialogs/repo_dialog_settings.cpp \
@@ -106,12 +104,12 @@ SOURCES +=  \
 	src/repo/gui/renderers/repo_renderer_abstract.cpp \
 	src/repo/gui/renderers/repo_renderer_glc.cpp \
 	src/repo/gui/renderers/repo_renderer_graph.cpp \
-	src/repo/gui/renderers/repo_webview.cpp \
 	src/repo/gui/widgets/repo_line_edit.cpp \
 	src/repo/gui/widgets/repo_mdi_area.cpp \
 	src/repo/gui/widgets/repo_mdi_subwindow.cpp \
 	src/repo/gui/widgets/repo_text_browser.cpp \
 	src/repo/gui/widgets/repo_widget_flags.cpp \
+	src/repo/gui/widgets/repo_widget_flags_ifc.cpp \
 	src/repo/gui/widgets/repo_widget_manager_3ddiff.cpp \
 	src/repo/gui/widgets/repo_widget_manager_clipping_plane.cpp \
 	src/repo/gui/widgets/repo_widget_manager_connect.cpp \
@@ -160,7 +158,6 @@ FORMS +=  \
 	forms/repo_dialog_manager_abstract.ui \
 	forms/repo_dialog_manager_access.ui \
 	forms/repo_dialog_manager_connect.ui \
-	forms/repo_dialog_map.ui \
 	forms/repo_dialog_project.ui \
 	forms/repo_dialog_role.ui \
 	forms/repo_dialog_settings.ui \
@@ -169,6 +166,7 @@ FORMS +=  \
 	forms/repo_gui.ui \
 	forms/repo_webview.ui \
 	forms/repo_widget_flags.ui \
+	forms/repo_widget_flags_ifc.ui \
 	forms/repo_widget_manager_3ddiff.ui \
 	forms/repo_widget_manager_clipping_plane.ui \
 	forms/repo_widget_repository.ui \

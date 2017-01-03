@@ -26,6 +26,7 @@
 #include <GLC_Octree>
 #include <GLC_State>
 #include <glc_renderstatistics.h>
+#include <viewport/glc_helicoptermover.h>
 //------------------------------------------------------------------------------
 
 using namespace repo::gui::renderer;
@@ -41,7 +42,7 @@ GLCRenderer::GLCRenderer()
     , clippingPlaneReverse(false)
     , shaderID(0)
     , isWireframe(false)
-    , currentlyHighLighted("")
+    , lastHighLighted("")
 {
     //--------------------------------------------------------------------------
     // GLC settings
@@ -86,32 +87,6 @@ GLCRenderer::~GLCRenderer()
 }
 
 
-std::vector<QString> GLCRenderer::applyFalseColoringMaterials()
-{
-    std::vector<QString> ids;
-    if(matMap.size() > (pow(2, 24) -1))
-    {
-        //We represent indices using rgb values, which is 3*8 bit.
-        //0 can't be used as it will be the same as the background,
-        // so we can represent 2^24-1 components
-        repoError << "This model has too many components to support selection!";
-        return ids;
-    }
-
-    ids.push_back(""); //white is never used as the background will be white.
-    for(auto &matPair : matMap)
-    {
-        QVector<GLubyte> colorId(4);
-        glc::encodeRgbId(ids.size(),&colorId[0]);
-        ids.push_back(matPair.first);
-        QColor color((int)colorId[0], (int)colorId[1], (int)colorId[2], (int)colorId[3]);
-        setMeshColor(matPair.first, 1.0, color);
-    }
-
-    return ids;
-
-
-}
 
 CameraSettings GLCRenderer::convertToCameraSettings(GLC_Camera *cam)
 {
@@ -151,7 +126,6 @@ void GLCRenderer::disableSelectionMode()
     {
         GLC_State::setSelectionMode(false);
         GLC_State::setUseCustomFalseColor(false);
-        resetColors();
     }
     else
     {
@@ -168,14 +142,6 @@ std::vector<QString> GLCRenderer::enableSelectionMode(const bool useCurrentMater
     {
         repoError << "Trying to enable selectionMode when it is in selection mode!";
     }
-    else if(matMap.size() > (pow(2, 24) -1))
-    {
-        //We represent indices using rgb values, which is 3*8 bit.
-        //0 can't be used as it will be the same as the background,
-        // so we can represent 2^24-1 components
-        repoError << "This model has too many components to support selection!";
-
-    }
     else
     {
 
@@ -190,12 +156,7 @@ std::vector<QString> GLCRenderer::enableSelectionMode(const bool useCurrentMater
         }
 
         GLC_State::setSelectionMode(true);
-        GLC_State::setUseCustomFalseColor(true);
-        if(!useCurrentMaterials)
-        {
-            idMapping = applyFalseColoringMaterials();
-        }
-
+        GLC_State::setUseCustomFalseColor(!useCurrentMaterials);
 
         glEnable(GL_DEPTH_TEST);
 
@@ -297,7 +258,7 @@ QImage GLCRenderer::getCurrentImageWithNoShading(
 
     fbo.bind();
 
-    idMap = enableSelectionMode(!useFalseColoring);
+    enableSelectionMode(!useFalseColoring);
     render(nullptr);
 
     auto image = fbo.toImage();
@@ -332,29 +293,95 @@ QImage GLCRenderer::getCurrentImageWithFalseColoring(
 void GLCRenderer::highlightMesh(
         const QString &meshId)
 {
-    if(currentlyHighLighted == meshId)
+	if (currentlyHighLighted.find(meshId) != currentlyHighLighted.end())
     {
         //currently highlighted, should unhighlight it
-        revertMeshMaterial(meshId);
-        currentlyHighLighted = "";
+        toggleHighLight(meshId, false);
+
+
     }
     else
     {
-        GLC_Material highlightMat;
+        toggleHighLight(meshId, true);
+		repoLog("Mesh: " + meshId.toStdString());
 
-
-        highlightMat.setAmbientColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setDiffuseColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setSpecularColor(QColor::fromRgbF(1.0f, 1.0f, 1.0f, 1.0f));
-        highlightMat.setEmissiveColor(QColor::fromRgbF(1.0f, 0.5f, 0.0f, 0.2f));
-        highlightMat.setOpacity(1.0);
-
-        changeMeshMaterial(meshId, highlightMat);
-        currentlyHighLighted = meshId;
     }
 
 
 
+}
+
+void GLCRenderer::toggleHighLight(
+    const QString &meshId,
+        const bool &highLight)
+{
+	auto meshIt = meshMap.find(meshId);
+	auto matIt = matMap.find(meshId);
+	GLC_Material *mat = nullptr;
+	if (matIt != matMap.end())
+	{
+		mat = matIt->second;
+
+	}
+	else if (meshIt != meshMap.end())
+	{
+		GLC_Mesh *mesh = meshIt->second;
+		if (mesh->materialCount())
+		{
+			//has material, alter the emissive color
+			auto matIds = mesh->materialIds();
+			mat = mesh->material(matIds[0]);
+		}
+		else
+		{
+			//The mesh should have at least the default material due to how GLC_Mesh is constructed
+			repoLogError("mesh " + meshId.toStdString() + " has no material. This is unexpected!");
+		}
+
+	}
+	else
+	{
+		repoLogError("Failed to set color of mesh " + meshId.toStdString() + " : mesh not found!");
+	}
+
+	if (mat)
+	{
+		bool selected = mat->isSelected();
+        if(selected != highLight)
+        {
+            auto geom = mat->getGeo();
+            for (const auto geo : geom.values())
+            {
+                auto mesh = dynamic_cast<GLC_Mesh*>(geo);
+                if (mesh)
+                {
+                    mesh->updateSubMeshSelectedCount(highLight);
+                }
+            }
+
+            mat->setSelection(highLight);
+			if (highLight){
+				currentlyHighLighted.insert(meshId);
+				lastHighLighted = meshId;
+			}
+			else
+			{
+				currentlyHighLighted.erase(meshId);
+				if (meshId == lastHighLighted)
+				{
+					if (currentlyHighLighted.size())
+						lastHighLighted = *currentlyHighLighted.begin();
+					else
+						lastHighLighted = "";
+				}
+			}
+
+        }
+
+
+
+
+	}
 }
 
 void GLCRenderer::changeMeshMaterial(
@@ -495,6 +522,7 @@ void GLCRenderer::loadModel(
 		offset = dOffset;
 	}
     
+    this->scene = scene;
 }
 
 bool GLCRenderer::move(const int &x, const int &y)
@@ -534,12 +562,12 @@ void GLCRenderer::setRenderingMode(const RenderMode &mode)
 }
 
 void GLCRenderer::setMeshColor(
-        const repoUUID &uniqueID,
+        const repo::lib::RepoUUID &uniqueID,
         const qreal &opacity,
         const QColor &color)
 {
 
-    QString uuidString = QString::fromStdString(UUIDtoString(uniqueID));
+    QString uuidString = QString::fromStdString(uniqueID.toString());
 
     setMeshColor(uuidString, opacity, color);
 }
@@ -599,6 +627,16 @@ void GLCRenderer::startNavigation(const NavMode &mode, const int &x, const int &
                     GLC_MoverController::Fly,
                     GLC_UserInput(x, y));
         break;
+    case NavMode::HELICOPTERF :
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::HelicopterF,
+                    GLC_UserInput(x, y));
+        break;
+    case NavMode::HELICOPTERV :
+        glcMoverController.setActiveMover(
+                    GLC_MoverController::HelicopterV,
+                    GLC_UserInput(x, y));
+        break;
 
     case NavMode::ZOOM :
         glcMoverController.setActiveMover(
@@ -621,7 +659,8 @@ void GLCRenderer::stopNavigation()
 
 void GLCRenderer::setGLCWorld(GLC_World                        &world,
                               std::map<QString, GLC_Mesh*>     &_meshMap,
-                              std::map<QString, GLC_Material*> &_matMap)
+                              std::map<QString, GLC_Material*> &_matMap,
+                              std::vector<QString> &_idmap)
 {
     repoLog("Setting GLC World...");
     repoLog("\tGLC World empty: " + std::to_string(world.isEmpty()));
@@ -630,6 +669,7 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
 
     meshMap    = _meshMap;
     matMap     = _matMap;
+    idmap = _idmap;
 
     this->glcWorld = world;
     this->glcWorld.collection()->setLodUsage(true, &glcViewport);
@@ -646,6 +686,19 @@ void GLCRenderer::setGLCWorld(GLC_World                        &world,
     glcViewport.setDistMinAndMax(bbox);
     setCamera(CameraView::ISO);
 
+    auto vmover = glcMoverController.getMover((int)NavMode::HELICOPTERV);
+    auto heliVMover = static_cast<GLC_HelicopterMover*>(vmover);
+    if(heliVMover)
+    {
+        heliVMover->setBoundingBox(bbox);
+    }
+
+    auto hmover = glcMoverController.getMover((int)NavMode::HELICOPTERF);
+    auto heliHMover = static_cast<GLC_HelicopterMover*>(hmover);
+    if(heliHMover)
+    {
+        heliHMover->setBoundingBox(bbox);
+    }
 
 
     //glcLight.setPosition(bbox.upperCorner().x(), bbox.upperCorner().y(), bbox.upperCorner().z());
@@ -737,13 +790,27 @@ void GLCRenderer::paintInfo(QPainter *painter,
                           tr("Tris") + ": " + locale.toString((qulonglong)GLC_RenderStatistics::triangleCount()));
         painter->drawText(9, 30, QString() +
                           tr("Objs") + ": " + locale.toString((uint)GLC_RenderStatistics::bodyCount()));
+		painter->drawText(9, 45, QString() +
+			tr("Meshes") + ": " + locale.toString((uint)idmap.size()));
 
         painter->drawText(screenWidth - 60, 14, fpsCounter.getFPSString());
 
         //----------------------------------------------------------------------
         // Display selection
-        if (!currentlyHighLighted.isEmpty())
-            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + currentlyHighLighted);
+        if (currentlyHighLighted.size())
+        {
+			
+            repo::lib::RepoUUID meshId = lastHighLighted.toStdString();
+            auto mesh = scene->getNodeByUniqueID(repo::core::model::RepoScene::GraphType::DEFAULT,meshId);
+			QString meshString = lastHighLighted;
+            if(mesh)
+            {
+				meshString = QString::fromStdString(mesh->getName()) + "(" + lastHighLighted + ")";
+            }
+
+            painter->drawText(9, screenHeight - 9, tr("Selected") + ": " + meshString);
+        }
+
 
         glMatrixMode(GL_PROJECTION);
         glPopMatrix();
@@ -812,26 +879,35 @@ void GLCRenderer::render(QPainter *painter,
 
         //----------------------------------------------------------------------
         // Display selected objects
-        const int selectedNodesCount = glcWorld.collection()->selectionSize();
+        const int selectedNodesCount = glcWorld.collection()->selectionSize() + currentlyHighLighted.size();
         if ((selectedNodesCount > 0) &&
                 GLC_State::selectionShaderUsed() &&
                 !GLC_State::isInSelectionMode())
         {
-            //if (selectedNodesCount != glcWorld.collection()->drawableObjectsSize())
-            //{
-            //Draw the selection with Zbuffer
-            glcWorld.render(1, renderingFlag);
-            //}
+			if (glcWorld.collection()->selectionSize())
+            {
+				//Draw the selection with Zbuffer
+				glcWorld.render(1, renderingFlag);
+            }
+
             glPushAttrib(GL_ENABLE_BIT | GL_DEPTH_BUFFER_BIT);
             // Draw the selection transparent
             glEnable(GL_CULL_FACE);
             glEnable(GL_BLEND);
             glDepthFunc(GL_ALWAYS);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-            glcWorld.render(1, renderingFlag);
+			if (currentlyHighLighted.size())
+			{
+				GLC_State::setRenderSelectionMode(true);
+				glcWorld.render(0, renderingFlag);
+				GLC_State::setRenderSelectionMode(false);
+			}
+			if (glcWorld.collection()->selectionSize())
+				glcWorld.render(1, renderingFlag);
             glPopAttrib();
+
         }
-        else if (selectedNodesCount > 0)
+		else if (glcWorld.collection()->selectionSize()  > 0)
             glcWorld.render(1, renderingFlag);
 
         // Remove global shader if set.
@@ -936,9 +1012,8 @@ void GLCRenderer::revertMeshMaterial(
 
 void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool multiSelection)
 {
-    if(multiSelection)
-        repoLogError("Multi-selection currently does not work");
-    //FIXME: multi-selection doesn't work at the moment
+
+	//FIXME: multi-selection doesn't work at the moment
     if(matMap.size() > (pow(2, 24) -1))
     {
         //We represent indices using rgb values, which is 3*8 bit.
@@ -947,6 +1022,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
         repoError << "This model has too many components to support selection!";
         return;
     }
+	
 
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
@@ -956,7 +1032,7 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     QColor backgroundColor = glcViewport.backgroundColor();
     glcViewport.setBackgroundColor(QColor(Qt::white));
 
-    auto ids = enableSelectionMode(false);
+    enableSelectionMode(false);
 
     render(nullptr);
 
@@ -968,10 +1044,25 @@ void GLCRenderer::selectComponent(QOpenGLContext *context, int x, int y, bool mu
     disableSelectionMode();
     GLC_uint returnId = glc::decodeRgbId(&colorId[0]);
 
-    if(returnId < ids.size())
+	QString meshId;
+    if(--returnId < idmap.size())
     {
-        highlightMesh(ids[(int)returnId]);
+		meshId = idmap[(int)returnId];
+		highlightMesh(meshId);
     }
+
+	if (!multiSelection)
+	{
+		//We need to copy the set into vector first or it'll hit the assertion about erasing elements from sets whilst iterating.
+		std::vector<QString> meshVec;
+		std::copy(currentlyHighLighted.begin(), currentlyHighLighted.end(), std::back_inserter(meshVec));
+		for (const auto mesh : meshVec)
+		{
+			if (mesh != meshId)
+				toggleHighLight(mesh, false);
+		}
+
+	}
     fbo.release();
     fbo.bindDefault();
 
@@ -988,7 +1079,7 @@ void GLCRenderer::setActivationFlag(const bool &flag)
 
 void GLCRenderer::setAndInitSelectionShaders(QFile &vertexFile, QFile &fragmentFile, QOpenGLContext *context)
 {
-    if (GLC_State::glslUsed()) // && !GLC_State::selectionShaderUsed())
+    if (GLC_State::glslUsed())
     {
         GLC_State::setSelectionShaderUsage(true);
         GLC_SelectionMaterial::setShaders(vertexFile,fragmentFile,context);
@@ -1108,7 +1199,7 @@ void GLCRenderer::createSPBoxes(
 }
 
 void GLCRenderer::toggleGenericPartitioning(
-                       const std::vector<repo_vector_t> &sceneBbox,
+                       const std::vector<repo::lib::RepoVector3D> &sceneBbox,
                        const std::shared_ptr<repo_partitioning_tree_t> &tree)
 {
 
@@ -1116,8 +1207,11 @@ void GLCRenderer::toggleGenericPartitioning(
     {
         if(tree)
         {
-            static GLC_Material* mat = new GLC_Material(Qt::yellow);
-            mat->setOpacity(0.1);
+			
+			auto mat = new GLC_Material(Qt::yellow);
+			mat->setOpacity(0.1);
+			
+			
 
             std::vector<std::vector<float>> bbox = {
                 {sceneBbox[0].x, sceneBbox[0].y, sceneBbox[0].z},
@@ -1133,15 +1227,14 @@ void GLCRenderer::toggleGenericPartitioning(
                 }
             }
 
-            repoLog("Bounding box: ["+std::to_string(sceneBbox[0].x)+","+std::to_string(sceneBbox[0].y)+","+std::to_string(sceneBbox[0].z)
-                    +"]["+std::to_string(sceneBbox[1].x)+","+std::to_string(sceneBbox[1].y)+","+std::to_string(sceneBbox[1].z)
-                    +"]");
             createSPBoxes(tree, bbox, mat);
         }
 
     }
-    else
-        glcViewCollection.clear();
+	else
+	{
+		glcViewCollection.clear();
+	}
 
 }
 
@@ -1149,7 +1242,7 @@ void GLCRenderer::createMeshBBoxes(
         const repo::core::model::RepoScene            *scene,
         const repo::core::model::RepoScene::GraphType &gType,
         const repo::core::model::RepoNode             *node,
-        const std::vector<float>                      &matrix,
+        const repo::lib::RepoMatrix                       &matrix,
               GLC_Material                            *mat)
 {
     switch(node->getTypeAsEnum())
@@ -1164,8 +1257,8 @@ void GLCRenderer::createMeshBBoxes(
                 {
                     for(const auto &map : mappings)
                     {
-                        auto min = multiplyMatVec(matrix,  map.min);
-                        auto max = multiplyMatVec(matrix,  map.max);
+                        auto min = matrix * map.min;
+                        auto max = matrix * map.max;
 
                         GLC_Point3d lower (min.x, min.y, min.z);
                         GLC_Point3d higher(max.x, max.y, max.z);
@@ -1182,7 +1275,7 @@ void GLCRenderer::createMeshBBoxes(
                     auto currentBox = meshPtr->getBoundingBox();
                     for(auto &entry : currentBox)
                     {
-                        entry = multiplyMatVec(matrix, entry);
+                        entry = matrix* entry;
                     }
 
                     GLC_Point3d lower (currentBox[0].x, currentBox[0].y, currentBox[0].z);
@@ -1201,7 +1294,7 @@ void GLCRenderer::createMeshBBoxes(
         case repo::core::model::NodeType::TRANSFORMATION:
         {
             auto transPtr = dynamic_cast<const repo::core::model::TransformationNode*>(node);
-            auto newTrans = matMult(matrix, transPtr->getTransMatrix(false));
+            auto newTrans = matrix * transPtr->getTransMatrix(false);
             auto children = scene->getChildrenAsNodes(gType, transPtr->getSharedID());
             for(const auto &child : children)
             {
@@ -1282,11 +1375,12 @@ void GLCRenderer::toggleProjection()
 
 void GLCRenderer::toggleSelectAll()
 {
-    if (glcWorld.collection()->selectionSize() ==
-            glcWorld.collection()->drawableObjectsSize())
-        glcWorld.unselectAll();
-    else
-        glcWorld.selectAllWith3DViewInstanceInCurrentShowState();
+    bool selectAll = currentlyHighLighted.size() != idmap.size();
+    for (const auto mesh : idmap)
+    {
+        toggleHighLight(mesh, selectAll);
+    }
+
 }
 
 void GLCRenderer::toggleWireframe()
@@ -1404,6 +1498,15 @@ void GLCRenderer::updateClippingPlane(Axis axis, double value, bool reverse)
 
         clippingPlaneWidget->setVisible(true);
     }
+}
+
+void GLCRenderer::tiltUp(const bool up)
+{
+    auto normal = glcViewport.cameraHandle()->upVector() ^  glcViewport.cameraHandle()->forward();
+    double angle = 0.05;
+    if(!up)  angle*=-1.;
+    glcViewport.cameraHandle()->rotateAround(normal,angle,  glcViewport.cameraHandle()->eye());
+    emit cameraChanged(getCurrentCamera());
 }
 
 void GLCRenderer::zoom(const float &zoom)

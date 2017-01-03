@@ -132,7 +132,7 @@ public slots :
                 * @param color color of change to
                 */
     void setMeshColor(
-            const repoUUID &uniqueID,
+            const repo::lib::RepoUUID &uniqueID,
             const qreal &opacity,
             const QColor &color);
 
@@ -304,7 +304,7 @@ public:
 
     bool mousePressed;
 
-    std::vector<repo_vector_t> sceneBbox;
+    std::vector<repo::lib::RepoVector3D> sceneBbox;
     std::shared_ptr<repo_partitioning_tree_t> partition;
 }; // end
 

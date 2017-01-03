@@ -20,7 +20,9 @@
 include(dependencies.pri)
 
 #=========================== QT Configuration ==================================
-QT += core gui opengl openglextensions webkitwidgets network svg concurrent #gui-private
+
+QT += core gui opengl openglextensions network svg concurrent #gui-private
+
 unix:!macx:QT += x11extras
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets

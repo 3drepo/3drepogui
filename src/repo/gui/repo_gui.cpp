@@ -44,7 +44,6 @@
 #include "primitives/repo_color.h"
 #include "dialogs/repo_dialog_manager_abstract.h"
 #include "dialogs/repo_dialog_federation.h"
-#include "dialogs/repo_dialog_map.h"
 
 
 //------------------------------------------------------------------------------
@@ -58,6 +57,7 @@ const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_GEOMETRY    = "RepoGUI/geome
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_STATE       = "RepoGUI/state";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_LINK_WINDOWS    = "RepoGUI/link";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_FLY_NAVIGATION = "RepoGUI/fly";
+const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION = "RepoGUI/helicopter";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION = "RepoGUI/trackball";
 const QString repo::gui::RepoGUI::REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION = "RepoGUI/turntable";
 
@@ -207,10 +207,6 @@ repo::gui::RepoGUI::RepoGUI(
                      this, SLOT(openAccessManager()));
      ui->actionAccessManager->setIcon(primitive::RepoFontAwesome::getAccessManagerIcon());
 
-    // Add Map Tiles...
-    QObject::connect(ui->actionAddMapTiles, SIGNAL(triggered()),
-                     this, SLOT(addMapTiles()));
-
     //--------------------------------------------------------------------------
     // Drop
     QObject::connect(ui->actionRemoveProject, SIGNAL(triggered()), this, SLOT(removeProject()));
@@ -245,8 +241,11 @@ repo::gui::RepoGUI::RepoGUI(
     QObject::connect(ui->actionTrack_Ball, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
     ui->actionTrack_Ball->setIcon(primitive::RepoFontAwesome::getTrackBallIcon());
     navigationModeActionGroup->addAction(ui->actionFly);
-    QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    QObject::connect(ui->actionFly, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);    
     ui->actionFly->setIcon(primitive::RepoFontAwesome::getFlyIcon());
+    navigationModeActionGroup->addAction(ui->actionHelicopter);
+    QObject::connect(ui->actionHelicopter, &QAction::triggered, this, &RepoGUI::toggleNavigationMode);
+    ui->actionHelicopter->setIcon(primitive::RepoFontAwesome::getHelicopterIcon());
 
     if (ui->actionTurntable->isChecked())
         ui->actionTurntable->trigger();
@@ -254,6 +253,8 @@ repo::gui::RepoGUI::RepoGUI(
         ui->actionTrack_Ball->trigger();
     else if (ui->actionFly->isChecked())
         ui->actionFly->trigger();
+    else if (ui->actionHelicopter->isChecked())
+        ui->actionHelicopter->trigger();
 
     //	connect(actionISO, SIGNAL(triggered()), this, SLOT(cameraISOSlot()));
     //	actionISO->setIcon(RepoFontAwesome::getInstance().getIcon(RepoFontAwesome::fa_dot_circle_o));
@@ -289,12 +290,7 @@ repo::gui::RepoGUI::RepoGUI(
                      ui->mdiArea, SLOT(addSceneGraphSubWindow()));
     ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
-    // Web View
-    QObject::connect(ui->actionWeb_View, &QAction::triggered,
-                     ui->mdiArea, &widget::RepoMdiArea::addWebViewSubWindow);
-    ui->actionWeb_View->setIcon(
-                primitive::RepoFontAwesome::getInstance().getIcon(
-                    primitive::RepoFontAwesome::fa_globe));
+
 
 
     //--------------------------------------------------------------------------
@@ -429,18 +425,6 @@ void repo::gui::RepoGUI::about()
     aboutDialog.exec();
 }
 
-void repo::gui::RepoGUI::addMapTiles()
-{
-    dialog::MapDialog mapTilesDialog(this);
-    if(mapTilesDialog.exec()){
-
-        repo::core::model::RepoScene *scene = controller->createMapScene(mapTilesDialog.getMap());
-        if (scene)
-        {
-            commit(scene);
-        }
-    }
-}
 
 // TODO: fix me
 void repo::gui::RepoGUI::addSelectionTree()
@@ -556,7 +540,6 @@ void repo::gui::RepoGUI::connectDB()
             ui->actionDisconnect->setEnabled(true);
             ui->actionAccessManager->setEnabled(true);
             ui->actionFederate->setEnabled(true);
-            ui->actionAddMapTiles->setEnabled(true);
             ui->actionRemoveProject->setEnabled(true);
         }
         else
@@ -612,7 +595,6 @@ void repo::gui::RepoGUI::disconnectDB()
         ui->actionDisconnect->setEnabled(false);
         ui->actionAccessManager->setEnabled(false);
         ui->actionFederate->setEnabled(false);
-        ui->actionAddMapTiles->setEnabled(false);
         ui->actionRemoveProject->setEnabled(false);
     }
 }
@@ -952,6 +934,11 @@ void repo::gui::RepoGUI::toggleNavigationMode()
     {
         ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::FLY);
     }
+    else if (action == ui->actionHelicopter ||
+              ui->menuNavigation->menuAction()->text() == ui->actionHelicopter->text())
+    {
+        ui->mdiArea->setNavigationMode(repo::gui::renderer::NavMode::HELICOPTER);
+    }
 
 }
 
@@ -1063,6 +1050,7 @@ void repo::gui::RepoGUI::restoreSettings()
     restoreGeometry(settings.value(REPO_SETTINGS_GUI_GEOMETRY).toByteArray());
     restoreState(settings.value(REPO_SETTINGS_GUI_STATE).toByteArray());
     ui->actionLink->setChecked(settings.value(REPO_SETTINGS_LINK_WINDOWS, true).toBool());
+    ui->actionHelicopter->setChecked(settings.value(REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION, false).toBool());
     ui->actionFly->setChecked(settings.value(REPO_SETTINGS_GUI_FLY_NAVIGATION, false).toBool());
     ui->actionTrack_Ball->setChecked(settings.value(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, false).toBool());
     ui->actionTurntable->setChecked(settings.value(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, true).toBool());
@@ -1074,6 +1062,7 @@ void repo::gui::RepoGUI::storeSettings()
     settings.setValue(REPO_SETTINGS_GUI_GEOMETRY, saveGeometry());
     settings.setValue(REPO_SETTINGS_GUI_STATE, saveState());
     settings.setValue(REPO_SETTINGS_LINK_WINDOWS, ui->actionLink->isChecked());
+    settings.setValue(REPO_SETTINGS_GUI_HELICOPTER_NAVIGATION, ui->actionHelicopter->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_FLY_NAVIGATION, ui->actionFly->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_TRACKBALL_NAVIGATION, ui->actionTrack_Ball->isChecked());
     settings.setValue(REPO_SETTINGS_GUI_TURNTABLE_NAVIGATION, ui->actionTurntable->isChecked());

@@ -47,6 +47,7 @@ void SceneGraphWorker::run()
 	done = 0;
 	emit progress(0, 0); // undetermined (moving) progress bar
 
+    repoLog("Fetching scene: " + database + ", " + project);
 	repo::core::model::RepoScene *masterSceneGraph
 		= controller->fetchScene(
 		token,

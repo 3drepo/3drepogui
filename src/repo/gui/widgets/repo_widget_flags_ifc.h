@@ -17,43 +17,56 @@
 
 #pragma once
 
+//------------------------------------------------------------------------------
+// Qt
 #include <QWidget>
-#include <QUrl>
-#include <QtNetwork>
-#include <QWebSettings>
-#include <QGraphicsWebView>
-#include <QGLWidget>
+#include <QSettings>
+
+//------------------------------------------------------------------------------
+// GUI
+#include "../../settings/repo_settings.h"
 
 namespace Ui {
-class RepoWebView;
+class IFCFlagsWidget;
 }
 
 namespace repo {
 namespace gui {
-namespace renderer {
+namespace widget {
 
-	class RepoWebView : public QWidget
+    class IFCFlagsWidget : public QWidget
 	{
 		Q_OBJECT
 
+			//! Databases header positions
+        enum PreDefinedIFCSettings { DEFAULT = 0 };
+
 	public:
-        explicit RepoWebView(const QUrl& url = QUrl("https://www.3drepo.io"),
-			QWidget *parent = 0);
-		~RepoWebView();
 
+        explicit IFCFlagsWidget(QWidget *parent = 0);
 
-		public slots:
+		repo::settings::RepoSettings* getSettings() const { return settings; }
 
-		void loadFromAddressBar();
+        ~IFCFlagsWidget();
 
-		void setAddressBar(const QUrl& url);
-		void setAddressBar(const QString& url);
+		public slots :
+
+		//! Saves the current state of the flags into settings.
+		void apply();
+
+		void reset();
+
+		void setPredefinedSettings(int);
 
 	private:
-		Ui::RepoWebView *ui;
 
-	}; // end class
+		//! UI var.
+        Ui::IFCFlagsWidget *ui;
 
+		//! Persistent application settings.
+		repo::settings::RepoSettings *settings;
+
+	};
 }
 } // end namespace gui
 } // end namespace repo

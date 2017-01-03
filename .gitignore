@@ -1,6 +1,7 @@
 /*.user
-release
 *~
+/release
+tools/release/scratch
 Lib
 Makefile
 debug_me

@@ -39,7 +39,7 @@ DiffWorker::DiffWorker(
     , diffMode(diffMode)
 	, colourCorres(colourCorres)
 {
-	qRegisterMetaType<repoUUID>("repoUUID");
+    qRegisterMetaType<repo::lib::RepoUUID>("repo::lib::RepoUUID");
 }
 
 DiffWorker::~DiffWorker() {}
@@ -98,28 +98,28 @@ void DiffWorker::processResultsByDiff(
     //Diff is always done on unoptimised graph.
     const repo::core::model::RepoScene::GraphType gType =
                                          repo::core::model::RepoScene::GraphType::DEFAULT;
-	for (const repoUUID id : aRes.added)
+    for (const repo::lib::RepoUUID id : aRes.added)
 	{
         repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(gType, id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
             emit colorChangeOnA(node->getUniqueID(), 1.0, Qt::red);
 	}
 
-	for (const repoUUID id : aRes.modified)
+    for (const repo::lib::RepoUUID id : aRes.modified)
 	{
         repo::core::model::RepoNode* node = sceneA->getNodeBySharedID(gType, id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
 			emit colorChangeOnA(node->getUniqueID(), 1.0, Qt::cyan);
 	}
 
-	for (const repoUUID id : bRes.added)
+    for (const repo::lib::RepoUUID id : bRes.added)
 	{
         repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(gType, id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)
 			emit colorChangeOnB(node->getUniqueID(), 1.0, Qt::green);
 	}
 
-	for (const repoUUID id : bRes.modified)
+    for (const repo::lib::RepoUUID id : bRes.modified)
 	{
         repo::core::model::RepoNode* node = sceneB->getNodeBySharedID(gType, id);
 		if (node && node->getTypeAsEnum() == repo::core::model::NodeType::MESH)

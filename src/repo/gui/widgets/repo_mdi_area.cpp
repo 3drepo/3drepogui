@@ -19,7 +19,6 @@
 #include "../../workers/repo_worker_scene_graph.h"
 #include "repo_widget_rendering.h"
 #include "repo_widget_rendering_2d.h"
-#include "../renderers/repo_webview.h"
 
 using namespace repo::gui;
 using namespace repo::gui::widget;
@@ -270,10 +269,6 @@ repo::gui::widget::RepoMdiSubWindow * RepoMdiArea::addSubWindow(
 	return repoSubWindow;
 }
 
-repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addWebViewSubWindow()
-{
-    return addSubWidget(new renderer::RepoWebView());
-}
 
 repo::gui::widget::RepoMdiSubWindow* RepoMdiArea::addSceneGraphSubWindow()
 {

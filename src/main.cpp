@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationName("3D Repo");
     QCoreApplication::setOrganizationDomain("3drepo.org");
     QCoreApplication::setApplicationName("3D Repo GUI");
-    QCoreApplication::setApplicationVersion("1.6.0");
+    QCoreApplication::setApplicationVersion("1.7.8");
 
     std::vector<repo::lib::RepoAbstractListener*> listeners;
     listeners.push_back(repo::logger::RepoLogger::getInstance());
 
-    repo::RepoController *controller = new repo::RepoController(listeners);
+    repo::RepoController *controller = new repo::RepoController(listeners, 4, 1);
 
 
 	//check env var to see whether a debug level is set
