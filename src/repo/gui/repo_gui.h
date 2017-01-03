@@ -31,7 +31,7 @@
 //------------------------------------------------------------------------------
 
 
-#define EXPECTED_BOUNCER_VERSION "1.7.6"
+#define EXPECTED_BOUNCER_VERSION "1.8.0"
 
 namespace Ui
 {
