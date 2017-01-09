@@ -20,6 +20,6 @@
 
 using namespace repo::gui::renderer;
 
-AbstractRenderer::AbstractRenderer(){}
+AbstractRenderer::AbstractRenderer():selectionEnabled(true){}
 
 AbstractRenderer::~AbstractRenderer(){}
