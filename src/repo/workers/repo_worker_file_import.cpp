@@ -42,8 +42,9 @@ void repo::worker::FileImportWorker::run()
 	repoLog("loading repoScene from file");
     repo::settings::RepoSettings settings;
      QFileInfo pathInfo(QString::fromStdString(fullPath));
-	repo::core::model::RepoScene * repoGraphScene 
-        = controller->loadSceneFromFile(fullPath, true, "fbx" == pathInfo.suffix(), &settings);
+    auto ext = pathInfo.suffix().toLower();
+	repo::core::model::RepoScene * repoGraphScene             
+        = controller->loadSceneFromFile(fullPath, true, "fbx" == ext, &settings);
 
 
 
