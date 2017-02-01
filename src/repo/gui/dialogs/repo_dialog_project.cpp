@@ -76,6 +76,7 @@ repo::core::model::RepoProjectSettings ProjectDialog::getSettings() const
     auto projectChanges =  repo::core::model::RepoBSONFactory::makeRepoProjectSettings(
                 ui->nameLineEdit->text().toStdString(),
                 ui->ownerComboBox->currentText().toStdString(),
+                projectSettings.isFederate(),
                 ui->typeComboBox->currentText().toStdString(),
                 ui->descriptionPlainTextEdit->toPlainText().toStdString(),
                 ui->pinSizeDoubleSpinBox->value(),
