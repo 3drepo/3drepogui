@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("3D Repo");
 	QCoreApplication::setOrganizationDomain("3drepo.org");
 	QCoreApplication::setApplicationName("3D Repo GUI");
-	QCoreApplication::setApplicationVersion("1.8.3");
+	QCoreApplication::setApplicationVersion("1");
 
 	std::vector<repo::lib::RepoAbstractListener*> listeners;
 	listeners.push_back(repo::logger::RepoLogger::getInstance());
