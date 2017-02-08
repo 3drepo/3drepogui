@@ -52,10 +52,22 @@ public:
 
     virtual ~AbstractRenderer();
 
+
     /**
     * Delete shaders
     */
     virtual void deleteShaders(QOpenGLContext *context)  = 0;
+
+    /**
+     * Disable geometry selection
+     */
+    virtual void disableSelection(){selectionEnabled = false;}
+
+    /**
+     * Enable geometry selection
+     */
+
+    virtual void enableSelection(){selectionEnabled = true;}
 
     /**
     * Get information about the current camera settings
@@ -318,6 +330,7 @@ public slots :
 protected:
 
     RepoFPSCounter fpsCounter;
+    bool selectionEnabled;
 
 }; // end class
 } //end namespace renderer
