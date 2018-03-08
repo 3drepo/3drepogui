@@ -28,6 +28,7 @@
 #include "../gui/primitives/repo_fontawesome.h"
 #include "../gui/primitives/repo_sort_filter_proxy_model.h"
 #include "../workers/repo_worker_databases.h"
+#include "../workers/repo_worker_repositories.h"
 
 using namespace repo::gui::primitive;
 using namespace repo::core::model;
@@ -84,12 +85,17 @@ public slots :
 
     void refreshHost(RepoStandardItem *host);
 
-    RepoStandardItemRow addHost(RepoController::RepoToken* token);
+    void refreshDatabase(RepoStandardItem *database);
+
+    void addHost(RepoController::RepoToken* token);
 
     void addHost(const RepoStandardItemRow &hostRow);
 
     void addDatabase(const RepoStandardItemRow &hostRow,
                      const RepoStandardItemRow &databaseRow);
+
+    void addProject(const RepoStandardItemRow &databaseRow,
+                    const RepoStandardItemRow &projectRow);
 
     void setDatabaseStats(const RepoStandardItemRow &hostRow,
                           const RepoStandardItemRow &databaseRow,

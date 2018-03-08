@@ -56,7 +56,7 @@ namespace dialog {
 
 		virtual int exec();
 
-		void refresh();
+        void refresh();
 
 		void updateUsersTabCount(int count);
 

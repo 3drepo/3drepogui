@@ -36,7 +36,7 @@ RepoStandardItemRow RepoStandardItemFactory::makeHostRow(
 
     item->setToolTip(QString::fromStdString(host) + ":" + QString::number(port));
     item->setIcon(RepoFontAwesome::getHostIcon());
-    item->setType(RepoDatabasesTypes::HOST);
+    item->setType(RepoDatabasesTypes::HOST_DIRTY);
     row.append(item);
 
     row.append(new RepoStandardItem(0, true)); // count
@@ -53,13 +53,31 @@ RepoStandardItemRow RepoStandardItemFactory::makeDatabaseRow(const std::string &
     RepoStandardItem *item = new RepoStandardItem(db, db);
     item->setData(db);
     item->setIcon(RepoFontAwesome::getDatabaseIcon());
-    item->setType(RepoDatabasesTypes::DATABASE);
+    item->setType(RepoDatabasesTypes::DATABASE_DIRTY);
     row.append(item);
     row.append(new RepoStandardItem(0, true)); // count
     row.append(new RepoStandardItem(0, true)); // allocated
     row.append(new RepoStandardItem(0, true)); // storage size
 
-    item->appendRow({new RepoStandardItem("..", QVariant()), new RepoStandardItem(0, true), new RepoStandardItem(0, true),new RepoStandardItem(0, true)});
+    // Empty sub-item with ".." as text
+    item->appendRow({new RepoStandardItem("..", QVariant()),
+                     new RepoStandardItem(0, true),
+                     new RepoStandardItem(0, true),
+                     new RepoStandardItem(0, true)});
+    return row;
+}
 
+RepoStandardItemRow RepoStandardItemFactory::makeProjectRow(const std::string &project)
+{
+    QString pr = QString::fromStdString(project);
+    RepoStandardItemRow row;
+    RepoStandardItem *item = new RepoStandardItem(pr, pr);
+    item->setData(pr);
+    item->setIcon(RepoFontAwesome::getProjectIcon());
+    item->setType(RepoDatabasesTypes::PROJECT_DIRTY);
+    row.append(item);
+    row.append(new RepoStandardItem(0, true)); // count
+    row.append(new RepoStandardItem(0, true)); // allocated
+    row.append(new RepoStandardItem(0, true)); // storage size
     return row;
 }

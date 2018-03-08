@@ -37,9 +37,12 @@ struct RepoStandardItemRow : QList<RepoStandardItem *>
 enum RepoDatabasesColumns { NAME = 0, COUNT = 1, ALLOCATED = 2, SIZE = 3,  };
 
 enum RepoDatabasesTypes {
-    HOST      = 0 + QStandardItem::UserType,
-    DATABASE  = 1 + QStandardItem::UserType,
-    PROJECT   = 2 + QStandardItem::UserType
+    HOST_DIRTY      = QStandardItem::UserType + 0,
+    HOST_CACHED     = QStandardItem::UserType + 1,
+    DATABASE_DIRTY  = QStandardItem::UserType + 2,
+    DATABASE_CACHED = QStandardItem::UserType + 3,
+    PROJECT_DIRTY   = QStandardItem::UserType + 4,
+    PROJECT_CACHED  = QStandardItem::UserType + 5
 };
 
 class RepoStandardItemFactory
@@ -52,6 +55,8 @@ public:
             RepoController::RepoToken *token);
 
     static RepoStandardItemRow makeDatabaseRow(const std::string &database);
+
+    static RepoStandardItemRow makeProjectRow(const std::string &project);
 };
 
 }

@@ -556,8 +556,6 @@ void repo::gui::RepoGUI::connectDB()
             //connection/authentication success
             ui->widgetRepository->fetchDatabases(controller, token);
 
-
-
             //-----------------------------------------------------------------
             // enable buttons
             ui->actionRefresh->setEnabled(true);
@@ -570,7 +568,6 @@ void repo::gui::RepoGUI::connectDB()
             ui->actionFederate->setEnabled(true);
             ui->actionAddMapTiles->setEnabled(true);
             ui->actionRemoveProject->setEnabled(true);
-
 
 
             repos->connect(token);
@@ -617,6 +614,9 @@ QMenu* repo::gui::RepoGUI::createPanelsMenu()
 
 void repo::gui::RepoGUI::disconnectDB()
 {
+
+    // TODO: disconnect selected DB or potentially all of them
+
     if (ui->widgetRepository->disconnectDB())
     {
         // disable buttons

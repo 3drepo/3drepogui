@@ -130,13 +130,25 @@ namespace primitive {
 		//! Returns a pre-defined database icon.
 		static QIcon getDatabaseIcon()
 		{
-			return QApplication::style()->standardIcon(QStyle::SP_DriveHDIcon);
+            return QApplication::style()->standardIcon(QStyle::SP_DirIcon); // QStyle::SP_DriveHDIcon
 		} // getIconStatic(fa_database); }
+
+        //! Returns a pre-defined database icon.
+        static QIcon getDatabaseOpenIcon()
+        {
+            return QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon);
+        }
+
+        static QIcon getDatabaseClosedIcon()
+        {
+            return QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon);
+        }
 
 		//! Returns a pre-defined project icon.
 		static QIcon getProjectIcon()
 		{
-			return getIconStatic(fa_list_alt);
+//			return getIconStatic(fa_list_alt);
+            return QApplication::style()->standardIcon(QStyle::SP_FileIcon);
 		}
 
 		//! Returns a pre-defined history icon.

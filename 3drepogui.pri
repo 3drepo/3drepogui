@@ -78,7 +78,8 @@ HEADERS +=  \
 	src/repo/workers/repo_worker_project_settings.h \
 	src/repo/workers/repo_worker_roles.h \
 	src/repo/workers/repo_worker_scene_graph.h \
-	src/repo/workers/repo_worker_users.h
+	src/repo/workers/repo_worker_users.h \
+    $$PWD/src/repo/workers/repo_worker_repositories.h
 
 SOURCES +=  \
 	src/main.cpp \
@@ -154,7 +155,8 @@ SOURCES +=  \
 	src/repo/workers/repo_worker_project_settings.cpp \
 	src/repo/workers/repo_worker_roles.cpp \
 	src/repo/workers/repo_worker_scene_graph.cpp \
-	src/repo/workers/repo_worker_users.cpp
+	src/repo/workers/repo_worker_users.cpp \
+    $$PWD/src/repo/workers/repo_worker_repositories.cpp
 
 FORMS +=  \
 	forms/repo_dialog_about.ui \

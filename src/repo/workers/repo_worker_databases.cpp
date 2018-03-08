@@ -87,6 +87,9 @@ void DatabasesWorker::run()
     }
     emit progressValueChanged(jobsCount);
 
+    // All done, mark host as cached
+    hostRow[NAME]->setType(HOST_CACHED);
+
     //----------------------------------------------------------------------
     // For each database (if not cancelled)
 //    std::list<std::string> databases = controller->getDatabases(token);
