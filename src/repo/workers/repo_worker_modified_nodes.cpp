@@ -44,8 +44,8 @@ void RepoWorkerModifiedNodes::run()
 
     if (scene && !cancelled)
     {
-        std::vector<repoUUID> modifiedNodes = scene->getModifiedNodesID();
-		std::vector<repoUUID> addedNodes = scene->getAddedNodesID();
+        std::vector<repo::lib::RepoUUID> modifiedNodes = scene->getModifiedNodesID();
+        std::vector<repo::lib::RepoUUID> addedNodes = scene->getAddedNodesID();
 		std::vector<repo::core::model::RepoNode*> removedNodes = scene->getRemovedNodes();
         emit progressRangeChanged(0, modifiedNodes.size());
 		int i = skip;

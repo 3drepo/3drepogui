@@ -194,11 +194,11 @@ void HistoryDialog::addRevision(repo::core::model::RevisionNode *revision)
 		row.append(createItem(author));
 
 		// UID
-		QVariant uid(QUuid(UUIDtoString(revision->getUniqueID()).c_str()));
+        QVariant uid(QUuid(revision->getUniqueID().toString().c_str()));
 		row.append(createItem(uid));
 
 		// SID
-		QVariant sid(QUuid(UUIDtoString(revision->getSharedID()).c_str()));
+        QVariant sid(QUuid(revision->getSharedID().toString().c_str()));
 		row.append(createItem(sid));
 
 		//--------------------------------------------------------------------------
@@ -252,12 +252,12 @@ void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex
             ui->messageTextEdit->appendPlainText(QString::fromStdString(revision->getMessage()));
 
             // TODO: submit only diffed "added", "modified" and "deleted" fields rather than "current"
-            for (repoUUID uuid : revision->getCurrentIDs())
+            for (repo::lib::RepoUUID uuid : revision->getCurrentIDs())
             {
 				QList<QStandardItem *> row;
 
 				// UID // TODO: make SID
-				QVariant uid(QUuid(UUIDtoString(uuid).c_str()));
+                QVariant uid(QUuid(uuid.toString().c_str()));
 				row.append(createItem(uid));
 
 				// Action
@@ -268,7 +268,7 @@ void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex
 				revisionModel->invisibleRootItem()->appendRow(row);
             }
 
-//			for (repoUUID uuid : revision->getDeletedIDs())
+//			for (repo::lib::RepoUUID uuid : revision->getDeletedIDs())
 //			{
 //				QList<QStandardItem *> row;
 
@@ -285,7 +285,7 @@ void HistoryDialog::changeRevision(const QModelIndex &current, const QModelIndex
 //			}
 
 
-//			for (repoUUID uuid : revision->getModifiedIDs())
+//			for (repo::lib::RepoUUID uuid : revision->getModifiedIDs())
 //			{
 //				QList<QStandardItem *> row;
 

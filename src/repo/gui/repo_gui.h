@@ -34,7 +34,7 @@
 //------------------------------------------------------------------------------
 
 
-#define EXPECTED_BOUNCER_VERSION "1.7.4"
+#define EXPECTED_BOUNCER_VERSION "1.9.2"
 
 namespace Ui
 {
@@ -74,8 +74,6 @@ public slots:
     //! Shows about dialog.
     void about();
 
-    //! Creates a new map tiles project.
-    void addMapTiles();
 
     //! Adds a selection tree for a currently active widget.
     void addSelectionTree();

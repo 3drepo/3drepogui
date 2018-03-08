@@ -15,7 +15,6 @@ HEADERS +=  \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.h \
 	src/repo/gui/dialogs/repo_dialog_manager_access.h \
 	src/repo/gui/dialogs/repo_dialog_manager_connect.h \
-	src/repo/gui/dialogs/repo_dialog_map.h \
 	src/repo/gui/dialogs/repo_dialog_project.h \
 	src/repo/gui/dialogs/repo_dialog_role.h \
 	src/repo/gui/dialogs/repo_dialog_settings.h \
@@ -93,7 +92,6 @@ SOURCES +=  \
 	src/repo/gui/dialogs/repo_dialog_manager_abstract.cpp \
 	src/repo/gui/dialogs/repo_dialog_manager_access.cpp \
 	src/repo/gui/dialogs/repo_dialog_manager_connect.cpp \
-	src/repo/gui/dialogs/repo_dialog_map.cpp \
 	src/repo/gui/dialogs/repo_dialog_project.cpp \
 	src/repo/gui/dialogs/repo_dialog_role.cpp \
 	src/repo/gui/dialogs/repo_dialog_settings.cpp \
@@ -168,7 +166,6 @@ FORMS +=  \
 	forms/repo_dialog_manager_abstract.ui \
 	forms/repo_dialog_manager_access.ui \
 	forms/repo_dialog_manager_connect.ui \
-	forms/repo_dialog_map.ui \
 	forms/repo_dialog_project.ui \
 	forms/repo_dialog_role.ui \
 	forms/repo_dialog_settings.ui \

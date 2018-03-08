@@ -132,10 +132,6 @@ QGraphicsEllipseItem *GraphRenderer::addNode(repo::core::model::RepoNode *node, 
         dark = Qt::darkMagenta;
         light = Qt::magenta;
         break;
-    case repo::core::model::NodeType::MAP :
-        dark = repo::gui::primitive::RepoColor::fromHex("#cd5b45"); // Coral3
-        light = repo::gui::primitive::RepoColor::fromHex("#ff7f50"); // Coral
-        break;
     case repo::core::model::NodeType::MATERIAL :
         dark = Qt::darkRed;
         light = Qt::red;
@@ -209,7 +205,7 @@ std::vector<QGraphicsLineItem*> GraphRenderer::addLines(
         qreal halfPen = penWidth/2;
 
         int i = 0;
-        for (repoUUID parentID : node->getParentIDs())
+        for (repo::lib::RepoUUID parentID : node->getParentIDs())
         {
             QGraphicsItem *parentItem = painted[uuidToQString(parentID)];
             QGraphicsLineItem *line = addLine(
@@ -228,15 +224,15 @@ std::vector<QGraphicsLineItem*> GraphRenderer::addLines(
 bool GraphRenderer::areAllParentsPainted(const repo::core::model::RepoNode *node)
 {
     bool allPainted = true;
-    for (repoUUID parentID : node->getParentIDs())
+    for (repo::lib::RepoUUID parentID : node->getParentIDs())
     {
         allPainted = allPainted && (painted.contains(uuidToQString(parentID)));
     }
     return allPainted;
 }
 
-QString GraphRenderer::uuidToQString(const repoUUID &uuid)
+QString GraphRenderer::uuidToQString(const repo::lib::RepoUUID &uuid)
 {
-    return QString::fromStdString(UUIDtoString(uuid));
+    return QString::fromStdString(uuid.toString());
 }
 

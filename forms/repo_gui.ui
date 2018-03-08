@@ -69,7 +69,6 @@
     <addaction name="actionFederate"/>
     <addaction name="separator"/>
     <addaction name="actionAccessManager"/>
-    <addaction name="actionAddMapTiles"/>
     <addaction name="separator"/>
     <addaction name="actionRemoveProject"/>
     <addaction name="actionDrop"/>

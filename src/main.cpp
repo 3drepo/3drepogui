@@ -15,8 +15,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
 #include <QApplication>
 #include <QResource>
 
@@ -26,30 +24,27 @@
 #include "repo/gui/repo_gui.h"
 #include "repo/logger/repo_logger.h"
 
-
-
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-//    a.setAttribute(Qt::AA_UseDesktopOpenGL); // Qt5.5 support
-    a.setAttribute(Qt::AA_ShareOpenGLContexts); // https://blog.qt.io/blog/2014/09/10/qt-weekly-19-qopenglwidget/
+	QApplication a(argc, argv);
+	//    a.setAttribute(Qt::AA_UseDesktopOpenGL); // Qt5.5 support
+	a.setAttribute(Qt::AA_ShareOpenGLContexts); // https://blog.qt.io/blog/2014/09/10/qt-weekly-19-qopenglwidget/
 
-    QCoreApplication::setOrganizationName("3D Repo");
-    QCoreApplication::setOrganizationDomain("3drepo.org");
-    QCoreApplication::setApplicationName("3D Repo GUI");
-    QCoreApplication::setApplicationVersion("1.7.6");
+	QCoreApplication::setOrganizationName("3D Repo");
+	QCoreApplication::setOrganizationDomain("3drepo.org");
+	QCoreApplication::setApplicationName("3D Repo GUI");
+	QCoreApplication::setApplicationVersion("1.9.3");
 
-    std::vector<repo::lib::RepoAbstractListener*> listeners;
-    listeners.push_back(repo::logger::RepoLogger::getInstance());
+	std::vector<repo::lib::RepoAbstractListener*> listeners;
+	listeners.push_back(repo::logger::RepoLogger::getInstance());
 
-    repo::RepoController *controller = new repo::RepoController(listeners,4,4);
-
+	repo::RepoController *controller = new repo::RepoController(listeners, 4, 10);
 
 	//check env var to see whether a debug level is set
 	char* debug = getenv("REPO_DEBUG");
 	char* verbose = getenv("REPO_VERBOSE");
 
-    if (verbose)
+	if (verbose)
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::TRACE);
 	}
@@ -60,15 +55,14 @@ int main(int argc, char *argv[])
 	else
 	{
 		controller->setLoggingLevel(repo::lib::RepoLog::RepoLogLevel::INFO);
-    }
+	}
 
 	if (verbose) free(verbose);
 	if (debug)   free(debug);
-	
-    repo::gui::RepoGUI w(controller);
 
-    w.show();
-    w.startup();
-    return a.exec();
+	repo::gui::RepoGUI w(controller);
+
+	w.show();
+	w.startup();
+	return a.exec();
 }
-

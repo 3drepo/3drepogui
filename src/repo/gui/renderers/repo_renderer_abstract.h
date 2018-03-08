@@ -23,7 +23,6 @@
 #include <QFile>
 #include <QPainter>
 #include <repo/core/model/collection/repo_scene.h>
-#include <repo/core/model/repo_node_utils.h>
 #include <repo/manipulator/modelutility/spatialpartitioning/repo_spatial_partitioner_abstract.h>
 
 #include "repo_fpscounter.h"
@@ -40,9 +39,9 @@ enum class Axis {X = 0, Y = 1, Z = 2};
 
 struct CameraSettings
 {
-    repo_vector_t eye;
-    repo_vector_t target;
-    repo_vector_t up;
+    repo::lib::RepoVector3D eye;
+     repo::lib::RepoVector3D target;
+     repo::lib::RepoVector3D up;
 };
 
 class AbstractRenderer : public QObject, protected QOpenGLFunctions
@@ -53,10 +52,22 @@ public:
 
     virtual ~AbstractRenderer();
 
+
     /**
     * Delete shaders
     */
     virtual void deleteShaders(QOpenGLContext *context)  = 0;
+
+    /**
+     * Disable geometry selection
+     */
+    virtual void disableSelection(){selectionEnabled = false;}
+
+    /**
+     * Enable geometry selection
+     */
+
+    virtual void enableSelection(){selectionEnabled = true;}
 
     /**
     * Get information about the current camera settings
@@ -143,7 +154,7 @@ public:
     * @param color color of change to
     */
     virtual void setMeshColor(
-            const repoUUID &uniqueID,
+            const repo::lib::RepoUUID &uniqueID,
             const qreal &opacity,
             const QColor &color) = 0;
 
@@ -239,7 +250,7 @@ public:
     virtual void tiltUp(const bool up) = 0;
 
     virtual void toggleGenericPartitioning(
-            const std::vector<repo_vector_t> &sceneBbox,
+            const std::vector< repo::lib::RepoVector3D> &sceneBbox,
             const std::shared_ptr<repo_partitioning_tree_t> &tree) = 0;
 
     /**
@@ -319,6 +330,7 @@ public slots :
 protected:
 
     RepoFPSCounter fpsCounter;
+    bool selectionEnabled;
 
 }; // end class
 } //end namespace renderer

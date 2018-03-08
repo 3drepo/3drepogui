@@ -65,7 +65,7 @@ namespace repo {
 			* @param opacity the opacity of the colouring
 			* @param color the colour to change to
 			*/
-			void colorChangeOnA(const repoUUID &id, const qreal &opacity, const QColor &color);
+                        void colorChangeOnA(const repo::lib::RepoUUID &id, const qreal &opacity, const QColor &color);
 
 			/**
 			* Signals a change on colour of the mesh is needed given the unique ID of the
@@ -74,7 +74,7 @@ namespace repo {
 			* @param opacity the opacity of the colouring
 			* @param color the colour to change to
 			*/
-			void colorChangeOnB(const repoUUID &id, const qreal &opacity, const QColor &color);
+                        void colorChangeOnB(const repo::lib::RepoUUID &id, const qreal &opacity, const QColor &color);
 
 			public slots :
 

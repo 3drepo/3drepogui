@@ -22,10 +22,10 @@
 
 #include <repo/core/model/bson/repo_bson_element.h>
 #include <repo/core/model/bson/repo_node_mesh.h>
-#include <repo/core/model/repo_node_utils.h>
 
 using namespace repo::worker;
 namespace repoModel = repo::core::model;
+
 
 CollectionWorker::CollectionWorker(
 	repo::RepoController *controller,
@@ -115,7 +115,7 @@ void CollectionWorker::decodeRecords(const repoModel::RepoBSON& bson, uint32_t d
 				break;
 			case repoModel::ElementType::UUID: // binary data 
 				value = QUuid(QString::fromStdString(
-					UUIDtoString(bson.getUUIDField(fieldName))));
+                    bson.getUUIDField(fieldName).toString()));
 				type = QString("BSONUuid");
 				break;
 			case repoModel::ElementType::BINARY:
@@ -131,27 +131,27 @@ void CollectionWorker::decodeRecords(const repoModel::RepoBSON& bson, uint32_t d
 					repoModel::MeshNode mesh = (repoModel::MeshNode) bson;
 					if (REPO_NODE_MESH_LABEL_VERTICES == key)
 					{
-                        std::vector<repo_vector_t> vec = mesh.getVertices();
-                        value = QString(vectorToString(vec).c_str());
+                        std::vector<repo::lib::RepoVector3D> vec = mesh.getVertices();
+                        value = QString::fromStdString(std::to_string(vec.size()) + " 3D Vectors");//QString(vectorToString(vec).c_str());
 						type = QString("BSONBinDataGeneral");
 					}
 					else if (REPO_NODE_MESH_LABEL_NORMALS == key)
 					{
-                        std::vector<repo_vector_t> vec = mesh.getNormals();
-                        value = QString(vectorToString(vec).c_str());
+                        std::vector<repo::lib::RepoVector3D> vec = mesh.getNormals();
+                        value = QString::fromStdString(std::to_string(vec.size()) + " 3D Vectors");
 						type = QString("BSONBinDataGeneral");					
 					}
 					else if (REPO_NODE_MESH_LABEL_UV_CHANNELS == key)
 					{
-                        std::vector<repo_vector2d_t> vec = mesh.getUVChannels();
-                        value = QString(vectorToString(vec).c_str());
+                        std::vector<repo::lib::RepoVector2D> vec = mesh.getUVChannels();
+                        value = QString::fromStdString(std::to_string(vec.size()) + " 2D Vectors");
 						type = QString("BSONBinDataGeneral");
 
 					}
 					else if (REPO_NODE_MESH_LABEL_FACES == key)
 					{
                         std::vector<repo_face_t> vec = mesh.getFaces();
-                        value = QString(vectorToString(vec).c_str());
+                        value = QString::fromStdString(std::to_string(vec.size()) + " faces");
 						type = QString("BSONBinDataGeneral");
 
 					}

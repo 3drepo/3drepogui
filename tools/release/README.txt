@@ -1,4 +1,4 @@
-3D Repo GUI v 1.6.0
+3D Repo GUI v 1.8.1
 
 This is the desktop client for the 3D Repo Platform
 
@@ -21,8 +21,4 @@ If you need any help, please contact support@3drepo.org, we
 look forward to hear from you.
 
 =========================== Improvements ========================
-* (ISSUE #172) Fix bug where project settings are being overwritten
-* (ISSUE #173) Improve usability of access manager
-
-=========================== New Features ========================
-* (ISSUE #158, #159) You can now view and edit User's license information
+* (ISSUE #200) Increase database worker count to 10
