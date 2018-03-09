@@ -31,7 +31,6 @@
 #include "dialogs/repo_dialog_about.h"
 #include "../logger/repo_logger.h"
 #include "dialogs/repo_dialog_connect.h"
-#include "widgets/repo_widget_repository.h"
 #include "widgets/repo_text_browser.h"
 #include "widgets/repo_widget_flags.h"
 #include "widgets/repo_widget_tree_dock.h"
