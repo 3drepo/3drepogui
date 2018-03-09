@@ -43,11 +43,6 @@ namespace primitive{
 
 		virtual ~RepoIDBCache() {}
 
-		//! Returns a list of available collections.
-		virtual QList<QString> getCollections(
-			const QString &host,
-			const QString &database) const = 0;
-
 	public:
 
 		//! Returns connection corresponding to given host.

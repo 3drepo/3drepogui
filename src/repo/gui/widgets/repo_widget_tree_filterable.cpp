@@ -39,6 +39,15 @@ FilterableTreeWidget::FilterableTreeWidget(QWidget *parent)
                 proxy, &QSortFilterProxyModel::rowsRemoved,
                 this, &FilterableTreeWidget::updateCountLabel);
 
+
+    QObject::connect(
+                model, &QStandardItemModel::rowsInserted,
+                this, &FilterableTreeWidget::updateCountLabel);
+
+    QObject::connect(
+                model, &QStandardItemModel::rowsRemoved,
+                this, &FilterableTreeWidget::updateCountLabel);
+
     QObject::connect(
                 model, &QStandardItemModel::rowsInserted,
                 this, &FilterableTreeWidget::notifyOfTotalCountChange);

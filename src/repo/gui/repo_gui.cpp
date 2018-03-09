@@ -291,6 +291,12 @@ repo::gui::RepoGUI::RepoGUI(
     ui->actionSceneGraph->setIcon(primitive::RepoFontAwesome::getSceneGraphIcon());
 
 
+    //--------------------------------------------------------------------------
+    //
+    // Repos
+    //
+    //--------------------------------------------------------------------------
+    repos = new models::RepositoriesModel(controller, ui->reposWidget);
 
 
     //--------------------------------------------------------------------------
@@ -314,7 +320,7 @@ repo::gui::RepoGUI::RepoGUI(
     // 3D Diff...
     ui->diffManagerWidget->initialize(ui->mdiArea,
                                       this->controller,
-                                      ui->widgetRepository->getSelectedConnection());
+                                      repos->getSelectedConnection());//ui->widgetRepository->getSelectedConnection());
 
     // Options
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(openSettings()));
@@ -381,24 +387,19 @@ repo::gui::RepoGUI::RepoGUI(
     //--------------------------------------------------------------------------
     // Context menus
     QObject::connect(
-                ui->widgetRepository->getDatabasesTreeView(),
+                ui->reposWidget->getTreeView(), //ui->widgetRepository->getDatabasesTreeView(),
                 &QWidget::customContextMenuRequested,
                 this,
                 &RepoGUI::showDatabaseContextMenu);
 
-    QObject::connect(
-                ui->widgetRepository->getCollectionTreeView(),
-                &QTreeView::customContextMenuRequested,
-                this,
-                &RepoGUI::showCollectionContextMenuSlot);
+//    QObject::connect(
+//                ui->widgetRepository->getCollectionTreeView(),
+//                &QTreeView::customContextMenuRequested,
+//                this,
+//                &RepoGUI::showCollectionContextMenuSlot);
 
 
-    //--------------------------------------------------------------------------
-    //
-    // Repos
-    //
-    //--------------------------------------------------------------------------
-    repos = new models::RepositoriesModel(controller, ui->reposWidget);
+
 
     //--------------------------------------------------------------------------
     //
@@ -455,8 +456,8 @@ void repo::gui::RepoGUI::commit()
     widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
     const widget::Rendering3DWidget *widget = ui->mdiArea->getActiveWidget();
 
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    QString project = ui->widgetRepository->getSelectedProject();
+    QString database = repos->getSelectedDatabase();//ui->widgetRepository->getSelectedDatabase();
+    QString project = repos->getSelectedProject();//ui->widgetRepository->getSelectedProject();
     
     repo::core::model::RepoScene *repoScene = nullptr;
     if (activeWindow && widget)
@@ -470,8 +471,6 @@ void repo::gui::RepoGUI::commit()
             project = path.completeBaseName();
             repoScene->setDatabaseAndProjectName(database.toStdString(), project.toStdString());
         }
-
-        repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
     }
 
     commit(repoScene, activeWindow);
@@ -486,7 +485,8 @@ void repo::gui::RepoGUI::commit(
         dialog::CommitDialog commitDialog(
                     this,
                     Qt::Window,
-                    ui->widgetRepository,
+                    repos,
+//                    ui->widgetRepository,
                     scene);
 
 
@@ -499,8 +499,8 @@ void repo::gui::RepoGUI::commit(
             // Establish and connect the new worker.
             repo::worker::CommitWorker *worker = new repo::worker::CommitWorker(
                         controller,
-                        ui->widgetRepository->getConnection(commitDialog.getCurrentHost()),
-                        scene);
+//                        ui->widgetRepository->getConnection(commitDialog.getCurrentHost()), scene);
+                        repos->getConnection(commitDialog.getCurrentHost()), scene);
 
             if (activeWindow)
                 QObject::connect(worker, SIGNAL(progress(int, int)), activeWindow, SLOT(progress(int, int)));
@@ -520,7 +520,7 @@ void repo::gui::RepoGUI::connectDB()
 {
     // Disconnect previous connection if any
     // TODO: remove when expanding to multiple connections
-    ui->widgetRepository->disconnectDB();
+//    ui->widgetRepository->disconnectDB();
 
     dialog::ConnectManagerDialog connectManager(controller, (QWidget*)this);
 
@@ -599,7 +599,7 @@ void repo::gui::RepoGUI::disconnectDB()
 
     // TODO: disconnect selected DB or potentially all of them
 
-    if (ui->widgetRepository->disconnectDB())
+    if (repos->disconnect()) //ui->widgetRepository->disconnectDB())
     {
         // disable buttons
         ui->actionRefresh->setEnabled(false);
@@ -616,8 +616,8 @@ void repo::gui::RepoGUI::disconnectDB()
 
 void repo::gui::RepoGUI::drop()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    QString collection = ui->widgetRepository->getSelectedCollection();
+    QString database = repos->getSelectedDatabase(); //ui->widgetRepository->getSelectedDatabase();
+    QString collection = repos->getSelectedProject(); //ui->widgetRepository->getSelectedCollection();
 
 
     if (database.isNull() || database.isEmpty())
@@ -637,7 +637,7 @@ void repo::gui::RepoGUI::drop()
 
             bool success;
             std::string errMsg;
-            const repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
+            const repo::RepoController::RepoToken *token = repos->getSelectedConnection(); //ui->widgetRepository->getSelectedConnection();
             // TODO: create a DB manager separate from repositories widget.
             if (collection.isEmpty())
                 success = controller->removeDatabase(token, database.toStdString(), errMsg);
@@ -651,7 +651,7 @@ void repo::gui::RepoGUI::drop()
 
 void repo::gui::RepoGUI::federate()
 {
-    dialog::FederationDialog fed(ui->widgetRepository, this);
+    dialog::FederationDialog fed(repos, this); //ui->widgetRepository, this);
     if (fed.exec())
     {
         repo::core::model::RepoScene *scene = controller->createFederatedScene(fed.getFederation());
@@ -664,9 +664,9 @@ void repo::gui::RepoGUI::fetchHead()
     // Head revision from master branch
     ui->mdiArea->addSubWindow(
                 controller,
-                ui->widgetRepository->getSelectedConnection(),
-                ui->widgetRepository->getSelectedDatabase(),
-                ui->widgetRepository->getSelectedProject());
+                repos->getSelectedConnection(), //ui->widgetRepository->getSelectedConnection(),
+                repos->getSelectedDatabase(), //ui->widgetRepository->getSelectedDatabase(),
+                repos->getSelectedProject()); //ui->widgetRepository->getSelectedProject());
 
     // Make sure to hook controls if chain is on
     ui->mdiArea->chainSubWindows(ui->actionLink->isChecked());
@@ -677,9 +677,9 @@ void repo::gui::RepoGUI::fetchHead()
 
 void repo::gui::RepoGUI::history()
 {
-    QString          database = ui->widgetRepository->getSelectedDatabase();
-    QString          project  = ui->widgetRepository->getSelectedProject();
-    repo::RepoController::RepoToken *token    = ui->widgetRepository->getSelectedConnection();
+    QString database = repos->getSelectedDatabase(); //ui->widgetRepository->getSelectedDatabase();
+    QString project  = repos->getSelectedProject(); //ui->widgetRepository->getSelectedProject();
+    repo::RepoController::RepoToken *token = repos->getSelectedConnection(); //ui->widgetRepository->getSelectedConnection();
     dialog::HistoryDialog historyDialog(controller, token, database, project, this);
 
     if(!historyDialog.exec()) // if not OK
@@ -734,7 +734,8 @@ void repo::gui::RepoGUI::loadFiles(const QList<QUrl> &urls)
 void repo::gui::RepoGUI::openAccessManager()
 {
     dialog::AccessManagerDialog accessManager(
-                ui->widgetRepository,
+                //ui->widgetRepository,
+                repos,
                 controller,
                 (QWidget*) this);
     accessManager.exec();
@@ -777,7 +778,9 @@ void repo::gui::RepoGUI::optimizeGraph()
         widget::RepoMdiSubWindow *activeWindow = ui->mdiArea->activeSubWindow();
         repo::core::model::RepoScene* scene = widget->getRepoScene();
         repo::worker::OptimizeWorker *worker =
-                new repo::worker::OptimizeWorker(controller, ui->widgetRepository->getSelectedConnection(), scene);
+                new repo::worker::OptimizeWorker(controller,
+                                                 repos->getSelectedConnection(), //ui->widgetRepository->getSelectedConnection(),
+                                                 scene);
 
         if (activeWindow)
         {
@@ -809,13 +812,14 @@ void repo::gui::RepoGUI::openSupportEmail() const
 
 void repo::gui::RepoGUI::refresh()
 {
-    ui->widgetRepository->refresh();
+//    ui->widgetRepository->refresh();
+    repos->refresh();
 }
 
 void repo::gui::RepoGUI::removeProject()
 {
-    QString database = ui->widgetRepository->getSelectedDatabase();
-    QString project = ui->widgetRepository->getSelectedProject();
+    QString database = repos->getSelectedDatabase();//ui->widgetRepository->getSelectedDatabase();
+    QString project = repos->getSelectedProject(); //ui->widgetRepository->getSelectedProject();
 
 
     if (database.isNull() || database.isEmpty())
@@ -837,10 +841,9 @@ void repo::gui::RepoGUI::removeProject()
 
             bool success;
             std::string errMsg;
-            const repo::RepoController::RepoToken *token = ui->widgetRepository->getSelectedConnection();
+            const repo::RepoController::RepoToken *token = repos->getSelectedConnection();//ui->widgetRepository->getSelectedConnection();
             // TODO: create a DB manager separate from repositories widget.
-           success = controller->removeProject(token, database.toStdString(), project.toStdString(), errMsg);
-
+            success = controller->removeProject(token, database.toStdString(), project.toStdString(), errMsg);
             refresh();
         }
     }
@@ -959,15 +962,15 @@ void repo::gui::RepoGUI::toggleNavigationMode()
 
 void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
 {
-    QMenu menu(ui->widgetRepository->getCollectionTreeView());
+    QMenu menu(ui->reposWidget->getTreeView()); //ui->widgetRepository->getCollectionTreeView());
     QAction* a = menu.addAction(
                 tr("Copy"),
-                ui->widgetRepository,
+                ui->reposWidget, //ui->widgetRepository,
                 SLOT(copySelectedCollectionCellToClipboard()));
     a->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_C));
     menu.addAction(
                 tr("Expand all"),
-                ui->widgetRepository,
+                ui->reposWidget, //ui->widgetRepository,
                 SLOT(expandAllCollectionRecords()));
     menu.addSeparator();
 
@@ -976,12 +979,12 @@ void repo::gui::RepoGUI::showCollectionContextMenuSlot(const QPoint &pos)
     a = menu.addAction(tr("Delete all records"), this, SLOT(deleteAllRecordsSlot()));
     a->setEnabled(false);
 
-    menu.exec(ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
+    menu.exec(ui->reposWidget->getTreeView()->mapToGlobal(pos)); //ui->widgetRepository->mapToGlobalCollectionTreeView(pos));
 }
 
 void repo::gui::RepoGUI::showDatabaseContextMenu(const QPoint &pos)
 {
-    ui->menuRepository->exec(ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
+    ui->menuRepository->exec(ui->reposWidget->getTreeView()->mapToGlobal(pos)); //ui->widgetRepository->mapToGlobalDatabasesTreeView(pos));
 }
 
 void repo::gui::RepoGUI::startup()

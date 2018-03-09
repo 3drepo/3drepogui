@@ -375,7 +375,7 @@
     <string>Repos</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>2</number>
+    <number>1</number>
    </attribute>
    <widget class="repo::gui::widget::FilterableTreeWidget" name="reposWidget"/>
   </widget>

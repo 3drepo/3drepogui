@@ -84,11 +84,6 @@ namespace widget{
 
 		public slots :
 
-		virtual QList<QString> getCollections(const QString &host, const QString &database) const
-		{
-			return QList<QString>();
-		}
-
 		////! Returns connection corresponding to given host.
 		virtual repo::RepoController::RepoToken* getConnection(const QString &host) const;
 

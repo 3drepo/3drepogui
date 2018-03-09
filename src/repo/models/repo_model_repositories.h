@@ -27,8 +27,11 @@
 #include "../gui/widgets/repo_widget_tree_filterable.h"
 #include "../gui/primitives/repo_fontawesome.h"
 #include "../gui/primitives/repo_sort_filter_proxy_model.h"
+#include "../gui/primitives/repo_idbcache.h"
 #include "../workers/repo_worker_databases.h"
 #include "../workers/repo_worker_repositories.h"
+
+
 
 using namespace repo::gui::primitive;
 using namespace repo::core::model;
@@ -42,7 +45,7 @@ namespace models {
  * Main internal model managing all logic related to management and visualization
  * of repositories within a filterable tree widget as part of the main GUI.
  */
-class RepositoriesModel : public QObject
+class RepositoriesModel : public QObject, public repo::gui::primitive::RepoIDBCache
 {
     Q_OBJECT    
 
@@ -72,9 +75,38 @@ public :
      */
     void connect(RepoController::RepoToken* token);
 
-    void disconnect();
+    bool disconnect();
 
-    void refresh();
+    // IDBCache
+
+    //! Returns connection corresponding to given host.
+    virtual repo::RepoController::RepoToken* getConnection(
+            const QString &host) const;
+
+    //! Returns a list of available databases.
+    virtual QList<QString> getDatabases(const QString& host) const;
+
+    //! Returns a list of available hosts.
+    virtual QList<QString> getHosts() const; // DONE
+
+    //! Returns a list of available projects (a subset of all collections in a given database).
+    virtual QList<QString> getProjects(
+            const QString &host,
+            const QString &database) const;
+
+    virtual void refresh(); // DONE
+
+    //! Returns selected connection, needs to be reconnected and reauthenticated.
+    virtual repo::RepoController::RepoToken* getSelectedConnection() const;
+
+    //! Returns selected database.
+    virtual QString getSelectedDatabase() const;
+
+    //! Returns selected host.
+    virtual QString getSelectedHost() const;
+
+    //! Returns selected project.
+    virtual QString getSelectedProject() const;
 
 signals :
 
