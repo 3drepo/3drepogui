@@ -537,7 +537,7 @@ void repo::gui::RepoGUI::connectDB()
         if (token && controller->authenticateMongo(errMsg, token))
         {
             //connection/authentication success
-            ui->widgetRepository->fetchDatabases(controller, token);
+            //ui->widgetRepository->fetchDatabases(controller, token);
 
             //-----------------------------------------------------------------
             // enable buttons
@@ -1001,13 +1001,14 @@ void repo::gui::RepoGUI::toggleFullScreen()
     {
         storeSettings();
         ui->menuBar->hide();
-        ui->dockWidgetRepositories->hide();
+        //ui->dockWidgetRepositories->hide();
         ui->dockWidgetLog->hide();
         ui->clippingPlaneDockWidget->hide();
         ui->diffDockWidget->hide();
         ui->repositoriesToolBar->hide();
         ui->openGLToolBar->hide();
         ui->panelsToolBar->hide();
+        ui->dockWidgetRepos->hide();
         showFullScreen();
         this->repaint();
     }

@@ -179,39 +179,6 @@
    <addaction name="actionCommit"/>
    <addaction name="actionAccessManager"/>
   </widget>
-  <widget class="QDockWidget" name="dockWidgetRepositories">
-   <property name="toolTip">
-    <string>Repositories</string>
-   </property>
-   <property name="windowTitle">
-    <string>Repositories</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetRepositoriesContents">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="repo::gui::widget::RepositoryWidget" name="widgetRepository" native="true"/>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="openGLToolBar">
    <property name="minimumSize">
     <size>
@@ -783,12 +750,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
-  <customwidget>
-   <class>repo::gui::widget::RepositoryWidget</class>
-   <extends>QWidget</extends>
-   <header>src/repo/gui/widgets/repo_widget_repository.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>repo::gui::widget::RepoMdiArea</class>
    <extends>QWidget</extends>
